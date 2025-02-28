@@ -1,0 +1,44 @@
+Package: ramen
+Title: Reconstruction and Alignment of Microbial Exchange Networks
+Version: 0.0.0.9000
+Authors@R: 
+    person("Adrian", "Hirt", , "am.hirt@pm.me", role = c("aut", "cre"),
+           comment = c(ORCID = "0009-0008-1929-6629"))
+Description: Analysis of the functional (dis-) similarity of microbial communities.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Imports: 
+    dplyr,
+    ggplot2,
+    glue,
+    hash,
+    igraph,
+    magrittr,
+    Matrix,
+    methods,
+    MultiAssayExperiment,
+    purrr,
+    rlang,
+    scales,
+    stats,
+    stringr,
+    SummarizedExperiment,
+    tibble,
+    tidyr,
+    TreeSummarizedExperiment,
+    utils
+Suggests: 
+    knitr,
+    readr,
+    rmarkdown,
+    testthat (>= 3.0.0),
+    plotly
+VignetteBuilder: 
+    knitr
+Depends: 
+    R (>= 4.4.0)
+URL: https://admarhi.github.io/ramen/
+Config/testthat/edition: 3
+LazyData: true

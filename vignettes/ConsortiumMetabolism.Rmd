@@ -1,0 +1,104 @@
+---
+title: "ConsortiumMetabolism Class"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{ConsortiumMetabolism Class}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(ramen)
+library(tibble)
+```
+
+## \code{ConsortiumMetabolism} Class
+
+# MF - ConsortiumMetabolism
+
+`ConsortiumMetabolism` (MF) objects build the backbone of the `ramen` functionality by providing a novel approach to the representation of microbial consortia from a functional perspective. This is one of the three main object types of ramen. The `ConsortiumMetabolism` class serves as the standard way to save and work with data on the metabolism, the function, of a microbial community.
+
+## Content
+Upon the creation of a `ConsortiumMetabolism` class based on a three column input, additional information is calculated:
+
+- graph representation of the network in MiCo object with data from the different matrices as weights
+- If the graph is purely directional, disable the calculations for other than bin_mat
+- how can we define optimised / generalist / robust consortia?
+- Which metrics to have in the object?
+- Tanimoto?
+- MES score (relationship between consumption and production of metabolites)
+- SCS, MUS, MPS, MIP/MRO, SMETANA
+- species
+- metabolites
+- fluxes
+- edges
+- binary matrix
+- flux matrix 
+- name
+- flux_consumption
+- flux_production
+- effective_flux_consumption
+- effective_flux_production
+
+Each of these slots is described in the `ConsortiumMetabolism-class()` class documentation.
+
+## Validation
+- unkown metabolites in the database for ChemmineR
+- 0 fluxes in the input data
+- correct column names
+- Need a function that calcs the phylo tree for the metabolites
+- Return output on the different issues with the input data
+
+## Logic
+1. Create unnamed matrix and save metabolite names to col/row data
+
+
+## Available Methods 
+- `getCo()`: Returns the community in tibble format.
+- `getSpecies()`: Retrieves the species from a community.
+- `getMet()`: Retrieves metabolites from a community.
+- `getFlux()`: Retrieves the fluxes from a community.
+- `getEdges()`: Retrieves the edges from a community.
+
+## Examples
+To create an object of type `MiCo`, the user must input the data listed below. This data can either be contained in a single tibble or data frame, saved in a CSV file, or input as separate vectors.
+
+- `species`: A character vector specifying the species present in the community.
+- `met`: A character vector specifying the metabolites present in the community.
+- `flux`: A numeric vector specifying the fluxes of each metabolite in the community.
+- `name`: Character string giving the name of the community.
+
+```{r}
+data <- tibble::tibble(
+  species = c("RQR9693L", "RQR9693L", "RQR9693L", "RQR9693L", "MEV1152G", "MEV1152G", "MEV1152G", "XIQ2234Q", "XIQ2234Q", "XIQ2234Q"),
+  met = c("met3", "met1", "met4", "met4", "met3", "met2", "met2", "met3", "met4", "met1"),
+  flux = c(-0.3023640, 0.5344641, -2.2337716, 3.3063823, 2.5520278, 0.3388498, -1.8460633, -1.3043675, -0.4788769, 0.6027292)
+
+)
+
+# ConsortiumMetabolism(data, name = "example_MiCo")
+```
+
+`ramen` provides the function `syn_community()` to generate random `MiCo` objects based on user parameters. 
+
+```{r}
+# makeSynMiCo(n_species = 8, max_met = 10, name = "example_syn_MiCo")
+```
+
+## Create a MiCo Object from a tibble
+`ramen` contains a set of example data that can be used for the analysis of microbial communities. For this example, we will use data created by [MiSoS(oup)](https://github.com/sirno/misosoup). Two example communities are provided in the package `ac_A1R12_1` and `cit_A1R12_1`.
+
+The `MiCo` function can take either a path to a .csv file or a data frame/tibble as input.
+
+
+
+
+
+

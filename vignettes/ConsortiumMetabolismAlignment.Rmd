@@ -1,0 +1,60 @@
+---
+title: "ConsortiumMetabolismAlignment Class"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{ConsortiumMetabolismAlignment Class}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(ramen)
+```
+
+# Microbial Community Alignment Class
+
+- Clarify how the Alignment is represented primarily. Will it also be a TSE object?
+- Could use the assays to store each alignment, this would allow for quick calculation of the depth and breadth as well.
+- Decide on metrics to include in the alignment
+- in how many communities is any given species?
+- How to go about the multiscale entropy?
+- How do we maximise for community overlap in the alignment?
+- What happens if we have completley disconnected grpahs? how do we align with and without gaps?
+- To what extent should the alignment be interactive?
+
+
+- Takes a number of `ConsortiumMetabolism` objects as input (? list or ...) and an additional argument to specify if a pairwise alignment of the communities is desired. 
+- The default is to align all communities against each other
+- if `pairwise = TRUE` all unique pairwise combinations are aligned. 
+- Should the alignment be calculated upon the creation of the object or should it be calculated on demand?
+
+### Methods
+
+A variety of methods can be called on a `ConsortiumMetabolismAlignment` object. The output of the methods has to be assigned back to the variable containing the object to persist. 
+
+- clusterAlignment: Takes a `ConsortiumMetabolismAlignment` object as input and an additional argument to specify the clustering algorithm to be used, only works on `ConsortiumMetabolismAlignment` objects that have undergone a pairwise alignment. 
+
+### Identity
+A value which gives a scalar value to represent the identity between two communities. 
+
+$$ \frac{\alpha}{\sum\limits_{i = 1}^{n}(\sum C_i - \alpha) + \alpha} $$
+
+
+
+## Contents
+
+- Communities hash/list containing the `ConsortiumMetabolism` objects
+- Alignment hash:
+  - overall alignment matrix (binary)
+  - hash for each level calculated (### how many levels?)
+    - alignment matrix
+    - longest connected components for each level
+    - how to score alignments with more communities more highly?
+    - how to figure out the connecctedness for parts of the alignment in whicch there are less communities represented than in the overall alignment?

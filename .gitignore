@@ -1,0 +1,12 @@
+.Rproj.user
+dev/archive/
+.DS_Store
+inst/doc
+ramen.Rproj
+docs
+/doc/
+/Meta/
+.RData
+.Rhistory
+
+.RDataTmp

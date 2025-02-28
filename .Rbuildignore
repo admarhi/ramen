@@ -1,0 +1,16 @@
+^ramen\.Rproj$
+^\.Rproj\.user$
+^LICENSE\.md$
+^dev*$
+^dev$
+^dev_data$
+vignettes/func_sim.Rmd
+^data-raw$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^README\.Rmd$
+^\.github$
+^doc$
+^Meta$
+.lintr*
