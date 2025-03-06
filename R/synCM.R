@@ -7,7 +7,8 @@
 #' @param scale_fac Scaling factor
 #' @param seed Seed for reproducibility
 #' @param dead_ends Logical value to toggle dead ends in data
-#' @param MiCo Logical value to toggle return of MiCo object or tibble.
+#' @param cm Logical value to toggle return of `ConsortiumMetabolism` object or
+#' tibble.
 #' @param name Character string giving the desired name of the community.
 #'
 #' @return List with `n_co` number of communities.
@@ -25,7 +26,7 @@ synCM <- function(
   scale_fac = 2,
   seed = FALSE,
   dead_ends = FALSE,
-  MiCo = TRUE
+  cm = TRUE
 ) {
   r_names <- function(n = 5000) {
     a <- do.call(paste0, replicate(3, sample(LETTERS, n, TRUE), FALSE))
@@ -67,7 +68,7 @@ synCM <- function(
     fluxes = fluxes
   )
 
-  if (!MiCo) {
+  if (!cm) {
     return(community)
   }
 

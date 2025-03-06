@@ -11,7 +11,7 @@ synCM(
   scale_fac = 2,
   seed = FALSE,
   dead_ends = FALSE,
-  MiCo = TRUE
+  cm = TRUE
 )
 }
 \arguments{
@@ -27,7 +27,8 @@ synCM(
 
 \item{dead_ends}{Logical value to toggle dead ends in data}
 
-\item{MiCo}{Logical value to toggle return of MiCo object or tibble.}
+\item{cm}{Logical value to toggle return of \code{ConsortiumMetabolism} object or
+tibble.}
 }
 \value{
 List with \code{n_co} number of communities.
