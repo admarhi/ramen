@@ -11,6 +11,18 @@ setMethod("show", "ConsortiumMetabolism", function(object) {
     cat()
 })
 
+#' Show Method for \code{ConsortiumMetabolismSet} Object
+#'
+#' @param object An object of class \code{ConsortiumMetabolismSet}
+#' @export
+setMethod("show", "ConsortiumMetabolismSet", function(object) {
+  stringr::str_glue(
+    "\n{object@Name}: ConsortiumMetabolismSet Object\n",
+    "containing {length(object@Consortia)} consortia.\n\n"
+  ) %>%
+    cat()
+})
+
 #' Show method for \code{ConsortiumMetabolismAlignment} Objects
 #'
 #' @param object a \code{ConsortiumMetabolismAlignment} object.

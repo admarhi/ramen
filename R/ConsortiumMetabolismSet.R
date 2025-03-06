@@ -2,16 +2,24 @@
 #'
 #' @param ... Lists or individual \code{ConsortiumMetabolism} objects.
 #' @param name Character scalar giving the name of the set.
+#' @param desc Optional, short description of the sets purpose.
 #'
 #' @export
-#'
 ConsortiumMetabolismSet <- function(
   ...,
-  name = NA_character_
+  name = NA_character_,
+  desc = NA_character_
 ) {
-  coms <- list(...)
-  # Check that all list entries are MF objects
+  cons <- list(...)
+
+  # Check that all list entries are CM objects
   stopifnot(exprs = {
-    all(lapply(coms, class) == "ConsortiumMetabolism")
+    all(lapply(cons, class) == "ConsortiumMetabolism")
   })
+
+  newConsortiumMetabolismSet(
+    Name = name,
+    Consortia = cons,
+    Description = desc
+  )
 }

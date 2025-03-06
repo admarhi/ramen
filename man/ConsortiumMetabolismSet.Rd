@@ -4,12 +4,14 @@
 \alias{ConsortiumMetabolismSet}
 \title{Set of \code{ConsortiumMetabolism} Objects}
 \usage{
-ConsortiumMetabolismSet(..., name = NA_character_)
+ConsortiumMetabolismSet(..., name = NA_character_, desc = NA_character_)
 }
 \arguments{
 \item{...}{Lists or individual \code{ConsortiumMetabolism} objects.}
 
 \item{name}{Character scalar giving the name of the set.}
+
+\item{desc}{Optional, short description of the sets purpose.}
 }
 \description{
 Set of \code{ConsortiumMetabolism} Objects
