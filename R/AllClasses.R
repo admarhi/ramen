@@ -6,7 +6,7 @@ newConsortiumMetabolism <- setClass(
   contains = "TreeSummarizedExperiment",
   slots = list(
     Name = "character",
-    Edges = "list",
+    Edges = "data.frame",
     Weighted = "logical",
     InputData = "data.frame",
     Metabolites = "character",
@@ -18,16 +18,14 @@ newConsortiumMetabolism <- setClass(
 #' @import methods
 newConsortiumMetabolismSet <- setClass(
   Class = "ConsortiumMetabolismSet",
-  ### don't think I need to import TSE here
-  # contains = "TreeSummarizedExperiment",
   slots = list(
     Name = "character",
-    Communities = "list",
+    Consortia = "list",
     Description = "character"
   ),
   prototype = list(
     Name = NA_character_,
-    Communities = list(),
+    Consortia = list(),
     Description = NA_character_
   )
 )
@@ -42,6 +40,7 @@ newConsortiumMetabolismAlignment <- setClass(
     Name = "character",
     Alignment = "list",
     Communities = "list",
-    Score = "data.frame"
+    Score = "data.frame",
+    Graphs = "list"
   )
 )

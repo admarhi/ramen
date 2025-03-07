@@ -4,7 +4,7 @@
 setMethod("getSpecies", "ConsortiumMetabolism", function(object) {
   cat(
     length(unique(object@InputData$species)),
-    " microorganisms in community ",
+    " microorganisms in consortia ",
     object@Name,
     ":\n",
     sep = ""

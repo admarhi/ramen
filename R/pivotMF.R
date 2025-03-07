@@ -1,5 +1,6 @@
-#' Functions to Change the orientation of MiCo Input Data
+#' @title Pivot \code{ConsortiaMetabolism} Input Data
 #'
+#' @description
 #' Wrapper function around tidyr's `pivot_longer()` function to facilitate
 #' the easy transformation into the correct data format for MiCo construction.
 #'
@@ -24,14 +25,14 @@
 #'   "m4", "m1", 1, "s4"
 #' )
 #'
-#' pivotMF(
+#' pivotCM(
 #'   tb = tb,
 #'   species = "species",
 #'   from = "uptake",
 #'   to = "secretion",
 #'   flux = "flux"
 #' )
-pivotMF <- function(tb, species, from, to, flux) {
+pivotCM <- function(tb, species, from, to, flux) {
   tb %>%
     pivot_longer(cols = c(from, to)) %>%
     rename(

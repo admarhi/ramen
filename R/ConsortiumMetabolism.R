@@ -17,8 +17,6 @@
 #'
 #' @importFrom SummarizedExperiment metadata<-
 #' @importFrom TreeSummarizedExperiment TreeSummarizedExperiment
-#' @importFrom tibble tibble
-#' @importFrom dplyr filter
 ConsortiumMetabolism <- function(
   data,
   name = NA_character_,
@@ -31,7 +29,7 @@ ConsortiumMetabolism <- function(
   ### Build the renaming of the columns
 
   data <- data |>
-    dplyr::rename(
+    rename(
       species = {{ species_col }},
       met = {{ metabolite_col }},
       flux = {{ flux_col }}
@@ -46,63 +44,58 @@ ConsortiumMetabolism <- function(
 
   # if (!weighted) assays <- list(Binary = bin_mat, nEdges = n_edges)
 
-  mets <- tibble::tibble(
+  mets <- tibble(
     met = sort(unique(data$met)),
     index = seq_len(length(unique(data$met)))
   )
 
   tb <- data |>
     # Ensure that no zero values are included
-    dplyr::filter(.data$flux != 0) # |>
+    filter(.data$flux != 0) # |>
   # recode the species names
-  # dplyr::left_join(species, by = "species") |>
-  # dplyr::select(-"species", species = "species_code")
+  # left_join(species, by = "species") |>
+  # select(-"species", species = "species_code")
 
   ### Check if any rows have flux == 0
   cons <- tb |>
-    dplyr::filter(.data$flux < 0) |>
-    dplyr::mutate(flux = .data$flux * -1) |>
-    dplyr::reframe(flux = sum(.data$flux), .by = c("species", "met")) |>
-    dplyr::rename(consumed = "met")
+    filter(.data$flux < 0) |>
+    mutate(flux = .data$flux * -1) |>
+    reframe(flux = sum(.data$flux), .by = c("species", "met")) |>
+    rename(consumed = "met")
 
   prod <- tb |>
-    dplyr::filter(.data$flux > 0) |>
-    dplyr::reframe(flux = sum(.data$flux), .by = c("species", "met")) |>
-    dplyr::rename(produced = "met")
+    filter(.data$flux > 0) |>
+    reframe(flux = sum(.data$flux), .by = c("species", "met")) |>
+    rename(produced = "met")
 
   out <- cons |>
-    ### Need to double check the logic with alberto
-    dplyr::inner_join(
+    inner_join(
       prod,
       by = "species",
       suffix = c("_cons", "_prod"),
       relationship = "many-to-many"
     ) |>
-    tidyr::nest(data = c("species", "flux_cons", "flux_prod")) |>
-    dplyr::mutate(
-      n_species = purrr::map_dbl(.data$data, \(x) nrow(x)),
+    nest(data = c("species", "flux_cons", "flux_prod")) |>
+    mutate(
+      n_species = map_dbl(.data$data, \(x) nrow(x)),
 
       # Get the sum of the fluxes
-      c_sum = purrr::map_dbl(.data$data, \(x) sum(x$flux_cons)),
-      p_sum = purrr::map_dbl(.data$data, \(x) sum(x$flux_prod)),
+      c_sum = map_dbl(.data$data, \(x) sum(x$flux_cons)),
+      p_sum = map_dbl(.data$data, \(x) sum(x$flux_prod)),
 
-      c_prob = purrr::map(.data$data, \(x) x$flux_cons / sum(x$flux_cons)),
-      p_prob = purrr::map(.data$data, \(x) x$flux_prod / sum(x$flux_prod)),
+      # Calc the probability of the fluxes
+      c_prob = map(.data$data, \(x) x$flux_cons / sum(x$flux_cons)),
+      p_prob = map(.data$data, \(x) x$flux_prod / sum(x$flux_prod)),
 
-      c_eff = purrr::map_dbl(
-        .data$c_prob,
-        \(x) round(2**(-sum(x * log2(x))), 2)
-      ),
-      p_eff = purrr::map_dbl(
-        .data$p_prob,
-        \(x) round(2**(-sum(x * log2(x))), 2)
-      )
+      # Calc the effective fluxes
+      c_eff = map_dbl(.data$c_prob, \(x) round(2**(-sum(x * log2(x))), 2)),
+      p_eff = map_dbl(.data$p_prob, \(x) round(2**(-sum(x * log2(x))), 2))
     ) |>
     # Replace with the indeces for the metabolites
-    dplyr::left_join(mets, by = c(consumed = "met")) |>
-    dplyr::rename(c_ind = "index") |>
-    dplyr::left_join(mets, by = c(produced = "met")) |>
-    dplyr::rename(p_ind = "index")
+    left_join(mets, by = c(consumed = "met")) |>
+    rename(c_ind = "index") |>
+    left_join(mets, by = c(produced = "met")) |>
+    rename(p_ind = "index")
 
   assays <- list(
     Binary = sparseMatrix(out$c_ind, out$p_ind, x = 1),
@@ -112,9 +105,11 @@ ConsortiumMetabolism <- function(
     EffectiveConsumption = sparseMatrix(out$c_ind, out$p_ind, x = out$c_eff),
     EffectiveProduction = sparseMatrix(out$c_ind, out$p_ind, x = out$p_eff)
   )
+
   ### How to properly deal with col data?
   tse <- TreeSummarizedExperiment(
     assays = assays,
+    ### Why is rowData not working?
     rowData = mets,
     colData = mets
   )
@@ -129,7 +124,7 @@ ConsortiumMetabolism <- function(
   newConsortiumMetabolism(
     tse,
     Name = name,
-    Edges = list(),
+    Edges = out,
     Weighted = weighted,
     InputData = data,
     Metabolites = unique(data$met),

@@ -1,5 +1,5 @@
 .Rproj.user
-dev/archive/
+dev/
 .DS_Store
 inst/doc
 ramen.Rproj
@@ -8,5 +8,4 @@ docs
 /Meta/
 .RData
 .Rhistory
-
 .RDataTmp
