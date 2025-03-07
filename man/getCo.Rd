@@ -3,7 +3,7 @@
 \name{getCo}
 \alias{getCo}
 \alias{getCo,ConsortiumMetabolism-method}
-\title{Get the Community}
+\title{Get the Consortia}
 \usage{
 getCo(object)
 
@@ -16,9 +16,10 @@ getCo(object)
 A list with the community data.
 }
 \description{
-Returns the community of a single \code{ConsortiumMetabolism} object in a \
-tibble format or a list of communities in tibble format for
-\code{ConsortiumMetabolismAlignment} objects.
+Returns the consortia of a single \code{ConsortiumMetabolism} object in a
+\code{tibble} format or a list of consortias in \code{tibble} format for
+\code{ConsortiumMetabolismSet} and \code{ConsortiumMetabolismAlignment}
+objects.
 }
 \section{Methods (by class)}{
 \itemize{

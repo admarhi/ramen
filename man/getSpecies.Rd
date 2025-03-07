@@ -4,7 +4,7 @@
 \alias{getSpecies}
 \alias{getSpecies,ConsortiumMetabolism-method}
 \alias{getSpecies,ConsortiumMetabolismAlignment-method}
-\title{Return Species in a Microbiome}
+\title{Return Species in a Consortium}
 \usage{
 getSpecies(object)
 
@@ -21,7 +21,7 @@ A character vector representing the microorganisms.
 A character vector representing the microorganisms.
 }
 \description{
-Return Species in a Microbiome
+Return Species in a Consortium
 }
 \section{Methods (by class)}{
 \itemize{
