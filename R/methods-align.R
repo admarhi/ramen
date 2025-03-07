@@ -43,7 +43,7 @@ setMethod("align", "ConsortiumMetabolismSet", function(object) {
   graph_list <- purrr::map(
     .x = unique(all_edges$name),
     .f = \(.n)
-      x |>
+      all_edges |>
         dplyr::filter(.data$name == .n) |>
         dplyr::select(14:15) |>
         igraph::graph_from_data_frame(directed = TRUE)
@@ -51,7 +51,7 @@ setMethod("align", "ConsortiumMetabolismSet", function(object) {
     purrr::set_names(nm = unique(all_edges$name))
 
   newConsortiumMetabolismAlignment(
-    tse = TreeSummarizedExperiment(
+    TreeSummarizedExperiment(
       assays = list(Levels = n_edges_mat)
     ),
     Name = object@Name,
