@@ -1,74 +1,141 @@
-#' @title Functional Microbiome Representation based on
-#' \code{TreeSummarizedExperiment}
+#' @title Functional Microbiome Representation based on TreeSummarizedExperiment
 #'
-#' @param data a DataFrame-like object that includes columns specfiying
+#' @description Creates a ConsortiumMetabolism object representing metabolic interactions
+#' in a microbial community. The object contains information about metabolite consumption
+#' and production by different species, along with various metrics like flux sums and
+#' effective fluxes.
+#'
+#' @param data a DataFrame-like object that includes columns specifying
 #' the species, metabolites and fluxes in the microbiome. The fluxes can
 #' either be weighted or unweighted (all of magnitude 1).
 #' @param name a character scalar specifying the name of the Microbiome
-#' @param species_col Character scalar specfiying the name of the species
-#' column, defaults to 'spec'.
+#' @param species_col Character scalar specifying the name of the species
+#' column, defaults to 'species'.
 #' @param metabolite_col Character scalar specifying the name of the metabolite
 #' column, defaults to 'met'.
 #' @param flux_col Character scalar specifying the name of the flux column,
 #' defaults to 'flux'.
 #' @param ... Additional arguments to be passed to the constructor.
 #'
+#' @return A ConsortiumMetabolism object containing:
+#' \itemize{
+#'   \item Assays for binary interactions, edge counts, consumption/production metrics
+#'   \item Row and column data about metabolites
+#'   \item Graph representation of the metabolic network
+#'   \item Original input data and computed edge information
+#' }
+#'
 #' @export
 #'
 #' @importFrom SummarizedExperiment metadata<-
 #' @importFrom TreeSummarizedExperiment TreeSummarizedExperiment
 ConsortiumMetabolism <- function(
-  data,
-  name = NA_character_,
-  species_col = "species",
-  metabolite_col = "met",
-  flux_col = "flux",
-  ...
+    data,
+    name = NA_character_,
+    species_col = "species",
+    metabolite_col = "met", 
+    flux_col = "flux",
+    ...
 ) {
-  ### Include checkfor all columns and use str_detect
-  ### Build the renaming of the columns
+  # Validate and prepare input data
+  data <- prepare_input_data(data, species_col, metabolite_col, flux_col)
+  
+  # Create metabolite index mapping
+  mets <- create_metabolite_index(data)
+  
+  # Process flux data into consumption and production
+  tb <- filter_nonzero_flux(data)
+  cons <- calculate_consumption(tb)
+  prod <- calculate_production(tb)
+  
+  # Create edge data with metrics
+  out <- create_edge_data(cons, prod, mets)
+  
+  # Generate assay matrices
+  assays <- create_assay_matrices(out)
+  
+  # Create TreeSummarizedExperiment object
+  tse <- TreeSummarizedExperiment(
+    assays = assays,
+    rowData = mets,
+    colData = mets
+  )
+  
+  # Create graph representation
+  graphs <- list(
+    igraph::graph_from_adjacency_matrix(
+      adjmatrix = assays$Binary,
+      mode = "directed"
+    )
+  )
+  
+  # Return final ConsortiumMetabolism object
+  newConsortiumMetabolism(
+    tse,
+    Name = name,
+    Edges = out,
+    Weighted = !all(data$flux**2 == 1),
+    InputData = data,
+    Metabolites = unique(data$met),
+    Graphs = graphs
+  )
+}
 
+#' Prepare and validate input data
+#' @noRd
+prepare_input_data <- function(data, species_col, metabolite_col, flux_col) {
   data <- data |>
     rename(
       species = {{ species_col }},
       met = {{ metabolite_col }},
       flux = {{ flux_col }}
     )
-
+  
   stopifnot(exprs = {
     all(c("species", "met", "flux") %in% names(data))
   })
+  
+  return(data)
+}
 
-  # Determine whether or not the fluxes are weighted or not
-  weighted <- !all(data$flux**2 == 1)
-
-  # if (!weighted) assays <- list(Binary = bin_mat, nEdges = n_edges)
-
-  mets <- tibble(
+#' Create metabolite index mapping
+#' @noRd
+create_metabolite_index <- function(data) {
+  tibble(
     met = sort(unique(data$met)),
     index = seq_len(length(unique(data$met)))
   )
+}
 
-  tb <- data |>
-    # Ensure that no zero values are included
-    filter(.data$flux != 0) # |>
-  # recode the species names
-  # left_join(species, by = "species") |>
-  # select(-"species", species = "species_code")
+#' Filter out zero flux values
+#' @noRd
+filter_nonzero_flux <- function(data) {
+  data |> filter(.data$flux != 0)
+}
 
-  ### Check if any rows have flux == 0
-  cons <- tb |>
+#' Calculate consumption metrics
+#' @noRd
+calculate_consumption <- function(tb) {
+  tb |>
     filter(.data$flux < 0) |>
     mutate(flux = .data$flux * -1) |>
     reframe(flux = sum(.data$flux), .by = c("species", "met")) |>
     rename(consumed = "met")
+}
 
-  prod <- tb |>
+#' Calculate production metrics
+#' @noRd
+calculate_production <- function(tb) {
+  tb |>
     filter(.data$flux > 0) |>
     reframe(flux = sum(.data$flux), .by = c("species", "met")) |>
     rename(produced = "met")
+}
 
-  out <- cons |>
+#' Create edge data with all metrics
+#' @noRd
+create_edge_data <- function(cons, prod, mets) {
+  cons |>
     inner_join(
       prod,
       by = "species",
@@ -78,56 +145,28 @@ ConsortiumMetabolism <- function(
     nest(data = c("species", "flux_cons", "flux_prod")) |>
     mutate(
       n_species = map_dbl(.data$data, \(x) nrow(x)),
-
-      # Get the sum of the fluxes
       c_sum = map_dbl(.data$data, \(x) sum(x$flux_cons)),
       p_sum = map_dbl(.data$data, \(x) sum(x$flux_prod)),
-
-      # Calc the probability of the fluxes
       c_prob = map(.data$data, \(x) x$flux_cons / sum(x$flux_cons)),
       p_prob = map(.data$data, \(x) x$flux_prod / sum(x$flux_prod)),
-
-      # Calc the effective fluxes
       c_eff = map_dbl(.data$c_prob, \(x) round(2**(-sum(x * log2(x))), 2)),
       p_eff = map_dbl(.data$p_prob, \(x) round(2**(-sum(x * log2(x))), 2))
     ) |>
-    # Replace with the indeces for the metabolites
     left_join(mets, by = c(consumed = "met")) |>
     rename(c_ind = "index") |>
     left_join(mets, by = c(produced = "met")) |>
     rename(p_ind = "index")
+}
 
-  assays <- list(
+#' Create assay matrices
+#' @noRd
+create_assay_matrices <- function(out) {
+  list(
     Binary = sparseMatrix(out$c_ind, out$p_ind, x = 1),
     nEdges = sparseMatrix(out$c_ind, out$p_ind, x = out$n_species),
     Consumption = sparseMatrix(out$c_ind, out$p_ind, x = out$c_sum),
     Production = sparseMatrix(out$c_ind, out$p_ind, x = out$p_sum),
     EffectiveConsumption = sparseMatrix(out$c_ind, out$p_ind, x = out$c_eff),
     EffectiveProduction = sparseMatrix(out$c_ind, out$p_ind, x = out$p_eff)
-  )
-
-  ### How to properly deal with col data?
-  tse <- TreeSummarizedExperiment(
-    assays = assays,
-    ### Why is rowData not working?
-    rowData = mets,
-    colData = mets
-  )
-
-  graphs <- list(
-    igraph::graph_from_adjacency_matrix(
-      adjmatrix = assays$Binary,
-      mode = "directed"
-    )
-  )
-
-  newConsortiumMetabolism(
-    tse,
-    Name = name,
-    Edges = out,
-    Weighted = weighted,
-    InputData = data,
-    Metabolites = unique(data$met),
-    Graphs = graphs
   )
 }

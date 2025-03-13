@@ -33,15 +33,15 @@
 #'   flux = "flux"
 #' )
 pivotCM <- function(tb, species, from, to, flux) {
-  tb %>%
-    pivot_longer(cols = c(from, to)) %>%
+  tb |>
+    pivot_longer(cols = c(from, to)) |>
     rename(
       met = "value",
       species = {{ species }},
       flux = {{ flux }}
-    ) %>%
+    ) |>
     mutate(
       flux = if_else(.data$name == from, .data$flux * -1, .data$flux)
-    ) %>%
+    ) |>
     select("species", "met", "flux")
 }
