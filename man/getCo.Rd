@@ -13,13 +13,14 @@ getCo(object)
 \item{object}{An object of class \code{ConsortiumMetabolism}}
 }
 \value{
+For \code{ConsortiumMetabolism} objects, returns a tibble with species,
+metabolite and flux information. For \code{ConsortiumMetabolismSet} and
+\code{ConsortiumMetabolismAlignment} objects, returns a list of such tibbles.
+
 A list with the community data.
 }
 \description{
-Returns the consortia of a single \code{ConsortiumMetabolism} object in a
-\code{tibble} format or a list of consortias in \code{tibble} format for
-\code{ConsortiumMetabolismSet} and \code{ConsortiumMetabolismAlignment}
-objects.
+Returns the consortia data in a tabular format.
 }
 \section{Methods (by class)}{
 \itemize{

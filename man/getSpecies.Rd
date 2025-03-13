@@ -16,6 +16,8 @@ getSpecies(object)
 \item{object}{a \code{ConsortiumMetabolismAlignment} Object}
 }
 \value{
+A character vector containing the names of species in the consortium
+
 A character vector representing the microorganisms.
 
 A character vector representing the microorganisms.

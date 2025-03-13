@@ -13,10 +13,14 @@ modify(object)
 \item{object}{An object of class \code{ConsortiumMetabolismSet}}
 }
 \value{
+A modified \code{ConsortiumMetabolismSet} object
+
 The modified \code{ConsortiumMetabolismSet} object.
 }
 \description{
-To be used to remove or add \code{ConsortiumMetabolism} object to or from a
+Modifies a \code{ConsortiumMetabolismSet} by adding or removing
+\code{ConsortiumMetabolism} objects. This allows for dynamic updating of
+consortium sets for comparative analyses.
 }
 \section{Methods (by class)}{
 \itemize{

@@ -10,13 +10,19 @@ getEdges(object)
 \S4method{getEdges}{ConsortiumMetabolism}(object)
 }
 \arguments{
-\item{object}{a \code{ConsortiumMetabolism} object}
+\item{object}{A \code{ConsortiumMetabolism} object}
 }
 \value{
-A list of edges in the community.
+A tibble containing edge information including:
+\itemize{
+\item consumed/produced metabolites
+\item number of species involved
+\item consumption/production sums
+\item effective consumption/production metrics
+}
 }
 \description{
-Get Edges From a \code{ConsortiumMetabolism} Object
+Retrieves the edges representing metabolic interactions between species.
 }
 \section{Methods (by class)}{
 \itemize{

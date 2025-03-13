@@ -2,8 +2,7 @@
 % Please edit documentation in R/ConsortiumMetabolism.R
 \name{ConsortiumMetabolism}
 \alias{ConsortiumMetabolism}
-\title{Functional Microbiome Representation based on
-\code{TreeSummarizedExperiment}}
+\title{Functional Microbiome Representation based on TreeSummarizedExperiment}
 \usage{
 ConsortiumMetabolism(
   data,
@@ -15,14 +14,14 @@ ConsortiumMetabolism(
 )
 }
 \arguments{
-\item{data}{a DataFrame-like object that includes columns specfiying
+\item{data}{a DataFrame-like object that includes columns specifying
 the species, metabolites and fluxes in the microbiome. The fluxes can
 either be weighted or unweighted (all of magnitude 1).}
 
 \item{name}{a character scalar specifying the name of the Microbiome}
 
-\item{species_col}{Character scalar specfiying the name of the species
-column, defaults to 'spec'.}
+\item{species_col}{Character scalar specifying the name of the species
+column, defaults to 'species'.}
 
 \item{metabolite_col}{Character scalar specifying the name of the metabolite
 column, defaults to 'met'.}
@@ -32,7 +31,18 @@ defaults to 'flux'.}
 
 \item{...}{Additional arguments to be passed to the constructor.}
 }
+\value{
+A ConsortiumMetabolism object containing:
+\itemize{
+\item Assays for binary interactions, edge counts, consumption/production metrics
+\item Row and column data about metabolites
+\item Graph representation of the metabolic network
+\item Original input data and computed edge information
+}
+}
 \description{
-Functional Microbiome Representation based on
-\code{TreeSummarizedExperiment}
+Creates a ConsortiumMetabolism object representing metabolic interactions
+in a microbial community. The object contains information about metabolite consumption
+and production by different species, along with various metrics like flux sums and
+effective fluxes.
 }

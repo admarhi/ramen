@@ -13,12 +13,12 @@ getMet(object)
 \S4method{getMet}{ConsortiumMetabolismAlignment}(object)
 }
 \arguments{
-\item{object}{a \code{ConsortiumMetabolism} or
+\item{object}{A \code{ConsortiumMetabolism} or
 \code{ConsortiumMetabolismAlignment} object}
 }
 \value{
-A character vector representing the metabolites.
+A character vector containing the names of metabolites in the network
 }
 \description{
-Get Metabolites
+Retrieves the metabolites involved in the metabolic network.
 }

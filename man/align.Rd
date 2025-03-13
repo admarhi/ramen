@@ -16,10 +16,14 @@ align(object)
 from the \code{ConsortiumMetabolismSet} object.}
 }
 \value{
+A \code{ConsortiumMetabolismAlignment} object containing the aligned
+metabolic networks and associated metrics
+
 A \code{ConsortiumMetabolismAlignment} object.
 }
 \description{
-A short description...
+Creates an alignment of multiple consortium metabolisms to identify common
+metabolic patterns and interactions across different communities.
 }
 \section{Methods (by class)}{
 \itemize{
