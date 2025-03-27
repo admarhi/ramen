@@ -13,8 +13,8 @@ ConsortiumMetabolismSet <- function(
   ### Include a by = NULL argument that allows the user to read a tibble with
   ### minimum 4 columns in which one gives the name of the consortia. These will
   ### then be used as the name of the consortia.
-
-  cons <- list(...)
+  args <- list(...)
+  cons <- unlist(args, recursive = FALSE, use.names = FALSE)
 
   # Check that all list entries are CM objects
   stopifnot(exprs = {

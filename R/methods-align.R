@@ -58,3 +58,32 @@ setMethod("align", "ConsortiumMetabolismSet", function(object) {
     Graphs = graph_list
   )
 })
+
+
+#' @export
+bin_mat_overlap <- function(cm1, cm2) {
+  # Retrieve the binary matrices
+  bm1 <- assays(cm1)$Binary
+  bm2 <- assays(cm2)$Binary
+
+  # Get the intersection of the metabolites
+  met <- intersect(cm1@Metabolites, cm2@Metabolites)
+
+  # Calculate the intersection
+  int <- bm1[met, met] * bm2[met, met]
+
+  # Calculate the overlap
+  sum(int) / min(sum(bm1), sum(bm2))
+}
+
+#' @export
+bin_mat_overlap2 <- function(bm1, bm2) {
+  # Get the intersection of the metabolites
+  met <- intersect(rownames(bm1), rownames(bm2))
+
+  # Calculate the intersection
+  int <- bm1[met, met] * bm2[met, met]
+
+  # Calculate the overlap
+  sum(int) / min(sum(bm1), sum(bm2))
+}

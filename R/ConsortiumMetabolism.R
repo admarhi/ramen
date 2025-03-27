@@ -30,37 +30,37 @@
 #' @importFrom SummarizedExperiment metadata<-
 #' @importFrom TreeSummarizedExperiment TreeSummarizedExperiment
 ConsortiumMetabolism <- function(
-    data,
-    name = NA_character_,
-    species_col = "species",
-    metabolite_col = "met", 
-    flux_col = "flux",
-    ...
+  data,
+  name = NA_character_,
+  species_col = "species",
+  metabolite_col = "met",
+  flux_col = "flux",
+  ...
 ) {
   # Validate and prepare input data
   data <- prepare_input_data(data, species_col, metabolite_col, flux_col)
-  
+
   # Create metabolite index mapping
   mets <- create_metabolite_index(data)
-  
+
   # Process flux data into consumption and production
   tb <- filter_nonzero_flux(data)
   cons <- calculate_consumption(tb)
   prod <- calculate_production(tb)
-  
+
   # Create edge data with metrics
   out <- create_edge_data(cons, prod, mets)
-  
+
   # Generate assay matrices
-  assays <- create_assay_matrices(out)
-  
+  assays <- create_assay_matrices(out, mets)
+
   # Create TreeSummarizedExperiment object
   tse <- TreeSummarizedExperiment(
     assays = assays,
     rowData = mets,
     colData = mets
   )
-  
+
   # Create graph representation
   graphs <- list(
     igraph::graph_from_adjacency_matrix(
@@ -68,7 +68,7 @@ ConsortiumMetabolism <- function(
       mode = "directed"
     )
   )
-  
+
   # Return final ConsortiumMetabolism object
   newConsortiumMetabolism(
     tse,
@@ -84,33 +84,29 @@ ConsortiumMetabolism <- function(
 #' Prepare and validate input data
 #' @noRd
 prepare_input_data <- function(data, species_col, metabolite_col, flux_col) {
-  data <- data |>
+  stopifnot(exprs = {
+    all(c(species_col, metabolite_col, flux_col) %in% names(data))
+  })
+
+  data |>
     rename(
       species = {{ species_col }},
       met = {{ metabolite_col }},
       flux = {{ flux_col }}
     )
-  
-  stopifnot(exprs = {
-    all(c("species", "met", "flux") %in% names(data))
-  })
-  
-  return(data)
 }
 
 #' Create metabolite index mapping
 #' @noRd
 create_metabolite_index <- function(data) {
-  tibble(
-    met = sort(unique(data$met)),
-    index = seq_len(length(unique(data$met)))
-  )
+  tibble(met = sort(unique(data$met))) |>
+    tibble::rowid_to_column(var = "index")
 }
 
 #' Filter out zero flux values
 #' @noRd
 filter_nonzero_flux <- function(data) {
-  data |> filter(.data$flux != 0)
+  filter(data, .data$flux != 0)
 }
 
 #' Calculate consumption metrics
@@ -160,13 +156,52 @@ create_edge_data <- function(cons, prod, mets) {
 
 #' Create assay matrices
 #' @noRd
-create_assay_matrices <- function(out) {
+create_assay_matrices <- function(out, mets) {
+  # Create the dimnames
+  dimnames <- list(mets$met, mets$met)
+  n <- nrow(mets)
   list(
-    Binary = sparseMatrix(out$c_ind, out$p_ind, x = 1),
-    nEdges = sparseMatrix(out$c_ind, out$p_ind, x = out$n_species),
-    Consumption = sparseMatrix(out$c_ind, out$p_ind, x = out$c_sum),
-    Production = sparseMatrix(out$c_ind, out$p_ind, x = out$p_sum),
-    EffectiveConsumption = sparseMatrix(out$c_ind, out$p_ind, x = out$c_eff),
-    EffectiveProduction = sparseMatrix(out$c_ind, out$p_ind, x = out$p_eff)
+    Binary = sparseMatrix(
+      out$c_ind,
+      out$p_ind,
+      x = 1,
+      dims = c(n, n),
+      dimnames = dimnames
+    ),
+    nEdges = sparseMatrix(
+      out$c_ind,
+      out$p_ind,
+      x = out$n_species,
+      dims = c(n, n),
+      dimnames = dimnames
+    ),
+    Consumption = sparseMatrix(
+      out$c_ind,
+      out$p_ind,
+      x = out$c_sum,
+      dims = c(n, n),
+      dimnames = dimnames
+    ),
+    Production = sparseMatrix(
+      out$c_ind,
+      out$p_ind,
+      x = out$p_sum,
+      dims = c(n, n),
+      dimnames = dimnames
+    ),
+    EffectiveConsumption = sparseMatrix(
+      out$c_ind,
+      out$p_ind,
+      x = out$c_eff,
+      dims = c(n, n),
+      dimnames = dimnames
+    ),
+    EffectiveProduction = sparseMatrix(
+      out$c_ind,
+      out$p_ind,
+      x = out$p_eff,
+      dims = c(n, n),
+      dimnames = dimnames
+    )
   )
 }
