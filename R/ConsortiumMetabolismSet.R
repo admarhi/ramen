@@ -66,3 +66,15 @@ ConsortiumMetabolismSet <- function(
 
 #' @noRd
 cms <- ConsortiumMetabolismSet
+
+#' @noRd
+bin_mat_overlap <- function(bm1, bm2) {
+  # Get the intersection of the metabolites
+  met <- intersect(rownames(bm1), rownames(bm2))
+
+  # Calculate the intersection
+  int <- bm1[met, met] * bm2[met, met]
+
+  # Calculate the overlap
+  sum(int) / min(sum(bm1), sum(bm2))
+}
