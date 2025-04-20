@@ -3,7 +3,6 @@
 export(ConsortiumMetabolism)
 export(ConsortiumMetabolismSet)
 export(align)
-export(bin_mat_overlap)
 export(cluster)
 export(compareAlignments)
 export(getCluster)
