@@ -21,10 +21,46 @@ ConsortiumMetabolismSet <- function(
     all(lapply(cons, class) == "ConsortiumMetabolism")
   })
 
+  # Get binary matrices in a tibble to create the combinations
+  bm_tb <- purrr::set_names(
+    purrr::map(cons, \(x) assays(x)$Binary),
+    purrr::map_chr(cons, \(x) x@Name)
+  ) |>
+    tibble::enframe() |>
+    tibble::rowid_to_column("ind")
+
+  # Create unique combinations of the consortia to reduce computation time
+  tb <- tidyr::expand_grid(x = bm_tb$ind, y = bm_tb$ind) |>
+    dplyr::filter(x <= y) |>
+    dplyr::left_join(bm_tb, by = c("x" = "ind")) |>
+    dplyr::left_join(bm_tb, by = c("y" = "ind")) |>
+    dplyr::select(
+      x,
+      name_x = "name.x",
+      cm_x = "value.x",
+      y,
+      name_y = "name.y",
+      cm_y = "value.y"
+    ) |>
+    dplyr::rowwise() |>
+    # Calculate the overlap score for all combinations
+    dplyr::mutate(overlap_score = bin_mat_overlap(.data$cm_x, .data$cm_y))
+
+  # Create sparse matrix because not all combinations exist
+  overlap_matrix <- Matrix::sparseMatrix(
+    tb$x,
+    tb$y,
+    x = tb$overlap_score,
+    dimnames = list(bm_tb$name, bm_tb$name)
+  ) |>
+    # Convert to dense matrix so we can use it for dendrogram
+    Matrix::as.matrix()
+
   newConsortiumMetabolismSet(
     Name = name,
     Consortia = cons,
-    Description = desc
+    Description = desc,
+    OverlapMatrix = overlap_matrix
   )
 }
 

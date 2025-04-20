@@ -49,7 +49,7 @@ setGeneric("getCo", function(object) standardGeneric("getCo"))
 #'
 #' @description
 #' Creates an alignment of multiple consortium metabolisms to identify common
-#' metabolic patterns and interactions across different communities. 
+#' metabolic patterns and interactions across different communities.
 #'
 #' @param object A \code{ConsortiumMetabolismSet} object containing multiple
 #' consortium metabolisms to align
@@ -69,3 +69,35 @@ setGeneric("align", function(object) standardGeneric("align"))
 #' @return A modified \code{ConsortiumMetabolismSet} object
 #' @export
 setGeneric("modify", function(object) standardGeneric("modify"))
+
+
+### Improve the documentation for the methods below
+
+#' @title Cluster a \code{ConsortiaMetabolismSet} Object
+#'
+#' @description
+#' Modifies a \code{ConsortiumMetabolismSet} by clustering the binary matrices
+#' and storing the result to the object.
+#'
+#' @param object A \code{ConsortiumMetabolismSet} object to modify
+#' @return A modified \code{ConsortiumMetabolismSet} object
+#' @export
+setGeneric("cluster", function(object) standardGeneric("cluster"))
+
+#' @title Get a cluster from a \code{ConsortiaMetabolismSet} Object
+#'
+#' @description
+#' Gets a cluster from a \code{ConsortiumMetabolismSet} object.
+#'
+#' @param object A \code{ConsortiumMetabolismSet} object
+#' @param node_id Numeric scalar giving the node to be extracted.
+#' @param name Character scalar specifying a name for the selection.
+#' @param description Character scalar describing the selection.
+#'
+#' @return A cluster from a \code{ConsortiumMetabolismSet} object
+#' @export
+setGeneric(
+  "getCluster",
+  function(object, node_id, name = NA_character_, description = NA_character_)
+    standardGeneric("getCluster")
+)

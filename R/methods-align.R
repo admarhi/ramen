@@ -5,17 +5,37 @@
 #' @return A \code{ConsortiumMetabolismAlignment} object.
 #' @export
 setMethod("align", "ConsortiumMetabolismSet", function(object) {
-  # Make a tibble with new indeces for all metabolites (might not be needed)
-  all_met <- purrr::map(object@Consortia, \(x) tibble::as_tibble(x@colData)) |>
-    purrr::reduce(\(x, y) dplyr::full_join(x, y, by = "met")) |>
-    dplyr::rename_with(
-      .fn = \(x) paste0("cm_", cons_ind$index),
-      .cols = dplyr::starts_with("index")
-    ) |>
+  cli::cli_h1(paste0("Aligning ", object@Name))
+
+  cli::cli_status("Getting metabolites")
+  # Get indeces of met in each consortium for re-indexing
+  all_met <- purrr::map2(
+    .x = purrr::map(object@Consortia, \(x) tibble::as_tibble(x@colData)),
+    .y = purrr::map_chr(object@Consortia, \(x) x@Name),
+    .f = \(x, y) dplyr::mutate(x, consortium = y)
+  ) |>
+    purrr::reduce(\(x, y) dplyr::bind_rows(x, y)) |>
+    dplyr::rename(consortium_ind = "index")
+  cli::cli_process_done()
+  cli::cli_status("Re-indexing metabolites")
+
+  # Re-index all metabolites
+  new_met_ind <- tibble::tibble(met = unique(all_met$met)) |>
     dplyr::arrange(.data$met, .locale = "C") |>
-    dplyr::relocate("met") |>
     tibble::rowid_to_column("met_ind")
 
+  # Join the new indeces
+  all_met <- all_met |>
+    dplyr::left_join(new_met_ind, by = "met") |>
+    dplyr::relocate("met_ind", "met", "consortium") |>
+    # Still need the wide format here to join into the all_edges tibble
+    tidyr::pivot_wider(
+      names_from = "consortium",
+      values_from = "consortium_ind"
+    ) |>
+    dplyr::arrange(.data$met_ind)
+  cli::cli_process_done()
+  cli::cli_status("Getting all edges")
   # Retrieve the edges tibbles from all objects and bind the new indeces for met
   all_edges <-
     purrr::map(object@Consortia, \(x) dplyr::mutate(x@Edges, name = x@Name)) |>
@@ -24,55 +44,37 @@ setMethod("align", "ConsortiumMetabolismSet", function(object) {
     dplyr::rename(c_ind_alig = "met_ind") |>
     dplyr::left_join(dplyr::select(all_met, 1:2), by = c(produced = "met")) |>
     dplyr::rename(p_ind_alig = "met_ind")
-
+  cli::cli_process_done()
+  cli::cli_status("Counting consortia for each edge")
   # Count the number of consortia for each edge
-  n_edges <- all_edges |>
+  n_cons <- all_edges |>
     dplyr::select(13:15) |>
     dplyr::reframe(n = dplyr::n(), .by = c("c_ind_alig", "p_ind_alig"))
 
   # Make a matrix to create graphs
-  n_edges_mat <-
-    sparseMatrix(n_edges$c_ind_alig, n_edges$p_ind_alig, x = n_edges$n)
+  levels_mat <-
+    sparseMatrix(n_cons$c_ind_alig, n_cons$p_ind_alig, x = n_cons$n)
+  cli::cli_process_done()
+  cli::cli_status("Getting all graphs")
+  # Store the graphs in a named list to enable the graph based alignment
+  graph_list <- purrr::set_names(
+    purrr::map(object@Consortia, \(x) x@Graphs[[1]]),
+    nm = purrr::map_chr(object@Consortia, \(x) x@Name)
+  )
+  cli::cli_process_done()
 
-  ### Review this
-  graph_list <- purrr::map(
-    .x = unique(all_edges$name),
-    .f = \(.n)
-      all_edges |>
-        dplyr::filter(.data$name == .n) |>
-        dplyr::select(1:2) |>
-        igraph::graph_from_data_frame(directed = TRUE)
-  ) |>
-    purrr::set_names(nm = unique(all_edges$name))
-
-  # Get the consortia's binary matrices, could be method
-  mat_list <- purrr::map(comp_set@Consortia, \(x) assays(x)$Binary)
-
-  # Get vector from 1 to length of the list
-  ll <- seq_len(length(mat_list))
-
-  tb <- dplyr::bind_cols(
-    tidyr::expand_grid(cm1 = mat_list, cm2 = mat_list),
-    tidyr::expand_grid(x = ll, y = ll)
-  ) |>
-    dplyr::filter(x < y) |>
-    dplyr::rowwise() |>
-    dplyr::mutate(overlap_score = bin_mat_overlap(.data$cm1, .data$cm2))
-
-  mat <- sparseMatrix(tb$x, tb$y, x = tb$overlap_score) |>
-    Matrix::as.matrix()
-
-  dend <- mat |>
-    dist(method = "euclidean") |>
-    hclust(method = "complete") |>
-    as.dendrogram()
-
-  newConsortiumMetabolismAlignment(
-    TreeSummarizedExperiment(
-      assays = list(Levels = n_edges_mat)
-    ),
-    Name = object@Name,
-    Graphs = graph_list
+  invisible(
+    return(
+      newConsortiumMetabolismAlignment(
+        TreeSummarizedExperiment(
+          assays = list(Levels = levels_mat)
+        ),
+        Name = object@Name,
+        Graphs = graph_list,
+        Metabolites = all_met,
+        Dendrogram = list(dend)
+      )
+    )
   )
 })
 
