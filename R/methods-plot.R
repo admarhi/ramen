@@ -2,6 +2,28 @@ setMethod("plot", "ConsortiumMetabolism", function(x) {
   plot(x@Graphs[[1]])
 })
 
+setMethod("plot", "ConsortiumMetabolismSet", function(x) {
+  if (length(x@Dendrogram) == 0) stop("Not yet clustered!")
+  dend <- x@Dendrogram[[1]]
+  node_data <- x@NodeData
+
+  gg_dend <- as.ggdend(dend, type = "rectangle")
+
+  ggplot2::ggplot(gg_dend) +
+    ggplot2::geom_point(
+      data = node_data,
+      ggplot2::aes(x = x, y = y),
+      color = "red",
+      size = 7
+    ) +
+    ggplot2::geom_text(
+      data = node_data,
+      ggplot2::aes(x = x, y = y, label = node_id),
+      color = "white",
+      size = 4,
+      fontface = "bold"
+    )
+})
 
 setMethod("plot", "ConsortiumMetabolismAlignment", function(x, type = NULL) {
   # Plot network graph showing alignment of metabolisms
@@ -10,20 +32,20 @@ setMethod("plot", "ConsortiumMetabolismAlignment", function(x, type = NULL) {
     levels_mat <- assays(x)$Levels
     max_weight <- length(x@Graphs)
     levels_mat[levels_mat < max_weight] <- 0
-    
+
     # Create graph from adjacency matrix
     g <- igraph::graph_from_adjacency_matrix(
       levels_mat,
-      mode = "directed", 
+      mode = "directed",
       weighted = TRUE
     )
-    
+
     # Remove isolated vertices
     g <- igraph::delete_vertices(
       g,
       igraph::V(g)[igraph::degree(g) == 0]
     )
-    
+
     # Set edge visual properties
     edge_width <- igraph::E(g)$weight / max_weight * 4
     igraph::E(g)$width <- edge_width
@@ -34,18 +56,16 @@ setMethod("plot", "ConsortiumMetabolismAlignment", function(x, type = NULL) {
       g,
       layout = igraph::layout_with_fr(g),
       edge.curved = 0.5,
-      vertex.label.color = "black", 
+      vertex.label.color = "black",
       vertex.color = "lightblue",
       main = "Alignment of Consortia Metabolisms"
     )
-  }
-  # Plot Venn diagram of vertices
-  else if (type == "venn-vertex") {
+  } else if (type == "venn-vertex") {
+    # Plot Venn diagram of vertices
     vertex_list <- lapply(x@Graphs, igraph::V)
     ggVennDiagram::ggVennDiagram(vertex_list)
-  }
-  # Plot Venn diagram of edges  
-  else if (type == "venn-edge") {
+  } else if (type == "venn-edge") {
+    # Plot Venn diagram of edges
     edge_list <- lapply(x@Graphs, igraph::E)
     ggVennDiagram::ggVennDiagram(edge_list)
   }

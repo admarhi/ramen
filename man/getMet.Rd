@@ -3,12 +3,15 @@
 \name{getMet}
 \alias{getMet}
 \alias{getMet,ConsortiumMetabolism-method}
+\alias{getMet,ConsortiumMetabolismSet-method}
 \alias{getMet,ConsortiumMetabolismAlignment-method}
 \title{Get Metabolites}
 \usage{
 getMet(object)
 
 \S4method{getMet}{ConsortiumMetabolism}(object)
+
+\S4method{getMet}{ConsortiumMetabolismSet}(object)
 
 \S4method{getMet}{ConsortiumMetabolismAlignment}(object)
 }

@@ -21,7 +21,10 @@ newConsortiumMetabolismSet <- setClass(
   slots = list(
     Name = "character",
     Consortia = "list",
-    Description = "character"
+    Description = "character",
+    OverlapMatrix = "matrix",
+    Dendrogram = "list",
+    NodeData = "data.frame"
   ),
   prototype = list(
     Name = NA_character_,
@@ -41,6 +44,8 @@ newConsortiumMetabolismAlignment <- setClass(
     Alignment = "list",
     Communities = "list",
     Score = "data.frame",
-    Graphs = "list"
+    Graphs = "list",
+    Metabolites = "data.frame",
+    Dendrogram = "list"
   )
 )
