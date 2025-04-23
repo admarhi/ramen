@@ -50,17 +50,36 @@ ConsortiumMetabolismSet <- function(
   overlap_matrix <- Matrix::sparseMatrix(
     tb$x,
     tb$y,
-    x = tb$overlap_score,
+    x = 1 - tb$overlap_score,
     dimnames = list(bm_tb$name, bm_tb$name)
   ) |>
     # Convert to dense matrix so we can use it for dendrogram
     Matrix::as.matrix()
 
+  # Make the dendrogram
+  dend <-
+    dist(overlap_matrix) |>
+    hclust() |>
+    as.dendrogram()
+
+  # Get node positions in the dendrogram plot
+  node_data <- dendextend::get_nodes_xy(dend) |>
+    as.data.frame() |>
+    tibble::as_tibble() |>
+    dplyr::rename(x = "V1", y = "V2") |>
+    dplyr::mutate(original_node_id = dplyr::row_number()) |>
+    # Filter out leaves (which have y=0)
+    dplyr::filter(y != 0) |>
+    dplyr::arrange(dplyr::desc(.data$y)) |>
+    dplyr::mutate(node_id = dplyr::row_number())
+
   newConsortiumMetabolismSet(
     Name = name,
     Consortia = cons,
     Description = desc,
-    OverlapMatrix = overlap_matrix
+    OverlapMatrix = overlap_matrix,
+    Dendrogram = list(dend),
+    NodeData = node_data
   )
 }
 
