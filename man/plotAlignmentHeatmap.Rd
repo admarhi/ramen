@@ -4,7 +4,7 @@
 \alias{plotAlignmentHeatmap}
 \title{MiCoAl Heatmap}
 \usage{
-plotAlignmentHeatmap(object, frac)
+plotAlignmentHeatmap(object, top = NULL, bottom = NULL)
 }
 \arguments{
 \item{object}{An object of class MiCoAl.}
