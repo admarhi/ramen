@@ -10,7 +10,9 @@ setMethod(
     # Get the internal node id
     int_node_id <- tb$original_node_id[tb$node_id == node_id]
 
-    cons_names <- partition_leaves(object@Dendrogram[[1]])[[int_node_id]]
+    cons_names <- dendextend::partition_leaves(object@Dendrogram[[1]])[[
+      int_node_id
+    ]]
 
     selected_consortia <- purrr::set_names(
       object@Consortia,
@@ -18,10 +20,7 @@ setMethod(
     )[cons_names]
 
     if (is.na(name)) name <- paste0("Cluster ", node_id, " from ", object@Name)
-    newConsortiumMetabolismSet(
-      Name = name,
-      Consortia = selected_consortia,
-      OverlapMatrix = object@OverlapMatrix[cons_names, cons_names]
-    )
+
+    ConsortiumMetabolismSet(selected_consortia, name = name)
   }
 )
