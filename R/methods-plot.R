@@ -5,7 +5,7 @@ setMethod("plot", "ConsortiumMetabolism", function(x) {
     weighted = TRUE
   )
 
-  plot_directed_flow(
+  plotDirectedFlow(
     g,
     color_edges_by_weight = TRUE,
     edge_width_range = c(0.5, 1)
