@@ -18,7 +18,8 @@ setMethod("show", "ConsortiumMetabolism", function(object) {
 setMethod("show", "ConsortiumMetabolismSet", function(object) {
   stringr::str_glue(
     "\n{object@Name}: ConsortiumMetabolismSet Object\n",
-    "containing {length(object@Consortia)} consortia.\n\n"
+    "containing {length(object@Consortia)} consortia.\n",
+    "Description: {object@Description}\n\n"
   ) %>%
     cat()
 })

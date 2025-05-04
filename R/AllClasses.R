@@ -42,7 +42,8 @@ newConsortiumMetabolismAlignment <- setClass(
   slots = list(
     Name = "character",
     Alignment = "list",
-    Communities = "list",
+    Edges = "data.frame",
+    Consortia = "list",
     Score = "data.frame",
     Graphs = "list",
     Metabolites = "data.frame",
