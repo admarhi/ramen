@@ -1,5 +1,15 @@
 setMethod("plot", "ConsortiumMetabolism", function(x) {
-  plot(x@Graphs[[1]])
+  g <- graph_from_adjacency_matrix(
+    assays(x)$nEdges,
+    mode = "directed",
+    weighted = TRUE
+  )
+
+  plot_directed_flow(
+    g,
+    color_edges_by_weight = TRUE,
+    edge_width_range = c(0.5, 1)
+  )
 })
 
 setMethod("plot", "ConsortiumMetabolismSet", function(x) {
@@ -7,7 +17,7 @@ setMethod("plot", "ConsortiumMetabolismSet", function(x) {
   dend <- x@Dendrogram[[1]]
   node_data <- x@NodeData
 
-  gg_dend <- as.ggdend(dend, type = "rectangle")
+  gg_dend <- dendextend::as.ggdend(dend, type = "rectangle")
 
   ggplot2::ggplot(gg_dend) +
     ggplot2::geom_point(
@@ -31,7 +41,10 @@ setMethod("plot", "ConsortiumMetabolismAlignment", function(x, type = NULL) {
     # Get levels matrix and filter by max weight
     levels_mat <- assays(x)$Levels
     max_weight <- length(x@Graphs)
-    levels_mat[levels_mat < max_weight] <- 0
+    s
+    # levels_mat[levels_mat < max_weight] <- 0
+    colnames(levels_mat) <- SummarizedExperiment::colData(x)$met
+    rownames(levels_mat) <- SummarizedExperiment::colData(x)$met
 
     # Create graph from adjacency matrix
     g <- igraph::graph_from_adjacency_matrix(
@@ -47,18 +60,19 @@ setMethod("plot", "ConsortiumMetabolismAlignment", function(x, type = NULL) {
     )
 
     # Set edge visual properties
-    edge_width <- igraph::E(g)$weight / max_weight * 4
+    edge_width <- igraph::E(g)$weight / max_weight * 2
     igraph::E(g)$width <- edge_width
-    igraph::E(g)$arrow.size <- 0.5
+    igraph::E(g)$arrow.size <- 0.2
 
     # Plot the graph
     plot(
       g,
-      layout = igraph::layout_with_fr(g),
-      edge.curved = 0.5,
+      # layout = igraph::layout_with_dh(g),
+      # edge.curved = 0.5,
       vertex.label.color = "black",
       vertex.color = "lightblue",
-      main = "Alignment of Consortia Metabolisms"
+      vertex.size = 4
+      # main = "Alignment of Consortia Metabolisms"
     )
   } else if (type == "venn-vertex") {
     # Plot Venn diagram of vertices

@@ -5,19 +5,15 @@
 #'
 #' @return A ggplot heatmap
 #' @export
-plotAlignmentHeatmap <- function(object, frac) {
+plotAlignmentHeatmap <- function(object, top = NULL, bottom = NULL) {
   # Filter the adjacency matrix for desired levels for visualization.
-  levels_mat <- object@Alignment$levels_mat
-  max_weight <- length(object@Communities)
-  min_weight <- max_weight * frac
+  levels_mat <- assays(x)$Levels |> as.matrix()
+  max_weight <- length(object@Consortia)
 
-  levels_mat[levels_mat < min_weight] <- 0
+  colnames(levels_mat) <- SummarizedExperiment::colData(x)$met
+  rownames(levels_mat) <- SummarizedExperiment::colData(x)$met
 
-  if (min_weight > max(levels_mat)) {
-    return("No Alignment at this level.")
-  }
-
-  gg <- levels_mat %>%
+  tb <- levels_mat %>%
     tibble::as_tibble(rownames = "RowName") %>%
     tidyr::pivot_longer(
       cols = -"RowName",
@@ -27,8 +23,23 @@ plotAlignmentHeatmap <- function(object, frac) {
     dplyr::rename(
       met = "RowName",
       met2 = "ColName"
-    ) %>%
-    dplyr::filter(.data[["level"]] >= min_weight) %>%
+    )
+
+  if (!is.null(top) && !is.null(bottom)) stop("Only top or bottom fraction")
+  if (!is.null(top)) {
+    min_weight <- max_weight * top
+    if (min_weight > max(levels_mat)) {
+      return("No reactions present in this top fraction of consortia")
+    }
+    tb <- dplyr::filter(tb, .data$level >= min_weight)
+  }
+
+  if (!is.null(bottom)) {
+    max_weight <- max_weight * bottom
+    tb <- dplyr::filter(tb, .data$level <= max_weight)
+  }
+
+  gg <- tb %>%
     ggplot2::ggplot(
       ggplot2::aes(x = .data$met2, y = .data$met, fill = .data$level)
     ) +
