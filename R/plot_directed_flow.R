@@ -48,20 +48,21 @@
 #' @seealso \code{\link[igraph]{plot.igraph}},
 #'   \code{\link[igraph]{layout_with_fr}}, \code{\link{igraph}}
 #'
-plot_directed_flow <- function(
-    g,
-    source_x = 0,
-    mixed_x = 1,
-    sink_x = 2,
-    vertical_spacing = 1,
-    vertex_size = 10,
-    vertex_label_cex = 0.8,
-    edge_arrow_size = 0.5,
-    edge_width_range = c(0.1, 0.1),
-    color_edges_by_weight = FALSE,
-    edge_color_low = "gray80",
-    edge_color_high = "black",
-    ...) {
+plotDirectedFlow <- function(
+  g,
+  source_x = 0,
+  mixed_x = 1,
+  sink_x = 2,
+  vertical_spacing = 1,
+  vertex_size = 10,
+  vertex_label_cex = 0.8,
+  edge_arrow_size = 0.5,
+  edge_width_range = c(0.1, 0.1),
+  color_edges_by_weight = FALSE,
+  edge_color_low = "gray80",
+  edge_color_high = "black",
+  ...
+) {
   if (!igraph::is_directed(g)) stop("Graph must be directed.")
 
   # Compute degrees
