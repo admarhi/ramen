@@ -101,3 +101,42 @@ setGeneric(
   function(object, node_id, name = NA_character_, description = NA_character_)
     standardGeneric("getCluster")
 )
+
+
+#' @title Set Names or description of ramen Objects
+#'
+#' @description
+#' Sets a new name or description of \code{ConsortiumMetabolism},
+#' \code{ConsortiumMetabolismSet}, or \code{ConsortiumMetabolismAlignment}
+#' objects
+#'
+#' @param object A \code{ConsortiumMetabolism},
+#' \code{ConsortiumMetabolismSet}, or \code{ConsortiumMetabolismAlignment}
+#' object
+#' @param value Character scalar specifying a name.
+#'
+#' @return A cluster from a \code{ConsortiumMetabolismSet} object
+#' @export
+setGeneric(
+  "setName",
+  function(object, value = NA_character_) standardGeneric("setName")
+)
+
+#' @title Set Names or description of ramen Objects
+#'
+#' @description
+#' Sets a new name or description of \code{ConsortiumMetabolism},
+#' \code{ConsortiumMetabolismSet}, or \code{ConsortiumMetabolismAlignment}
+#' objects
+#'
+#' @param object A \code{ConsortiumMetabolism},
+#' \code{ConsortiumMetabolismSet}, or \code{ConsortiumMetabolismAlignment}
+#' object
+#' @param value Character scalar specifying a name.
+#'
+#' @return A cluster from a \code{ConsortiumMetabolismSet} object
+#' @export
+setGeneric(
+  "setDesc",
+  function(object, value = NA_character_) standardGeneric("setDesc")
+)
