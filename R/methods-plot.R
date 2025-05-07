@@ -41,7 +41,7 @@ setMethod("plot", "ConsortiumMetabolismAlignment", function(x, type = NULL) {
     # Get levels matrix and filter by max weight
     levels_mat <- assays(x)$Levels
     max_weight <- length(x@Graphs)
-    s
+
     # levels_mat[levels_mat < max_weight] <- 0
     colnames(levels_mat) <- SummarizedExperiment::colData(x)$met
     rownames(levels_mat) <- SummarizedExperiment::colData(x)$met

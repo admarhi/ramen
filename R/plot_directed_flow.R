@@ -79,7 +79,7 @@ plotDirectedFlow <- function(
   ## Layout for mixed nodes
   if (length(mixed) > 1) {
     subg <- igraph::induced_subgraph(g, vids = mixed)
-    mix_layout <- igraph::layout_with_fr(subg)
+    mix_layout <- igraph::layout_with_kk(subg)
 
     mix_layout[, 1] <- scales::rescale(
       mix_layout[, 1],

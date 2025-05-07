@@ -7,11 +7,11 @@
 #' @export
 plotAlignmentHeatmap <- function(object, top = NULL, bottom = NULL) {
   # Filter the adjacency matrix for desired levels for visualization.
-  levels_mat <- assays(x)$Levels |> as.matrix()
+  levels_mat <- assays(object)$Levels |> as.matrix()
   max_weight <- length(object@Consortia)
 
-  colnames(levels_mat) <- SummarizedExperiment::colData(x)$met
-  rownames(levels_mat) <- SummarizedExperiment::colData(x)$met
+  colnames(levels_mat) <- SummarizedExperiment::colData(object)$met
+  rownames(levels_mat) <- SummarizedExperiment::colData(object)$met
 
   tb <- levels_mat %>%
     tibble::as_tibble(rownames = "RowName") %>%
