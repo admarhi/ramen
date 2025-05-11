@@ -3,7 +3,7 @@
 #' @param object A \code{ConsortiumMetabolism} object
 #' @return A character vector containing the names of species in the consortium
 #' @export
-setGeneric("getSpecies", function(object) standardGeneric("getSpecies"))
+setGeneric("getSpecies", function(object, ...) standardGeneric("getSpecies"))
 
 #' @title Get Metabolites
 #'
@@ -30,7 +30,7 @@ setGeneric("getMet", function(object) standardGeneric("getMet"))
 #'   \item effective consumption/production metrics
 #' }
 #' @export
-setGeneric("getEdges", function(object) standardGeneric("getEdges"))
+setGeneric("getEdges", function(object, ...) standardGeneric("getEdges"))
 
 #' @title Get the Consortia
 #'
