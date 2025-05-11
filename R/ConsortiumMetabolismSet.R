@@ -10,28 +10,113 @@ ConsortiumMetabolismSet <- function(
   name = NA_character_,
   desc = NA_character_
 ) {
+  cli::cli_h1(paste0("Creating CMS: ", name))
+
+  # ---- Checking args ---------------------------------------------------------
   ### Include a by = NULL argument that allows the user to read a tibble with
   ### minimum 4 columns in which one gives the name of the consortia. These will
   ### then be used as the name of the consortia.
+  cli::cli_status("Checking arguments")
   args <- list(...)
   cons <- unlist(args, recursive = FALSE, use.names = FALSE)
-
-  # Check that all list entries are CM objects
   stopifnot(exprs = {
     all(lapply(cons, class) == "ConsortiumMetabolism")
   })
+  cli::cli_process_done()
 
-  # Get binary matrices in a tibble to create the combinations
+  # ---- Get all mets ----------------------------------------------------------
+  cli::cli_status("Getting metabolites")
+  # Get indeces of met in each consortium for re-indexing
+  all_met <- purrr::map2(
+    .x = purrr::map(cons, \(x) tibble::as_tibble(x@colData)),
+    .y = purrr::map_chr(cons, \(x) x@Name),
+    .f = \(x, y) dplyr::mutate(x, consortium = y)
+  ) |>
+    purrr::reduce(\(x, y) dplyr::bind_rows(x, y)) |>
+    dplyr::rename(consortium_ind = "index")
+  cli::cli_process_done()
+
+  # ---- Create new indeces for metabolites ------------------------------------
+  # Create an ordered tibble to re-index metabolites. This tibble can then be
+  # joined to the all_met tibble to get the new inds for c and p in each edge.
+  cli::cli_status("Re-indexing metabolites")
+  new_met_ind <- tibble::tibble(met = unique(all_met$met)) |>
+    dplyr::arrange(.data$met, .locale = "C") |>
+    tibble::rowid_to_column("met_ind")
+
+  # Join the new indeces to
+  all_met <- all_met |>
+    dplyr::left_join(new_met_ind, by = "met") |>
+    dplyr::relocate("met_ind", "met", "consortium") |>
+    # Still need the wide format here to join into the all_edges tibble
+    tidyr::pivot_wider(
+      names_from = "consortium",
+      values_from = "consortium_ind"
+    ) |>
+    dplyr::arrange(.data$met_ind)
+  cli::cli_process_done()
+
+  # ---- Get all edges ---------------------------------------------------------
+  # Retrieve the edges tibbles from all objects and bind the new indeces for met
+  cli::cli_status("Getting all edges")
+  all_edges <-
+    purrr::map(
+      cons,
+      \(x) dplyr::mutate(x@Edges, cm_name = x@Name)
+    ) |>
+    ### Use reduce and dplyr::bind_rows?
+    purrr::map_dfr(\(x) rbind(x)) |>
+    dplyr::left_join(dplyr::select(all_met, 1:2), by = c(consumed = "met")) |>
+    dplyr::rename(c_ind_alig = "met_ind") |>
+    dplyr::left_join(dplyr::select(all_met, 1:2), by = c(produced = "met")) |>
+    dplyr::rename(p_ind_alig = "met_ind") |>
+    tidyr::unnest("data") |>
+    tidyr::unnest("c_prob") |>
+    tidyr::unnest("p_prob")
+  cli::cli_process_done()
+
+  # ---- Levels Matrix ---------------------------------------------------------
+  # Count the number of consortia for each edge to allow easy creation of the
+  # levels matrix. This serves as the basis for visualisation and evaluation of
+  # the different levels of the alignment object later.
+  cli::cli_status("Counting consortia for each edge")
+  n_cons <- all_edges |>
+    dplyr::reframe(
+      n = dplyr::n_distinct(.data$cm_name),
+      .by = c("c_ind_alig", "p_ind_alig")
+    )
+  # Make a sparse matrix as not all edges exist, convert to dense for graph use.
+  levels_mat <- sparseMatrix(
+    n_cons$c_ind_alig,
+    n_cons$p_ind_alig,
+    x = n_cons$n,
+    dims = c(nrow(new_met_ind), nrow(new_met_ind)),
+    dimnames = list(new_met_ind$met, new_met_ind$met)
+  ) |>
+    Matrix::as.matrix()
+  cli::cli_process_done()
+
+  # ---- Getting binary matrices -----------------------------------------------
+  # Store the binary matrices in a tibble with the names and indeces. This is
+  # used to create only unique combinations between consortia in order to min
+  # computation time.
+  cli::cli_status("Getting binary matrices")
   bm_tb <- purrr::set_names(
     purrr::map(cons, \(x) assays(x)$Binary),
     purrr::map_chr(cons, \(x) x@Name)
   ) |>
+    ### Here I should have the reindexing step
     tibble::enframe() |>
     tibble::rowid_to_column("ind")
+  cli::cli_process_done()
 
-  # Create unique combinations of the consortia to reduce computation time
-  tb <- tidyr::expand_grid(x = bm_tb$ind, y = bm_tb$ind) |>
+  # ---- Overlap score ---------------------------------------------------------
+  cli::cli_status("Calculating overlap scores")
+  tb <-
+    # Create unique combinations of the consortia to reduce computation time
+    tidyr::expand_grid(x = bm_tb$ind, y = bm_tb$ind) |>
     dplyr::filter(x <= y) |>
+    # Left join the binary matrices by new index
     dplyr::left_join(bm_tb, by = c("x" = "ind")) |>
     dplyr::left_join(bm_tb, by = c("y" = "ind")) |>
     dplyr::select(
@@ -42,11 +127,21 @@ ConsortiumMetabolismSet <- function(
       name_y = "name.y",
       cm_y = "value.y"
     ) |>
-    dplyr::rowwise() |>
-    # Calculate the overlap score for all combinations
-    dplyr::mutate(overlap_score = bin_mat_overlap(.data$cm_x, .data$cm_y))
+    ### So if I had the metabolites matrices re-indexed here it would mean that
+    ### I can simply multiply them and don't need to rely on the helper function
+    ### Likely performance increase.
+    dplyr::mutate(
+      overlap_score = purrr::map2_dbl(
+        .data$cm_x,
+        .data$cm_y,
+        \(x, y) bin_mat_overlap(x, y),
+        .progress = TRUE
+      )
+    )
+  cli::cli_process_done()
 
   # Create sparse matrix because not all combinations exist
+  cli::cli_status("Create new edge matrix")
   overlap_matrix <- Matrix::sparseMatrix(
     tb$x,
     tb$y,
@@ -55,14 +150,21 @@ ConsortiumMetabolismSet <- function(
   ) |>
     # Convert to dense matrix so we can use it for dendrogram
     Matrix::as.matrix()
+  cli::cli_process_done()
 
+  # ---- Dendrogram ------------------------------------------------------------
   # Make the dendrogram
+  cli::cli_status("Creating dendrogram")
   dend <-
     dist(overlap_matrix) |>
     hclust() |>
     as.dendrogram()
+  cli::cli_process_done()
 
-  # Get node positions in the dendrogram plot
+  # ---- Dendrogram Node Data --------------------------------------------------
+  # Get node positions in the dendrogram and index without leaves s.t. they can
+  # be used later to retrieve individual clusters.
+  cli::cli_status("Calculating node data")
   node_data <- dendextend::get_nodes_xy(dend) |>
     as.data.frame() |>
     tibble::as_tibble() |>
@@ -72,14 +174,40 @@ ConsortiumMetabolismSet <- function(
     dplyr::filter(y != 0) |>
     dplyr::arrange(dplyr::desc(.data$y)) |>
     dplyr::mutate(node_id = dplyr::row_number())
+  cli::cli_process_done()
+
+  # ---- Graphs ----------------------------------------------------------------
+  # Store the graphs in a named list to enable the graph based alignment
+  cli::cli_status("Getting all graphs")
+  graph_list <- purrr::set_names(
+    purrr::map(cons, \(x) x@Graphs[[1]]),
+    nm = purrr::map_chr(cons, \(x) x@Name)
+  )
+  cli::cli_process_done()
+
+  # ---- Pathways --------------------------------------------------------------
+
+  # ---- cli -------------------------------------------------------------------
+  msg <- paste0("ConsortiumMetabolismSet '", name, "' successfully created.")
+  cli::cli_alert_success(msg)
+  d <- cli::cli_div(theme = list(rule = list(color = "cyan")))
+  cli::cli_rule()
+  cli::cli_end(d)
 
   newConsortiumMetabolismSet(
+    TreeSummarizedExperiment(
+      assays = list(Levels = levels_mat),
+      colData = new_met_ind
+    ),
     Name = name,
     Consortia = cons,
     Description = desc,
     OverlapMatrix = overlap_matrix,
     Dendrogram = list(dend),
-    NodeData = node_data
+    NodeData = node_data,
+    Graphs = graph_list,
+    Edges = all_edges,
+    Metabolites = all_met
   )
 }
 
