@@ -16,21 +16,26 @@ newConsortiumMetabolism <- setClass(
 
 #' @noRd
 #' @import methods
+#' @importClassesFrom TreeSummarizedExperiment TreeSummarizedExperiment
 newConsortiumMetabolismSet <- setClass(
   Class = "ConsortiumMetabolismSet",
+  contains = "TreeSummarizedExperiment",
   slots = list(
     Name = "character",
     Consortia = "list",
     Description = "character",
     OverlapMatrix = "matrix",
     Dendrogram = "list",
-    NodeData = "data.frame"
-  ),
-  prototype = list(
-    Name = NA_character_,
-    Consortia = list(),
-    Description = NA_character_
-  )
+    NodeData = "data.frame",
+    Graphs = "list",
+    Edges = "data.frame",
+    Metabolites = "data.frame"
+  ) #,
+  # prototype = list(
+  #   Name = NA_character_,
+  #   Consortia = list(),
+  #   Description = NA_character_
+  # )
 )
 
 #' @noRd
