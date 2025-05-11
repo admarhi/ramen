@@ -46,7 +46,7 @@ plotAlignmentHeatmap <- function(object, top = NULL, bottom = NULL) {
     ggplot2::geom_tile() +
     ggplot2::coord_fixed() +
     ggplot2::scale_fill_gradient(
-      low = "yellow",
+      low = "white",
       high = "red",
       breaks = scales::breaks_pretty()
     ) +
