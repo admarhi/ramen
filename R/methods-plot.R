@@ -1,16 +1,32 @@
-setMethod("plot", "ConsortiumMetabolism", function(x) {
-  g <- graph_from_adjacency_matrix(
-    assays(x)$nEdges,
-    mode = "directed",
-    weighted = TRUE
-  )
+setMethod(
+  "plot",
+  "ConsortiumMetabolism",
+  function(
+    x,
+    type = c(
+      "Binary",
+      "nEdges",
+      "Consumption",
+      "Production",
+      "EffectiveConsumption",
+      "EffectiveProduction"
+    )
+  ) {
+    type <- match.arg(type)
+    g <- igraph::graph_from_adjacency_matrix(
+      assays(x)[[type]],
+      mode = "directed",
+      weighted = TRUE
+    )
 
-  plotDirectedFlow(
-    g,
-    color_edges_by_weight = TRUE,
-    edge_width_range = c(0.5, 1)
-  )
-})
+    plotDirectedFlow(
+      g,
+      color_edges_by_weight = TRUE,
+      edge_width_range = c(0.5, 1),
+      main = paste(type, "in", x@Name)
+    )
+  }
+)
 
 setMethod("plot", "ConsortiumMetabolismSet", function(x) {
   if (length(x@Dendrogram) == 0) stop("Not yet clustered!")
@@ -40,7 +56,7 @@ setMethod("plot", "ConsortiumMetabolismAlignment", function(x, type = NULL) {
   if (is.null(type)) {
     # Get levels matrix and filter by max weight
     levels_mat <- assays(x)$Levels
-    max_weight <- length(x@Graphs)
+    max_weight <- length(x@Consortia)
 
     # levels_mat[levels_mat < max_weight] <- 0
     colnames(levels_mat) <- SummarizedExperiment::colData(x)$met
@@ -67,7 +83,7 @@ setMethod("plot", "ConsortiumMetabolismAlignment", function(x, type = NULL) {
     # Plot the graph
     plot(
       g,
-      # layout = igraph::layout_with_dh(g),
+      layout = igraph::layout_with_kk(g),
       # edge.curved = 0.5,
       vertex.label.color = "black",
       vertex.color = "lightblue",
