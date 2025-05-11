@@ -3,5 +3,6 @@
 #' @return A list with the community data.
 #' @export
 setMethod("getCo", "ConsortiumMetabolism", function(object) {
-  object@InputData
+  object@InputData |>
+    dplyr::select("met", "species", "flux")
 })

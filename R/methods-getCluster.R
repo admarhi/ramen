@@ -20,8 +20,9 @@ setMethod(
       object@Consortia,
       nm = purrr::map_chr(object@Consortia, \(x) x@Name)
     )[cons_names]
+    ### use purrr::keep?
 
-    # In case no names were supplied in the CMs, apply based on index
+    # In case no name was specified, created based on selection
     if (is.na(name)) name <- paste0("Cluster ", node_id, " from ", object@Name)
 
     # Create a new set with the selected CM
