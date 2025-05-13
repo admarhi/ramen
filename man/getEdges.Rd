@@ -3,11 +3,18 @@
 \name{getEdges}
 \alias{getEdges}
 \alias{getEdges,ConsortiumMetabolism-method}
+\alias{getEdges,ConsortiumMetabolismSet-method}
 \title{Get Edges From a \code{ConsortiumMetabolism} Object}
 \usage{
-getEdges(object)
+getEdges(object, ...)
 
 \S4method{getEdges}{ConsortiumMetabolism}(object)
+
+\S4method{getEdges}{ConsortiumMetabolismSet}(
+  object,
+  type = c("all", "pan-cons", "niche", "core", "aux"),
+  perc = 0.25
+)
 }
 \arguments{
 \item{object}{A \code{ConsortiumMetabolism} object}
@@ -27,5 +34,7 @@ Retrieves the edges representing metabolic interactions between species.
 \section{Methods (by class)}{
 \itemize{
 \item \code{getEdges(ConsortiumMetabolism)}: Get Edges From a \code{ConsortiumMetabolism} Object
+
+\item \code{getEdges(ConsortiumMetabolismSet)}: Get Edges From a \code{ConsortiumMetabolismSet} Object
 
 }}
