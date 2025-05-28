@@ -20,6 +20,13 @@ setGeneric("getMet", function(object) standardGeneric("getMet"))
 #'
 #' @description
 #' Retrieves the edges representing metabolic interactions between species.
+#' The argument `type` can be used to return only specfic types of Edges from
+#' a `ConsortiumMetabolismSet` type object.
+#' \itemize{
+#'   \item `all` will return all edges
+#'   \item `pan-cons` will return only edges that exist in all consortia
+#'   \item `niche` will return niche consortia. A niche is defined a
+#' }
 #'
 #' @param object A \code{ConsortiumMetabolism} object
 #' @return A tibble containing edge information including:
@@ -139,4 +146,30 @@ setGeneric(
 setGeneric(
   "setDesc",
   function(object, value = NA_character_) standardGeneric("setDesc")
+)
+
+#' @title Get Functional Groups
+#'
+#' @description
+#' Calculates and returns functional groups based on metabolic reactions.
+#' For \code{ConsortiumMetabolismSet} objects, this involves analyzing shared
+#' reactions across species to identify clusters of species with similar
+#' metabolic capabilities.
+#'
+#' @details
+#' This method is currently implemented for \code{ConsortiumMetabolismSet}
+#' objects. Future versions will extend functionality to
+#' \code{ConsortiumMetabolismAlignment} objects to allow for comparative
+#' functional group analysis across different alignments.
+#'
+#' @param object A \code{ConsortiumMetabolismSet} object.
+#' @param ... Additional arguments to be passed to specific methods.
+#'
+#' @return A dendrogram object representing the hierarchical clustering of
+#' species into functional groups. The plot of the dendrogram is also displayed.
+#'
+#' @export
+setGeneric(
+  "getFunctionalGroups",
+  function(object, ...) standardGeneric("getFunctionalGroups")
 )
