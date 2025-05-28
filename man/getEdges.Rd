@@ -30,6 +30,13 @@ A tibble containing edge information including:
 }
 \description{
 Retrieves the edges representing metabolic interactions between species.
+The argument \code{type} can be used to return only specfic types of Edges from
+a \code{ConsortiumMetabolismSet} type object.
+\itemize{
+\item \code{all} will return all edges
+\item \code{pan-cons} will return only edges that exist in all consortia
+\item \code{niche} will return niche consortia. A niche is defined a
+}
 }
 \section{Methods (by class)}{
 \itemize{

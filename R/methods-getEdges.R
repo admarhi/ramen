@@ -14,40 +14,51 @@ setMethod(
   function(
     object,
     type = c("all", "pan-cons", "niche", "core", "aux"),
-    perc = 0.25
+    perc = 0.1
   ) {
     type <- match.arg(type)
 
-    pathways <- object@Edges |>
+    pathways_cons <- object@Edges |>
       dplyr::reframe(
         n_cons = dplyr::n_distinct(.data$cm_name),
         .by = c("consumed", "produced", "c_ind_alig", "p_ind_alig")
       ) |>
       dplyr::arrange(dplyr::desc(.data$n_cons))
 
-    # Get the quantiles based on length of consortia in object
-    quants <- quantile(2:length(object@Consortia))
+    pathways_species <- object@Edges |>
+      dplyr::reframe(
+        n_species = dplyr::n_distinct(.data$species),
+        .by = c("consumed", "produced", "c_ind_alig", "p_ind_alig")
+      )
+
+    # Get the total n of consortia in the set
+    total_cons <- length(object@Consortia)
+
+    # Get the total n of species in the set
+    total_species <- nrow(getSpecies(object))
 
     if (type == "all") {
-      pathways
+      pathways_cons
     } else {
       if (type == "pan-cons") {
-        dplyr::filter(pathways, .data$n_cons > quants[4])
+        # Returns all pathways that appear in all consortia
+        dplyr::filter(pathways_cons, .data$n_cons == total_cons)
       } else if (type == "niche") {
-        dplyr::filter(pathways, .data$n_cons < quants[2])
+        # Get the lower quantile based on the number of consortia in the object
+        quant <- quantile(1:total_cons, p = perc)
+        pathways_cons |>
+          dplyr::filter(.data$n_cons < quant)
       } else if (type == "core") {
-        object@Edges |>
-          dplyr::reframe(
-            n_species = dplyr::n_distinct(.data$species),
-            .by = c("consumed", "produced", "c_ind_alig", "p_ind_alig")
-          ) |>
+        # Get the lower quantile based on number of species in the object
+        quant <- quantile(2:total_species, p = 1 - perc)
+        pathways_species |>
+          dplyr::filter(.data$n_species > quant) |>
           dplyr::arrange(dplyr::desc(.data$n_species))
       } else if (type == "aux") {
-        object@Edges |>
-          dplyr::reframe(
-            n_species = dplyr::n_distinct(.data$species),
-            .by = c("consumed", "produced", "c_ind_alig", "p_ind_alig")
-          ) |>
+        # Get the lower quantile based on number of species in the object
+        quant <- quantile(2:total_species, p = perc)
+        pathways_species |>
+          dplyr::filter(.data$n_species < quant) |>
           dplyr::arrange(.data$n_species)
       }
     }
