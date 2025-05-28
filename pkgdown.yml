@@ -1,5 +1,5 @@
 pandoc: 3.1.11
-pkgdown: 2.1.2
+pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   algorithms: algorithms.html
@@ -7,7 +7,7 @@ articles:
   ConsortiumMetabolismAlignment: ConsortiumMetabolismAlignment.html
   ConsortiumMetabolismSet: ConsortiumMetabolismSet.html
   ToDo: ToDo.html
-last_built: 2025-05-13T19:10Z
+last_built: 2025-05-28T07:03Z
 urls:
   reference: https://admarhi.github.io/ramen/reference
   article: https://admarhi.github.io/ramen/articles
