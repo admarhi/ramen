@@ -26,22 +26,22 @@ importMisosoup <- function(data) {
     tb_import$substrate,
     tb_import$focal_strain,
     \(x, y)
-    data[[x]][[y]] |>
-      purrr::imap(
-        \(z, idx)
-        tibble::as_tibble(z$solution) |>
-          tidyr::pivot_longer(
-            cols = dplyr::everything(),
-            names_to = "rxn",
-            values_to = "flux"
-          ) |>
-          dplyr::mutate(
-            substrate = x,
-            focal_strain = y,
-            solution = idx
-          )
-      ) |>
-      dplyr::bind_rows(),
+      data[[x]][[y]] |>
+        purrr::imap(
+          \(z, idx)
+            tibble::as_tibble(z$solution) |>
+              tidyr::pivot_longer(
+                cols = dplyr::everything(),
+                names_to = "rxn",
+                values_to = "flux"
+              ) |>
+              dplyr::mutate(
+                substrate = x,
+                focal_strain = y,
+                solution = idx
+              )
+        ) |>
+        dplyr::bind_rows(),
     .progress = TRUE
   ) |>
     dplyr::bind_rows() |>
@@ -73,7 +73,10 @@ importMisosoup <- function(data) {
       names = c("met", "species"),
       too_few = "align_start"
     ) |>
-    dplyr::mutate(met = stringr::str_remove_all(.data$met, "^R_EX_|_e$"))
+    dplyr::mutate(
+      met = stringr::str_remove_all(.data$met, "^R_EX_|_e$"),
+      species = stringr::str_remove(.data$species, "_i$")
+    )
 
   # Filter NA values in species as these entries are the media
   consortia <- dplyr::filter(tb, !is.na(.data$species))
@@ -81,7 +84,7 @@ importMisosoup <- function(data) {
   # Compute the media tibble
   media <- tb |>
     dplyr::filter(is.na(.data$species)) |>
-    dplyr::select(1:5, media = "flux")
+    dplyr::select(1:5, "flux")
 
   list(
     consortia = consortia,
@@ -121,10 +124,10 @@ overviewMisosoup <- function(data) {
         .data$substrate,
         .data$focal_strain,
         \(x, y)
-        data[[x]][[y]] |>
-          purrr::map_lgl(
-            \(z) length(z) == 1 && z[[1]] == 0
-          )
+          data[[x]][[y]] |>
+            purrr::map_lgl(
+              \(z) length(z) == 1 && z[[1]] == 0
+            )
       ) |>
         purrr::map_dbl(\(x) sum(x))
     )
