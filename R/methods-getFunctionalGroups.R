@@ -3,8 +3,8 @@
 #' @export
 setMethod(
   "getFunctionalGroups",
-  signature = "ConsortiumMetabolismSet",
-  definition = function(object) {
+  "ConsortiumMetabolismSet",
+  function(object, k = 4) {
     # Extract edges from the ConsortiumMetabolismSet object
     tb <- object@Edges
 
@@ -76,7 +76,7 @@ setMethod(
     # Color branches of the dendrogram for visualization (e.g., k=4 clusters)
     # The plot is displayed to the user
     dend |>
-      dendextend::color_branches(k = 4) |>
+      dendextend::color_branches(k = k) |>
       plot()
 
     # Return the dendrogram object invisibly
