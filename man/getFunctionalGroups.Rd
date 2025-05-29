@@ -5,12 +5,15 @@
 \alias{getFunctionalGroups,ConsortiumMetabolismSet-method}
 \title{Get Functional Groups}
 \usage{
-getFunctionalGroups(object, ...)
+getFunctionalGroups(object, k = 4, ...)
 
-\S4method{getFunctionalGroups}{ConsortiumMetabolismSet}(object)
+\S4method{getFunctionalGroups}{ConsortiumMetabolismSet}(object, k = 4)
 }
 \arguments{
 \item{object}{A \code{ConsortiumMetabolismSet} object.}
+
+\item{k}{An integer scalar specifying the number of clusters to color in the
+dendrogram.}
 
 \item{...}{Additional arguments to be passed to specific methods.}
 }
