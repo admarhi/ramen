@@ -19,7 +19,8 @@
 #'
 #' @return A ConsortiumMetabolism object containing:
 #' \itemize{
-#'   \item Assays for binary interactions, edge counts, consumption/production metrics
+#'   \item Assays for binary interactions, edge counts, consumption/production
+#' metrics
 #'   \item Row and column data about metabolites
 #'   \item Graph representation of the metabolic network
 #'   \item Original input data and computed edge information
@@ -39,7 +40,6 @@ ConsortiumMetabolism <- function(
 ) {
   # Validate and prepare input data
   data <- prepare_input_data(data, species_col, metabolite_col, flux_col)
-
   # Create metabolite index mapping
   mets <- create_metabolite_index(data)
 
@@ -47,6 +47,34 @@ ConsortiumMetabolism <- function(
   tb <- filter_nonzero_flux(data)
   cons <- calculate_consumption(tb)
   prod <- calculate_production(tb)
+
+  # Get only producing or consuming species
+  only_cons <- setdiff(unique(cons$species), unique(prod$species))
+  only_prod <- setdiff(unique(prod$species), unique(cons$species))
+  if (length(only_cons) == 0 & length(only_prod) == 0) {
+    mets <- dplyr::filter(mets, .data$met != "media")
+  } else {
+    if (length(only_cons) > 0) {
+      cli::cli_alert_info(
+        "{.val {name}} {.code {only_cons}} only consume, production set to 'media'."
+      )
+      prod <- prod |>
+        dplyr::bind_rows(
+          tibble::tibble(species = only_cons, produced = "media", flux = 1)
+        )
+    }
+
+    if (length(only_prod) > 0) {
+      cli::cli_alert_info(
+        "{.val {name}} {.code {only_prod}} only produce, consumption set to 'media'."
+      )
+      # message(only_prod, " only produce, consumption set to 'media'")
+      cons <- cons |>
+        dplyr::bind_rows(
+          tibble::tibble(species = only_prod, consumed = "media", flux = 1)
+        )
+    }
+  }
 
   # Create edge data with metrics
   out <- create_edge_data(cons, prod, mets)
@@ -75,7 +103,7 @@ ConsortiumMetabolism <- function(
     Name = name,
     Edges = out,
     Weighted = !all(data$flux**2 == 1),
-    InputData = data,
+    InputData = as.data.frame(data),
     Metabolites = unique(data$met),
     Graphs = graphs
   )
@@ -99,7 +127,11 @@ prepare_input_data <- function(data, species_col, metabolite_col, flux_col) {
 #' Create metabolite index mapping
 #' @noRd
 create_metabolite_index <- function(data) {
-  tibble(met = sort(unique(data$met))) |>
+  # tibble(met = sort(unique(data$met))) |>
+  #   tibble::rowid_to_column(var = "index")
+
+  # Testing whether this works
+  tibble(met = c(sort(unique(data$met)), "media")) |>
     tibble::rowid_to_column(var = "index")
 }
 
@@ -115,6 +147,8 @@ calculate_consumption <- function(tb) {
   tb |>
     filter(.data$flux < 0) |>
     mutate(flux = .data$flux * -1) |>
+    # Sum bc in eg cooc data each edge is given with its own flux so then
+    # there can be multiple prod and cons values per met
     reframe(flux = sum(.data$flux), .by = c("species", "met")) |>
     rename(consumed = "met")
 }
@@ -124,6 +158,8 @@ calculate_consumption <- function(tb) {
 calculate_production <- function(tb) {
   tb |>
     filter(.data$flux > 0) |>
+    # Sum bc in eg cooc data each edge is given with its own flux so then
+    # there can be multiple prod and cons values per met
     reframe(flux = sum(.data$flux), .by = c("species", "met")) |>
     rename(produced = "met")
 }
@@ -132,7 +168,7 @@ calculate_production <- function(tb) {
 #' @noRd
 create_edge_data <- function(cons, prod, mets) {
   cons |>
-    inner_join(
+    dplyr::inner_join(
       prod,
       by = "species",
       suffix = c("_cons", "_prod"),
