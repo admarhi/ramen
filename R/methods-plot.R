@@ -33,8 +33,7 @@ setMethod("plot", "ConsortiumMetabolismSet", function(x) {
   dend <- x@Dendrogram[[1]]
   node_data <- x@NodeData
 
-  gg_dend <- dendextend::as.ggdend(dend, type = "rectangle")
-
+  gg_dend <- dendextend::as.ggdend(dend, labels = TRUE, type = "rectangle")
   ggplot2::ggplot(gg_dend) +
     ggplot2::geom_point(
       data = node_data,
@@ -48,6 +47,14 @@ setMethod("plot", "ConsortiumMetabolismSet", function(x) {
       color = "white",
       size = 4,
       fontface = "bold"
+    ) +
+    ggplot2::scale_y_continuous(
+      expand = c(0, 2)
+    ) +
+    ggplot2::theme(
+      axis.text.x = ggplot2::element_text(
+        size = 2
+      )
     )
 })
 
