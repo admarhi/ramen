@@ -49,14 +49,14 @@ setMethod(
         pathways_cons |>
           dplyr::filter(.data$n_cons < quant)
       } else if (type == "core") {
-        # Get the lower quantile based on number of species in the object
+        # Get the upper quantile based on number of species in the object
         quant <- quantile(2:total_species, p = 1 - perc)
         pathways_species |>
           dplyr::filter(.data$n_species > quant) |>
           dplyr::arrange(dplyr::desc(.data$n_species))
       } else if (type == "aux") {
         # Get the lower quantile based on number of species in the object
-        quant <- quantile(2:total_species, p = perc)
+        quant <- quantile(1:total_species, p = perc)
         pathways_species |>
           dplyr::filter(.data$n_species < quant) |>
           dplyr::arrange(.data$n_species)
