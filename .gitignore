@@ -4,6 +4,7 @@ dev/
 inst/doc
 ramen.Rproj
 docs
+figures/
 /doc/
 /Meta/
 .RData

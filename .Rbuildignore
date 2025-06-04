@@ -3,6 +3,7 @@
 ^LICENSE\.md$
 ^dev*$
 ^dev$
+^figures$
 ^dev_data$
 vignettes/func_sim.Rmd
 ^data-raw$
