@@ -24,13 +24,19 @@ setMethod(
   function(object, type = c("all", "generalists", "specialists")) {
     type <- match.arg(type)
 
-    object@Edges |>
+    tb <- object@Edges |>
       dplyr::mutate(edge_name = paste0(.data$consumed, "-", .data$produced)) |>
       dplyr::reframe(
         n_edges = dplyr::n_distinct(.data$edge_name),
         .by = "species"
-      ) |>
-      dplyr::arrange(dplyr::desc(n_edges))
+      )
+
+    if (type == "all" | type == "generalists") {
+      tb |>
+        dplyr::arrange(dplyr::desc(.data$n_edges))
+    } else {
+      tb |> dplyr::arrange(.data$n_edges)
+    }
   }
 )
 
