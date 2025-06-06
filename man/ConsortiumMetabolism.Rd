@@ -34,7 +34,8 @@ defaults to 'flux'.}
 \value{
 A ConsortiumMetabolism object containing:
 \itemize{
-\item Assays for binary interactions, edge counts, consumption/production metrics
+\item Assays for binary interactions, edge counts, consumption/production
+metrics
 \item Row and column data about metabolites
 \item Graph representation of the metabolic network
 \item Original input data and computed edge information
