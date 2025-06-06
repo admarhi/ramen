@@ -163,6 +163,8 @@ setGeneric(
 #' functional group analysis across different alignments.
 #'
 #' @param object A \code{ConsortiumMetabolismSet} object.
+#' @param k An integer scalar specifying the number of clusters to color in the
+#'   dendrogram.
 #' @param ... Additional arguments to be passed to specific methods.
 #'
 #' @return A dendrogram object representing the hierarchical clustering of
@@ -171,5 +173,5 @@ setGeneric(
 #' @export
 setGeneric(
   "getFunctionalGroups",
-  function(object, ...) standardGeneric("getFunctionalGroups")
+  function(object, k = 4, ...) standardGeneric("getFunctionalGroups")
 )
