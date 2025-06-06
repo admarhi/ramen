@@ -13,7 +13,7 @@ getEdges(object, ...)
 \S4method{getEdges}{ConsortiumMetabolismSet}(
   object,
   type = c("all", "pan-cons", "niche", "core", "aux"),
-  perc = 0.25
+  perc = 0.1
 )
 }
 \arguments{
