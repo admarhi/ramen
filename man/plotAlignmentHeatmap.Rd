@@ -9,7 +9,13 @@ plotAlignmentHeatmap(object, top = NULL, bottom = NULL)
 \arguments{
 \item{object}{An object of class MiCoAl.}
 
-\item{frac}{Minimum relative weight of maximum weight to plot.}
+\item{top}{Character scalar giving the top fraction of consortia in which a
+pathway should be present to be output in the heatmap. Defaults to NULL, in
+which case all are plotted.}
+
+\item{bottom}{Character scalar giving the bottom fraction of consortia in
+which a pathway should be present to be output in the heatmap. Defaults to
+NULL, in which case all are plotted.}
 }
 \value{
 A ggplot heatmap

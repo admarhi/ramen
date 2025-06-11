@@ -115,15 +115,15 @@ ConsortiumMetabolismSet <- function(
   tb <-
     # Create unique combinations of the consortia to reduce computation time
     tidyr::expand_grid(x = bm_tb$ind, y = bm_tb$ind) |>
-    dplyr::filter(x <= y) |>
+    dplyr::filter(.data$x <= .data$y) |>
     # Left join the binary matrices by new index
     dplyr::left_join(bm_tb, by = c("x" = "ind")) |>
     dplyr::left_join(bm_tb, by = c("y" = "ind")) |>
     dplyr::select(
-      x,
+      "x",
       name_x = "name.x",
       cm_x = "value.x",
-      y,
+      "y",
       name_y = "name.y",
       cm_y = "value.y"
     ) |>
@@ -156,9 +156,9 @@ ConsortiumMetabolismSet <- function(
   # Make the dendrogram
   cli::cli_status("Creating dendrogram")
   dend <-
-    dist(overlap_matrix) |>
-    hclust() |>
-    as.dendrogram()
+    stats::dist(overlap_matrix) |>
+    stats::hclust() |>
+    stats::as.dendrogram()
   cli::cli_process_done()
 
   # ---- Dendrogram Node Data --------------------------------------------------
@@ -171,7 +171,7 @@ ConsortiumMetabolismSet <- function(
     dplyr::rename(x = "V1", y = "V2") |>
     dplyr::mutate(original_node_id = dplyr::row_number()) |>
     # Filter out leaves (which have y=0)
-    dplyr::filter(y != 0) |>
+    dplyr::filter(.data$y != 0) |>
     dplyr::arrange(dplyr::desc(.data$y)) |>
     dplyr::mutate(node_id = dplyr::row_number())
   cli::cli_process_done()

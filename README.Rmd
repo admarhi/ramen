@@ -33,6 +33,8 @@ devtools::install_github("admarhi/ramen")
 
 
 ## Conventions
-[Bioconductor style guide](https://contributions.bioconductor.org/r-code.html#r-code)
-- Classes: `UpperCamelCase`
-- Methods and functions: `lowerCamelCase`
+*ramen* development was conducted using the [Bioconductor style guide](https://contributions.bioconductor.org/r-code.html#r-code).
+
+
+## Experiments
+Three vignettes cover examplary \textit{ramen} use cases performed on publicly available datasets. Their primary purpose is to validate the functionality of the employed algorithms and it has to be considered that both datasets used are derived from emerging computational methods, whose quality is expected to improve as the field advances. Consequently, these findings should be viewed as validation of a novel computational approach that will reach its full potential with the availability of more diverse and accurate data on the metabolisms of microbial consortia.

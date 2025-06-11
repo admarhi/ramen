@@ -18,6 +18,13 @@ getEdges(object, ...)
 }
 \arguments{
 \item{object}{A \code{ConsortiumMetabolism} object}
+
+\item{...}{Object specific arguments.}
+
+\item{type}{Character scalar giving the type of edges to output.}
+
+\item{perc}{Numeric scalar giving the percentage to use for the quantile
+calculation.}
 }
 \value{
 A tibble containing edge information including:

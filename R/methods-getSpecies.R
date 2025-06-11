@@ -17,6 +17,8 @@ setMethod("getSpecies", "ConsortiumMetabolism", function(object) {
 
 #' @describeIn getSpecies Return Species in a Microbiome
 #' @param object a \code{ConsortiumMetabolismSet} Object
+#' @param type Character scalar giving the type of species to output.
+#'
 #' @return A character vector representing the microorganisms.
 setMethod(
   "getSpecies",

@@ -18,7 +18,7 @@ setMethod(
 
     # Create a tibble of unique species with a row ID for easier indexing
     unique_species <- rxns_per_species |>
-      dplyr::distinct(species) |>
+      dplyr::distinct(.data$species) |>
       tibble::rowid_to_column("ind")
 
     # Generate all unique combinations of species pairs
@@ -28,7 +28,7 @@ setMethod(
       y = unique_species$ind
     ) |>
       # Keep only unique pairs (x <= y) to avoid redundant calculations
-      dplyr::filter(x <= y) |>
+      dplyr::filter(.data$x <= .data$y) |>
       # Join with unique_species to get species names for x and y
       dplyr::left_join(unique_species, by = c("x" = "ind")) |>
       dplyr::left_join(unique_species, by = c("y" = "ind")) |>

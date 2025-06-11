@@ -1,6 +1,8 @@
 #' @title Return Species in a Consortium
 #'
 #' @param object A \code{ConsortiumMetabolism} object
+#' @param ... Object specific arguments.
+#'
 #' @return A character vector containing the names of species in the consortium
 #' @export
 setGeneric("getSpecies", function(object, ...) standardGeneric("getSpecies"))
@@ -29,6 +31,8 @@ setGeneric("getMet", function(object) standardGeneric("getMet"))
 #' }
 #'
 #' @param object A \code{ConsortiumMetabolism} object
+#' @param ... Object specific arguments.
+#'
 #' @return A tibble containing edge information including:
 #' \itemize{
 #'   \item consumed/produced metabolites
@@ -60,10 +64,12 @@ setGeneric("getCo", function(object) standardGeneric("getCo"))
 #'
 #' @param object A \code{ConsortiumMetabolismSet} object containing multiple
 #' consortium metabolisms to align
+#' @param name Character scalar giving name of the alignment, if `NULL` inherits
+#' from the \code{ConsortiumMetabolismSet} object.
 #' @return A \code{ConsortiumMetabolismAlignment} object containing the aligned
 #' metabolic networks and associated metrics
 #' @export
-setGeneric("align", function(object) standardGeneric("align"))
+setGeneric("align", function(object, name) standardGeneric("align"))
 
 #' @title Modify a \code{ConsortiaMetabolismSet} Object
 #'
@@ -105,8 +111,9 @@ setGeneric("cluster", function(object) standardGeneric("cluster"))
 #' @export
 setGeneric(
   "getCluster",
-  function(object, node_id, name = NA_character_, description = NA_character_)
+  function(object, node_id, name = NA_character_, description = NA_character_) {
     standardGeneric("getCluster")
+  }
 )
 
 

@@ -5,12 +5,13 @@
 \alias{align,ConsortiumMetabolismSet-method}
 \title{Align a \code{ConsortiaMetabolismSet} Object}
 \usage{
-align(object)
+align(object, name)
 
-\S4method{align}{ConsortiumMetabolismSet}(object)
+\S4method{align}{ConsortiumMetabolismSet}(object, name)
 }
 \arguments{
-\item{object}{A \code{ConsortiumMetabolismSet} object.}
+\item{object}{A \code{ConsortiumMetabolismSet} object containing multiple
+consortium metabolisms to align}
 
 \item{name}{Character scalar giving name of the alignment, if \code{NULL} inherits
 from the \code{ConsortiumMetabolismSet} object.}
@@ -18,8 +19,6 @@ from the \code{ConsortiumMetabolismSet} object.}
 \value{
 A \code{ConsortiumMetabolismAlignment} object containing the aligned
 metabolic networks and associated metrics
-
-A \code{ConsortiumMetabolismAlignment} object.
 }
 \description{
 Creates an alignment of multiple consortium metabolisms to identify common

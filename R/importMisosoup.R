@@ -5,7 +5,7 @@
 #' transformation, and organization of metabolic flux data.
 #'
 #' @param data A nested list containing misosoup simulation results.
-#' The structure should be data[[substrate]][[focal_strain]] where each element
+#' The structure should be data[\[substrate\]][\[focal_strain\]] where each element
 #' contains solution data.
 #'
 #' @return A list containing three tibbles:
@@ -18,17 +18,19 @@
 #' @export
 importMisosoup <- function(data) {
   tb_import <- overviewMisosoup(data) |>
-    dplyr::filter(n_cons != n_zero_growth)
+    dplyr::filter(.data$n_cons != .data$n_zero_growth)
 
-  if (any(tb_import$n_zero_growth > 0)) stop("Zero growth solution detected")
+  if (any(tb_import$n_zero_growth > 0)) {
+    stop("Zero growth solution detected")
+  }
 
   tb <- purrr::map2(
     tb_import$substrate,
     tb_import$focal_strain,
-    \(x, y)
+    \(x, y) {
       data[[x]][[y]] |>
         purrr::imap(
-          \(z, idx)
+          \(z, idx) {
             tibble::as_tibble(z$solution) |>
               tidyr::pivot_longer(
                 cols = dplyr::everything(),
@@ -40,8 +42,10 @@ importMisosoup <- function(data) {
                 focal_strain = y,
                 solution = idx
               )
+          }
         ) |>
-        dplyr::bind_rows(),
+        dplyr::bind_rows()
+    },
     .progress = TRUE
   ) |>
     dplyr::bind_rows() |>
@@ -123,11 +127,12 @@ overviewMisosoup <- function(data) {
       n_zero_growth = purrr::map2(
         .data$substrate,
         .data$focal_strain,
-        \(x, y)
+        \(x, y) {
           data[[x]][[y]] |>
             purrr::map_lgl(
               \(z) length(z) == 1 && z[[1]] == 0
             )
+        }
       ) |>
         purrr::map_dbl(\(x) sum(x))
     )
