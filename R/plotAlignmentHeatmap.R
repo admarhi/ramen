@@ -1,7 +1,12 @@
 #' MiCoAl Heatmap
 #'
 #' @param object An object of class MiCoAl.
-#' @param frac Minimum relative weight of maximum weight to plot.
+#' @param top Character scalar giving the top fraction of consortia in which a
+#' pathway should be present to be output in the heatmap. Defaults to NULL, in
+#' which case all are plotted.
+#' @param bottom Character scalar giving the bottom fraction of consortia in
+#' which a pathway should be present to be output in the heatmap. Defaults to
+#' NULL, in which case all are plotted.
 #'
 #' @return A ggplot heatmap
 #' @export
@@ -25,7 +30,9 @@ plotAlignmentHeatmap <- function(object, top = NULL, bottom = NULL) {
       met2 = "ColName"
     )
 
-  if (!is.null(top) && !is.null(bottom)) stop("Only top or bottom fraction")
+  if (!is.null(top) && !is.null(bottom)) {
+    stop("Only top or bottom fraction")
+  }
   if (!is.null(top)) {
     min_weight <- max_weight * top
     if (min_weight > max(levels_mat)) {

@@ -10,10 +10,11 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Imports: 
+    cli,
+    dendextend,
     dplyr,
     ggplot2,
     glue,
-    hash,
     igraph,
     magrittr,
     Matrix,
@@ -27,14 +28,12 @@ Imports:
     SummarizedExperiment,
     tibble,
     tidyr,
-    TreeSummarizedExperiment,
-    utils
+    TreeSummarizedExperiment
 Suggests: 
     knitr,
     readr,
     rmarkdown,
     testthat (>= 3.0.0),
-    plotly
 VignetteBuilder: 
     knitr
 Depends: 

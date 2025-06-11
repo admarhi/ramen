@@ -17,6 +17,10 @@ getSpecies(object, ...)
 }
 \arguments{
 \item{object}{a \code{ConsortiumMetabolismAlignment} Object}
+
+\item{...}{Object specific arguments.}
+
+\item{type}{Character scalar giving the type of species to output.}
 }
 \value{
 A character vector containing the names of species in the consortium

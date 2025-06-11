@@ -29,7 +29,9 @@ setMethod(
 )
 
 setMethod("plot", "ConsortiumMetabolismSet", function(x) {
-  if (length(x@Dendrogram) == 0) stop("Not yet clustered!")
+  if (length(x@Dendrogram) == 0) {
+    stop("Not yet clustered!")
+  }
   dend <- x@Dendrogram[[1]]
   node_data <- x@NodeData
 
@@ -37,13 +39,13 @@ setMethod("plot", "ConsortiumMetabolismSet", function(x) {
   ggplot2::ggplot(gg_dend) +
     ggplot2::geom_point(
       data = node_data,
-      ggplot2::aes(x = x, y = y),
+      ggplot2::aes(x = .data$x, y = .data$y),
       color = "red",
       size = 7
     ) +
     ggplot2::geom_text(
       data = node_data,
-      ggplot2::aes(x = x, y = y, label = node_id),
+      ggplot2::aes(x = .data$x, y = .data$y, label = .data$node_id),
       color = "white",
       size = 4,
       fontface = "bold"

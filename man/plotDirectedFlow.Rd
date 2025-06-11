@@ -21,7 +21,7 @@ plotDirectedFlow(
 )
 }
 \arguments{
-\item{g}{An \code{\link[igraph]{igraph}} object. Must be a directed graph.}
+\item{g}{An igraph object. Must be a directed graph.}
 
 \item{source_x}{Numeric scalar. The x-coordinate for source nodes.
 Defaults to 0.}
@@ -35,13 +35,13 @@ nodes. The actual layout spans \code{mixed_x} +/- 0.4. Defaults to 1.}
 the vertical spread of the layout. Defaults to 1.}
 
 \item{vertex_size}{Numeric scalar. The size of the vertices (nodes) in the
-plot. Defaults to 10. See \code{\link[igraph]{igraph.plotting}}.}
+plot. Defaults to 10.}
 
 \item{vertex_label_cex}{Numeric scalar. The character expansion factor for
-vertex labels. Defaults to 0.8. See \code{\link[graphics]{par}}.}
+vertex labels. Defaults to 0.8.}
 
 \item{edge_arrow_size}{Numeric scalar. The size of the arrows on the edges.
-Defaults to 0.5. See \code{\link[igraph]{igraph.plotting}}.}
+Defaults to 0.5.}
 
 \item{edge_width_range}{Numeric vector of length 2. The minimum and maximum
 width for edges when scaled by weight. If the graph is unweighted or all
@@ -59,7 +59,7 @@ when \code{color_edges_by_weight} is \code{TRUE}. Defaults to "gray80".}
 \item{edge_color_high}{Character string. The color for the highest edge
 weight when \code{color_edges_by_weight} is \code{TRUE}. Defaults to "black".}
 
-\item{...}{Additional arguments passed to \code{\link[igraph]{plot.igraph}}.}
+\item{...}{Additional arguments passed to igraph.}
 }
 \value{
 Invisibly returns \code{NULL}. This function is called for its
@@ -72,8 +72,4 @@ edges), and intermediate nodes (with both incoming and outgoing edges).
 The layout within the intermediate column is determined using the
 Fruchterman-Reingold algorithm. This visualization helps understand the
 overall flow structure within the graph.
-}
-\seealso{
-\code{\link[igraph]{plot.igraph}},
-\code{\link[igraph]{layout_with_fr}}, \code{\link{igraph}}
 }

@@ -7,7 +7,7 @@
 #' Fruchterman-Reingold algorithm. This visualization helps understand the
 #' overall flow structure within the graph.
 #'
-#' @param g An \code{\link[igraph]{igraph}} object. Must be a directed graph.
+#' @param g An igraph object. Must be a directed graph.
 #' @param source_x Numeric scalar. The x-coordinate for source nodes.
 #'   Defaults to 0.
 #' @param mixed_x Numeric scalar. The central x-coordinate for intermediate
@@ -16,11 +16,11 @@
 #' @param vertical_spacing Numeric scalar. The maximum y-coordinate, controlling
 #'   the vertical spread of the layout. Defaults to 1.
 #' @param vertex_size Numeric scalar. The size of the vertices (nodes) in the
-#'   plot. Defaults to 10. See \code{\link[igraph]{igraph.plotting}}.
+#'   plot. Defaults to 10. 
 #' @param vertex_label_cex Numeric scalar. The character expansion factor for
-#'   vertex labels. Defaults to 0.8. See \code{\link[graphics]{par}}.
+#'   vertex labels. Defaults to 0.8.
 #' @param edge_arrow_size Numeric scalar. The size of the arrows on the edges.
-#'   Defaults to 0.5. See \code{\link[igraph]{igraph.plotting}}.
+#'   Defaults to 0.5.
 #' @param edge_width_range Numeric vector of length 2. The minimum and maximum
 #'   width for edges when scaled by weight. If the graph is unweighted or all
 #'   weights are identical, the mean of this range is used. Defaults to
@@ -33,7 +33,7 @@
 #'   when \code{color_edges_by_weight} is \code{TRUE}. Defaults to "gray80".
 #' @param edge_color_high Character string. The color for the highest edge
 #' weight when \code{color_edges_by_weight} is \code{TRUE}. Defaults to "black".
-#' @param ... Additional arguments passed to \code{\link[igraph]{plot.igraph}}.
+#' @param ... Additional arguments passed to igraph.
 #'
 #' @return Invisibly returns \code{NULL}. This function is called for its
 #'   side effect of generating a plot.
@@ -44,10 +44,6 @@
 #' @importFrom igraph layout_with_fr E ecount is_weighted plot.igraph
 #' @importFrom scales rescale gradient_n_pal
 #' @importFrom graphics plot
-#'
-#' @seealso \code{\link[igraph]{plot.igraph}},
-#'   \code{\link[igraph]{layout_with_fr}}, \code{\link{igraph}}
-#'
 plotDirectedFlow <- function(
   g,
   source_x = 0,
@@ -63,7 +59,9 @@ plotDirectedFlow <- function(
   edge_color_high = "black",
   ...
 ) {
-  if (!igraph::is_directed(g)) stop("Graph must be directed.")
+  if (!igraph::is_directed(g)) {
+    stop("Graph must be directed.")
+  }
 
   # Compute degrees
   in_deg <- igraph::degree(g, mode = "in")
