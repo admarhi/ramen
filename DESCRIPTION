@@ -1,6 +1,6 @@
 Package: ramen
 Title: Reconstruction and Alignment of Microbial Exchange Networks
-Version: 0.0.0.9000
+Version: 0.0.0.9001
 Authors@R: 
     person("Adrian", "Hirt", , "am.hirt@pm.me", role = c("aut", "cre"),
            comment = c(ORCID = "0009-0008-1929-6629"))
