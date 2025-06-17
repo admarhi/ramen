@@ -4,7 +4,7 @@
 setMethod(
   "getFunctionalGroups",
   "ConsortiumMetabolismSet",
-  function(object, k = 4) {
+  function(object, k = 4, label_size = 6, label_colours = NULL) {
     # Extract edges from the ConsortiumMetabolismSet object
     tb <- object@Edges
 
@@ -75,12 +75,50 @@ setMethod(
 
     # Color branches of the dendrogram for visualization (e.g., k=4 clusters)
     # The plot is displayed to the user
-    dend |>
-      dendextend::color_branches(k = k) |>
-      plot()
+    # dend |>
+    #   dendextend::color_branches(k = k) |>
+    #   # ggplot2::ggplot() |>
+    #   plot()
+    gg_dend <- dendextend::color_branches(dend, k = k) |>
+      dendextend::as.ggdend()
+    if (!is.null(label_colours)) {
+      label_tb <- gg_dend$labels |>
+        dplyr::left_join(label_colours, by = "label")
+    } else {
+      # Make it such that otherwise it takes the leaves colour
+      label_tb <- gg_dend$labels |>
+        dplyr::mutate(colour = "black")
+    }
+    # Remove the default label layer
+    gg_dend$labels$label <- NA
 
+    # Make ggplot
+    ggplot2::ggplot(gg_dend, horiz = FALSE) +
+      ggplot2::theme_minimal() +
+      ggplot2::theme(
+        axis.title = ggplot2::element_blank(),
+        axis.text = ggplot2::element_blank(),
+        axis.ticks = ggplot2::element_blank(),
+        axis.line = ggplot2::element_blank(),
+        panel.background = ggplot2::element_blank(),
+        plot.background = ggplot2::element_blank(),
+        panel.grid = ggplot2::element_blank()
+      ) +
+      ggplot2::scale_y_continuous(
+        expand = ggplot2::expansion(mult = c(0, 0), add = c(2, 1))
+      ) +
+      ggplot2::geom_text(
+        # manually draw the axis labels (i.e., leaf labels)
+        data = label_tb,
+        ggplot2::aes(x = x, y = y - 0.1, label = label), # y - 2 to push below branches
+        angle = 90,
+        hjust = 1,
+        size = label_size,
+        color = label_tb$colour # vector of colors
+      )
+    ### Need to output also the tibbles with the data long term
     # Return the dendrogram object invisibly
     # This allows the user to assign it to a variable if desired
-    return(invisible(dend))
+    # return(invisible(dend))
   }
 )
