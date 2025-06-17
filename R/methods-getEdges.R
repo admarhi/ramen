@@ -44,22 +44,26 @@ setMethod(
       pathways_cons
     } else {
       if (type == "pan-cons") {
+        # Get the upper 10 % based on the number of consortia in the object
+        quant <- stats::quantile(1:total_cons, p = 0.9)
         # Returns all pathways that appear in all consortia
-        dplyr::filter(pathways_cons, .data$n_cons == total_cons)
+        dplyr::filter(pathways_cons, .data$n_cons > quant) |>
+          dplyr::arrange(dplyr::desc(.data$n_cons))
       } else if (type == "niche") {
         # Get the lower quantile based on the number of consortia in the object
-        quant <- stats::quantile(1:total_cons, p = perc)
+        quant <- stats::quantile(1:total_cons, p = 0.1)
         pathways_cons |>
-          dplyr::filter(.data$n_cons < quant)
+          dplyr::filter(.data$n_cons < quant) |>
+          dplyr::arrange(.data$n_cons)
       } else if (type == "core") {
         # Get the upper quantile based on number of species in the object
-        quant <- stats::quantile(2:total_species, p = 1 - perc)
+        quant <- stats::quantile(2:total_species, p = 0.8)
         pathways_species |>
           dplyr::filter(.data$n_species > quant) |>
           dplyr::arrange(dplyr::desc(.data$n_species))
       } else if (type == "aux") {
         # Get the lower quantile based on number of species in the object
-        quant <- stats::quantile(1:total_species, p = perc)
+        quant <- stats::quantile(1:total_species, p = 0.2)
         pathways_species |>
           dplyr::filter(.data$n_species < quant) |>
           dplyr::arrange(.data$n_species)

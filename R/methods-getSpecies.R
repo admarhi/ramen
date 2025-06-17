@@ -31,13 +31,20 @@ setMethod(
       dplyr::reframe(
         n_edges = dplyr::n_distinct(.data$edge_name),
         .by = "species"
-      )
+      ) |>
+      dplyr::arrange(dplyr::desc(.data$n_edges))
 
-    if (type == "all" | type == "generalists") {
-      tb |>
-        dplyr::arrange(dplyr::desc(.data$n_edges))
-    } else {
-      tb |> dplyr::arrange(.data$n_edges)
+    total_species <- length(unique(tb$species))
+    if (type == "all") {
+      tb
+    } else if (type == "generalists") {
+      # Get the upper 15 % based on the number of edges in the object
+      quant <- stats::quantile(1:total_species, p = 0.15) |> round()
+      tb |> dplyr::slice_head(n = quant)
+    } else if (type == "specialists") {
+      # Get the upper 15 % based on the number of edges in the object
+      quant <- stats::quantile(1:total_species, p = 0.15) |> round()
+      tb |> dplyr::slice_tail(n = quant)
     }
   }
 )
