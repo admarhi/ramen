@@ -10,3 +10,5 @@ figures/
 .RData
 .Rhistory
 .RDataTmp
+
+/.quarto/
