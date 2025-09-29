@@ -172,10 +172,42 @@ community.</li>
 </ul>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
-<span>  species <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"RQR9693L"</span>, <span class="st">"RQR9693L"</span>, <span class="st">"RQR9693L"</span>, <span class="st">"RQR9693L"</span>, <span class="st">"MEV1152G"</span>, <span class="st">"MEV1152G"</span>, <span class="st">"MEV1152G"</span>, <span class="st">"XIQ2234Q"</span>, <span class="st">"XIQ2234Q"</span>, <span class="st">"XIQ2234Q"</span><span class="op">)</span>,</span>
-<span>  met <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"met3"</span>, <span class="st">"met1"</span>, <span class="st">"met4"</span>, <span class="st">"met4"</span>, <span class="st">"met3"</span>, <span class="st">"met2"</span>, <span class="st">"met2"</span>, <span class="st">"met3"</span>, <span class="st">"met4"</span>, <span class="st">"met1"</span><span class="op">)</span>,</span>
-<span>  flux <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.3023640</span>, <span class="fl">0.5344641</span>, <span class="op">-</span><span class="fl">2.2337716</span>, <span class="fl">3.3063823</span>, <span class="fl">2.5520278</span>, <span class="fl">0.3388498</span>, <span class="op">-</span><span class="fl">1.8460633</span>, <span class="op">-</span><span class="fl">1.3043675</span>, <span class="op">-</span><span class="fl">0.4788769</span>, <span class="fl">0.6027292</span><span class="op">)</span></span>
-<span></span>
+<span>  species <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"RQR9693L"</span>,</span>
+<span>    <span class="st">"RQR9693L"</span>,</span>
+<span>    <span class="st">"RQR9693L"</span>,</span>
+<span>    <span class="st">"RQR9693L"</span>,</span>
+<span>    <span class="st">"MEV1152G"</span>,</span>
+<span>    <span class="st">"MEV1152G"</span>,</span>
+<span>    <span class="st">"MEV1152G"</span>,</span>
+<span>    <span class="st">"XIQ2234Q"</span>,</span>
+<span>    <span class="st">"XIQ2234Q"</span>,</span>
+<span>    <span class="st">"XIQ2234Q"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  met <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"met3"</span>,</span>
+<span>    <span class="st">"met1"</span>,</span>
+<span>    <span class="st">"met4"</span>,</span>
+<span>    <span class="st">"met4"</span>,</span>
+<span>    <span class="st">"met3"</span>,</span>
+<span>    <span class="st">"met2"</span>,</span>
+<span>    <span class="st">"met2"</span>,</span>
+<span>    <span class="st">"met3"</span>,</span>
+<span>    <span class="st">"met4"</span>,</span>
+<span>    <span class="st">"met1"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  flux <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="op">-</span><span class="fl">0.3023640</span>,</span>
+<span>    <span class="fl">0.5344641</span>,</span>
+<span>    <span class="op">-</span><span class="fl">2.2337716</span>,</span>
+<span>    <span class="fl">3.3063823</span>,</span>
+<span>    <span class="fl">2.5520278</span>,</span>
+<span>    <span class="fl">0.3388498</span>,</span>
+<span>    <span class="op">-</span><span class="fl">1.8460633</span>,</span>
+<span>    <span class="op">-</span><span class="fl">1.3043675</span>,</span>
+<span>    <span class="op">-</span><span class="fl">0.4788769</span>,</span>
+<span>    <span class="fl">0.6027292</span></span>
+<span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># ConsortiumMetabolism(data, name = "example_MiCo")</span></span></code></pre></div>
