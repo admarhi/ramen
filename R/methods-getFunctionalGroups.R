@@ -65,10 +65,11 @@ setMethod(
     ) |>
       as.matrix()
 
-    # Perform hierarchical clustering on the distance matrix derived from similarities
+    # Perform hierarchical clustering on the distance matrix derived from
+    # similarities
     # The result is a dendrogram representing functional groups
     dend <- similarity_matrix |>
-      # Convert similarity to distance (1 - similarity could be an option if needed)
+      # Convert similarity to distance (1 - similarity could be an option)
       stats::dist() |> # Use stats::dist for clarity
       stats::hclust(method = "complete") |> # Use stats::hclust for clarity
       stats::as.dendrogram() # Use stats::as.dendrogram for clarity
@@ -110,7 +111,8 @@ setMethod(
       ggplot2::geom_text(
         # manually draw the axis labels (i.e., leaf labels)
         data = label_tb,
-        ggplot2::aes(x = x, y = y - 0.1, label = label), # y - 2 to push below branches
+        # y - 2 to push below branches
+        ggplot2::aes(x = x, y = y - 0.1, label = label),
         angle = 90,
         hjust = 1,
         size = label_size,

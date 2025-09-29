@@ -5,8 +5,8 @@
 #' transformation, and organization of metabolic flux data.
 #'
 #' @param data A nested list containing misosoup simulation results.
-#' The structure should be data[\[substrate\]][\[focal_strain\]] where each element
-#' contains solution data.
+#' The structure should be data[\[substrate\]][\[focal_strain\]] where each
+#' element contains solution data.
 #'
 #' @return A list containing three tibbles:
 #'   \item{consortia}{Metabolic flux data for each species in the consortium}

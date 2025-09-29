@@ -50,7 +50,7 @@ setGeneric("getEdges", function(object, ...) standardGeneric("getEdges"))
 #'
 #' @param object A \code{ConsortiumMetabolism}, \code{ConsortiumMetabolismSet},
 #' or \code{ConsortiumMetabolismAlignment} object
-#' @return For \code{ConsortiumMetabolism} objects, returns a tibble with species,
+#' @return For \code{ConsortiumMetabolism} objects, returns a tb with species,
 #' metabolite and flux information. For \code{ConsortiumMetabolismSet} and
 #' \code{ConsortiumMetabolismAlignment} objects, returns a list of such tibbles.
 #' @export
@@ -172,6 +172,8 @@ setGeneric(
 #' @param object A \code{ConsortiumMetabolismSet} object.
 #' @param k An integer scalar specifying the number of clusters to color in the
 #'   dendrogram.
+#' @param label_size Numeric scalar specifying label size in the output plot.
+#' @param label_colours If not `NULL`, tb with two columns, label and colour.
 #' @param ... Additional arguments to be passed to specific methods.
 #'
 #' @return A dendrogram object representing the hierarchical clustering of

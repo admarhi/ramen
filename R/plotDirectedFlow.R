@@ -16,7 +16,7 @@
 #' @param vertical_spacing Numeric scalar. The maximum y-coordinate, controlling
 #'   the vertical spread of the layout. Defaults to 1.
 #' @param vertex_size Numeric scalar. The size of the vertices (nodes) in the
-#'   plot. Defaults to 10. 
+#'   plot. Defaults to 10.
 #' @param vertex_label_cex Numeric scalar. The character expansion factor for
 #'   vertex labels. Defaults to 0.8.
 #' @param edge_arrow_size Numeric scalar. The size of the arrows on the edges.

@@ -13,7 +13,7 @@ getCo(object)
 \item{object}{An object of class \code{ConsortiumMetabolism}}
 }
 \value{
-For \code{ConsortiumMetabolism} objects, returns a tibble with species,
+For \code{ConsortiumMetabolism} objects, returns a tb with species,
 metabolite and flux information. For \code{ConsortiumMetabolismSet} and
 \code{ConsortiumMetabolismAlignment} objects, returns a list of such tibbles.
 

@@ -8,8 +8,8 @@ overviewMisosoup(data)
 }
 \arguments{
 \item{data}{A nested list containing misosoup simulation results.
-The structure should be data[[substrate]][[focal_strain]] where each element
-contains solution data.}
+The structure should be data[[substrate]][[focal_strain]] where each
+element contains solution data.}
 }
 \value{
 A tibble with columns:

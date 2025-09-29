@@ -40,11 +40,13 @@ setMethod("show", "ConsortiumMetabolismAlignment", function(object) {
   #   dplyr::slice_max(.data$score)
 
   stringr::str_glue(
-    "Functional Alignment of {length(object@Graphs)} ConsortiumMetabolism\n\n" #,
+    "Functional Alignment of {length(object@Graphs)} ConsortiumMetabolism\n\n"
     # "- Max. identity {round(max_score$score[[1]], 4)}",
     # " for {nrow(max_score)} set(s) of communities\n",
-    # "- Depth at max. identity: {paste(round(max_score$depth, 4), collapse = ', ')}\n",
-    # "- Breadth at max. identity: {paste(round(max_score$breadth, 4), collapse = ', ')}\n\n"
+    # "- Depth at max. identity:
+    # {paste(round(max_score$depth, 4), collapse = ', ')}\n",
+    # "- Breadth at max. identity:
+    # {paste(round(max_score$breadth, 4), collapse = ', ')}\n\n"
   ) %>%
     cat()
 })

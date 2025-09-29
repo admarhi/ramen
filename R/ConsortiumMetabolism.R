@@ -1,8 +1,10 @@
 #' @title Functional Microbiome Representation based on TreeSummarizedExperiment
 #'
-#' @description Creates a ConsortiumMetabolism object representing metabolic interactions
-#' in a microbial community. The object contains information about metabolite consumption
-#' and production by different species, along with various metrics like flux sums and
+#' @description Creates a ConsortiumMetabolism object representing metabolic
+#' interactions in a microbial community. The object contains information about
+#' metabolite consumption
+#' and production by different species, along with various metrics like flux
+#' sums and
 #' effective fluxes.
 #'
 #' @param data a DataFrame-like object that includes columns specifying
@@ -51,12 +53,13 @@ ConsortiumMetabolism <- function(
   # Get only producing or consuming species
   only_cons <- setdiff(unique(cons$species), unique(prod$species))
   only_prod <- setdiff(unique(prod$species), unique(cons$species))
-  if (length(only_cons) == 0 & length(only_prod) == 0) {
+  if (length(only_cons) == 0 && length(only_prod) == 0) {
     mets <- dplyr::filter(mets, .data$met != "media")
   } else {
     if (length(only_cons) > 0) {
       cli::cli_alert_info(
-        "{.val {name}} {.code {only_cons}} only consume, production set to 'media'."
+        "{.val {name}} {.code {only_cons}} only consume,
+        production set to 'media'."
       )
       prod <- prod |>
         dplyr::bind_rows(
@@ -66,7 +69,8 @@ ConsortiumMetabolism <- function(
 
     if (length(only_prod) > 0) {
       cli::cli_alert_info(
-        "{.val {name}} {.code {only_prod}} only produce, consumption set to 'media'."
+        "{.val {name}} {.code {only_prod}} only produce,
+        consumption set to 'media'."
       )
       # message(only_prod, " only produce, consumption set to 'media'")
       cons <- cons |>

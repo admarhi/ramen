@@ -42,8 +42,10 @@ metrics
 }
 }
 \description{
-Creates a ConsortiumMetabolism object representing metabolic interactions
-in a microbial community. The object contains information about metabolite consumption
-and production by different species, along with various metrics like flux sums and
+Creates a ConsortiumMetabolism object representing metabolic
+interactions in a microbial community. The object contains information about
+metabolite consumption
+and production by different species, along with various metrics like flux
+sums and
 effective fluxes.
 }

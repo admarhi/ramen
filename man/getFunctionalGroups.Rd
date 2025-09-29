@@ -7,7 +7,7 @@
 \usage{
 getFunctionalGroups(object, k = 4, ...)
 
-\S4method{getFunctionalGroups}{ConsortiumMetabolismSet}(object, k = 4)
+\S4method{getFunctionalGroups}{ConsortiumMetabolismSet}(object, k = 4, label_size = 6, label_colours = NULL)
 }
 \arguments{
 \item{object}{A \code{ConsortiumMetabolismSet} object.}
@@ -16,6 +16,10 @@ getFunctionalGroups(object, k = 4, ...)
 dendrogram.}
 
 \item{...}{Additional arguments to be passed to specific methods.}
+
+\item{label_size}{Numeric scalar specifying label size in the output plot.}
+
+\item{label_colours}{If not \code{NULL}, tb with two columns, label and colour.}
 }
 \value{
 A dendrogram object representing the hierarchical clustering of

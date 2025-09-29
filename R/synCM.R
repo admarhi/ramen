@@ -1,6 +1,7 @@
 #' Generate Random Synthetic Consortium Metabolism
 #'
-#' A function that creates synthetic data suitable for demonstration purposes of the `ramen` package.
+#' A function that creates synthetic data suitable for demonstration purposes
+#' of the `ramen` package.
 #'
 #' @param n_species Number of species in the community
 #' @param max_met Maximum number of metabolites in the communities
@@ -36,7 +37,9 @@ synCM <- function(
   species_names <- r_names(n_species * scale_fac)
   met_vec <- paste0("met", 1:max_met)
 
-  if (!seed) seed <- sample(1:1000, 1)
+  if (!seed) {
+    seed <- sample(1:1000, 1)
+  }
   set.seed(seed)
 
   species <- vector()
@@ -55,8 +58,8 @@ synCM <- function(
       mets <- c(mets, m)
       t_vals <- c(t_vals, stats::rnorm(1, mean = 0, sd = 3))
     }
-    if (!dead_ends & (all(t_vals < 0) | all(t_vals > 0))) {
-      to_change <- sample(1:length(t_vals), 1)
+    if (!dead_ends && (all(t_vals < 0) || all(t_vals > 0))) {
+      to_change <- sample(seq_along(t_vals), 1)
       t_vals[to_change] <- t_vals[to_change] * -1
     }
     fluxes <- c(fluxes, t_vals)
@@ -73,7 +76,7 @@ synCM <- function(
   }
 
   ConsortiumMetabolism(
-    data = tibble(
+    data = tibble::tibble(
       species = species,
       met = mets,
       flux = fluxes
