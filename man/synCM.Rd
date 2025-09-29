@@ -34,7 +34,8 @@ tibble.}
 List with \code{n_co} number of communities.
 }
 \description{
-A function that creates synthetic data suitable for demonstration purposes of the \code{ramen} package.
+A function that creates synthetic data suitable for demonstration purposes
+of the \code{ramen} package.
 }
 \examples{
 synCM("Ex. Community", n_species = 5, max_met = 10)

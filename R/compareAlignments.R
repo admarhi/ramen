@@ -14,14 +14,19 @@
 #' @export
 #'
 compareAlignments <- function(
-    ...,
-    names,
-    smooth = FALSE,
-    se = FALSE,
-    min_frac = NULL,
-    max_frac = NULL) {
-  if (is.null(min_frac)) min_frac <- 0
-  if (is.null(max_frac)) max_frac <- 1
+  ...,
+  names,
+  smooth = FALSE,
+  se = FALSE,
+  min_frac = NULL,
+  max_frac = NULL
+) {
+  if (is.null(min_frac)) {
+    min_frac <- 0
+  }
+  if (is.null(max_frac)) {
+    max_frac <- 1
+  }
 
   alig_list <- list(...)
 
@@ -49,7 +54,8 @@ compareAlignments <- function(
       fill = .data$alignment
     )) +
     ggplot2::scale_x_continuous(
-      limits = c(min_frac, max_frac), expand = c(0, 0.02)
+      limits = c(min_frac, max_frac),
+      expand = c(0, 0.02)
     ) +
     ggplot2::labs(
       x = "Fraction Aligned Communities",
@@ -82,7 +88,7 @@ compareAlignments <- function(
 .rxnsPerLevel <- function(object, name) {
   levels <- object@Alignment$levels
   mat <- object@Alignment$levels_mat
-  rxns <- purrr::map_dbl(levels, ~ sum(mat >= .x))
+  rxns <- purrr::map_dbl(levels, \(x) sum(mat >= x))
 
   tibble::tibble(
     level = levels,

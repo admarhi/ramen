@@ -83,7 +83,8 @@ setMethod(
       ggplot2::geom_text(
         # manually draw the axis labels (i.e., leaf labels)
         data = label_tb,
-        ggplot2::aes(x = x, y = y - 0.1, label = label), # y - 2 to push below branches
+        # y - 2 to push below branches
+        ggplot2::aes(x = x, y = y - 0.1, label = label),
         angle = 90,
         hjust = 1,
         size = label_size,

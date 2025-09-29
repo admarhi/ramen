@@ -38,7 +38,3 @@ library(ramen)
 ```
 
 ## ConsortiumMetabolismSet
-
-```{r}
-
-```

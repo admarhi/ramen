@@ -13,7 +13,7 @@ setMethod("align", "ConsortiumMetabolismSet", function(object, name) {
     # Edges = all_edges,
     # # Graphs = graph_list,
     # Metabolites = all_met,
-    # ### This should really not store the consortia again but only a list of the
+    # ### This should really not store consortia again but only a list of the
     # ### names.
     # Consortia = object@Consortia
     # ### Need
