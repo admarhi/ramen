@@ -35,18 +35,18 @@ compareAlignments <- function(
   tb <- tibble::tibble(
     alignment = names,
     n_comms = unlist(lapply(alig_list, function(x) length(x@Communities)))
-  ) %>%
-    dplyr::left_join(rxns_per_level, by = "alignment") %>%
+  ) |>
+    dplyr::left_join(rxns_per_level, by = "alignment") |>
     dplyr::mutate(
       frac = .data$level / .data$n_comms
-    ) %>%
+    ) |>
     dplyr::filter(
       .data$level > 1 &
         .data$frac > {{ min_frac }} &
         .data$frac < {{ max_frac }}
     )
 
-  gg <- tb %>%
+  gg <- tb |>
     ggplot2::ggplot(ggplot2::aes(
       x = .data$frac,
       y = .data$rxns,

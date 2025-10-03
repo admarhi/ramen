@@ -7,7 +7,7 @@ setMethod("show", "ConsortiumMetabolism", function(object) {
     "\n{object@Name}: ConsortiumMetabolism Object\n",
     "{ifelse(object@Weighted, 'Weighted', 'Unweighted')} ",
     "metabolic network with {length(object@Metabolites)} metabolites.\n\n"
-  ) %>%
+  ) |>
     cat()
 })
 
@@ -20,7 +20,7 @@ setMethod("show", "ConsortiumMetabolismSet", function(object) {
     "\n{object@Name}: ConsortiumMetabolismSet Object\n",
     "containing {length(object@Consortia)} consortia.\n",
     "Description: {object@Description}\n\n"
-  ) %>%
+  ) |>
     cat()
 })
 
@@ -47,6 +47,6 @@ setMethod("show", "ConsortiumMetabolismAlignment", function(object) {
     # {paste(round(max_score$depth, 4), collapse = ', ')}\n",
     # "- Breadth at max. identity:
     # {paste(round(max_score$breadth, 4), collapse = ', ')}\n\n"
-  ) %>%
+  ) |>
     cat()
 })

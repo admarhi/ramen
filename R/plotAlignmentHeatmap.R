@@ -18,13 +18,13 @@ plotAlignmentHeatmap <- function(object, top = NULL, bottom = NULL) {
   colnames(levels_mat) <- SummarizedExperiment::colData(object)$met
   rownames(levels_mat) <- SummarizedExperiment::colData(object)$met
 
-  tb <- levels_mat %>%
-    tibble::as_tibble(rownames = "RowName") %>%
+  tb <- levels_mat |>
+    tibble::as_tibble(rownames = "RowName") |>
     tidyr::pivot_longer(
       cols = -"RowName",
       names_to = "ColName",
       values_to = "level"
-    ) %>%
+    ) |>
     dplyr::rename(
       met = "RowName",
       met2 = "ColName"
@@ -46,7 +46,7 @@ plotAlignmentHeatmap <- function(object, top = NULL, bottom = NULL) {
     tb <- dplyr::filter(tb, .data$level <= max_weight)
   }
 
-  gg <- tb %>%
+  gg <- tb |>
     ggplot2::ggplot(
       ggplot2::aes(x = .data$met2, y = .data$met, fill = .data$level)
     ) +
