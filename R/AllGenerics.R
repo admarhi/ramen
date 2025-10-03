@@ -1,9 +1,28 @@
 #' @title Return Species in a Consortium
 #'
-#' @param object A \code{ConsortiumMetabolism} object
-#' @param ... Object specific arguments.
+#' @description
+#' Retrieves species information from consortium metabolism objects. For
+#' \code{ConsortiumMetabolismSet} objects, species can be filtered by their
+#' metabolic versatility.
 #'
-#' @return A character vector containing the names of species in the consortium
+#' @details
+#' For \code{ConsortiumMetabolismSet} objects, the \code{type} parameter allows
+#' filtering species by their metabolic characteristics:
+#' \itemize{
+#'   \item \code{all} - Returns all species with their edge counts
+#'   \item \code{generalists} - Returns species with the most metabolic edges
+#'     (top \code{quantileCutoff} fraction)
+#'   \item \code{specialists} - Returns species with the fewest metabolic edges
+#'     (bottom \code{quantileCutoff} fraction)
+#' }
+#'
+#' @param object A \code{ConsortiumMetabolism}, \code{ConsortiumMetabolismSet},
+#'   or \code{ConsortiumMetabolismAlignment} object
+#' @param ... Object-specific arguments. See methods for details.
+#'
+#' @return For \code{ConsortiumMetabolism} objects, a character vector of
+#'   species names. For \code{ConsortiumMetabolismSet} objects, a tibble with
+#'   columns \code{species} and \code{n_edges}.
 #' @export
 setGeneric("getSpecies", function(object, ...) standardGeneric("getSpecies"))
 
@@ -22,16 +41,27 @@ setGeneric("getMet", function(object) standardGeneric("getMet"))
 #'
 #' @description
 #' Retrieves the edges representing metabolic interactions between species.
-#' The argument `type` can be used to return only specfic types of Edges from
-#' a `ConsortiumMetabolismSet` type object.
+#' The argument \code{type} can be used to return only specific types of edges
+#' from a \code{ConsortiumMetabolismSet} object.
+#'
+#' @details
+#' For \code{ConsortiumMetabolismSet} objects, the \code{type} parameter
+#' determines which edges are returned:
 #' \itemize{
-#'   \item `all` will return all edges
-#'   \item `pan-cons` will return only edges that exist in all consortia
-#'   \item `niche` will return niche consortia. A niche is defined a
+#'   \item \code{all} - Returns all edges
+#'   \item \code{pan-cons} - Returns edges present in most consortia (top
+#'     \code{1 - quantileCutoff} fraction)
+#'   \item \code{niche} - Returns rare edges (bottom \code{quantileCutoff}
+#'     fraction of consortia)
+#'   \item \code{core} - Returns edges involving many species (top
+#'     \code{1 - quantileCutoff} fraction)
+#'   \item \code{aux} - Returns edges involving few species (bottom
+#'     \code{quantileCutoff} fraction)
 #' }
 #'
-#' @param object A \code{ConsortiumMetabolism} object
-#' @param ... Object specific arguments.
+#' @param object A \code{ConsortiumMetabolism} or
+#'   \code{ConsortiumMetabolismSet} object
+#' @param ... Object-specific arguments. See methods for details.
 #'
 #' @return A tibble containing edge information including:
 #' \itemize{

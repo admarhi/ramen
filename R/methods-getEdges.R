@@ -8,8 +8,11 @@ setMethod("getEdges", "ConsortiumMetabolism", function(object) {
 
 #' @describeIn getEdges Get Edges From a \code{ConsortiumMetabolismSet} Object
 #' @param type Character scalar giving the type of edges to output.
-#' @param perc Numeric scalar giving the percentage to use for the quantile
-#' calculation.
+#' @param quantileCutoff Numeric scalar between 0 and 1 giving the quantile
+#'   threshold to use for filtering edges. For "pan-cons" and "core" types,
+#'   edges above \code{1 - quantileCutoff} are returned. For "niche" and "aux"
+#'   types, edges below \code{quantileCutoff} are returned. Defaults to 0.1
+#'   (i.e., top/bottom 10\%).
 #' @export
 setMethod(
   "getEdges",
@@ -17,9 +20,15 @@ setMethod(
   function(
     object,
     type = c("all", "pan-cons", "niche", "core", "aux"),
-    perc = 0.1
+    quantileCutoff = 0.1
   ) {
     type <- match.arg(type)
+
+    # Validate quantileCutoff parameter
+    stopifnot(
+      "quantileCutoff must be between 0 and 1" = quantileCutoff > 0 &&
+        quantileCutoff < 1
+    )
 
     pathways_cons <- object@Edges |>
       dplyr::reframe(
@@ -44,26 +53,25 @@ setMethod(
       pathways_cons
     } else {
       if (type == "pan-cons") {
-        # Get the upper 10 % based on the number of consortia in the object
-        quant <- stats::quantile(1:total_cons, p = 0.9)
-        # Returns all pathways that appear in all consortia
+        # Get edges in the top (1 - quantileCutoff) of consortia
+        quant <- stats::quantile(1:total_cons, p = 1 - quantileCutoff)
         dplyr::filter(pathways_cons, .data$n_cons > quant) |>
           dplyr::arrange(dplyr::desc(.data$n_cons))
       } else if (type == "niche") {
-        # Get the lower quantile based on the number of consortia in the object
-        quant <- stats::quantile(1:total_cons, p = 0.1)
+        # Get edges in the bottom quantileCutoff of consortia
+        quant <- stats::quantile(1:total_cons, p = quantileCutoff)
         pathways_cons |>
           dplyr::filter(.data$n_cons < quant) |>
           dplyr::arrange(.data$n_cons)
       } else if (type == "core") {
-        # Get the upper quantile based on number of species in the object
-        quant <- stats::quantile(2:total_species, p = 0.8)
+        # Get edges in the top (1 - quantileCutoff) of species
+        quant <- stats::quantile(2:total_species, p = 1 - quantileCutoff)
         pathways_species |>
           dplyr::filter(.data$n_species > quant) |>
           dplyr::arrange(dplyr::desc(.data$n_species))
       } else if (type == "aux") {
-        # Get the lower quantile based on number of species in the object
-        quant <- stats::quantile(1:total_species, p = 0.2)
+        # Get edges in the bottom quantileCutoff of species
+        quant <- stats::quantile(1:total_species, p = quantileCutoff)
         pathways_species |>
           dplyr::filter(.data$n_species < quant) |>
           dplyr::arrange(.data$n_species)
