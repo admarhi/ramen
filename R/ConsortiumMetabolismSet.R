@@ -134,7 +134,7 @@ ConsortiumMetabolismSet <- function(
       overlap_score = purrr::map2_dbl(
         .data$cm_x,
         .data$cm_y,
-        \(x, y) bin_mat_overlap(x, y),
+        \(x, y) .binMatOverlap(x, y),
         .progress = TRUE
       )
     )
@@ -215,7 +215,7 @@ ConsortiumMetabolismSet <- function(
 cms <- ConsortiumMetabolismSet
 
 #' @noRd
-bin_mat_overlap <- function(bm1, bm2) {
+.binMatOverlap <- function(bm1, bm2) {
   # Get the intersection of the metabolites
   met <- intersect(rownames(bm1), rownames(bm2))
 

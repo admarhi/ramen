@@ -29,12 +29,12 @@ synCM <- function(
   dead_ends = FALSE,
   cm = TRUE
 ) {
-  r_names <- function(n = 5000) {
+  .rNames <- function(n = 5000) {
     a <- do.call(paste0, replicate(3, sample(LETTERS, n, TRUE), FALSE))
     paste0(a, sprintf("%03d", sample(9999, n, TRUE)), sample(LETTERS, n, TRUE))
   }
 
-  species_names <- r_names(n_species * scale_fac)
+  species_names <- .rNames(n_species * scale_fac)
   met_vec <- paste0("met", 1:max_met)
 
   if (!seed) {

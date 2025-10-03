@@ -41,14 +41,14 @@ ConsortiumMetabolism <- function(
   ...
 ) {
   # Validate and prepare input data
-  data <- prepare_input_data(data, species_col, metabolite_col, flux_col)
+  data <- .prepareInputData(data, species_col, metabolite_col, flux_col)
   # Create metabolite index mapping
-  mets <- create_metabolite_index(data)
+  mets <- .createMetaboliteIndex(data)
 
   # Process flux data into consumption and production
-  tb <- filter_nonzero_flux(data)
-  cons <- calculate_consumption(tb)
-  prod <- calculate_production(tb)
+  tb <- .filterNonzeroFlux(data)
+  cons <- .calculateConsumption(tb)
+  prod <- .calculateProduction(tb)
 
   # Get only producing or consuming species
   only_cons <- setdiff(unique(cons$species), unique(prod$species))
@@ -81,10 +81,10 @@ ConsortiumMetabolism <- function(
   }
 
   # Create edge data with metrics
-  out <- create_edge_data(cons, prod, mets)
+  out <- .createEdgeData(cons, prod, mets)
 
   # Generate assay matrices
-  assays <- create_assay_matrices(out, mets)
+  assays <- .createAssayMatrices(out, mets)
 
   # Create TreeSummarizedExperiment object
   tse <- TreeSummarizedExperiment(
@@ -115,7 +115,7 @@ ConsortiumMetabolism <- function(
 
 #' Prepare and validate input data
 #' @noRd
-prepare_input_data <- function(data, species_col, metabolite_col, flux_col) {
+.prepareInputData <- function(data, species_col, metabolite_col, flux_col) {
   stopifnot(exprs = {
     all(c(species_col, metabolite_col, flux_col) %in% names(data))
   })
@@ -130,7 +130,7 @@ prepare_input_data <- function(data, species_col, metabolite_col, flux_col) {
 
 #' Create metabolite index mapping
 #' @noRd
-create_metabolite_index <- function(data) {
+.createMetaboliteIndex <- function(data) {
   # tibble(met = sort(unique(data$met))) |>
   #   tibble::rowid_to_column(var = "index")
 
@@ -141,13 +141,13 @@ create_metabolite_index <- function(data) {
 
 #' Filter out zero flux values
 #' @noRd
-filter_nonzero_flux <- function(data) {
+.filterNonzeroFlux <- function(data) {
   filter(data, .data$flux != 0)
 }
 
 #' Calculate consumption metrics
 #' @noRd
-calculate_consumption <- function(tb) {
+.calculateConsumption <- function(tb) {
   tb |>
     filter(.data$flux < 0) |>
     mutate(flux = .data$flux * -1) |>
@@ -159,7 +159,7 @@ calculate_consumption <- function(tb) {
 
 #' Calculate production metrics
 #' @noRd
-calculate_production <- function(tb) {
+.calculateProduction <- function(tb) {
   tb |>
     filter(.data$flux > 0) |>
     # Sum bc in eg cooc data each edge is given with its own flux so then
@@ -170,7 +170,7 @@ calculate_production <- function(tb) {
 
 #' Create edge data with all metrics
 #' @noRd
-create_edge_data <- function(cons, prod, mets) {
+.createEdgeData <- function(cons, prod, mets) {
   cons |>
     dplyr::inner_join(
       prod,
@@ -196,7 +196,7 @@ create_edge_data <- function(cons, prod, mets) {
 
 #' Create assay matrices
 #' @noRd
-create_assay_matrices <- function(out, mets) {
+.createAssayMatrices <- function(out, mets) {
   # Create the dimnames
   dimnames <- list(mets$met, mets$met)
   n <- nrow(mets)
