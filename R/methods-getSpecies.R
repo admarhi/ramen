@@ -18,13 +18,27 @@ setMethod("getSpecies", "ConsortiumMetabolism", function(object) {
 #' @describeIn getSpecies Return Species in a Microbiome
 #' @param object a \code{ConsortiumMetabolismSet} Object
 #' @param type Character scalar giving the type of species to output.
+#' @param quantileCutoff Numeric scalar between 0 and 1 specifying the fraction
+#'   of species to return when \code{type} is "generalists" or "specialists".
+#'   For "generalists", the top \code{quantileCutoff} fraction of species with
+#'   the most edges is returned. For "specialists", the bottom
+#'   \code{quantileCutoff} fraction with the fewest edges is returned.
+#'   Defaults to 0.15 (i.e., 15\%). Ignored when \code{type = "all"}.
 #'
-#' @return A character vector representing the microorganisms.
+#' @return A tibble with columns \code{species} and \code{n_edges}.
 setMethod(
   "getSpecies",
   "ConsortiumMetabolismSet",
-  function(object, type = c("all", "generalists", "specialists")) {
+  function(object, 
+           type = c("all", "generalists", "specialists"),
+           quantileCutoff = 0.15) {
     type <- match.arg(type)
+    
+    # Validate quantileCutoff parameter
+    stopifnot(
+      "quantileCutoff must be between 0 and 1" = 
+        quantileCutoff > 0 && quantileCutoff < 1
+    )
 
     tb <- object@Edges |>
       dplyr::mutate(edge_name = paste0(.data$consumed, "-", .data$produced)) |>
@@ -38,13 +52,13 @@ setMethod(
     if (type == "all") {
       tb
     } else if (type == "generalists") {
-      # Get the upper 15 % based on the number of edges in the object
-      quant <- stats::quantile(1:total_species, p = 0.15) |> round()
-      tb |> dplyr::slice_head(n = quant)
+      # Get the top quantileCutoff fraction of species
+      n_species_to_return <- ceiling(total_species * quantileCutoff)
+      tb |> dplyr::slice_head(n = n_species_to_return)
     } else if (type == "specialists") {
-      # Get the upper 15 % based on the number of edges in the object
-      quant <- stats::quantile(1:total_species, p = 0.15) |> round()
-      tb |> dplyr::slice_tail(n = quant)
+      # Get the bottom quantileCutoff fraction of species
+      n_species_to_return <- ceiling(total_species * quantileCutoff)
+      tb |> dplyr::slice_tail(n = n_species_to_return)
     }
   }
 )

@@ -13,18 +13,22 @@ getEdges(object, ...)
 \S4method{getEdges}{ConsortiumMetabolismSet}(
   object,
   type = c("all", "pan-cons", "niche", "core", "aux"),
-  perc = 0.1
+  quantileCutoff = 0.1
 )
 }
 \arguments{
-\item{object}{A \code{ConsortiumMetabolism} object}
+\item{object}{A \code{ConsortiumMetabolism} or
+\code{ConsortiumMetabolismSet} object}
 
-\item{...}{Object specific arguments.}
+\item{...}{Object-specific arguments. See methods for details.}
 
 \item{type}{Character scalar giving the type of edges to output.}
 
-\item{perc}{Numeric scalar giving the percentage to use for the quantile
-calculation.}
+\item{quantileCutoff}{Numeric scalar between 0 and 1 giving the quantile
+threshold to use for filtering edges. For "pan-cons" and "core" types,
+edges above \code{1 - quantileCutoff} are returned. For "niche" and "aux"
+types, edges below \code{quantileCutoff} are returned. Defaults to 0.1
+(i.e., top/bottom 10\\%).}
 }
 \value{
 A tibble containing edge information including:
@@ -37,12 +41,22 @@ A tibble containing edge information including:
 }
 \description{
 Retrieves the edges representing metabolic interactions between species.
-The argument \code{type} can be used to return only specfic types of Edges from
-a \code{ConsortiumMetabolismSet} type object.
+The argument \code{type} can be used to return only specific types of edges
+from a \code{ConsortiumMetabolismSet} object.
+}
+\details{
+For \code{ConsortiumMetabolismSet} objects, the \code{type} parameter
+determines which edges are returned:
 \itemize{
-\item \code{all} will return all edges
-\item \code{pan-cons} will return only edges that exist in all consortia
-\item \code{niche} will return niche consortia. A niche is defined a
+\item \code{all} - Returns all edges
+\item \code{pan-cons} - Returns edges present in most consortia (top
+\code{1 - quantileCutoff} fraction)
+\item \code{niche} - Returns rare edges (bottom \code{quantileCutoff}
+fraction of consortia)
+\item \code{core} - Returns edges involving many species (top
+\code{1 - quantileCutoff} fraction)
+\item \code{aux} - Returns edges involving few species (bottom
+\code{quantileCutoff} fraction)
 }
 }
 \section{Methods (by class)}{
