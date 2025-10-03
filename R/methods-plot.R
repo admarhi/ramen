@@ -53,7 +53,12 @@ setMethod(
       # Dendrogram branches
       ggplot2::geom_segment(
         data = gg_dend$segments,
-        ggplot2::aes(x = x, y = y, xend = xend, yend = yend)
+        ggplot2::aes(
+          x = .data$x,
+          y = .data$y,
+          xend = .data$xend,
+          yend = .data$yend
+        )
       ) +
       ggplot2::geom_point(
         data = node_data,
@@ -84,7 +89,7 @@ setMethod(
         # manually draw the axis labels (i.e., leaf labels)
         data = label_tb,
         # y - 2 to push below branches
-        ggplot2::aes(x = x, y = y - 0.1, label = label),
+        ggplot2::aes(x = .data$x, y = .data$y - 0.1, label = .data$label),
         angle = 90,
         hjust = 1,
         size = label_size,
