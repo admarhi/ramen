@@ -16,7 +16,6 @@ Imports:
     ggplot2,
     glue,
     igraph,
-    magrittr,
     Matrix,
     methods,
     MultiAssayExperiment,

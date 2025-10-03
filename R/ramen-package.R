@@ -9,7 +9,6 @@
 #' @importFrom dplyr reframe
 #' @importFrom dplyr rename
 #' @importFrom dplyr select
-#' @importFrom magrittr %>%
 #' @importFrom Matrix sparseMatrix
 #' @importFrom methods show
 #' @importFrom MultiAssayExperiment assays
