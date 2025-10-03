@@ -1,6 +1,5 @@
 #' @describeIn getSpecies Return Species in a Microbiome
 #' @param object a \code{ConsortiumMetabolism} object
-#' @return A character vector representing the microorganisms.
 setMethod("getSpecies", "ConsortiumMetabolism", function(object) {
   # cat(
   #   length(unique(object@InputData$species)),
@@ -24,20 +23,20 @@ setMethod("getSpecies", "ConsortiumMetabolism", function(object) {
 #'   the most edges is returned. For "specialists", the bottom
 #'   \code{quantileCutoff} fraction with the fewest edges is returned.
 #'   Defaults to 0.15 (i.e., 15\%). Ignored when \code{type = "all"}.
-#'
-#' @return A tibble with columns \code{species} and \code{n_edges}.
 setMethod(
   "getSpecies",
   "ConsortiumMetabolismSet",
-  function(object, 
-           type = c("all", "generalists", "specialists"),
-           quantileCutoff = 0.15) {
+  function(
+    object,
+    type = c("all", "generalists", "specialists"),
+    quantileCutoff = 0.15
+  ) {
     type <- match.arg(type)
-    
+
     # Validate quantileCutoff parameter
     stopifnot(
-      "quantileCutoff must be between 0 and 1" = 
-        quantileCutoff > 0 && quantileCutoff < 1
+      "quantileCutoff must be between 0 and 1" = quantileCutoff > 0 &&
+        quantileCutoff < 1
     )
 
     tb <- object@Edges |>
@@ -65,7 +64,6 @@ setMethod(
 
 #' @describeIn getSpecies Return Species in a Microbiome
 #' @param object a \code{ConsortiumMetabolismAlignment} Object
-#' @return A character vector representing the microorganisms.
 setMethod("getSpecies", "ConsortiumMetabolismAlignment", function(object) {
   ### ToDo
 })
