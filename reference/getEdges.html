@@ -61,12 +61,11 @@
 
 
 <dl><dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
-<dd><p>A <code>ConsortiumMetabolism</code> or
-<code>ConsortiumMetabolismSet</code> object</p></dd>
+<dd><p>A <code>ConsortiumMetabolism</code> object</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Object-specific arguments. See methods for details.</p></dd>
+<dd><p>Object specific arguments.</p></dd>
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
@@ -89,21 +88,11 @@ types, edges below <code>quantileCutoff</code> are returned. Defaults to 0.1
 
 
 Retrieves the edges representing metabolic interactions between species.
-The argument <code>type</code> can be used to return only specific types of edges
-from a <code>ConsortiumMetabolismSet</code> object.
-
-
-For <code>ConsortiumMetabolismSet</code> objects, the <code>type</code> parameter
-determines which edges are returned:
-<ul><li><p><code>all</code> - Returns all edges</p></li>
-<li><p><code>pan-cons</code> - Returns edges present in most consortia (top
-<code>1 - quantileCutoff</code> fraction)</p></li>
-<li><p><code>niche</code> - Returns rare edges (bottom <code>quantileCutoff</code>
-fraction of consortia)</p></li>
-<li><p><code>core</code> - Returns edges involving many species (top
-<code>1 - quantileCutoff</code> fraction)</p></li>
-<li><p><code>aux</code> - Returns edges involving few species (bottom
-<code>quantileCutoff</code> fraction)</p></li>
+The argument <code>type</code> can be used to return only specfic types of Edges from
+a <code>ConsortiumMetabolismSet</code> type object.
+<ul><li><p><code>all</code> will return all edges</p></li>
+<li><p><code>pan-cons</code> will return only edges that exist in all consortia</p></li>
+<li><p><code>niche</code> will return niche consortia. A niche is defined a</p></li>
 </ul>
 
 Methods (by class)

@@ -68,7 +68,7 @@
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Object-specific arguments. See methods for details.</p></dd>
+<dd><p>Object specific arguments.</p></dd>
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
@@ -83,27 +83,13 @@ the most edges is returned. For "specialists", the bottom
 <code>quantileCutoff</code> fraction with the fewest edges is returned.
 Defaults to 0.15 (i.e., 15\<!-- %). Ignored when \code{type = "all"}.} --></p></dd>
 
-</dl><p>For <code>ConsortiumMetabolism</code> objects, a character vector of
-species names. For <code>ConsortiumMetabolismSet</code> objects, a tibble with
-columns <code>species</code> and <code>n_edges</code>.A character vector representing the microorganisms.A tibble with columns <code>species</code> and <code>n_edges</code>.A character vector representing the microorganisms.
+</dl><p>A character vector containing the names of species in the consortiumA character vector representing the microorganisms.A character vector representing the microorganisms.A character vector representing the microorganisms.
 
 
-Retrieves species information from consortium metabolism objects. For
-<code>ConsortiumMetabolismSet</code> objects, species can be filtered by their
-metabolic versatility.
-
-
-For <code>ConsortiumMetabolismSet</code> objects, the <code>type</code> parameter allows
-filtering species by their metabolic characteristics:
-</p><ul><li><p><code>all</code> - Returns all species with their edge counts</p></li>
-<li><p><code>generalists</code> - Returns species with the most metabolic edges
-(top <code>quantileCutoff</code> fraction)</p></li>
-<li><p><code>specialists</code> - Returns species with the fewest metabolic edges
-(bottom <code>quantileCutoff</code> fraction)</p></li>
-</ul>
+Return Species in a Consortium
 
 Methods (by class)
-<ul><li><p><code>getSpecies(ConsortiumMetabolism)</code>: Return Species in a Microbiome</p></li>
+</p><ul><li><p><code>getSpecies(ConsortiumMetabolism)</code>: Return Species in a Microbiome</p></li>
 <li><p><code>getSpecies(ConsortiumMetabolismSet)</code>: Return Species in a Microbiome</p></li>
 <li><p><code>getSpecies(ConsortiumMetabolismAlignment)</code>: Return Species in a Microbiome</p></li>
 </ul></div>
