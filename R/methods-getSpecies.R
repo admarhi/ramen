@@ -1,15 +1,7 @@
 #' @describeIn getSpecies Return Species in a Microbiome
 #' @param object a \code{ConsortiumMetabolism} object
+#' @return A character vector representing the microorganisms.
 setMethod("getSpecies", "ConsortiumMetabolism", function(object) {
-  # cat(
-  #   length(unique(object@InputData$species)),
-  #   " microorganisms in consortia ",
-  #   object@Name,
-  #   ":\n",
-  #   sep = ""
-  # )
-  # cat(paste0("  - ", unique(object@InputData$species), collapse = "\n"), "\n")
-  # invisible(unique(object@InputData$species))
   unique(object@InputData$species)
 })
 
@@ -23,6 +15,8 @@ setMethod("getSpecies", "ConsortiumMetabolism", function(object) {
 #'   the most edges is returned. For "specialists", the bottom
 #'   \code{quantileCutoff} fraction with the fewest edges is returned.
 #'   Defaults to 0.15 (i.e., 15\%). Ignored when \code{type = "all"}.
+#'
+#' @return A character vector representing the microorganisms.
 setMethod(
   "getSpecies",
   "ConsortiumMetabolismSet",
@@ -64,6 +58,7 @@ setMethod(
 
 #' @describeIn getSpecies Return Species in a Microbiome
 #' @param object a \code{ConsortiumMetabolismAlignment} Object
+#' @return A character vector representing the microorganisms.
 setMethod("getSpecies", "ConsortiumMetabolismAlignment", function(object) {
   ### ToDo
 })

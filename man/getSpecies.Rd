@@ -22,7 +22,7 @@ getSpecies(object, ...)
 \arguments{
 \item{object}{a \code{ConsortiumMetabolismAlignment} Object}
 
-\item{...}{Object-specific arguments. See methods for details.}
+\item{...}{Object specific arguments.}
 
 \item{type}{Character scalar giving the type of species to output.}
 
@@ -34,31 +34,16 @@ the most edges is returned. For "specialists", the bottom
 Defaults to 0.15 (i.e., 15\\%). Ignored when \code{type = "all"}.}
 }
 \value{
-For \code{ConsortiumMetabolism} objects, a character vector of
-species names. For \code{ConsortiumMetabolismSet} objects, a tibble with
-columns \code{species} and \code{n_edges}.
+A character vector containing the names of species in the consortium
 
 A character vector representing the microorganisms.
 
-A tibble with columns \code{species} and \code{n_edges}.
+A character vector representing the microorganisms.
 
 A character vector representing the microorganisms.
 }
 \description{
-Retrieves species information from consortium metabolism objects. For
-\code{ConsortiumMetabolismSet} objects, species can be filtered by their
-metabolic versatility.
-}
-\details{
-For \code{ConsortiumMetabolismSet} objects, the \code{type} parameter allows
-filtering species by their metabolic characteristics:
-\itemize{
-\item \code{all} - Returns all species with their edge counts
-\item \code{generalists} - Returns species with the most metabolic edges
-(top \code{quantileCutoff} fraction)
-\item \code{specialists} - Returns species with the fewest metabolic edges
-(bottom \code{quantileCutoff} fraction)
-}
+Return Species in a Consortium
 }
 \section{Methods (by class)}{
 \itemize{

@@ -17,10 +17,9 @@ getEdges(object, ...)
 )
 }
 \arguments{
-\item{object}{A \code{ConsortiumMetabolism} or
-\code{ConsortiumMetabolismSet} object}
+\item{object}{A \code{ConsortiumMetabolism} object}
 
-\item{...}{Object-specific arguments. See methods for details.}
+\item{...}{Object specific arguments.}
 
 \item{type}{Character scalar giving the type of edges to output.}
 
@@ -41,22 +40,12 @@ A tibble containing edge information including:
 }
 \description{
 Retrieves the edges representing metabolic interactions between species.
-The argument \code{type} can be used to return only specific types of edges
-from a \code{ConsortiumMetabolismSet} object.
-}
-\details{
-For \code{ConsortiumMetabolismSet} objects, the \code{type} parameter
-determines which edges are returned:
+The argument \code{type} can be used to return only specfic types of Edges from
+a \code{ConsortiumMetabolismSet} type object.
 \itemize{
-\item \code{all} - Returns all edges
-\item \code{pan-cons} - Returns edges present in most consortia (top
-\code{1 - quantileCutoff} fraction)
-\item \code{niche} - Returns rare edges (bottom \code{quantileCutoff}
-fraction of consortia)
-\item \code{core} - Returns edges involving many species (top
-\code{1 - quantileCutoff} fraction)
-\item \code{aux} - Returns edges involving few species (bottom
-\code{quantileCutoff} fraction)
+\item \code{all} will return all edges
+\item \code{pan-cons} will return only edges that exist in all consortia
+\item \code{niche} will return niche consortia. A niche is defined a
 }
 }
 \section{Methods (by class)}{
