@@ -1,6 +1,7 @@
+#' @exportMethod plot
 setMethod(
   "plot",
-  signature(x = "ConsortiumMetabolism", y = "missing"),
+  "ConsortiumMetabolism",
   function(
     x,
     type = c(
