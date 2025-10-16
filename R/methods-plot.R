@@ -1,6 +1,6 @@
 setMethod(
   "plot",
-  "ConsortiumMetabolism",
+  signature(x = "ConsortiumMetabolism", y = "missing"),
   function(
     x,
     type = c(
