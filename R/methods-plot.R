@@ -29,6 +29,7 @@ setMethod(
   }
 )
 
+#' @exportMethod plot
 setMethod(
   "plot",
   "ConsortiumMetabolismSet",
@@ -99,6 +100,7 @@ setMethod(
   }
 )
 
+#' @exportMethod plot
 setMethod("plot", "ConsortiumMetabolismAlignment", function(x, type = NULL) {
   # Plot network graph showing alignment of metabolisms
   if (is.null(type)) {
