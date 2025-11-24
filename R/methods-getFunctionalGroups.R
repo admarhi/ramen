@@ -38,21 +38,23 @@ setMethod(
 
     # Calculate Jaccard similarity for each pair of species
     # Jaccard similarity = (intersection of reactions) / (union of reactions)
-    for (i in seq_len(nrow(species_combinations))) {
-      species_x <- species_combinations$species_x[i]
-      species_y <- species_combinations$species_y[i]
+    # Vectorized approach using purrr for better performance
+    species_combinations$similarity <- purrr::map2_dbl(
+      species_combinations$species_x,
+      species_combinations$species_y,
+      function(sp_x, sp_y) {
+        # Get the set of reactions for species x and species y
+        rxns_set_x <- rxns_per_species$edge[rxns_per_species$species == sp_x]
+        rxns_set_y <- rxns_per_species$edge[rxns_per_species$species == sp_y]
 
-      # Get the set of reactions for species x and species y
-      rxns_set_x <- rxns_per_species$edge[rxns_per_species$species == species_x]
-      rxns_set_y <- rxns_per_species$edge[rxns_per_species$species == species_y]
+        # Calculate intersection and union of reaction sets
+        intersection <- length(intersect(rxns_set_x, rxns_set_y))
+        union <- length(union(rxns_set_x, rxns_set_y))
 
-      # Calculate intersection and union of reaction sets
-      intersection <- length(intersect(rxns_set_x, rxns_set_y))
-      union <- length(union(rxns_set_x, rxns_set_y))
-
-      # Calculate and store Jaccard similarity
-      species_combinations$similarity[i] <- intersection / union
-    }
+        # Calculate and return Jaccard similarity
+        intersection / union
+      }
+    )
 
     # Construct a sparse matrix from the species combinations and similarities
     # This matrix represents the similarity between all pairs of species
@@ -94,7 +96,7 @@ setMethod(
     gg_dend$labels$label <- NA
 
     # Make ggplot
-    ggplot2::ggplot(gg_dend, horiz = FALSE) +
+    plot_obj <- ggplot2::ggplot(gg_dend, horiz = FALSE) +
       ggplot2::theme_minimal() +
       ggplot2::theme(
         axis.title = ggplot2::element_blank(),
@@ -118,9 +120,20 @@ setMethod(
         size = label_size,
         color = label_tb$colour # vector of colors
       )
-    ### Need to output also the tibbles with the data long term
-    # Return the dendrogram object invisibly
-    # This allows the user to assign it to a variable if desired
-    # return(invisible(dend))
+
+    # Return a list containing the plot, dendrogram, and underlying data
+    result <- list(
+      plot = plot_obj,
+      dendrogram = dend,
+      similarity_matrix = similarity_matrix,
+      species_combinations = species_combinations,
+      reactions_per_species = rxns_per_species
+    )
+
+    # Print the plot
+    print(plot_obj)
+
+    # Return the result invisibly so users can capture the data if needed
+    invisible(result)
   }
 )

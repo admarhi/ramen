@@ -72,7 +72,6 @@ ConsortiumMetabolism <- function(
         "{.val {name}} {.code {only_prod}} only produce,
         consumption set to 'media'."
       )
-      # message(only_prod, " only produce, consumption set to 'media'")
       cons <- cons |>
         dplyr::bind_rows(
           tibble::tibble(species = only_prod, consumed = "media", flux = 1)

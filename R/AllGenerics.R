@@ -27,7 +27,9 @@ setGeneric("getMet", function(object) standardGeneric("getMet"))
 #' \itemize{
 #'   \item `all` will return all edges
 #'   \item `pan-cons` will return only edges that exist in all consortia
-#'   \item `niche` will return niche consortia. A niche is defined a
+#'   \item `niche` will return niche edges specific to individual consortia
+#'   \item `core` will return core metabolic edges
+#'   \item `aux` will return auxiliary edges
 #' }
 #'
 #' @param object A \code{ConsortiumMetabolism} object
@@ -83,9 +85,6 @@ setGeneric("align", function(object, name) standardGeneric("align"))
 #' @export
 setGeneric("modify", function(object) standardGeneric("modify"))
 
-
-### Improve the documentation for the methods below
-
 #' @title Cluster a \code{ConsortiaMetabolismSet} Object
 #'
 #' @description
@@ -129,7 +128,7 @@ setGeneric(
 #' object
 #' @param value Character scalar specifying a name.
 #'
-#' @return A cluster from a \code{ConsortiumMetabolismSet} object
+#' @return The modified object with updated name
 #' @export
 setGeneric(
   "setName",
@@ -146,9 +145,9 @@ setGeneric(
 #' @param object A \code{ConsortiumMetabolism},
 #' \code{ConsortiumMetabolismSet}, or \code{ConsortiumMetabolismAlignment}
 #' object
-#' @param value Character scalar specifying a name.
+#' @param value Character scalar specifying a description.
 #'
-#' @return A cluster from a \code{ConsortiumMetabolismSet} object
+#' @return The modified object with updated description
 #' @export
 setGeneric(
   "setDesc",
@@ -176,8 +175,15 @@ setGeneric(
 #' @param label_colours If not `NULL`, tb with two columns, label and colour.
 #' @param ... Additional arguments to be passed to specific methods.
 #'
-#' @return A dendrogram object representing the hierarchical clustering of
-#' species into functional groups. The plot of the dendrogram is also displayed.
+#' @return A list (returned invisibly) containing:
+#' \itemize{
+#'   \item plot: The ggplot2 dendrogram visualization
+#'   \item dendrogram: The dendrogram object
+#'   \item similarity_matrix: Matrix of Jaccard similarities between species
+#'   \item species_combinations: Tibble with pairwise species comparisons
+#'   \item reactions_per_species: Tibble mapping species to their reactions
+#' }
+#' The plot is automatically displayed.
 #'
 #' @export
 setGeneric(
