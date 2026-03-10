@@ -43,12 +43,12 @@ test_that("ConsortiumMetabolismSet getSpecies works", {
   cm2 <- ConsortiumMetabolism(data2, name = "cm2")
   cms <- ConsortiumMetabolismSet(list(cm1, cm2), name = "test")
 
-  # Get all species
+  # Get all species (returns a tibble with species and n_edges columns)
   all_species <- getSpecies(cms, type = "all")
-  expect_type(all_species, "character")
-  expect_true("s1" %in% all_species)
-  expect_true("s2" %in% all_species)
-  expect_true("s3" %in% all_species)
+  expect_s3_class(all_species, "tbl_df")
+  expect_true("s1" %in% all_species$species)
+  expect_true("s2" %in% all_species$species)
+  expect_true("s3" %in% all_species$species)
 })
 
 test_that("ConsortiumMetabolismSet getEdges works", {

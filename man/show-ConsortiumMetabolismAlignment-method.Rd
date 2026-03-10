@@ -7,7 +7,7 @@
 \S4method{show}{ConsortiumMetabolismAlignment}(object)
 }
 \arguments{
-\item{object}{a \code{ConsortiumMetabolismAlignment} object.}
+\item{object}{A \code{ConsortiumMetabolismAlignment} object.}
 }
 \description{
 Show method for \code{ConsortiumMetabolismAlignment} Objects

@@ -10,6 +10,7 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Imports:
+    BiocParallel,
     cli,
     dendextend,
     dplyr,
@@ -41,3 +42,32 @@ Depends:
 URL: https://admarhi.github.io/ramen/
 Config/testthat/edition: 3
 LazyData: true
+Collate: 
+    'AllClasses.R'
+    'AllGenerics.R'
+    'ConsortiumMetabolism.R'
+    'ConsortiumMetabolismAlignment.R'
+    'ConsortiumMetabolismSet.R'
+    'compareAlignments.R'
+    'helpers-align.R'
+    'importMisosoup.R'
+    'method-setDescription.R'
+    'method-setName.R'
+    'methods-align.R'
+    'methods-compareSpecies.R'
+    'methods-getCluster.R'
+    'methods-getCo.R'
+    'methods-getEdges.R'
+    'methods-getFunctionalGroups.R'
+    'methods-getMet.R'
+    'methods-getSpecies.R'
+    'methods-modify.R'
+    'methods-plot.R'
+    'methods-show.R'
+    'pivotCM.R'
+    'plotAlignmentHeatmap.R'
+    'plotAlignmentNetwork.R'
+    'plotDirectedFlow.R'
+    'ramen-data.R'
+    'ramen-package.R'
+    'synCM.R'

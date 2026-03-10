@@ -2,7 +2,7 @@
 % Please edit documentation in R/compareAlignments.R
 \name{compareAlignments}
 \alias{compareAlignments}
-\title{Compare Alignments}
+\title{Compare Alignments (Deprecated)}
 \usage{
 compareAlignments(
   ...,
@@ -14,22 +14,22 @@ compareAlignments(
 )
 }
 \arguments{
-\item{...}{MiCoAl objects}
+\item{...}{Alignment objects.}
 
-\item{names}{Character vector supplying names to be used as labels in plot}
+\item{names}{Character vector of names.}
 
-\item{smooth}{Boolean to toggle a smooth line}
+\item{smooth}{Logical; add smooth line.}
 
-\item{se}{Boolean to toggle std. error bands}
+\item{se}{Logical; add standard error bands.}
 
-\item{min_frac}{Numerical value specifying minimum fraction in alignment}
+\item{min_frac}{Numeric; minimum fraction.}
 
-\item{max_frac}{Numerical value specifying maximum fraction in alignment}
+\item{max_frac}{Numeric; maximum fraction.}
 }
 \value{
-A ggplot for the comparison of multiple MiCoAl objects.
+None. Raises an error.
 }
 \description{
-Visual comparison of multiple alignments by plotting the number of aligned
-reactions against the fraction of aligned communities
+This function is deprecated and will be reimplemented in a
+future version.
 }

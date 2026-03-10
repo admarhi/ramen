@@ -45,7 +45,9 @@ a \code{ConsortiumMetabolismSet} type object.
 \itemize{
 \item \code{all} will return all edges
 \item \code{pan-cons} will return only edges that exist in all consortia
-\item \code{niche} will return niche consortia. A niche is defined a
+\item \code{niche} will return niche edges specific to individual consortia
+\item \code{core} will return core metabolic edges
+\item \code{aux} will return auxiliary edges
 }
 }
 \section{Methods (by class)}{

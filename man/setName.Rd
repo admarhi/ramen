@@ -23,7 +23,7 @@ object}
 \item{value}{Character scalar specifying a name.}
 }
 \value{
-A cluster from a \code{ConsortiumMetabolismSet} object
+The modified object with updated name
 }
 \description{
 Sets a new name or description of \code{ConsortiumMetabolism},

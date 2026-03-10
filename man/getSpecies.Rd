@@ -20,7 +20,7 @@ getSpecies(object, ...)
 \S4method{getSpecies}{ConsortiumMetabolismAlignment}(object)
 }
 \arguments{
-\item{object}{a \code{ConsortiumMetabolismAlignment} Object}
+\item{object}{A \code{ConsortiumMetabolismAlignment} object.}
 
 \item{...}{Object specific arguments.}
 
@@ -40,7 +40,7 @@ A character vector representing the microorganisms.
 
 A character vector representing the microorganisms.
 
-A character vector representing the microorganisms.
+A character vector of species names.
 }
 \description{
 Return Species in a Consortium
@@ -51,6 +51,7 @@ Return Species in a Consortium
 
 \item \code{getSpecies(ConsortiumMetabolismSet)}: Return Species in a Microbiome
 
-\item \code{getSpecies(ConsortiumMetabolismAlignment)}: Return Species in a Microbiome
+\item \code{getSpecies(ConsortiumMetabolismAlignment)}: Return species from a
+\code{ConsortiumMetabolismAlignment}
 
 }}

@@ -56,9 +56,16 @@ setMethod(
   }
 )
 
-#' @describeIn getSpecies Return Species in a Microbiome
-#' @param object a \code{ConsortiumMetabolismAlignment} Object
-#' @return A character vector representing the microorganisms.
-setMethod("getSpecies", "ConsortiumMetabolismAlignment", function(object) {
-  ### ToDo
-})
+#' @describeIn getSpecies Return species from a
+#'   \code{ConsortiumMetabolismAlignment}
+#' @param object A \code{ConsortiumMetabolismAlignment} object.
+#' @return A character vector of species names.
+setMethod(
+    "getSpecies",
+    "ConsortiumMetabolismAlignment",
+    function(object) {
+        cli::cli_abort(
+            "getSpecies for CMA not yet implemented (Phase 3)."
+        )
+    }
+)

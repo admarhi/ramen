@@ -20,10 +20,10 @@ setDesc(object, value = NA_character_)
 \code{ConsortiumMetabolismSet}, or \code{ConsortiumMetabolismAlignment}
 object}
 
-\item{value}{Character scalar specifying a name.}
+\item{value}{Character scalar specifying a description.}
 }
 \value{
-A cluster from a \code{ConsortiumMetabolismSet} object
+The modified object with updated description
 }
 \description{
 Sets a new name or description of \code{ConsortiumMetabolism},

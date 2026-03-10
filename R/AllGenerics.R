@@ -58,20 +58,47 @@ setGeneric("getEdges", function(object, ...) standardGeneric("getEdges"))
 #' @export
 setGeneric("getCo", function(object) standardGeneric("getCo"))
 
-#' @title Align a \code{ConsortiaMetabolismSet} Object
+#' @title Align Consortium Metabolisms
 #'
 #' @description
-#' Creates an alignment of multiple consortium metabolisms to identify common
-#' metabolic patterns and interactions across different communities.
+#' Computes functional alignment between consortium metabolisms.
+#' Dispatches on the combination of `x` and `y`:
+#' \itemize{
+#'   \item `align(CM, CM)`: Pairwise alignment of two consortia
+#'   \item `align(CMS)`: Multiple alignment across all consortia
+#'     in the set
+#'   \item `align(CM, CMS)`: Database search -- align one
+#'     consortium against all in a set
+#' }
 #'
-#' @param object A \code{ConsortiumMetabolismSet} object containing multiple
-#' consortium metabolisms to align
-#' @param name Character scalar giving name of the alignment, if `NULL` inherits
-#' from the \code{ConsortiumMetabolismSet} object.
-#' @return A \code{ConsortiumMetabolismAlignment} object containing the aligned
-#' metabolic networks and associated metrics
+#' @param x A [ConsortiumMetabolism] or
+#'   [ConsortiumMetabolismSet] object.
+#' @param y A [ConsortiumMetabolism],
+#'   [ConsortiumMetabolismSet], or `missing`.
+#' @param method Character scalar specifying the similarity metric.
+#'   One of `"FOS"` (default), `"jaccard"`,
+#'   `"brayCurtis"`, `"redundancyOverlap"`, or `"MAAS"`.
+#' @param ... Additional arguments passed to methods. Common
+#'   arguments include:
+#'   \describe{
+#'     \item{`computePvalue`}{Logical; compute permutation
+#'       p-value? Default `FALSE`.}
+#'     \item{`nPermutations`}{Integer; number of permutations
+#'       for null model. Default `999L`.}
+#'     \item{`BPPARAM`}{A
+#'       [BiocParallel::BiocParallelParam] object for
+#'       parallel execution.}
+#'   }
+#'
+#' @return A [ConsortiumMetabolismAlignment] object.
+#'
 #' @export
-setGeneric("align", function(object, name) standardGeneric("align"))
+setGeneric(
+    "align",
+    function(x, y, method = "FOS", ...) {
+        standardGeneric("align")
+    }
+)
 
 #' @title Modify a \code{ConsortiaMetabolismSet} Object
 #'

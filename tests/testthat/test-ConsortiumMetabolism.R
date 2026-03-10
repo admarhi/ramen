@@ -83,7 +83,7 @@ test_that("getEdges returns edge data", {
 
 test_that("synCM generates synthetic communities", {
   # Test synthetic community generation
-  syn <- synCM(n_species = 5, n_met = 10, name = "synthetic")
+  syn <- synCM(name = "synthetic", n_species = 5, max_met = 10)
 
   expect_s4_class(syn, "ConsortiumMetabolism")
   expect_equal(syn@Name, "synthetic")

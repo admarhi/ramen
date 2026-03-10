@@ -2,24 +2,21 @@
 % Please edit documentation in R/plotAlignmentHeatmap.R
 \name{plotAlignmentHeatmap}
 \alias{plotAlignmentHeatmap}
-\title{MiCoAl Heatmap}
+\title{Plot Alignment Heatmap (Deprecated)}
 \usage{
 plotAlignmentHeatmap(object, top = NULL, bottom = NULL)
 }
 \arguments{
-\item{object}{An object of class MiCoAl.}
+\item{object}{A \code{ConsortiumMetabolismAlignment} object.}
 
-\item{top}{Character scalar giving the top fraction of consortia in which a
-pathway should be present to be output in the heatmap. Defaults to NULL, in
-which case all are plotted.}
+\item{top}{Numeric; top fraction filter.}
 
-\item{bottom}{Character scalar giving the bottom fraction of consortia in
-which a pathway should be present to be output in the heatmap. Defaults to
-NULL, in which case all are plotted.}
+\item{bottom}{Numeric; bottom fraction filter.}
 }
 \value{
-A ggplot heatmap
+None. Raises an error.
 }
 \description{
-MiCoAl Heatmap
+This function is deprecated and will be reimplemented in
+Phase 3.
 }

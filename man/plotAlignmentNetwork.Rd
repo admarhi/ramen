@@ -2,18 +2,19 @@
 % Please edit documentation in R/plotAlignmentNetwork.R
 \name{plotAlignmentNetwork}
 \alias{plotAlignmentNetwork}
-\title{MiCoAl Network Plot}
+\title{Plot Alignment Network (Deprecated)}
 \usage{
 plotAlignmentNetwork(object, frac)
 }
 \arguments{
-\item{object}{An object of class MiCoAl.}
+\item{object}{A \code{ConsortiumMetabolismAlignment} object.}
 
-\item{frac}{Minimum relative weight of maximum weight to plot.}
+\item{frac}{Numeric; minimum fraction to plot.}
 }
 \value{
-An igraph network
+None. Raises an error.
 }
 \description{
-MiCoAl Network Plot
+This function is deprecated and will be reimplemented in
+Phase 3.
 }

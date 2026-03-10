@@ -12,3 +12,5 @@ figures/
 .RDataTmp
 
 /.quarto/
+CLAUDE.md
+.claude/

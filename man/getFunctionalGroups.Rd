@@ -22,8 +22,15 @@ dendrogram.}
 \item{label_colours}{If not \code{NULL}, tb with two columns, label and colour.}
 }
 \value{
-A dendrogram object representing the hierarchical clustering of
-species into functional groups. The plot of the dendrogram is also displayed.
+A list (returned invisibly) containing:
+\itemize{
+\item plot: The ggplot2 dendrogram visualization
+\item dendrogram: The dendrogram object
+\item similarity_matrix: Matrix of Jaccard similarities between species
+\item species_combinations: Tibble with pairwise species comparisons
+\item reactions_per_species: Tibble mapping species to their reactions
+}
+The plot is automatically displayed.
 }
 \description{
 Calculates and returns functional groups based on metabolic reactions.

@@ -24,5 +24,12 @@ setMethod("getMet", "ConsortiumMetabolismSet", function(object) {
 })
 
 #' @rdname getMet
-setMethod("getMet", "ConsortiumMetabolismAlignment", function(object) {
-})
+setMethod(
+    "getMet",
+    "ConsortiumMetabolismAlignment",
+    function(object) {
+        cli::cli_abort(
+            "getMet for CMA not yet implemented (Phase 3)."
+        )
+    }
+)

@@ -2,30 +2,70 @@
 % Please edit documentation in R/AllGenerics.R, R/methods-align.R
 \name{align}
 \alias{align}
-\alias{align,ConsortiumMetabolismSet-method}
-\title{Align a \code{ConsortiaMetabolismSet} Object}
+\alias{align,ConsortiumMetabolism,ConsortiumMetabolism-method}
+\alias{align,ConsortiumMetabolismSet,missing-method}
+\alias{align,ConsortiumMetabolism,ConsortiumMetabolismSet-method}
+\title{Align Consortium Metabolisms}
 \usage{
-align(object, name)
+align(x, y, method = "FOS", ...)
 
-\S4method{align}{ConsortiumMetabolismSet}(object, name)
+\S4method{align}{ConsortiumMetabolism,ConsortiumMetabolism}(x, y, method = "FOS", computePvalue = FALSE, nPermutations = 999L, ...)
+
+\S4method{align}{ConsortiumMetabolismSet,missing}(x, y, method = "FOS", BPPARAM = BiocParallel::SerialParam(), ...)
+
+\S4method{align}{ConsortiumMetabolism,ConsortiumMetabolismSet}(x, y, method = "FOS", BPPARAM = BiocParallel::SerialParam(), ...)
 }
 \arguments{
-\item{object}{A \code{ConsortiumMetabolismSet} object containing multiple
-consortium metabolisms to align}
+\item{x}{A \link{ConsortiumMetabolism} object (query).}
 
-\item{name}{Character scalar giving name of the alignment, if \code{NULL} inherits
-from the \code{ConsortiumMetabolismSet} object.}
+\item{y}{A \link{ConsortiumMetabolismSet} object (database).}
+
+\item{method}{Character scalar specifying the metric.}
+
+\item{...}{Additional arguments (currently unused).}
+
+\item{computePvalue}{Logical; compute permutation p-value?
+Default \code{FALSE}.}
+
+\item{nPermutations}{Integer; number of permutations.
+Default \code{999L}.}
+
+\item{BPPARAM}{A \link[BiocParallel:BiocParallelParam-class]{BiocParallel::BiocParallelParam} object.
+Default \code{BiocParallel::SerialParam()}.}
 }
 \value{
-A \code{ConsortiumMetabolismAlignment} object containing the aligned
-metabolic networks and associated metrics
+A \link{ConsortiumMetabolismAlignment} object.
+
+A \link{ConsortiumMetabolismAlignment} object of type
+\code{"pairwise"}.
+
+A \link{ConsortiumMetabolismAlignment} object of type
+\code{"multiple"}.
+
+A \link{ConsortiumMetabolismAlignment} object of type
+\code{"search"}.
 }
 \description{
-Creates an alignment of multiple consortium metabolisms to identify common
-metabolic patterns and interactions across different communities.
-}
-\section{Methods (by class)}{
+Computes functional alignment between consortium metabolisms.
+Dispatches on the combination of \code{x} and \code{y}:
 \itemize{
-\item \code{align(ConsortiumMetabolismSet)}: Align a \code{ConsortiumMetabolismSet} Object
+\item \code{align(CM, CM)}: Pairwise alignment of two consortia
+\item \code{align(CMS)}: Multiple alignment across all consortia
+in the set
+\item \code{align(CM, CMS)}: Database search -- align one
+consortium against all in a set
+}
+}
+\section{Functions}{
+\itemize{
+\item \code{align(x = ConsortiumMetabolism, y = ConsortiumMetabolism)}: Pairwise alignment of two
+\link{ConsortiumMetabolism} objects
+
+\item \code{align(x = ConsortiumMetabolismSet, y = missing)}: Multiple alignment across all consortia in a
+\link{ConsortiumMetabolismSet}
+
+\item \code{align(x = ConsortiumMetabolism, y = ConsortiumMetabolismSet)}: Database search -- align a
+\link{ConsortiumMetabolism} against all consortia in a
+\link{ConsortiumMetabolismSet}
 
 }}

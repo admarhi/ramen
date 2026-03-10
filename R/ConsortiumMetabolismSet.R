@@ -105,20 +105,35 @@ ConsortiumMetabolismSet <- function(
     purrr::map(cons, \(x) assays(x)$Binary),
     purrr::map_chr(cons, \(x) x@Name)
   ) |>
-    ### Here I should have the reindexing step
     tibble::enframe() |>
     tibble::rowid_to_column("ind")
   cli::cli_process_done()
 
+  # ---- Pre-expand binary matrices to universal space -------------------------
+  cli::cli_status("Expanding binary matrices to universal space")
+  universal_mets <- sort(unique(all_met$met))
+  expanded_bm <- purrr::set_names(
+    purrr::map(
+      bm_tb$value,
+      \(bm) .expandToUniversalSpace(bm, universal_mets)
+    ),
+    bm_tb$name
+  )
+  cli::cli_process_done()
+
   # ---- Overlap score ---------------------------------------------------------
   cli::cli_status("Calculating overlap scores")
+  ## Build tibble of pre-expanded matrices for pairwise comparison
+  exp_tb <- tibble::tibble(
+    ind = seq_along(names(expanded_bm)),
+    name = names(expanded_bm),
+    value = unname(expanded_bm)
+  )
   tb <-
-    # Create unique combinations of the consortia to reduce computation time
-    tidyr::expand_grid(x = bm_tb$ind, y = bm_tb$ind) |>
+    tidyr::expand_grid(x = exp_tb$ind, y = exp_tb$ind) |>
     dplyr::filter(.data$x <= .data$y) |>
-    # Left join the binary matrices by new index
-    dplyr::left_join(bm_tb, by = c("x" = "ind")) |>
-    dplyr::left_join(bm_tb, by = c("y" = "ind")) |>
+    dplyr::left_join(exp_tb, by = c("x" = "ind")) |>
+    dplyr::left_join(exp_tb, by = c("y" = "ind")) |>
     dplyr::select(
       "x",
       name_x = "name.x",
@@ -127,9 +142,6 @@ ConsortiumMetabolismSet <- function(
       name_y = "name.y",
       cm_y = "value.y"
     ) |>
-    ### So if I had the metabolites matrices re-indexed here it would mean that
-    ### I can simply multiply them and don't need to rely on the helper function
-    ### Likely performance increase.
     dplyr::mutate(
       overlap_score = purrr::map2_dbl(
         .data$cm_x,
@@ -206,6 +218,7 @@ ConsortiumMetabolismSet <- function(
     Dendrogram = list(dend),
     NodeData = node_data,
     Graphs = graph_list,
+    BinaryMatrices = expanded_bm,
     Edges = all_edges,
     Metabolites = all_met
   )
@@ -214,14 +227,53 @@ ConsortiumMetabolismSet <- function(
 #' @noRd
 cms <- ConsortiumMetabolismSet
 
+#' Expand a sparse binary matrix to universal metabolite space
+#'
+#' Takes a binary matrix from a single CM (with its local metabolite
+#' set as row/colnames) and expands it to the full metabolite
+#' universe. Missing metabolites get zero rows/columns.
+#'
+#' @param bm A sparse binary matrix from a CM's Binary assay.
+#' @param all_mets Character vector of all metabolites in universal
+#'   space, sorted.
+#'
+#' @return A sparse binary matrix with dimensions
+#'   `length(all_mets) x length(all_mets)`.
+#'
+#' @noRd
+.expandToUniversalSpace <- function(bm, all_mets) {
+    local_mets <- rownames(bm)
+    n <- length(all_mets)
+    ## Map local indices to universal indices
+    idx <- match(local_mets, all_mets)
+    ## Extract triplet form from the local matrix
+    bm_t <- Matrix::summary(bm)
+    if (nrow(bm_t) == 0L) {
+        return(
+            Matrix::sparseMatrix(
+                i = integer(0L),
+                j = integer(0L),
+                x = numeric(0L),
+                dims = c(n, n),
+                dimnames = list(all_mets, all_mets)
+            )
+        )
+    }
+    Matrix::sparseMatrix(
+        i = idx[bm_t$i],
+        j = idx[bm_t$j],
+        x = bm_t$x,
+        dims = c(n, n),
+        dimnames = list(all_mets, all_mets)
+    )
+}
+
 #' @noRd
 .binMatOverlap <- function(bm1, bm2) {
-  # Get the intersection of the metabolites
-  met <- intersect(rownames(bm1), rownames(bm2))
-
-  # Calculate the intersection
-  int <- bm1[met, met] * bm2[met, met]
-
-  # Calculate the overlap
-  sum(int) / min(sum(bm1), sum(bm2))
+    ## Both matrices must be in the same universal space
+    ## (same dimensions and dimnames)
+    int <- bm1 * bm2
+    denom <- min(sum(bm1), sum(bm2))
+    if (denom == 0L) return(0)
+    sum(int) / denom
 }
