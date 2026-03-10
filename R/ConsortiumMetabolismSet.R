@@ -28,7 +28,7 @@ ConsortiumMetabolismSet <- function(
   cli::cli_status("Getting metabolites")
   # Get indeces of met in each consortium for re-indexing
   all_met <- purrr::map2(
-    .x = purrr::map(cons, \(x) tibble::as_tibble(x@colData)),
+    .x = purrr::map(cons, \(x) tibble::as_tibble(SummarizedExperiment::colData(x))),
     .y = purrr::map_chr(cons, \(x) x@Name),
     .f = \(x, y) dplyr::mutate(x, consortium = y)
   ) |>

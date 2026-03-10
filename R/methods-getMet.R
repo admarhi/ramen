@@ -6,7 +6,7 @@ setMethod("getMet", "ConsortiumMetabolism", function(object) {
 #' @rdname getMet
 setMethod("getMet", "ConsortiumMetabolismSet", function(object) {
   purrr::map2(
-    .x = purrr::map(object@Consortia, \(x) tibble::as_tibble(x@colData)),
+    .x = purrr::map(object@Consortia, \(x) tibble::as_tibble(SummarizedExperiment::colData(x))),
     .y = purrr::map_chr(object@Consortia, \(x) x@Name),
     .f = \(x, y) dplyr::mutate(x, consortium = y)
   ) |>
