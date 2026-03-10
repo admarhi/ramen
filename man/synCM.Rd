@@ -2,7 +2,7 @@
 % Please edit documentation in R/synCM.R
 \name{synCM}
 \alias{synCM}
-\title{Generate Random Synthetic Consortium Metabolism}
+\title{Generate Synthetic Consortium Metabolism}
 \usage{
 synCM(
   name,
@@ -15,28 +15,48 @@ synCM(
 )
 }
 \arguments{
-\item{name}{Character string giving the desired name of the community.}
+\item{name}{Character string. Name for the consortium.}
 
-\item{n_species}{Number of species in the community}
+\item{n_species}{Integer. Number of species in the consortium.}
 
-\item{max_met}{Maximum number of metabolites in the communities}
+\item{max_met}{Integer. Size of the metabolite pool to sample
+from.}
 
-\item{scale_fac}{Scaling factor}
+\item{scale_fac}{Integer. Multiplier for the initial species name
+pool from which \code{n_species} are sampled. Defaults to 2.}
 
-\item{seed}{Seed for reproducibility}
+\item{seed}{Integer or \code{FALSE}. Random seed for
+reproducibility. If \code{FALSE} (default), a random seed is
+chosen.}
 
-\item{dead_ends}{Logical value to toggle dead ends in data}
+\item{dead_ends}{Logical. If \code{FALSE} (default), ensures each
+species has both consumed and produced metabolites by flipping
+one flux value when all fluxes share the same sign.}
 
-\item{cm}{Logical value to toggle return of \code{ConsortiumMetabolism} object or
-tibble.}
+\item{cm}{Logical. If \code{TRUE} (default), returns a
+\code{\linkS4class{ConsortiumMetabolism}} object. If
+\code{FALSE}, returns the raw edge list as a tibble.}
 }
 \value{
-List with \code{n_co} number of communities.
+A \code{\linkS4class{ConsortiumMetabolism}} object when
+\code{cm = TRUE}, or a \code{\link[tibble]{tibble}} with
+columns \code{species}, \code{metabolites}, and \code{fluxes}
+when \code{cm = FALSE}.
 }
 \description{
-A function that creates synthetic data suitable for demonstration purposes
-of the \code{ramen} package.
+Creates a synthetic metabolic network with random species-metabolite
+interactions and flux values. Useful for testing and demonstrating
+\code{ramen} package functionality.
+}
+\details{
+Each species is assigned a random subset of metabolites (between 2
+and \code{max_met}) with normally distributed flux values. By
+default, species are guaranteed to have both positive and negative
+fluxes (i.e., no dead ends).
 }
 \examples{
 synCM("Ex. Community", n_species = 5, max_met = 10)
+
+# Return raw edge list instead
+synCM("Test", n_species = 3, max_met = 8, cm = FALSE)
 }

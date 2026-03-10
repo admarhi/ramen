@@ -1,18 +1,34 @@
-#' Generate Random Synthetic Consortium Metabolism
+#' Generate Synthetic Consortium Metabolism
 #'
-#' A function that creates synthetic data suitable for demonstration purposes
-#' of the `ramen` package.
+#' Creates a synthetic metabolic network with random species-metabolite
+#' interactions and flux values. Useful for testing and demonstrating
+#' `ramen` package functionality.
 #'
-#' @param n_species Number of species in the community
-#' @param max_met Maximum number of metabolites in the communities
-#' @param scale_fac Scaling factor
-#' @param seed Seed for reproducibility
-#' @param dead_ends Logical value to toggle dead ends in data
-#' @param cm Logical value to toggle return of `ConsortiumMetabolism` object or
-#' tibble.
-#' @param name Character string giving the desired name of the community.
+#' Each species is assigned a random subset of metabolites (between 2
+#' and \code{max_met}) with normally distributed flux values. By
+#' default, species are guaranteed to have both positive and negative
+#' fluxes (i.e., no dead ends).
 #'
-#' @return List with `n_co` number of communities.
+#' @param name Character string. Name for the consortium.
+#' @param n_species Integer. Number of species in the consortium.
+#' @param max_met Integer. Size of the metabolite pool to sample
+#'     from.
+#' @param scale_fac Integer. Multiplier for the initial species name
+#'     pool from which \code{n_species} are sampled. Defaults to 2.
+#' @param seed Integer or \code{FALSE}. Random seed for
+#'     reproducibility. If \code{FALSE} (default), a random seed is
+#'     chosen.
+#' @param dead_ends Logical. If \code{FALSE} (default), ensures each
+#'     species has both consumed and produced metabolites by flipping
+#'     one flux value when all fluxes share the same sign.
+#' @param cm Logical. If \code{TRUE} (default), returns a
+#'     \code{\linkS4class{ConsortiumMetabolism}} object. If
+#'     \code{FALSE}, returns the raw edge list as a tibble.
+#'
+#' @return A \code{\linkS4class{ConsortiumMetabolism}} object when
+#'     \code{cm = TRUE}, or a \code{\link[tibble]{tibble}} with
+#'     columns \code{species}, \code{metabolites}, and \code{fluxes}
+#'     when \code{cm = FALSE}.
 #'
 #' @export
 #'
@@ -20,6 +36,9 @@
 #'
 #' @examples
 #' synCM("Ex. Community", n_species = 5, max_met = 10)
+#'
+#' # Return raw edge list instead
+#' synCM("Test", n_species = 3, max_met = 8, cm = FALSE)
 synCM <- function(
   name,
   n_species,
@@ -42,34 +61,25 @@ synCM <- function(
   }
   set.seed(seed)
 
-  species <- vector()
-  mets <- vector()
-  fluxes <- vector()
-
   # Get sample of species for the community
   species_names <- sample(species_names, size = n_species, replace = FALSE)
 
-  for (i in seq_along(species_names)) {
-    t_met <- sample(2:max_met, 1)
-    species_mets <- sample(met_vec, t_met)
-    species <- c(species, rep(species_names[i], t_met))
-    t_vals <- vector()
-    for (m in species_mets) {
-      mets <- c(mets, m)
-      t_vals <- c(t_vals, stats::rnorm(1, mean = 0, sd = 3))
+  per_species <- lapply(species_names, function(sp) {
+    n_mets <- sample(2:max_met, 1)
+    species_mets <- sample(met_vec, n_mets)
+    flux_vals <- stats::rnorm(n_mets, mean = 0, sd = 3)
+    if (!dead_ends && (all(flux_vals < 0) || all(flux_vals > 0))) {
+      idx <- sample(seq_along(flux_vals), 1)
+      flux_vals[idx] <- flux_vals[idx] * -1
     }
-    if (!dead_ends && (all(t_vals < 0) || all(t_vals > 0))) {
-      to_change <- sample(seq_along(t_vals), 1)
-      t_vals[to_change] <- t_vals[to_change] * -1
-    }
-    fluxes <- c(fluxes, t_vals)
-  }
+    tibble::tibble(
+      species = rep(sp, n_mets),
+      metabolites = species_mets,
+      fluxes = flux_vals
+    )
+  })
 
-  community <- tibble::tibble(
-    species = species,
-    metabolites = mets,
-    fluxes = fluxes
-  )
+  community <- do.call(rbind, per_species)
 
   if (!cm) {
     return(community)
@@ -77,9 +87,9 @@ synCM <- function(
 
   ConsortiumMetabolism(
     data = tibble::tibble(
-      species = species,
-      met = mets,
-      flux = fluxes
+      species = community$species,
+      met = community$metabolites,
+      flux = community$fluxes
     ),
     name = name
   )
