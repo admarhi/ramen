@@ -25,8 +25,123 @@ setMethod(
     function(x, y, method = "FOS",
              computePvalue = FALSE,
              nPermutations = 999L, ...) {
-        cli::cli_abort(
-            "Pairwise alignment not yet implemented (Phase 1)."
+
+        ## 1. Validate method argument
+        method <- match.arg(
+            method,
+            c("FOS", "jaccard", "brayCurtis",
+              "redundancyOverlap", "MAAS")
+        )
+
+        ## 2. Harmonize metabolite space (binary matrices)
+        harmonized <- .harmonizeMetaboliteSpace(x, y)
+        xBin <- harmonized$X
+        yBin <- harmonized$Y
+        union_mets <- harmonized$metabolites
+
+        ## 3. Expand weighted assays if both CMs are weighted
+        xWeighted <- NULL
+        yWeighted <- NULL
+        if (x@Weighted && y@Weighted) {
+            xWeighted <- list(
+                Consumption = .expandMatrix(
+                    assays(x)$Consumption, union_mets
+                ),
+                Production = .expandMatrix(
+                    assays(x)$Production, union_mets
+                ),
+                nEdges = .expandMatrix(
+                    assays(x)$nEdges, union_mets
+                )
+            )
+            yWeighted <- list(
+                Consumption = .expandMatrix(
+                    assays(y)$Consumption, union_mets
+                ),
+                Production = .expandMatrix(
+                    assays(y)$Production, union_mets
+                ),
+                nEdges = .expandMatrix(
+                    assays(y)$nEdges, union_mets
+                )
+            )
+        }
+
+        ## 4. Compute all scores
+        all_scores <- .computeAllScores(
+            xBin, yBin, xWeighted, yWeighted
+        )
+
+        ## 5. Determine primary score
+        if (method == "MAAS") {
+            dots <- list(...)
+            weights <- dots$weights
+            if (is.null(weights)) {
+                primary <- .computeMAAS(all_scores)
+            } else {
+                primary <- .computeMAAS(
+                    all_scores, weights = weights
+                )
+            }
+        } else {
+            primary <- all_scores[[method]]
+        }
+
+        ## 6. Identify pathway correspondences
+        correspondences <- .identifyPathwayCorrespondences(
+            xBin, yBin, x@Edges, y@Edges
+        )
+
+        ## 7. Optional: compute p-value
+        pval <- NA_real_
+        if (computePvalue) {
+            if (method %in% c("brayCurtis",
+                              "redundancyOverlap")) {
+                cli::cli_warn(
+                    paste0(
+                        "P-value computation for ",
+                        "{.val {method}} not yet ",
+                        "supported. Skipping."
+                    )
+                )
+            } else {
+                metric_fn <- switch(method,
+                    FOS = .functionalOverlap,
+                    jaccard = .jaccardIndex,
+                    MAAS = .functionalOverlap
+                )
+                pval <- .computePvalue(
+                    xGraph = x@Graphs[[1L]],
+                    yBin = yBin,
+                    observed = primary,
+                    metricFn = metric_fn,
+                    nPerm = nPermutations,
+                    metabolites = union_mets
+                )
+            }
+        }
+
+        ## 8. Build and return CMA
+        ConsortiumMetabolismAlignment(
+            Type = "pairwise",
+            Metric = method,
+            QueryName = x@Name,
+            ReferenceName = y@Name,
+            Scores = all_scores,
+            PrimaryScore = primary,
+            Pvalue = pval,
+            SharedPathways = correspondences$shared,
+            UniqueQuery = correspondences$uniqueQuery,
+            UniqueReference = correspondences$uniqueReference,
+            Params = list(
+                computePvalue = computePvalue,
+                nPermutations = nPermutations
+            ),
+            Edges = correspondences$shared,
+            Metabolites = data.frame(
+                met = union_mets,
+                stringsAsFactors = FALSE
+            )
         )
     }
 )

@@ -4,6 +4,58 @@
 ## None of these are exported.
 ## ----
 
+#' Expand an assay matrix to a target metabolite space
+#'
+#' Generic expansion of any assay matrix (not just binary) to a
+#' larger metabolite space. Used when comparing weighted assays
+#' (e.g., Consumption, Production) between CMs with different
+#' metabolite sets.
+#'
+#' @param mat A sparse or dense matrix with metabolite
+#'   row/colnames.
+#' @param target_mets Character vector of target metabolite names.
+#'
+#' @return A sparse matrix of dimensions
+#'   `length(target_mets) x length(target_mets)` with the
+#'   original values placed at the correct positions and zeros
+#'   elsewhere.
+#'
+#' @noRd
+.expandMatrix <- function(mat, target_mets) {
+    local_mets <- rownames(mat)
+    n <- length(target_mets)
+
+    ## Coerce dense to sparse if needed
+    if (!is(mat, "dgCMatrix")) {
+        mat <- as(mat, "dgCMatrix")
+    }
+
+    ## Extract triplet form
+    triplet <- Matrix::summary(mat)
+    if (nrow(triplet) == 0L) {
+        return(
+            Matrix::sparseMatrix(
+                i = integer(0L),
+                j = integer(0L),
+                x = numeric(0L),
+                dims = c(n, n),
+                dimnames = list(target_mets, target_mets)
+            )
+        )
+    }
+
+    ## Map local indices to target indices
+    idx <- match(local_mets, target_mets)
+
+    Matrix::sparseMatrix(
+        i = idx[triplet$i],
+        j = idx[triplet$j],
+        x = triplet$x,
+        dims = c(n, n),
+        dimnames = list(target_mets, target_mets)
+    )
+}
+
 #' Harmonize metabolite space between two CMs
 #'
 #' Builds a shared metabolite index from two CM objects so their
@@ -23,66 +75,14 @@
 #'
 #' @noRd
 .harmonizeMetaboliteSpace <- function(cm1, cm2) {
-    cli::cli_abort(
-        "Not yet implemented (Phase 1).",
-        .internal = TRUE
-    )
-}
+    mets1 <- rownames(assays(cm1)$Binary)
+    mets2 <- rownames(assays(cm2)$Binary)
+    union_mets <- sort(unique(c(mets1, mets2)))
 
-#' Expand an assay matrix to a target metabolite space
-#'
-#' Generic expansion of any assay matrix (not just binary) to a
-#' larger metabolite space. Used when comparing weighted assays
-#' (e.g., Consumption, Production) between CMs with different
-#' metabolite sets.
-#'
-#' @param mat A sparse or dense matrix with metabolite
-#'   row/colnames.
-#' @param target_mets Character vector of target metabolite names.
-#'
-#' @return A matrix of dimensions
-#'   `length(target_mets) x length(target_mets)` with the
-#'   original values placed at the correct positions and zeros
-#'   elsewhere.
-#'
-#' @noRd
-.expandMatrix <- function(mat, target_mets) {
-    cli::cli_abort(
-        "Not yet implemented (Phase 1).",
-        .internal = TRUE
-    )
-}
+    X <- .expandMatrix(assays(cm1)$Binary, union_mets)
+    Y <- .expandMatrix(assays(cm2)$Binary, union_mets)
 
-#' Compute all similarity scores between two matrices
-#'
-#' Given pre-expanded binary and weighted matrices for a query and
-#' reference, computes all four metrics and returns them as a named
-#' list.
-#'
-#' @param xBin Sparse binary matrix for query (union space).
-#' @param yBin Sparse binary matrix for reference (union space).
-#' @param xWeighted Named list of weighted assay matrices for
-#'   query. Expected names: `"Consumption"`,
-#'   `"Production"`.
-#' @param yWeighted Named list of weighted assay matrices for
-#'   reference. Same structure as `xWeighted`.
-#'
-#' @return A named list with elements:
-#'   \describe{
-#'     \item{`FOS`}{Functional Overlap Score (numeric).}
-#'     \item{`jaccard`}{Jaccard index (numeric).}
-#'     \item{`brayCurtis`}{Bray-Curtis similarity (numeric).}
-#'     \item{`redundancyOverlap`}{Redundancy overlap (numeric).}
-#'   }
-#'
-#' @noRd
-.computeAllScores <- function(xBin, yBin,
-                              xWeighted = NULL,
-                              yWeighted = NULL) {
-    cli::cli_abort(
-        "Not yet implemented (Phase 1).",
-        .internal = TRUE
-    )
+    list(X = X, Y = Y, metabolites = union_mets)
 }
 
 #' Functional Overlap Score (Szymkiewicz-Simpson)
@@ -99,10 +99,10 @@
 #'
 #' @noRd
 .functionalOverlap <- function(xBin, yBin) {
-    cli::cli_abort(
-        "Not yet implemented (Phase 1).",
-        .internal = TRUE
-    )
+    intersection <- xBin * yBin
+    denom <- min(sum(xBin), sum(yBin))
+    if (denom == 0) return(0)
+    sum(intersection) / denom
 }
 
 #' Jaccard Index
@@ -117,10 +117,10 @@
 #'
 #' @noRd
 .jaccardIndex <- function(xBin, yBin) {
-    cli::cli_abort(
-        "Not yet implemented (Phase 1).",
-        .internal = TRUE
-    )
+    intersection <- sum(xBin * yBin)
+    union_size <- sum(xBin) + sum(yBin) - intersection
+    if (union_size == 0) return(0)
+    intersection / union_size
 }
 
 #' Bray-Curtis Similarity
@@ -138,10 +138,18 @@
 #'
 #' @noRd
 .brayCurtisSimilarity <- function(xWeighted, yWeighted) {
-    cli::cli_abort(
-        "Not yet implemented (Phase 1).",
-        .internal = TRUE
-    )
+    xC <- xWeighted$Consumption
+    yC <- yWeighted$Consumption
+    xP <- xWeighted$Production
+    yP <- yWeighted$Production
+
+    diff_C <- abs(xC - yC)
+    diff_P <- abs(xP - yP)
+    numerator <- sum(diff_C) + sum(diff_P)
+
+    total <- sum(xC) + sum(yC) + sum(xP) + sum(yP)
+    if (total == 0) return(0)
+    1 - (numerator / total)
 }
 
 #' Redundancy Overlap
@@ -157,10 +165,65 @@
 #'
 #' @noRd
 .redundancyOverlap <- function(xEdges, yEdges) {
-    cli::cli_abort(
-        "Not yet implemented (Phase 1).",
-        .internal = TRUE
+    diff_mat <- abs(xEdges - yEdges)
+    total <- xEdges + yEdges
+    numer <- sum(total - diff_mat) / 2
+    denom <- sum(total + diff_mat) / 2
+    if (denom == 0) return(0)
+    numer / denom
+}
+
+#' Compute all similarity scores between two matrices
+#'
+#' Given pre-expanded binary and weighted matrices for a query and
+#' reference, computes all four metrics and returns them as a named
+#' list.
+#'
+#' @param xBin Sparse binary matrix for query (union space).
+#' @param yBin Sparse binary matrix for reference (union space).
+#' @param xWeighted Named list of weighted assay matrices for
+#'   query. Expected names: `"Consumption"`, `"Production"`,
+#'   `"nEdges"`. `NULL` if unweighted.
+#' @param yWeighted Named list of weighted assay matrices for
+#'   reference. Same structure as `xWeighted`.
+#'
+#' @return A named list with elements:
+#'   \describe{
+#'     \item{`FOS`}{Functional Overlap Score (numeric).}
+#'     \item{`jaccard`}{Jaccard index (numeric).}
+#'     \item{`brayCurtis`}{Bray-Curtis similarity (numeric).}
+#'     \item{`redundancyOverlap`}{Redundancy overlap (numeric).}
+#'   }
+#'
+#' @noRd
+.computeAllScores <- function(xBin, yBin,
+                              xWeighted = NULL,
+                              yWeighted = NULL) {
+    scores <- list(
+        FOS = .functionalOverlap(xBin, yBin),
+        jaccard = .jaccardIndex(xBin, yBin)
     )
+
+    if (!is.null(xWeighted) && !is.null(yWeighted)) {
+        scores$brayCurtis <- .brayCurtisSimilarity(
+            list(
+                Consumption = xWeighted$Consumption,
+                Production = xWeighted$Production
+            ),
+            list(
+                Consumption = yWeighted$Consumption,
+                Production = yWeighted$Production
+            )
+        )
+        scores$redundancyOverlap <- .redundancyOverlap(
+            xWeighted$nEdges, yWeighted$nEdges
+        )
+    } else {
+        scores$brayCurtis <- NA_real_
+        scores$redundancyOverlap <- NA_real_
+    }
+
+    scores
 }
 
 #' Compute MAAS composite score
@@ -188,10 +251,19 @@
         redundancyOverlap = 0.2
     )
 ) {
-    cli::cli_abort(
-        "Not yet implemented (Phase 1).",
-        .internal = TRUE
-    )
+    if (abs(sum(weights) - 1) > 1e-10) {
+        cli::cli_abort("Weights must sum to 1.")
+    }
+
+    available <- names(scores)[
+        !is.na(vapply(scores, identity, numeric(1L)))
+    ]
+    if (length(available) == 0L) return(NA_real_)
+
+    w <- weights[available]
+    w <- w / sum(w)
+    s <- vapply(scores[available], identity, numeric(1L))
+    sum(w * s)
 }
 
 #' Identify pathway correspondences
@@ -218,9 +290,53 @@
 #' @noRd
 .identifyPathwayCorrespondences <- function(xBin, yBin,
                                             xEdges, yEdges) {
-    cli::cli_abort(
-        "Not yet implemented (Phase 1).",
-        .internal = TRUE
+    metabolites <- rownames(xBin)
+
+    shared_mat <- Matrix::drop0(xBin * yBin)
+    unique_x <- Matrix::drop0(xBin - shared_mat)
+    unique_y <- Matrix::drop0(yBin - shared_mat)
+
+    .matToEdgeList <- function(mat) {
+        triplet <- Matrix::summary(mat)
+        if (nrow(triplet) == 0L) {
+            return(tibble::tibble(
+                consumed = character(0L),
+                produced = character(0L)
+            ))
+        }
+        tibble::tibble(
+            consumed = metabolites[triplet$i],
+            produced = metabolites[triplet$j]
+        )
+    }
+
+    shared_edges <- .matToEdgeList(shared_mat)
+    unique_x_edges <- .matToEdgeList(unique_x)
+    unique_y_edges <- .matToEdgeList(unique_y)
+
+    ## Enrich shared edges with species info
+    if (nrow(shared_edges) > 0L) {
+        shared_edges <- shared_edges |>
+            dplyr::left_join(
+                dplyr::select(
+                    xEdges, "consumed", "produced", "data"
+                ),
+                by = c("consumed", "produced")
+            ) |>
+            dplyr::rename(querySpecies = "data") |>
+            dplyr::left_join(
+                dplyr::select(
+                    yEdges, "consumed", "produced", "data"
+                ),
+                by = c("consumed", "produced")
+            ) |>
+            dplyr::rename(referenceSpecies = "data")
+    }
+
+    list(
+        shared = shared_edges,
+        uniqueQuery = unique_x_edges,
+        uniqueReference = unique_y_edges
     )
 }
 
@@ -247,8 +363,21 @@
 #' @noRd
 .computePvalue <- function(xGraph, yBin, observed, metricFn,
                            nPerm = 999L, metabolites = NULL) {
-    cli::cli_abort(
-        "Not yet implemented (Phase 1).",
-        .internal = TRUE
-    )
+    if (nPerm == 0L) return(NA_real_)
+
+    n_iter <- igraph::ecount(xGraph) * 10L
+
+    null_scores <- vapply(seq_len(nPerm), function(i) {
+        rewired <- igraph::rewire(
+            xGraph,
+            igraph::keeping_degseq(niter = n_iter)
+        )
+        rewired_adj <- igraph::as_adjacency_matrix(
+            rewired, sparse = TRUE
+        )
+        rewired_exp <- .expandMatrix(rewired_adj, metabolites)
+        metricFn(rewired_exp, yBin)
+    }, numeric(1L))
+
+    (sum(null_scores >= observed) + 1L) / (nPerm + 1L)
 }
