@@ -19,22 +19,28 @@ ConsortiumMetabolismSet <- function(
     cli::cli_status("Checking arguments")
     args <- list(...)
     cons <- unlist(args, recursive = FALSE, use.names = FALSE)
-    stopifnot(exprs = {
-        all(lapply(cons, class) == "ConsortiumMetabolism")
-    })
+    if (!all(vapply(cons, is, logical(1),
+                     "ConsortiumMetabolism"))) {
+        cli::cli_abort(
+            "All elements in {.arg ...} must be
+            {.cls ConsortiumMetabolism} objects."
+        )
+    }
     cli::cli_process_done()
 
     # ---- Get all mets ----------------------------------------------------------
     cli::cli_status("Getting metabolites")
     # Get indeces of met in each consortium for re-indexing
-    all_met <- purrr::map2(
-        .x = purrr::map(cons, \(x) {
-            tibble::as_tibble(SummarizedExperiment::colData(x))
+    all_met <- Map(
+        \(x, y) dplyr::mutate(x, consortium = y),
+        lapply(cons, \(x) {
+            tibble::as_tibble(
+                SummarizedExperiment::colData(x)
+            )
         }),
-        .y = purrr::map_chr(cons, \(x) x@Name),
-        .f = \(x, y) dplyr::mutate(x, consortium = y)
+        vapply(cons, \(x) x@Name, character(1))
     ) |>
-        purrr::reduce(\(x, y) dplyr::bind_rows(x, y)) |>
+        dplyr::bind_rows() |>
         dplyr::rename(consortium_ind = "index")
     cli::cli_process_done()
 
@@ -62,12 +68,11 @@ ConsortiumMetabolismSet <- function(
     # Retrieve the edges tibbles from all objects and bind the new indeces for met
     cli::cli_status("Getting all edges")
     all_edges <-
-        purrr::map(
+        lapply(
             cons,
             \(x) dplyr::mutate(x@Edges, cm_name = x@Name)
         ) |>
-        ### Use reduce and dplyr::bind_rows?
-        purrr::map_dfr(\(x) rbind(x)) |>
+        dplyr::bind_rows() |>
         dplyr::left_join(
             dplyr::select(all_met, 1:2),
             by = c(consumed = "met")
@@ -109,9 +114,9 @@ ConsortiumMetabolismSet <- function(
     # used to create only unique combinations between consortia in order to min
     # computation time.
     cli::cli_status("Getting binary matrices")
-    bm_tb <- purrr::set_names(
-        purrr::map(cons, \(x) assays(x)$Binary),
-        purrr::map_chr(cons, \(x) x@Name)
+    bm_tb <- stats::setNames(
+        lapply(cons, \(x) assays(x)$Binary),
+        vapply(cons, \(x) x@Name, character(1))
     ) |>
         tibble::enframe() |>
         tibble::rowid_to_column("ind")
@@ -120,10 +125,12 @@ ConsortiumMetabolismSet <- function(
     # ---- Pre-expand binary matrices to universal space -------------------------
     cli::cli_status("Expanding binary matrices to universal space")
     universal_mets <- sort(unique(all_met$met))
-    expanded_bm <- purrr::set_names(
-        purrr::map(
+    expanded_bm <- stats::setNames(
+        lapply(
             bm_tb$value,
-            \(bm) .expandToUniversalSpace(bm, universal_mets)
+            \(bm) .expandToUniversalSpace(
+                bm, universal_mets
+            )
         ),
         bm_tb$name
     )
@@ -151,11 +158,10 @@ ConsortiumMetabolismSet <- function(
             cm_y = "value.y"
         ) |>
         dplyr::mutate(
-            overlap_score = purrr::map2_dbl(
-                .data$cm_x,
-                .data$cm_y,
+            overlap_score = mapply(
                 \(x, y) .binMatOverlap(x, y),
-                .progress = TRUE
+                .data$cm_x,
+                .data$cm_y
             )
         )
     cli::cli_process_done()
@@ -212,9 +218,9 @@ ConsortiumMetabolismSet <- function(
     # ---- Graphs ----------------------------------------------------------------
     # Store the graphs in a named list to enable the graph based alignment
     cli::cli_status("Getting all graphs")
-    graph_list <- purrr::set_names(
-        purrr::map(cons, \(x) x@Graphs[[1]]),
-        nm = purrr::map_chr(cons, \(x) x@Name)
+    graph_list <- stats::setNames(
+        lapply(cons, \(x) x@Graphs[[1]]),
+        vapply(cons, \(x) x@Name, character(1))
     )
     cli::cli_process_done()
 

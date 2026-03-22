@@ -28,10 +28,12 @@ setMethod(
         type <- match.arg(type)
 
         # Validate quantileCutoff parameter
-        stopifnot(
-            "quantileCutoff must be between 0 and 1" = quantileCutoff > 0 &&
-                quantileCutoff < 1
-        )
+        if (quantileCutoff <= 0 || quantileCutoff >= 1) {
+            cli::cli_abort(
+                "{.arg quantileCutoff} must be between 0 and 1 \\
+                 (exclusive), not {.val {quantileCutoff}}."
+            )
+        }
 
         tb <- object@Edges |>
             dplyr::mutate(

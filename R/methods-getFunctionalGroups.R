@@ -32,16 +32,17 @@ setMethod(
             # Join with unique_species to get species names for x and y
             dplyr::left_join(unique_species, by = c("x" = "ind")) |>
             dplyr::left_join(unique_species, by = c("y" = "ind")) |>
-            janitor::clean_names() |>
+            dplyr::rename(
+                species_x = "species.x",
+                species_y = "species.y"
+            ) |>
             # Initialize a column to store similarity scores
             dplyr::mutate(similarity = 0)
 
         # Calculate Jaccard similarity for each pair of species
         # Jaccard similarity = (intersection of reactions) / (union of reactions)
-        # Vectorized approach using purrr for better performance
-        species_combinations$similarity <- purrr::map2_dbl(
-            species_combinations$species_x,
-            species_combinations$species_y,
+        # Vectorized approach using mapply for better performance
+        species_combinations$similarity <- mapply(
             function(sp_x, sp_y) {
                 # Get the set of reactions for species x and species y
                 rxns_set_x <- rxns_per_species$edge[
@@ -57,7 +58,9 @@ setMethod(
 
                 # Calculate and return Jaccard similarity
                 intersection / union
-            }
+            },
+            species_combinations$species_x,
+            species_combinations$species_y
         )
 
         # Construct a sparse matrix from the species combinations and similarities

@@ -5,14 +5,14 @@ setMethod("getMet", "ConsortiumMetabolism", function(object) {
 
 #' @rdname getMet
 setMethod("getMet", "ConsortiumMetabolismSet", function(object) {
-    purrr::map2(
-        .x = purrr::map(object@Consortia, \(x) {
+    Map(
+        \(x, y) dplyr::mutate(x, consortium = y),
+        lapply(object@Consortia, \(x) {
             tibble::as_tibble(SummarizedExperiment::colData(x))
         }),
-        .y = purrr::map_chr(object@Consortia, \(x) x@Name),
-        .f = \(x, y) dplyr::mutate(x, consortium = y)
+        vapply(object@Consortia, \(x) x@Name, character(1))
     ) |>
-        purrr::reduce(\(x, y) dplyr::bind_rows(x, y)) |>
+        dplyr::bind_rows() |>
         dplyr::pull("met") |>
         unique() |>
         sort()

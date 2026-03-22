@@ -24,29 +24,30 @@ importMisosoup <- function(data) {
         stop("Zero growth solution detected")
     }
 
-    tb <- purrr::map2(
-        tb_import$substrate,
-        tb_import$focal_strain,
+    tb <- Map(
         \(x, y) {
-            data[[x]][[y]] |>
-                purrr::imap(
-                    \(z, idx) {
-                        tibble::as_tibble(z$solution) |>
-                            tidyr::pivot_longer(
-                                cols = dplyr::everything(),
-                                names_to = "rxn",
-                                values_to = "flux"
-                            ) |>
-                            dplyr::mutate(
-                                substrate = x,
-                                focal_strain = y,
-                                solution = idx
-                            )
-                    }
-                ) |>
+            entries <- data[[x]][[y]]
+            Map(
+                \(z, idx) {
+                    tibble::as_tibble(z$solution) |>
+                        tidyr::pivot_longer(
+                            cols = dplyr::everything(),
+                            names_to = "rxn",
+                            values_to = "flux"
+                        ) |>
+                        dplyr::mutate(
+                            substrate = x,
+                            focal_strain = y,
+                            solution = idx
+                        )
+                },
+                entries,
+                names(entries)
+            ) |>
                 dplyr::bind_rows()
         },
-        .progress = TRUE
+        tb_import$substrate,
+        tb_import$focal_strain
     ) |>
         dplyr::bind_rows() |>
         dplyr::relocate("rxn", "flux", .after = "solution") |>
@@ -62,15 +63,15 @@ importMisosoup <- function(data) {
 
     # Filter growth information
     growth <- tb |>
-        dplyr::filter(stringr::str_detect(.data$rxn, "[G,g]rowth")) |>
+        dplyr::filter(grepl("[G,g]rowth", .data$rxn)) |>
         dplyr::rename(growth = "rxn") |>
         dplyr::mutate(
-            growth = stringr::str_remove(.data$growth, "^Growth_|_growth$")
+            growth = sub("^Growth_|_growth$", "", .data$growth)
         )
 
     # Clean and split the rxn column
     tb <- tb |>
-        dplyr::filter(!stringr::str_detect(.data$rxn, "[G,g]rowth")) |>
+        dplyr::filter(!grepl("[G,g]rowth", .data$rxn)) |>
         tidyr::separate_wider_delim(
             cols = "rxn",
             delim = "_e_",
@@ -78,8 +79,8 @@ importMisosoup <- function(data) {
             too_few = "align_start"
         ) |>
         dplyr::mutate(
-            met = stringr::str_remove_all(.data$met, "^R_EX_|_e$"),
-            species = stringr::str_remove(.data$species, "_i$")
+            met = gsub("^R_EX_|_e$", "", .data$met),
+            species = sub("_i$", "", .data$species)
         )
 
     # Filter NA values in species as these entries are the media
@@ -115,25 +116,30 @@ importMisosoup <- function(data) {
 #'
 #' @export
 overviewMisosoup <- function(data) {
-    purrr::map(data, \(x) names(x)) |>
-        tibble::enframe(name = "substrate", value = "focal_strain") |>
+    lapply(data, \(x) names(x)) |>
+        tibble::enframe(
+            name = "substrate",
+            value = "focal_strain"
+        ) |>
         tidyr::unnest_longer(col = "focal_strain") |>
         dplyr::mutate(
-            n_cons = purrr::map2_dbl(
+            n_cons = mapply(
+                \(x, y) length(data[[x]][[y]]),
                 .data$substrate,
-                .data$focal_strain,
-                \(x, y) length(data[[x]][[y]])
+                .data$focal_strain
             ),
-            n_zero_growth = purrr::map2(
-                .data$substrate,
-                .data$focal_strain,
-                \(x, y) {
-                    data[[x]][[y]] |>
-                        purrr::map_lgl(
-                            \(z) length(z) == 1 && z[[1]] == 0
-                        )
-                }
-            ) |>
-                purrr::map_dbl(\(x) sum(x))
+            n_zero_growth = vapply(
+                seq_len(dplyr::n()),
+                \(i) {
+                    x <- .data$substrate[[i]]
+                    y <- .data$focal_strain[[i]]
+                    sum(vapply(
+                        data[[x]][[y]],
+                        \(z) length(z) == 1 && z[[1]] == 0,
+                        logical(1)
+                    ))
+                },
+                numeric(1)
+            )
         )
 }

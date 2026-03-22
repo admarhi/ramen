@@ -11,9 +11,6 @@
 #' @param to the name of the column specifying the met excreted
 #' @param flux Column name of the flux column
 #'
-#' @importFrom tidyr pivot_longer
-#' @importFrom dplyr rename mutate if_else select
-#'
 #' @export
 #'
 #' @examples
@@ -34,14 +31,18 @@
 #' )
 pivotCM <- function(tb, species, from, to, flux) {
     tb |>
-        pivot_longer(cols = c(from, to)) |>
-        rename(
+        tidyr::pivot_longer(cols = c(from, to)) |>
+        dplyr::rename(
             met = "value",
             species = {{ species }},
             flux = {{ flux }}
         ) |>
-        mutate(
-            flux = if_else(.data$name == from, .data$flux * -1, .data$flux)
+        dplyr::mutate(
+            flux = dplyr::if_else(
+                .data$name == from,
+                .data$flux * -1,
+                .data$flux
+            )
         ) |>
-        select("species", "met", "flux")
+        dplyr::select("species", "met", "flux")
 }

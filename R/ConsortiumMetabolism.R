@@ -123,9 +123,14 @@ ConsortiumMetabolism <- function(
 #' Prepare and validate input data
 #' @noRd
 .prepareInputData <- function(data, species_col, metabolite_col, flux_col) {
-    stopifnot(exprs = {
-        all(c(species_col, metabolite_col, flux_col) %in% names(data))
-    })
+    required <- c(species_col, metabolite_col, flux_col)
+    missing_cols <- setdiff(required, names(data))
+    if (length(missing_cols) > 0) {
+        cli::cli_abort(
+            "Column{?s} {.val {missing_cols}} not found
+            in {.arg data}."
+        )
+    }
 
     data |>
         rename(
@@ -149,14 +154,14 @@ ConsortiumMetabolism <- function(
 #' Filter out zero flux values
 #' @noRd
 .filterNonzeroFlux <- function(data) {
-    filter(data, .data$flux != 0)
+    dplyr::filter(data, .data$flux != 0)
 }
 
 #' Calculate consumption metrics
 #' @noRd
 .calculateConsumption <- function(tb) {
     tb |>
-        filter(.data$flux < 0) |>
+        dplyr::filter(.data$flux < 0) |>
         mutate(flux = .data$flux * -1) |>
         # Sum bc in eg cooc data each edge is given with its own flux so then
         # there can be multiple prod and cons values per met
@@ -168,7 +173,7 @@ ConsortiumMetabolism <- function(
 #' @noRd
 .calculateProduction <- function(tb) {
     tb |>
-        filter(.data$flux > 0) |>
+        dplyr::filter(.data$flux > 0) |>
         # Sum bc in eg cooc data each edge is given with its own flux so then
         # there can be multiple prod and cons values per met
         reframe(flux = sum(.data$flux), .by = c("species", "met")) |>
@@ -187,15 +192,35 @@ ConsortiumMetabolism <- function(
         ) |>
         nest(data = c("species", "flux_cons", "flux_prod")) |>
         mutate(
-            n_species = map_dbl(.data$data, \(x) nrow(x)),
-            c_sum = map_dbl(.data$data, \(x) sum(x$flux_cons)),
-            p_sum = map_dbl(.data$data, \(x) sum(x$flux_prod)),
-            c_prob = map(.data$data, \(x) x$flux_cons / sum(x$flux_cons)),
-            p_prob = map(.data$data, \(x) x$flux_prod / sum(x$flux_prod)),
-            c_eff = map_dbl(.data$c_prob, \(x) {
+            n_species = vapply(
+                .data$data, \(x) nrow(x), numeric(1)
+            ),
+            c_sum = vapply(
+                .data$data, \(x) sum(x$flux_cons),
+                numeric(1)
+            ),
+            p_sum = vapply(
+                .data$data, \(x) sum(x$flux_prod),
+                numeric(1)
+            ),
+            c_prob = lapply(
+                .data$data,
+                \(x) x$flux_cons / sum(x$flux_cons)
+            ),
+            p_prob = lapply(
+                .data$data,
+                \(x) x$flux_prod / sum(x$flux_prod)
+            ),
+            c_eff = vapply(.data$c_prob, \(x) {
                 round(2**(-sum(x * log2(x))), 2)
-            }),
-            p_eff = map_dbl(.data$p_prob, \(x) round(2**(-sum(x * log2(x))), 2))
+            }, numeric(1)),
+            p_eff = vapply(
+                .data$p_prob,
+                \(x) round(
+                    2**(-sum(x * log2(x))), 2
+                ),
+                numeric(1)
+            )
         ) |>
         left_join(mets, by = c(consumed = "met")) |>
         rename(c_ind = "index") |>

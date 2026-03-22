@@ -3,12 +3,18 @@
 #' @param object An object of class \code{ConsortiumMetabolism}
 #' @export
 setMethod("show", "ConsortiumMetabolism", function(object) {
-    stringr::str_glue(
-        "\n{object@Name}: ConsortiumMetabolism Object\n",
-        "{ifelse(object@Weighted, 'Weighted', 'Unweighted')} ",
-        "metabolic network with {length(object@Metabolites)} metabolites.\n\n"
-    ) |>
-        cat()
+    weight_label <- if (object@Weighted) {
+        "Weighted"
+    } else {
+        "Unweighted"
+    }
+    n_met <- length(object@Metabolites)
+    cli::cli_h3("ConsortiumMetabolism")
+    cli::cli_text("Name: {.val {object@Name}}")
+    cli::cli_text(
+        "{weight_label} metabolic network with ",
+        "{.val {n_met}} metabolites."
+    )
     invisible(object)
 })
 
@@ -17,12 +23,15 @@ setMethod("show", "ConsortiumMetabolism", function(object) {
 #' @param object An object of class \code{ConsortiumMetabolismSet}
 #' @export
 setMethod("show", "ConsortiumMetabolismSet", function(object) {
-    stringr::str_glue(
-        "\n{object@Name}: ConsortiumMetabolismSet Object\n",
-        "containing {length(object@Consortia)} consortia.\n",
-        "Description: {object@Description}\n\n"
-    ) |>
-        cat()
+    n_cons <- length(object@Consortia)
+    cli::cli_h3("ConsortiumMetabolismSet")
+    cli::cli_text("Name: {.val {object@Name}}")
+    cli::cli_text(
+        "Containing {.val {n_cons}} consortia."
+    )
+    cli::cli_text(
+        "Description: {.val {object@Description}}"
+    )
     invisible(object)
 })
 

@@ -21,9 +21,9 @@ setMethod(
         ]]
 
         # Create named list from the CMS
-        selected_consortia <- purrr::set_names(
+        selected_consortia <- stats::setNames(
             object@Consortia,
-            nm = purrr::map_chr(object@Consortia, \(x) x@Name)
+            vapply(object@Consortia, \(x) x@Name, character(1))
         )[cons_names]
         ### use purrr::keep?
 
