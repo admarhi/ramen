@@ -31,7 +31,7 @@ of species to return when \code{type} is "generalists" or "specialists".
 For "generalists", the top \code{quantileCutoff} fraction of species with
 the most edges is returned. For "specialists", the bottom
 \code{quantileCutoff} fraction with the fewest edges is returned.
-Defaults to 0.15 (i.e., 15\\%). Ignored when \code{type = "all"}.}
+Defaults to 0.15 (i.e., 15 percent). Ignored when \code{type = "all"}.}
 }
 \value{
 A character vector containing the names of species in the consortium

@@ -12,7 +12,7 @@ setMethod("getEdges", "ConsortiumMetabolism", function(object) {
 #'   threshold to use for filtering edges. For "pan-cons" and "core" types,
 #'   edges above \code{1 - quantileCutoff} are returned. For "niche" and "aux"
 #'   types, edges below \code{quantileCutoff} are returned. Defaults to 0.1
-#'   (i.e., top/bottom 10\%).
+#'   (i.e., top/bottom 10 percent).
 #' @export
 setMethod(
   "getEdges",
