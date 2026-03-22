@@ -248,3 +248,107 @@ setGeneric(
   "compareSpecies",
   function(object, species) standardGeneric("compareSpecies")
 )
+
+## ---- CMA accessors -------------------------------------------------------
+
+#' @title Get Alignment Scores
+#'
+#' @description
+#' Returns the scores from a
+#' [ConsortiumMetabolismAlignment] object.
+#'
+#' @param object A [ConsortiumMetabolismAlignment] object.
+#'
+#' @return A named list of scores.
+#'
+#' @export
+setGeneric(
+    "scores",
+    function(object) standardGeneric("scores")
+)
+
+#' @title Get Shared Pathways
+#'
+#' @description
+#' Returns pathways shared between query and reference
+#' in a pairwise alignment.
+#'
+#' @param object A [ConsortiumMetabolismAlignment] object
+#'   of type `"pairwise"`.
+#'
+#' @return A data.frame of shared pathway edges.
+#'
+#' @export
+setGeneric(
+    "sharedPathways",
+    function(object) standardGeneric("sharedPathways")
+)
+
+#' @title Get Unique Pathways
+#'
+#' @description
+#' Returns pathways unique to query and reference in a
+#' pairwise alignment.
+#'
+#' @param object A [ConsortiumMetabolismAlignment] object
+#'   of type `"pairwise"`.
+#'
+#' @return A list with `query` and `reference` data.frames.
+#'
+#' @export
+setGeneric(
+    "uniquePathways",
+    function(object) standardGeneric("uniquePathways")
+)
+
+#' @title Get Similarity Matrix
+#'
+#' @description
+#' Returns the pairwise similarity matrix from a
+#' multiple alignment.
+#'
+#' @param object A [ConsortiumMetabolismAlignment] object
+#'   of type `"multiple"`.
+#'
+#' @return A numeric n x n matrix.
+#'
+#' @export
+setGeneric(
+    "similarityMatrix",
+    function(object) standardGeneric("similarityMatrix")
+)
+
+#' @title Get Edge Prevalence
+#'
+#' @description
+#' Returns edge prevalence across consortia from a
+#' multiple alignment.
+#'
+#' @param object A [ConsortiumMetabolismAlignment] object
+#'   of type `"multiple"`.
+#'
+#' @return A data.frame with columns `consumed`, `produced`,
+#'   `nConsortia`, and `proportion`.
+#'
+#' @export
+setGeneric(
+    "prevalence",
+    function(object) standardGeneric("prevalence")
+)
+
+#' @title Get Consensus Edges
+#'
+#' @description
+#' Returns the consensus network edges from a multiple
+#' alignment.
+#'
+#' @param object A [ConsortiumMetabolismAlignment] object
+#'   of type `"multiple"`.
+#'
+#' @return A data.frame of consensus edges with prevalence.
+#'
+#' @export
+setGeneric(
+    "consensusEdges",
+    function(object) standardGeneric("consensusEdges")
+)

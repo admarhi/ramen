@@ -79,3 +79,14 @@ setMethod(
     }
   }
 )
+
+#' @describeIn getEdges Get Edges From a
+#'   \code{ConsortiumMetabolismAlignment} Object
+#' @export
+setMethod(
+    "getEdges",
+    "ConsortiumMetabolismAlignment",
+    function(object) {
+        object@Edges
+    }
+)

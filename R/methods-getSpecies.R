@@ -64,8 +64,19 @@ setMethod(
     "getSpecies",
     "ConsortiumMetabolismAlignment",
     function(object) {
+        if (object@Type == "pairwise") {
+            sp <- unique(c(
+                unlist(object@SharedPathways$querySpecies),
+                unlist(
+                    object@SharedPathways$referenceSpecies
+                )
+            ))
+            return(sort(sp[!is.na(sp)]))
+        }
         cli::cli_abort(
-            "getSpecies for CMA not yet implemented (Phase 3)."
+            "{.fun getSpecies} is not available for \\
+             multiple alignments. Use the original \\
+             {.cls ConsortiumMetabolismSet} instead."
         )
     }
 )

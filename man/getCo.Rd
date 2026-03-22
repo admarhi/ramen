@@ -3,14 +3,17 @@
 \name{getCo}
 \alias{getCo}
 \alias{getCo,ConsortiumMetabolism-method}
+\alias{getCo,ConsortiumMetabolismAlignment-method}
 \title{Get the Consortia}
 \usage{
 getCo(object)
 
 \S4method{getCo}{ConsortiumMetabolism}(object)
+
+\S4method{getCo}{ConsortiumMetabolismAlignment}(object)
 }
 \arguments{
-\item{object}{An object of class \code{ConsortiumMetabolism}}
+\item{object}{A \code{ConsortiumMetabolismAlignment} object.}
 }
 \value{
 For \code{ConsortiumMetabolism} objects, returns a tb with species,
@@ -25,5 +28,7 @@ Returns the consortia data in a tabular format.
 \section{Methods (by class)}{
 \itemize{
 \item \code{getCo(ConsortiumMetabolism)}: Get the Community
+
+\item \code{getCo(ConsortiumMetabolismAlignment)}: Not applicable for alignments
 
 }}

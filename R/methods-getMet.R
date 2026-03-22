@@ -28,8 +28,6 @@ setMethod(
     "getMet",
     "ConsortiumMetabolismAlignment",
     function(object) {
-        cli::cli_abort(
-            "getMet for CMA not yet implemented (Phase 3)."
-        )
+        object@Metabolites$met
     }
 )

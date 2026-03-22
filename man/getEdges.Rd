@@ -4,6 +4,7 @@
 \alias{getEdges}
 \alias{getEdges,ConsortiumMetabolism-method}
 \alias{getEdges,ConsortiumMetabolismSet-method}
+\alias{getEdges,ConsortiumMetabolismAlignment-method}
 \title{Get Edges From a \code{ConsortiumMetabolism} Object}
 \usage{
 getEdges(object, ...)
@@ -15,6 +16,8 @@ getEdges(object, ...)
   type = c("all", "pan-cons", "niche", "core", "aux"),
   quantileCutoff = 0.1
 )
+
+\S4method{getEdges}{ConsortiumMetabolismAlignment}(object)
 }
 \arguments{
 \item{object}{A \code{ConsortiumMetabolism} object}
@@ -55,5 +58,8 @@ a \code{ConsortiumMetabolismSet} type object.
 \item \code{getEdges(ConsortiumMetabolism)}: Get Edges From a \code{ConsortiumMetabolism} Object
 
 \item \code{getEdges(ConsortiumMetabolismSet)}: Get Edges From a \code{ConsortiumMetabolismSet} Object
+
+\item \code{getEdges(ConsortiumMetabolismAlignment)}: Get Edges From a
+\code{ConsortiumMetabolismAlignment} Object
 
 }}
