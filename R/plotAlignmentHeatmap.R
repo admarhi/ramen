@@ -9,8 +9,7 @@
 #'
 #' @return None. Raises an error.
 #' @export
-plotAlignmentHeatmap <- function(object, top = NULL,
-                                bottom = NULL) {
+plotAlignmentHeatmap <- function(object, top = NULL, bottom = NULL) {
     cli::cli_abort(
         paste0(
             "{.fn plotAlignmentHeatmap} is deprecated. ",

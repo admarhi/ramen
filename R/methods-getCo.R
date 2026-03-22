@@ -3,8 +3,8 @@
 #' @return A list with the community data.
 #' @export
 setMethod("getCo", "ConsortiumMetabolism", function(object) {
-  object@InputData |>
-    dplyr::select("met", "species", "flux")
+    object@InputData |>
+        dplyr::select("met", "species", "flux")
 })
 
 #' @describeIn getCo Not applicable for alignments

@@ -101,7 +101,9 @@
 .functionalOverlap <- function(xBin, yBin) {
     intersection <- xBin * yBin
     denom <- min(sum(xBin), sum(yBin))
-    if (denom == 0) return(0)
+    if (denom == 0) {
+        return(0)
+    }
     sum(intersection) / denom
 }
 
@@ -119,7 +121,9 @@
 .jaccardIndex <- function(xBin, yBin) {
     intersection <- sum(xBin * yBin)
     union_size <- sum(xBin) + sum(yBin) - intersection
-    if (union_size == 0) return(0)
+    if (union_size == 0) {
+        return(0)
+    }
     intersection / union_size
 }
 
@@ -148,7 +152,9 @@
     numerator <- sum(diff_C) + sum(diff_P)
 
     total <- sum(xC) + sum(yC) + sum(xP) + sum(yP)
-    if (total == 0) return(0)
+    if (total == 0) {
+        return(0)
+    }
     1 - (numerator / total)
 }
 
@@ -169,7 +175,9 @@
     total <- xEdges + yEdges
     numer <- sum(total - diff_mat) / 2
     denom <- sum(total + diff_mat) / 2
-    if (denom == 0) return(0)
+    if (denom == 0) {
+        return(0)
+    }
     numer / denom
 }
 
@@ -196,9 +204,7 @@
 #'   }
 #'
 #' @noRd
-.computeAllScores <- function(xBin, yBin,
-                              xWeighted = NULL,
-                              yWeighted = NULL) {
+.computeAllScores <- function(xBin, yBin, xWeighted = NULL, yWeighted = NULL) {
     scores <- list(
         FOS = .functionalOverlap(xBin, yBin),
         jaccard = .jaccardIndex(xBin, yBin)
@@ -216,7 +222,8 @@
             )
         )
         scores$redundancyOverlap <- .redundancyOverlap(
-            xWeighted$nEdges, yWeighted$nEdges
+            xWeighted$nEdges,
+            yWeighted$nEdges
         )
     } else {
         scores$brayCurtis <- NA_real_
@@ -258,7 +265,9 @@
     available <- names(scores)[
         !is.na(vapply(scores, identity, numeric(1L)))
     ]
-    if (length(available) == 0L) return(NA_real_)
+    if (length(available) == 0L) {
+        return(NA_real_)
+    }
 
     w <- weights[available]
     w <- w / sum(w)
@@ -288,8 +297,7 @@
 #'   }
 #'
 #' @noRd
-.identifyPathwayCorrespondences <- function(xBin, yBin,
-                                            xEdges, yEdges) {
+.identifyPathwayCorrespondences <- function(xBin, yBin, xEdges, yEdges) {
     metabolites <- rownames(xBin)
 
     shared_mat <- Matrix::drop0(xBin * yBin)
@@ -319,14 +327,20 @@
         shared_edges <- shared_edges |>
             dplyr::left_join(
                 dplyr::select(
-                    xEdges, "consumed", "produced", "data"
+                    xEdges,
+                    "consumed",
+                    "produced",
+                    "data"
                 ),
                 by = c("consumed", "produced")
             ) |>
             dplyr::rename(querySpecies = "data") |>
             dplyr::left_join(
                 dplyr::select(
-                    yEdges, "consumed", "produced", "data"
+                    yEdges,
+                    "consumed",
+                    "produced",
+                    "data"
                 ),
                 by = c("consumed", "produced")
             ) |>
@@ -361,23 +375,36 @@
 #'   (nPerm + 1).
 #'
 #' @noRd
-.computePvalue <- function(xGraph, yBin, observed, metricFn,
-                           nPerm = 999L, metabolites = NULL) {
-    if (nPerm == 0L) return(NA_real_)
+.computePvalue <- function(
+    xGraph,
+    yBin,
+    observed,
+    metricFn,
+    nPerm = 999L,
+    metabolites = NULL
+) {
+    if (nPerm == 0L) {
+        return(NA_real_)
+    }
 
     n_iter <- igraph::ecount(xGraph) * 10L
 
-    null_scores <- vapply(seq_len(nPerm), function(i) {
-        rewired <- igraph::rewire(
-            xGraph,
-            igraph::keeping_degseq(niter = n_iter)
-        )
-        rewired_adj <- igraph::as_adjacency_matrix(
-            rewired, sparse = TRUE
-        )
-        rewired_exp <- .expandMatrix(rewired_adj, metabolites)
-        metricFn(rewired_exp, yBin)
-    }, numeric(1L))
+    null_scores <- vapply(
+        seq_len(nPerm),
+        function(i) {
+            rewired <- igraph::rewire(
+                xGraph,
+                igraph::keeping_degseq(niter = n_iter)
+            )
+            rewired_adj <- igraph::as_adjacency_matrix(
+                rewired,
+                sparse = TRUE
+            )
+            rewired_exp <- .expandMatrix(rewired_adj, metabolites)
+            metricFn(rewired_exp, yBin)
+        },
+        numeric(1L)
+    )
 
     (sum(null_scores >= observed) + 1L) / (nPerm + 1L)
 }
@@ -409,13 +436,16 @@
         }
         list(
             nEdges = .expandMatrix(
-                assays(cm)$nEdges, universal_mets
+                assays(cm)$nEdges,
+                universal_mets
             ),
             Consumption = .expandMatrix(
-                assays(cm)$Consumption, universal_mets
+                assays(cm)$Consumption,
+                universal_mets
             ),
             Production = .expandMatrix(
-                assays(cm)$Production, universal_mets
+                assays(cm)$Production,
+                universal_mets
             )
         )
     })
@@ -439,8 +469,7 @@
 #'   names, diagonal = 1, off-diagonal = similarity scores.
 #'
 #' @noRd
-.computePairwiseSimilarityMatrix <- function(cms, method,
-                                             BPPARAM) {
+.computePairwiseSimilarityMatrix <- function(cms, method, BPPARAM) {
     n <- length(cms@Consortia)
     cm_names <- names(cms@BinaryMatrices)
     bins <- cms@BinaryMatrices
@@ -454,9 +483,12 @@
 
     ## Pre-expand weighted assays if needed
     weighted <- NULL
-    needs_weighted <- method %in% c(
-        "brayCurtis", "redundancyOverlap", "MAAS"
-    )
+    needs_weighted <- method %in%
+        c(
+            "brayCurtis",
+            "redundancyOverlap",
+            "MAAS"
+        )
     if (needs_weighted) {
         weighted <- .expandWeightedAssays(cms)
     }
@@ -474,7 +506,8 @@
                 .jaccardIndex(bins[[i]], bins[[j]])
             } else if (method == "brayCurtis") {
                 .brayCurtisSimilarity(
-                    weighted[[i]], weighted[[j]]
+                    weighted[[i]],
+                    weighted[[j]]
                 )
             } else if (method == "redundancyOverlap") {
                 .redundancyOverlap(
@@ -484,8 +517,10 @@
             } else {
                 ## MAAS
                 all_sc <- .computeAllScores(
-                    bins[[i]], bins[[j]],
-                    weighted[[i]], weighted[[j]]
+                    bins[[i]],
+                    bins[[j]],
+                    weighted[[i]],
+                    weighted[[j]]
                 )
                 .computeMAAS(all_sc)
             }
@@ -495,12 +530,16 @@
 
     ## Fill symmetric matrix
     sim_mat <- matrix(
-        0, n, n,
+        0,
+        n,
+        n,
         dimnames = list(cm_names, cm_names)
     )
     diag(sim_mat) <- 1
     scores_vec <- vapply(
-        scores, identity, numeric(1L)
+        scores,
+        identity,
+        numeric(1L)
     )
     for (k in seq_len(ncol(pairs))) {
         i <- pairs[1L, k]

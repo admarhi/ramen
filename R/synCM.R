@@ -40,57 +40,61 @@
 #' # Return raw edge list instead
 #' synCM("Test", n_species = 3, max_met = 8, cm = FALSE)
 synCM <- function(
-  name,
-  n_species,
-  max_met,
-  scale_fac = 2,
-  seed = FALSE,
-  dead_ends = FALSE,
-  cm = TRUE
+    name,
+    n_species,
+    max_met,
+    scale_fac = 2,
+    seed = FALSE,
+    dead_ends = FALSE,
+    cm = TRUE
 ) {
-  .rNames <- function(n = 5000) {
-    a <- do.call(paste0, replicate(3, sample(LETTERS, n, TRUE), FALSE))
-    paste0(a, sprintf("%03d", sample(9999, n, TRUE)), sample(LETTERS, n, TRUE))
-  }
-
-  species_names <- .rNames(n_species * scale_fac)
-  met_vec <- paste0("met", 1:max_met)
-
-  if (!seed) {
-    seed <- sample(1:1000, 1)
-  }
-  set.seed(seed)
-
-  # Get sample of species for the community
-  species_names <- sample(species_names, size = n_species, replace = FALSE)
-
-  per_species <- lapply(species_names, function(sp) {
-    n_mets <- sample(2:max_met, 1)
-    species_mets <- sample(met_vec, n_mets)
-    flux_vals <- stats::rnorm(n_mets, mean = 0, sd = 3)
-    if (!dead_ends && (all(flux_vals < 0) || all(flux_vals > 0))) {
-      idx <- sample(seq_along(flux_vals), 1)
-      flux_vals[idx] <- flux_vals[idx] * -1
+    .rNames <- function(n = 5000) {
+        a <- do.call(paste0, replicate(3, sample(LETTERS, n, TRUE), FALSE))
+        paste0(
+            a,
+            sprintf("%03d", sample(9999, n, TRUE)),
+            sample(LETTERS, n, TRUE)
+        )
     }
-    tibble::tibble(
-      species = rep(sp, n_mets),
-      metabolites = species_mets,
-      fluxes = flux_vals
+
+    species_names <- .rNames(n_species * scale_fac)
+    met_vec <- paste0("met", 1:max_met)
+
+    if (!seed) {
+        seed <- sample(1:1000, 1)
+    }
+    set.seed(seed)
+
+    # Get sample of species for the community
+    species_names <- sample(species_names, size = n_species, replace = FALSE)
+
+    per_species <- lapply(species_names, function(sp) {
+        n_mets <- sample(2:max_met, 1)
+        species_mets <- sample(met_vec, n_mets)
+        flux_vals <- stats::rnorm(n_mets, mean = 0, sd = 3)
+        if (!dead_ends && (all(flux_vals < 0) || all(flux_vals > 0))) {
+            idx <- sample(seq_along(flux_vals), 1)
+            flux_vals[idx] <- flux_vals[idx] * -1
+        }
+        tibble::tibble(
+            species = rep(sp, n_mets),
+            metabolites = species_mets,
+            fluxes = flux_vals
+        )
+    })
+
+    community <- do.call(rbind, per_species)
+
+    if (!cm) {
+        return(community)
+    }
+
+    ConsortiumMetabolism(
+        data = tibble::tibble(
+            species = community$species,
+            met = community$metabolites,
+            flux = community$fluxes
+        ),
+        name = name
     )
-  })
-
-  community <- do.call(rbind, per_species)
-
-  if (!cm) {
-    return(community)
-  }
-
-  ConsortiumMetabolism(
-    data = tibble::tibble(
-      species = community$species,
-      met = community$metabolites,
-      flux = community$fluxes
-    ),
-    name = name
-  )
 }

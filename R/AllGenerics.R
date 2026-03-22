@@ -126,10 +126,15 @@ setGeneric("modify", function(object) standardGeneric("modify"))
 #' @return A cluster from a \code{ConsortiumMetabolismSet} object
 #' @export
 setGeneric(
-  "getCluster",
-  function(object, node_id, name = NA_character_, description = NA_character_) {
-    standardGeneric("getCluster")
-  }
+    "getCluster",
+    function(
+        object,
+        node_id,
+        name = NA_character_,
+        description = NA_character_
+    ) {
+        standardGeneric("getCluster")
+    }
 )
 
 
@@ -148,8 +153,8 @@ setGeneric(
 #' @return The modified object with updated name
 #' @export
 setGeneric(
-  "setName",
-  function(object, value = NA_character_) standardGeneric("setName")
+    "setName",
+    function(object, value = NA_character_) standardGeneric("setName")
 )
 
 #' @title Set Names or description of ramen Objects
@@ -167,8 +172,8 @@ setGeneric(
 #' @return The modified object with updated description
 #' @export
 setGeneric(
-  "setDesc",
-  function(object, value = NA_character_) standardGeneric("setDesc")
+    "setDesc",
+    function(object, value = NA_character_) standardGeneric("setDesc")
 )
 
 #' @title Get Functional Groups
@@ -204,8 +209,8 @@ setGeneric(
 #'
 #' @export
 setGeneric(
-  "getFunctionalGroups",
-  function(object, k = 4, ...) standardGeneric("getFunctionalGroups")
+    "getFunctionalGroups",
+    function(object, k = 4, ...) standardGeneric("getFunctionalGroups")
 )
 
 
@@ -235,8 +240,8 @@ setGeneric(
 #'
 #' @noRd
 setGeneric(
-  "compareSpecies",
-  function(object, species) standardGeneric("compareSpecies")
+    "compareSpecies",
+    function(object, species) standardGeneric("compareSpecies")
 )
 
 ## ---- CMA accessors -------------------------------------------------------

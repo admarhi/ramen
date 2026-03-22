@@ -45,113 +45,116 @@
 #' @importFrom scales rescale gradient_n_pal
 #' @importFrom graphics plot
 plotDirectedFlow <- function(
-  g,
-  source_x = 0,
-  mixed_x = 1,
-  sink_x = 2,
-  vertical_spacing = 1,
-  vertex_size = 10,
-  vertex_label_cex = 0.8,
-  edge_arrow_size = 0.5,
-  edge_width_range = c(0.1, 0.1),
-  color_edges_by_weight = FALSE,
-  edge_color_low = "gray80",
-  edge_color_high = "black",
-  ...
-) {
-  if (!igraph::is_directed(g)) {
-    stop("Graph must be directed.")
-  }
-
-  # Compute degrees
-  in_deg <- igraph::degree(g, mode = "in")
-  out_deg <- igraph::degree(g, mode = "out")
-
-  # Classify nodes
-  sources <- which(in_deg == 0 & out_deg > 0)
-  sinks <- which(in_deg > 0 & out_deg == 0)
-  mixed <- which(in_deg > 0 & out_deg > 0)
-
-  layout <- matrix(NA, nrow = igraph::vcount(g), ncol = 2)
-
-  ## Layout for mixed nodes
-  if (length(mixed) > 1) {
-    subg <- igraph::induced_subgraph(g, vids = mixed)
-    mix_layout <- igraph::layout_with_kk(subg)
-
-    mix_layout[, 1] <- scales::rescale(
-      mix_layout[, 1],
-      to = c(mixed_x - 0.4, mixed_x + 0.4)
-    )
-    mix_layout[, 2] <- scales::rescale(
-      mix_layout[, 2],
-      to = c(0, vertical_spacing)
-    )
-
-    layout[mixed, ] <- mix_layout
-  } else if (length(mixed) == 1) {
-    layout[mixed, ] <- c(mixed_x, vertical_spacing / 2)
-  }
-
-  ## Sources
-  y_sources <- seq(
-    from = vertical_spacing,
-    to = 0,
-    length.out = max(1, length(sources))
-  )
-  layout[sources, ] <- cbind(rep(source_x, length(sources)), y_sources)
-
-  ## Sinks
-  y_sinks <- seq(
-    from = vertical_spacing,
-    to = 0,
-    length.out = max(1, length(sinks))
-  )
-  layout[sinks, ] <- cbind(rep(sink_x, length(sinks)), y_sinks)
-
-  ## Edge weights → width
-  if (igraph::is_weighted(g)) {
-    w <- igraph::E(g)$weight
-    if (length(unique(w)) == 1) {
-      edge_widths <- rep(mean(edge_width_range), length(w))
-    } else {
-      edge_widths <- scales::rescale(w, to = edge_width_range)
-    }
-  } else {
-    edge_widths <- rep(mean(edge_width_range), igraph::ecount(g))
-  }
-
-  ## Edge color mapping
-  if (color_edges_by_weight && igraph::is_weighted(g)) {
-    w <- igraph::E(g)$weight
-    if (length(unique(w)) > 1) {
-      edge_color_scaled <- scales::rescale(w, to = c(0, 1))
-    } else {
-      edge_color_scaled <- rep(0.5, length(w))
-    }
-    edge_colors <- scales::gradient_n_pal(c(edge_color_low, edge_color_high))(
-      edge_color_scaled
-    )
-  } else {
-    edge_colors <- rep("gray50", igraph::ecount(g))
-  }
-
-  ## Node colors by role
-  colors <- rep("gray", igraph::vcount(g))
-  colors[sources] <- "lightblue"
-  colors[mixed] <- "lightgoldenrod"
-  colors[sinks] <- "salmon"
-
-  ## Plot
-  graphics::plot(
     g,
-    layout = layout,
-    vertex.color = colors,
-    vertex.size = vertex_size,
-    vertex.label.cex = vertex_label_cex,
-    edge.arrow.size = edge_arrow_size,
-    edge.width = edge_widths,
-    edge.color = edge_colors,
+    source_x = 0,
+    mixed_x = 1,
+    sink_x = 2,
+    vertical_spacing = 1,
+    vertex_size = 10,
+    vertex_label_cex = 0.8,
+    edge_arrow_size = 0.5,
+    edge_width_range = c(0.1, 0.1),
+    color_edges_by_weight = FALSE,
+    edge_color_low = "gray80",
+    edge_color_high = "black",
     ...
-  )
+) {
+    if (!igraph::is_directed(g)) {
+        stop("Graph must be directed.")
+    }
+
+    # Compute degrees
+    in_deg <- igraph::degree(g, mode = "in")
+    out_deg <- igraph::degree(g, mode = "out")
+
+    # Classify nodes
+    sources <- which(in_deg == 0 & out_deg > 0)
+    sinks <- which(in_deg > 0 & out_deg == 0)
+    mixed <- which(in_deg > 0 & out_deg > 0)
+
+    layout <- matrix(NA, nrow = igraph::vcount(g), ncol = 2)
+
+    ## Layout for mixed nodes
+    if (length(mixed) > 1) {
+        subg <- igraph::induced_subgraph(g, vids = mixed)
+        mix_layout <- igraph::layout_with_kk(subg)
+
+        mix_layout[, 1] <- scales::rescale(
+            mix_layout[, 1],
+            to = c(mixed_x - 0.4, mixed_x + 0.4)
+        )
+        mix_layout[, 2] <- scales::rescale(
+            mix_layout[, 2],
+            to = c(0, vertical_spacing)
+        )
+
+        layout[mixed, ] <- mix_layout
+    } else if (length(mixed) == 1) {
+        layout[mixed, ] <- c(mixed_x, vertical_spacing / 2)
+    }
+
+    ## Sources
+    y_sources <- seq(
+        from = vertical_spacing,
+        to = 0,
+        length.out = max(1, length(sources))
+    )
+    layout[sources, ] <- cbind(rep(source_x, length(sources)), y_sources)
+
+    ## Sinks
+    y_sinks <- seq(
+        from = vertical_spacing,
+        to = 0,
+        length.out = max(1, length(sinks))
+    )
+    layout[sinks, ] <- cbind(rep(sink_x, length(sinks)), y_sinks)
+
+    ## Edge weights → width
+    if (igraph::is_weighted(g)) {
+        w <- igraph::E(g)$weight
+        if (length(unique(w)) == 1) {
+            edge_widths <- rep(mean(edge_width_range), length(w))
+        } else {
+            edge_widths <- scales::rescale(w, to = edge_width_range)
+        }
+    } else {
+        edge_widths <- rep(mean(edge_width_range), igraph::ecount(g))
+    }
+
+    ## Edge color mapping
+    if (color_edges_by_weight && igraph::is_weighted(g)) {
+        w <- igraph::E(g)$weight
+        if (length(unique(w)) > 1) {
+            edge_color_scaled <- scales::rescale(w, to = c(0, 1))
+        } else {
+            edge_color_scaled <- rep(0.5, length(w))
+        }
+        edge_colors <- scales::gradient_n_pal(c(
+            edge_color_low,
+            edge_color_high
+        ))(
+            edge_color_scaled
+        )
+    } else {
+        edge_colors <- rep("gray50", igraph::ecount(g))
+    }
+
+    ## Node colors by role
+    colors <- rep("gray", igraph::vcount(g))
+    colors[sources] <- "lightblue"
+    colors[mixed] <- "lightgoldenrod"
+    colors[sinks] <- "salmon"
+
+    ## Plot
+    graphics::plot(
+        g,
+        layout = layout,
+        vertex.color = colors,
+        vertex.size = vertex_size,
+        vertex.label.cex = vertex_label_cex,
+        edge.arrow.size = edge_arrow_size,
+        edge.width = edge_widths,
+        edge.color = edge_colors,
+        ...
+    )
 }

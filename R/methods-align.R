@@ -22,15 +22,18 @@ setMethod(
         x = "ConsortiumMetabolism",
         y = "ConsortiumMetabolism"
     ),
-    function(x, y, method = "FOS",
-             computePvalue = FALSE,
-             nPermutations = 999L, ...) {
-
+    function(
+        x,
+        y,
+        method = "FOS",
+        computePvalue = FALSE,
+        nPermutations = 999L,
+        ...
+    ) {
         ## 1. Validate method argument
         method <- match.arg(
             method,
-            c("FOS", "jaccard", "brayCurtis",
-              "redundancyOverlap", "MAAS")
+            c("FOS", "jaccard", "brayCurtis", "redundancyOverlap", "MAAS")
         )
 
         ## 2. Harmonize metabolite space (binary matrices)
@@ -45,31 +48,40 @@ setMethod(
         if (x@Weighted && y@Weighted) {
             xWeighted <- list(
                 Consumption = .expandMatrix(
-                    assays(x)$Consumption, union_mets
+                    assays(x)$Consumption,
+                    union_mets
                 ),
                 Production = .expandMatrix(
-                    assays(x)$Production, union_mets
+                    assays(x)$Production,
+                    union_mets
                 ),
                 nEdges = .expandMatrix(
-                    assays(x)$nEdges, union_mets
+                    assays(x)$nEdges,
+                    union_mets
                 )
             )
             yWeighted <- list(
                 Consumption = .expandMatrix(
-                    assays(y)$Consumption, union_mets
+                    assays(y)$Consumption,
+                    union_mets
                 ),
                 Production = .expandMatrix(
-                    assays(y)$Production, union_mets
+                    assays(y)$Production,
+                    union_mets
                 ),
                 nEdges = .expandMatrix(
-                    assays(y)$nEdges, union_mets
+                    assays(y)$nEdges,
+                    union_mets
                 )
             )
         }
 
         ## 4. Compute all scores
         all_scores <- .computeAllScores(
-            xBin, yBin, xWeighted, yWeighted
+            xBin,
+            yBin,
+            xWeighted,
+            yWeighted
         )
 
         ## 5. Determine primary score
@@ -80,7 +92,8 @@ setMethod(
                 primary <- .computeMAAS(all_scores)
             } else {
                 primary <- .computeMAAS(
-                    all_scores, weights = weights
+                    all_scores,
+                    weights = weights
                 )
             }
         } else {
@@ -89,14 +102,16 @@ setMethod(
 
         ## 6. Identify pathway correspondences
         correspondences <- .identifyPathwayCorrespondences(
-            xBin, yBin, x@Edges, y@Edges
+            xBin,
+            yBin,
+            x@Edges,
+            y@Edges
         )
 
         ## 7. Optional: compute p-value
         pval <- NA_real_
         if (computePvalue) {
-            if (method %in% c("brayCurtis",
-                              "redundancyOverlap")) {
+            if (method %in% c("brayCurtis", "redundancyOverlap")) {
                 cli::cli_warn(
                     paste0(
                         "P-value computation for ",
@@ -105,7 +120,8 @@ setMethod(
                     )
                 )
             } else {
-                metric_fn <- switch(method,
+                metric_fn <- switch(
+                    method,
                     FOS = .functionalOverlap,
                     jaccard = .jaccardIndex,
                     MAAS = .functionalOverlap
@@ -167,15 +183,11 @@ setMethod(
         x = "ConsortiumMetabolismSet",
         y = "missing"
     ),
-    function(x, y, method = "FOS",
-             BPPARAM = BiocParallel::SerialParam(),
-             ...) {
-
+    function(x, y, method = "FOS", BPPARAM = BiocParallel::SerialParam(), ...) {
         ## 1. Validate
         method <- match.arg(
             method,
-            c("FOS", "jaccard", "brayCurtis",
-              "redundancyOverlap", "MAAS")
+            c("FOS", "jaccard", "brayCurtis", "redundancyOverlap", "MAAS")
         )
         n <- length(x@Consortia)
         if (n < 2L) {
@@ -193,7 +205,9 @@ setMethod(
 
         ## 2. Pairwise similarity matrix
         sim_mat <- .computePairwiseSimilarityMatrix(
-            x, method, BPPARAM
+            x,
+            method,
+            BPPARAM
         )
 
         ## 3. Summary scores
@@ -265,9 +279,7 @@ setMethod(
         x = "ConsortiumMetabolism",
         y = "ConsortiumMetabolismSet"
     ),
-    function(x, y, method = "FOS",
-             BPPARAM = BiocParallel::SerialParam(),
-             ...) {
+    function(x, y, method = "FOS", BPPARAM = BiocParallel::SerialParam(), ...) {
         cli::cli_abort(
             "Database search not yet implemented (future)."
         )

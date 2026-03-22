@@ -15,3 +15,4 @@ vignettes/func_sim.Rmd
 ^doc$
 ^Meta$
 .lintr*
+^air\.toml$

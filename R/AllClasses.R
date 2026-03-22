@@ -2,17 +2,17 @@
 #' @import methods
 #' @importClassesFrom TreeSummarizedExperiment TreeSummarizedExperiment
 newConsortiumMetabolism <- setClass(
-  Class = "ConsortiumMetabolism",
-  contains = "TreeSummarizedExperiment",
-  slots = list(
-    Name = "character",
-    Description = "character",
-    Edges = "data.frame",
-    Weighted = "logical",
-    InputData = "data.frame",
-    Metabolites = "character",
-    Graphs = "list"
-  )
+    Class = "ConsortiumMetabolism",
+    contains = "TreeSummarizedExperiment",
+    slots = list(
+        Name = "character",
+        Description = "character",
+        Edges = "data.frame",
+        Weighted = "logical",
+        InputData = "data.frame",
+        Metabolites = "character",
+        Graphs = "list"
+    )
 )
 
 #' @noRd
@@ -81,8 +81,10 @@ setValidity("ConsortiumMetabolismAlignment", function(object) {
 
     ## Type must be one of the allowed values
     valid_types <- c("pairwise", "multiple", "search")
-    if (.hasValue(object@Type) &&
-        !object@Type %in% valid_types) {
+    if (
+        .hasValue(object@Type) &&
+            !object@Type %in% valid_types
+    ) {
         errors <- c(
             errors,
             paste0(
@@ -93,8 +95,10 @@ setValidity("ConsortiumMetabolismAlignment", function(object) {
     }
 
     ## PrimaryScore must be in [0, 1] or NA
-    if (.hasValue(object@PrimaryScore) &&
-        (object@PrimaryScore < 0 || object@PrimaryScore > 1)) {
+    if (
+        .hasValue(object@PrimaryScore) &&
+            (object@PrimaryScore < 0 || object@PrimaryScore > 1)
+    ) {
         errors <- c(
             errors,
             "PrimaryScore must be between 0 and 1"
@@ -102,8 +106,10 @@ setValidity("ConsortiumMetabolismAlignment", function(object) {
     }
 
     ## Pvalue must be in [0, 1] or NA
-    if (.hasValue(object@Pvalue) &&
-        (object@Pvalue < 0 || object@Pvalue > 1)) {
+    if (
+        .hasValue(object@Pvalue) &&
+            (object@Pvalue < 0 || object@Pvalue > 1)
+    ) {
         errors <- c(
             errors,
             "Pvalue must be between 0 and 1"

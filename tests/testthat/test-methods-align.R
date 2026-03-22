@@ -12,7 +12,8 @@ test_that("align() dispatches CMS,missing and returns CMA", {
     cm1 <- synCM("a", n_species = 3, max_met = 5)
     cm2 <- synCM("b", n_species = 3, max_met = 5)
     cms <- ConsortiumMetabolismSet(
-        list(cm1, cm2), name = "test"
+        list(cm1, cm2),
+        name = "test"
     )
     cma <- align(cms)
     expect_s4_class(cma, "ConsortiumMetabolismAlignment")
@@ -85,8 +86,7 @@ test_that("MAAS method works", {
 test_that("align with computePvalue returns valid p-value", {
     cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 42)
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 43)
-    cma <- align(cm1, cm2, computePvalue = TRUE,
-                 nPermutations = 99L)
+    cma <- align(cm1, cm2, computePvalue = TRUE, nPermutations = 99L)
     expect_true(!is.na(cma@Pvalue))
     expect_true(cma@Pvalue >= 0 && cma@Pvalue <= 1)
 })
@@ -113,7 +113,8 @@ test_that("FOS from align matches .binMatOverlap via CMS", {
     cm2 <- synCM("b", n_species = 4, max_met = 8, seed = 43)
     cma <- align(cm1, cm2, method = "FOS")
     cms <- ConsortiumMetabolismSet(
-        list(cm1, cm2), name = "test"
+        list(cm1, cm2),
+        name = "test"
     )
     cms_fos <- 1 - cms@OverlapMatrix[1, 2]
     expect_equal(cma@PrimaryScore, cms_fos)
@@ -155,7 +156,8 @@ test_that("FOS similarity matches CMS OverlapMatrix", {
     cm2 <- synCM("b", n_species = 4, max_met = 8, seed = 43)
     cm3 <- synCM("c", n_species = 4, max_met = 8, seed = 44)
     cms <- ConsortiumMetabolismSet(
-        list(cm1, cm2, cm3), name = "test"
+        list(cm1, cm2, cm3),
+        name = "test"
     )
     cma <- align(cms, method = "FOS")
     om <- cms@OverlapMatrix
@@ -179,7 +181,8 @@ test_that("SimilarityMatrix is square, symmetric, diagonal=1", {
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cm3 <- synCM("c", n_species = 3, max_met = 5, seed = 3)
     cms <- ConsortiumMetabolismSet(
-        list(cm1, cm2, cm3), name = "test"
+        list(cm1, cm2, cm3),
+        name = "test"
     )
     cma <- align(cms)
     sim <- cma@SimilarityMatrix
@@ -195,7 +198,8 @@ test_that("SimilarityMatrix has correct dimnames", {
     cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cms <- ConsortiumMetabolismSet(
-        list(cm1, cm2), name = "test"
+        list(cm1, cm2),
+        name = "test"
     )
     cma <- align(cms)
     cm_names <- names(cms@BinaryMatrices)
@@ -208,7 +212,8 @@ test_that("PrimaryScore is median of pairwise scores", {
     cm2 <- synCM("b", n_species = 4, max_met = 8, seed = 43)
     cm3 <- synCM("c", n_species = 4, max_met = 8, seed = 44)
     cms <- ConsortiumMetabolismSet(
-        list(cm1, cm2, cm3), name = "test"
+        list(cm1, cm2, cm3),
+        name = "test"
     )
     cma <- align(cms)
     vals <- cma@SimilarityMatrix[upper.tri(
@@ -222,16 +227,24 @@ test_that("Scores list is complete", {
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cm3 <- synCM("c", n_species = 3, max_met = 5, seed = 3)
     cms <- ConsortiumMetabolismSet(
-        list(cm1, cm2, cm3), name = "test"
+        list(cm1, cm2, cm3),
+        name = "test"
     )
     cma <- align(cms)
     expected_keys <- c(
-        "mean", "median", "min", "max", "sd", "nPairs"
+        "mean",
+        "median",
+        "min",
+        "max",
+        "sd",
+        "nPairs"
     )
     expect_true(all(expected_keys %in% names(cma@Scores)))
     expect_equal(cma@Scores$nPairs, 3L)
     expect_true(all(vapply(
-        cma@Scores, is.finite, logical(1L)
+        cma@Scores,
+        is.finite,
+        logical(1L)
     )))
 })
 
@@ -239,24 +252,29 @@ test_that("Prevalence data.frame has correct structure", {
     cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cms <- ConsortiumMetabolismSet(
-        list(cm1, cm2), name = "test"
+        list(cm1, cm2),
+        name = "test"
     )
     cma <- align(cms)
     prev <- cma@Prevalence
     expect_true(is.data.frame(prev))
-    expect_true(all(c("consumed", "produced",
-        "nConsortia", "proportion") %in% names(prev)))
+    expect_true(all(
+        c("consumed", "produced", "nConsortia", "proportion") %in% names(prev)
+    ))
     expect_true(all(prev$nConsortia >= 1L))
     expect_true(all(prev$nConsortia <= 2L))
-    expect_true(all(prev$proportion > 0 &
-        prev$proportion <= 1))
+    expect_true(all(
+        prev$proportion > 0 &
+            prev$proportion <= 1
+    ))
 })
 
 test_that("ConsensusEdges matches Prevalence", {
     cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cms <- ConsortiumMetabolismSet(
-        list(cm1, cm2), name = "test"
+        list(cm1, cm2),
+        name = "test"
     )
     cma <- align(cms)
     expect_identical(cma@ConsensusEdges, cma@Prevalence)
@@ -267,7 +285,8 @@ test_that("Dendrogram is present and valid", {
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cm3 <- synCM("c", n_species = 3, max_met = 5, seed = 3)
     cms <- ConsortiumMetabolismSet(
-        list(cm1, cm2, cm3), name = "test"
+        list(cm1, cm2, cm3),
+        name = "test"
     )
     cma <- align(cms)
     expect_equal(length(cma@Dendrogram), 1L)
@@ -279,7 +298,8 @@ test_that("Jaccard method produces valid result", {
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cm3 <- synCM("c", n_species = 3, max_met = 5, seed = 3)
     cms <- ConsortiumMetabolismSet(
-        list(cm1, cm2, cm3), name = "test"
+        list(cm1, cm2, cm3),
+        name = "test"
     )
     cma <- align(cms, method = "jaccard")
     expect_equal(cma@Metric, "jaccard")
@@ -292,7 +312,8 @@ test_that("2-consortium edge case works", {
     cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cms <- ConsortiumMetabolismSet(
-        list(cm1, cm2), name = "test"
+        list(cm1, cm2),
+        name = "test"
     )
     cma <- align(cms)
     expect_equal(nrow(cma@SimilarityMatrix), 2L)
@@ -308,7 +329,8 @@ test_that("multiple alignment errors on invalid method", {
     cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cms <- ConsortiumMetabolismSet(
-        list(cm1, cm2), name = "test"
+        list(cm1, cm2),
+        name = "test"
     )
     expect_error(align(cms, method = "invalid"))
 })
@@ -317,10 +339,10 @@ test_that("BPPARAM argument is accepted", {
     cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cms <- ConsortiumMetabolismSet(
-        list(cm1, cm2), name = "test"
+        list(cm1, cm2),
+        name = "test"
     )
     expect_no_error(
-        align(cms,
-              BPPARAM = BiocParallel::SerialParam())
+        align(cms, BPPARAM = BiocParallel::SerialParam())
     )
 })

@@ -1,103 +1,111 @@
 #' @exportMethod plot
 setMethod(
-  "plot",
-  "ConsortiumMetabolism",
-  function(
-    x,
-    type = c(
-      "Binary",
-      "nEdges",
-      "Consumption",
-      "Production",
-      "EffectiveConsumption",
-      "EffectiveProduction"
-    )
-  ) {
-    type <- match.arg(type)
-    g <- igraph::graph_from_adjacency_matrix(
-      assays(x)[[type]],
-      mode = "directed",
-      weighted = TRUE
-    )
+    "plot",
+    "ConsortiumMetabolism",
+    function(
+        x,
+        type = c(
+            "Binary",
+            "nEdges",
+            "Consumption",
+            "Production",
+            "EffectiveConsumption",
+            "EffectiveProduction"
+        )
+    ) {
+        type <- match.arg(type)
+        g <- igraph::graph_from_adjacency_matrix(
+            assays(x)[[type]],
+            mode = "directed",
+            weighted = TRUE
+        )
 
-    plotDirectedFlow(
-      g,
-      color_edges_by_weight = TRUE,
-      edge_width_range = c(0.5, 1),
-      main = paste(type, "in", x@Name)
-    )
-  }
+        plotDirectedFlow(
+            g,
+            color_edges_by_weight = TRUE,
+            edge_width_range = c(0.5, 1),
+            main = paste(type, "in", x@Name)
+        )
+    }
 )
 
 #' @exportMethod plot
 setMethod(
-  "plot",
-  "ConsortiumMetabolismSet",
-  function(x, label_colours = NULL, max_nodes = 20, label_size = 4) {
-    if (length(x@Dendrogram) == 0) {
-      stop("Not yet clustered!")
-    }
-    dend <- x@Dendrogram[[1]]
-    node_data <- x@NodeData |>
-      dplyr::filter(.data$node_id <= max_nodes)
+    "plot",
+    "ConsortiumMetabolismSet",
+    function(x, label_colours = NULL, max_nodes = 20, label_size = 4) {
+        if (length(x@Dendrogram) == 0) {
+            stop("Not yet clustered!")
+        }
+        dend <- x@Dendrogram[[1]]
+        node_data <- x@NodeData |>
+            dplyr::filter(.data$node_id <= max_nodes)
 
-    gg_dend <- dendextend::as.ggdend(dend, labels = TRUE, type = "rectangle")
-
-    if (!is.null(label_colours)) {
-      label_tb <- gg_dend$labels |>
-        dplyr::left_join(label_colours, by = "label")
-    } else {
-      label_tb <- gg_dend$labels |>
-        dplyr::mutate(colour = "black")
-    }
-
-    ggplot2::ggplot() +
-      # Dendrogram branches
-      ggplot2::geom_segment(
-        data = gg_dend$segments,
-        ggplot2::aes(
-          x = .data$x,
-          y = .data$y,
-          xend = .data$xend,
-          yend = .data$yend
+        gg_dend <- dendextend::as.ggdend(
+            dend,
+            labels = TRUE,
+            type = "rectangle"
         )
-      ) +
-      ggplot2::geom_point(
-        data = node_data,
-        ggplot2::aes(x = .data$x, y = .data$y),
-        color = "red",
-        size = 7
-      ) +
-      ggplot2::geom_text(
-        data = node_data,
-        ggplot2::aes(x = .data$x, y = .data$y, label = .data$node_id),
-        color = "white",
-        size = 4,
-        fontface = "bold"
-      ) +
-      ggplot2::scale_y_continuous(
-        expand = ggplot2::expansion(mult = c(0, 0), add = c(2, 1))
-      ) +
-      ggplot2::theme(
-        axis.text = ggplot2::element_blank(),
-        axis.ticks = ggplot2::element_blank(),
-        axis.title = ggplot2::element_blank(),
-        panel.background = ggplot2::element_blank(),
-        plot.background = ggplot2::element_blank(),
-        panel.grid = ggplot2::element_blank()
-      ) +
-      # ggplot2::ggtitle(x@Name) +
-      ggplot2::geom_text(
-        # manually draw the axis labels (i.e., leaf labels)
-        data = label_tb,
-        # y - 2 to push below branches
-        ggplot2::aes(x = .data$x, y = .data$y - 0.1, label = .data$label),
-        angle = 90,
-        hjust = 1,
-        size = label_size,
-        color = label_tb$colour # vector of colors
-      )
-  }
+
+        if (!is.null(label_colours)) {
+            label_tb <- gg_dend$labels |>
+                dplyr::left_join(label_colours, by = "label")
+        } else {
+            label_tb <- gg_dend$labels |>
+                dplyr::mutate(colour = "black")
+        }
+
+        ggplot2::ggplot() +
+            # Dendrogram branches
+            ggplot2::geom_segment(
+                data = gg_dend$segments,
+                ggplot2::aes(
+                    x = .data$x,
+                    y = .data$y,
+                    xend = .data$xend,
+                    yend = .data$yend
+                )
+            ) +
+            ggplot2::geom_point(
+                data = node_data,
+                ggplot2::aes(x = .data$x, y = .data$y),
+                color = "red",
+                size = 7
+            ) +
+            ggplot2::geom_text(
+                data = node_data,
+                ggplot2::aes(x = .data$x, y = .data$y, label = .data$node_id),
+                color = "white",
+                size = 4,
+                fontface = "bold"
+            ) +
+            ggplot2::scale_y_continuous(
+                expand = ggplot2::expansion(mult = c(0, 0), add = c(2, 1))
+            ) +
+            ggplot2::theme(
+                axis.text = ggplot2::element_blank(),
+                axis.ticks = ggplot2::element_blank(),
+                axis.title = ggplot2::element_blank(),
+                panel.background = ggplot2::element_blank(),
+                plot.background = ggplot2::element_blank(),
+                panel.grid = ggplot2::element_blank()
+            ) +
+            # ggplot2::ggtitle(x@Name) +
+            ggplot2::geom_text(
+                # manually draw the axis labels (i.e., leaf labels)
+                data = label_tb,
+                # y - 2 to push below branches
+                ggplot2::aes(
+                    x = .data$x,
+                    y = .data$y - 0.1,
+                    label = .data$label
+                ),
+                angle = 90,
+                hjust = 1,
+                size = label_size,
+                color = label_tb$colour # vector of colors
+            )
+    }
 )
 
 #' @exportMethod plot
@@ -115,13 +123,15 @@ setMethod(
             }
         }
         type <- match.arg(
-            type, c("heatmap", "network", "scores")
+            type,
+            c("heatmap", "network", "scores")
         )
 
-        switch(type,
+        switch(
+            type,
             heatmap = .plotHeatmap(x),
             network = .plotNetwork(x),
-            scores  = .plotScores(x)
+            scores = .plotScores(x)
         )
     }
 )
@@ -145,7 +155,8 @@ setMethod(
     ## Melt to long form
     n <- nrow(sim)
     idx <- expand.grid(
-        row = seq_len(n), col = seq_len(n)
+        row = seq_len(n),
+        col = seq_len(n)
     )
     plot_df <- data.frame(
         consortium1 = factor(
@@ -186,7 +197,8 @@ setMethod(
         ggplot2::theme_minimal() +
         ggplot2::theme(
             axis.text.x = ggplot2::element_text(
-                angle = 45, hjust = 1
+                angle = 45,
+                hjust = 1
             ),
             axis.title = ggplot2::element_blank(),
             panel.grid = ggplot2::element_blank()
@@ -214,28 +226,37 @@ setMethod(
     )
 
     if (nrow(cma@SharedPathways) > 0L) {
-        edges <- rbind(edges, data.frame(
-            consumed = cma@SharedPathways$consumed,
-            produced = cma@SharedPathways$produced,
-            source = "shared",
-            stringsAsFactors = FALSE
-        ))
+        edges <- rbind(
+            edges,
+            data.frame(
+                consumed = cma@SharedPathways$consumed,
+                produced = cma@SharedPathways$produced,
+                source = "shared",
+                stringsAsFactors = FALSE
+            )
+        )
     }
     if (nrow(cma@UniqueQuery) > 0L) {
-        edges <- rbind(edges, data.frame(
-            consumed = cma@UniqueQuery$consumed,
-            produced = cma@UniqueQuery$produced,
-            source = "query",
-            stringsAsFactors = FALSE
-        ))
+        edges <- rbind(
+            edges,
+            data.frame(
+                consumed = cma@UniqueQuery$consumed,
+                produced = cma@UniqueQuery$produced,
+                source = "query",
+                stringsAsFactors = FALSE
+            )
+        )
     }
     if (nrow(cma@UniqueReference) > 0L) {
-        edges <- rbind(edges, data.frame(
-            consumed = cma@UniqueReference$consumed,
-            produced = cma@UniqueReference$produced,
-            source = "reference",
-            stringsAsFactors = FALSE
-        ))
+        edges <- rbind(
+            edges,
+            data.frame(
+                consumed = cma@UniqueReference$consumed,
+                produced = cma@UniqueReference$produced,
+                source = "reference",
+                stringsAsFactors = FALSE
+            )
+        )
     }
 
     if (nrow(edges) == 0L) {
@@ -262,7 +283,9 @@ setMethod(
         color_edges_by_weight = FALSE,
         edge_width_range = c(1, 1),
         main = paste(
-            cma@QueryName, "vs", cma@ReferenceName
+            cma@QueryName,
+            "vs",
+            cma@ReferenceName
         )
     )
 }
@@ -272,10 +295,17 @@ setMethod(
 .plotScores <- function(cma) {
     s <- cma@Scores
     ## Filter out non-numeric and NA values
-    vals <- vapply(s, function(v) {
-        if (is.numeric(v) && length(v) == 1L) v
-        else NA_real_
-    }, numeric(1L))
+    vals <- vapply(
+        s,
+        function(v) {
+            if (is.numeric(v) && length(v) == 1L) {
+                v
+            } else {
+                NA_real_
+            }
+        },
+        numeric(1L)
+    )
     vals <- vals[!is.na(vals)]
 
     if (length(vals) == 0L) {
@@ -284,7 +314,8 @@ setMethod(
 
     plot_df <- data.frame(
         metric = factor(
-            names(vals), levels = names(vals)
+            names(vals),
+            levels = names(vals)
         ),
         value = unname(vals),
         stringsAsFactors = FALSE
@@ -298,19 +329,22 @@ setMethod(
         )
     ) +
         ggplot2::geom_col(
-            fill = "#377EB8", width = 0.6
+            fill = "#377EB8",
+            width = 0.6
         ) +
         ggplot2::geom_text(
             ggplot2::aes(
                 label = round(.data$value, 3)
             ),
-            hjust = -0.1, size = 3
+            hjust = -0.1,
+            size = 3
         ) +
         ggplot2::coord_flip() +
         ggplot2::ylim(0, 1.1) +
         ggplot2::theme_minimal() +
         ggplot2::labs(
-            x = NULL, y = "Score",
+            x = NULL,
+            y = "Score",
             title = paste("Scores -", cma@Metric)
         )
 }

@@ -2,7 +2,9 @@
 
 test_that("expandMatrix maps to correct positions", {
     mat <- Matrix::sparseMatrix(
-        i = 1, j = 2, x = 1,
+        i = 1,
+        j = 2,
+        x = 1,
         dims = c(2, 2),
         dimnames = list(c("A", "B"), c("A", "B"))
     )
@@ -14,8 +16,10 @@ test_that("expandMatrix maps to correct positions", {
 
 test_that("expandMatrix handles empty matrix", {
     mat <- Matrix::sparseMatrix(
-        i = integer(0), j = integer(0),
-        x = numeric(0), dims = c(2, 2),
+        i = integer(0),
+        j = integer(0),
+        x = numeric(0),
+        dims = c(2, 2),
         dimnames = list(c("A", "B"), c("A", "B"))
     )
     result <- .expandMatrix(mat, c("A", "B", "C"))
@@ -41,29 +45,41 @@ test_that("harmonize creates correct union space", {
 
 test_that("FOS of identical matrices is 1", {
     m <- Matrix::sparseMatrix(
-        i = c(1, 1, 2), j = c(2, 3, 3),
-        x = 1, dims = c(3, 3)
+        i = c(1, 1, 2),
+        j = c(2, 3, 3),
+        x = 1,
+        dims = c(3, 3)
     )
     expect_equal(.functionalOverlap(m, m), 1)
 })
 
 test_that("FOS of disjoint matrices is 0", {
     m1 <- Matrix::sparseMatrix(
-        i = 1, j = 2, x = 1, dims = c(3, 3)
+        i = 1,
+        j = 2,
+        x = 1,
+        dims = c(3, 3)
     )
     m2 <- Matrix::sparseMatrix(
-        i = 2, j = 3, x = 1, dims = c(3, 3)
+        i = 2,
+        j = 3,
+        x = 1,
+        dims = c(3, 3)
     )
     expect_equal(.functionalOverlap(m1, m2), 0)
 })
 
 test_that("FOS matches known value", {
     m1 <- Matrix::sparseMatrix(
-        i = c(1, 1), j = c(2, 3), x = 1,
+        i = c(1, 1),
+        j = c(2, 3),
+        x = 1,
         dims = c(3, 3)
     )
     m2 <- Matrix::sparseMatrix(
-        i = c(1, 2), j = c(2, 3), x = 1,
+        i = c(1, 2),
+        j = c(2, 3),
+        x = 1,
         dims = c(3, 3)
     )
     expect_equal(.functionalOverlap(m1, m2), 0.5)
@@ -71,11 +87,15 @@ test_that("FOS matches known value", {
 
 test_that("FOS is symmetric", {
     m1 <- Matrix::sparseMatrix(
-        i = c(1, 1), j = c(2, 3), x = 1,
+        i = c(1, 1),
+        j = c(2, 3),
+        x = 1,
         dims = c(3, 3)
     )
     m2 <- Matrix::sparseMatrix(
-        i = c(1, 2), j = c(2, 3), x = 1,
+        i = c(1, 2),
+        j = c(2, 3),
+        x = 1,
         dims = c(3, 3)
     )
     expect_equal(
@@ -86,8 +106,10 @@ test_that("FOS is symmetric", {
 
 test_that("FOS of empty matrices is 0", {
     m <- Matrix::sparseMatrix(
-        i = integer(0), j = integer(0),
-        x = numeric(0), dims = c(3, 3)
+        i = integer(0),
+        j = integer(0),
+        x = numeric(0),
+        dims = c(3, 3)
     )
     expect_equal(.functionalOverlap(m, m), 0)
 })
@@ -96,7 +118,9 @@ test_that("FOS of empty matrices is 0", {
 
 test_that("Jaccard of identical is 1", {
     m <- Matrix::sparseMatrix(
-        i = c(1, 2), j = c(2, 3), x = 1,
+        i = c(1, 2),
+        j = c(2, 3),
+        x = 1,
         dims = c(3, 3)
     )
     expect_equal(.jaccardIndex(m, m), 1)
@@ -104,21 +128,31 @@ test_that("Jaccard of identical is 1", {
 
 test_that("Jaccard of disjoint is 0", {
     m1 <- Matrix::sparseMatrix(
-        i = 1, j = 2, x = 1, dims = c(3, 3)
+        i = 1,
+        j = 2,
+        x = 1,
+        dims = c(3, 3)
     )
     m2 <- Matrix::sparseMatrix(
-        i = 2, j = 3, x = 1, dims = c(3, 3)
+        i = 2,
+        j = 3,
+        x = 1,
+        dims = c(3, 3)
     )
     expect_equal(.jaccardIndex(m1, m2), 0)
 })
 
 test_that("Jaccard known value", {
     m1 <- Matrix::sparseMatrix(
-        i = c(1, 1), j = c(2, 3), x = 1,
+        i = c(1, 1),
+        j = c(2, 3),
+        x = 1,
         dims = c(3, 3)
     )
     m2 <- Matrix::sparseMatrix(
-        i = c(1, 2), j = c(2, 3), x = 1,
+        i = c(1, 2),
+        j = c(2, 3),
+        x = 1,
         dims = c(3, 3)
     )
     expect_equal(.jaccardIndex(m1, m2), 1 / 3)
@@ -128,7 +162,9 @@ test_that("Jaccard known value", {
 
 test_that("redundancyOverlap of identical is 1", {
     m <- Matrix::sparseMatrix(
-        i = c(1, 2), j = c(2, 3), x = c(3, 5),
+        i = c(1, 2),
+        j = c(2, 3),
+        x = c(3, 5),
         dims = c(3, 3)
     )
     expect_equal(.redundancyOverlap(m, m), 1)
@@ -136,21 +172,31 @@ test_that("redundancyOverlap of identical is 1", {
 
 test_that("redundancyOverlap of disjoint is 0", {
     m1 <- Matrix::sparseMatrix(
-        i = 1, j = 2, x = 3, dims = c(3, 3)
+        i = 1,
+        j = 2,
+        x = 3,
+        dims = c(3, 3)
     )
     m2 <- Matrix::sparseMatrix(
-        i = 2, j = 3, x = 5, dims = c(3, 3)
+        i = 2,
+        j = 3,
+        x = 5,
+        dims = c(3, 3)
     )
     expect_equal(.redundancyOverlap(m1, m2), 0)
 })
 
 test_that("redundancyOverlap known value", {
     m1 <- Matrix::sparseMatrix(
-        i = c(1, 2), j = c(2, 3), x = c(3, 2),
+        i = c(1, 2),
+        j = c(2, 3),
+        x = c(3, 2),
         dims = c(3, 3)
     )
     m2 <- Matrix::sparseMatrix(
-        i = c(1, 2), j = c(2, 3), x = c(5, 1),
+        i = c(1, 2),
+        j = c(2, 3),
+        x = c(5, 1),
         dims = c(3, 3)
     )
     expect_equal(.redundancyOverlap(m1, m2), 4 / 7)
@@ -161,10 +207,16 @@ test_that("redundancyOverlap known value", {
 test_that("brayCurtis of identical is 1", {
     xW <- list(
         Consumption = Matrix::sparseMatrix(
-            i = 1, j = 2, x = 3, dims = c(3, 3)
+            i = 1,
+            j = 2,
+            x = 3,
+            dims = c(3, 3)
         ),
         Production = Matrix::sparseMatrix(
-            i = 2, j = 3, x = 5, dims = c(3, 3)
+            i = 2,
+            j = 3,
+            x = 5,
+            dims = c(3, 3)
         )
     )
     expect_equal(.brayCurtisSimilarity(xW, xW), 1)
@@ -173,18 +225,30 @@ test_that("brayCurtis of identical is 1", {
 test_that("brayCurtis of disjoint is 0", {
     xW <- list(
         Consumption = Matrix::sparseMatrix(
-            i = 1, j = 2, x = 3, dims = c(3, 3)
+            i = 1,
+            j = 2,
+            x = 3,
+            dims = c(3, 3)
         ),
         Production = Matrix::sparseMatrix(
-            i = 1, j = 2, x = 3, dims = c(3, 3)
+            i = 1,
+            j = 2,
+            x = 3,
+            dims = c(3, 3)
         )
     )
     yW <- list(
         Consumption = Matrix::sparseMatrix(
-            i = 2, j = 3, x = 5, dims = c(3, 3)
+            i = 2,
+            j = 3,
+            x = 5,
+            dims = c(3, 3)
         ),
         Production = Matrix::sparseMatrix(
-            i = 2, j = 3, x = 5, dims = c(3, 3)
+            i = 2,
+            j = 3,
+            x = 5,
+            dims = c(3, 3)
         )
     )
     result <- .brayCurtisSimilarity(xW, yW)
@@ -196,7 +260,8 @@ test_that("brayCurtis of disjoint is 0", {
 
 test_that("MAAS with default weights", {
     scores <- list(
-        FOS = 0.8, jaccard = 0.6,
+        FOS = 0.8,
+        jaccard = 0.6,
         brayCurtis = 0.7,
         redundancyOverlap = 0.5
     )
@@ -206,13 +271,13 @@ test_that("MAAS with default weights", {
 
 test_that("MAAS handles NA scores", {
     scores <- list(
-        FOS = 0.8, jaccard = 0.6,
+        FOS = 0.8,
+        jaccard = 0.6,
         brayCurtis = NA_real_,
         redundancyOverlap = NA_real_
     )
     expected <- (0.4 / 0.6) * 0.8 + (0.2 / 0.6) * 0.6
-    expect_equal(.computeMAAS(scores), expected,
-                 tolerance = 1e-10)
+    expect_equal(.computeMAAS(scores), expected, tolerance = 1e-10)
 })
 
 ## ---- Unit tests: .buildPrevalence() --------------------------------------
@@ -221,12 +286,14 @@ test_that("buildPrevalence returns correct structure", {
     cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cms <- ConsortiumMetabolismSet(
-        list(cm1, cm2), name = "test"
+        list(cm1, cm2),
+        name = "test"
     )
     prev <- .buildPrevalence(cms)
     expect_true(is.data.frame(prev))
-    expect_true(all(c("consumed", "produced",
-        "nConsortia", "proportion") %in% names(prev)))
+    expect_true(all(
+        c("consumed", "produced", "nConsortia", "proportion") %in% names(prev)
+    ))
     expect_true(nrow(prev) > 0L)
     expect_true(all(prev$nConsortia >= 1L))
     expect_true(all(prev$nConsortia <= 2L))
@@ -237,7 +304,8 @@ test_that("buildPrevalence proportions match counts", {
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cm3 <- synCM("c", n_species = 3, max_met = 5, seed = 3)
     cms <- ConsortiumMetabolismSet(
-        list(cm1, cm2, cm3), name = "test"
+        list(cm1, cm2, cm3),
+        name = "test"
     )
     prev <- .buildPrevalence(cms)
     expect_equal(prev$proportion, prev$nConsortia / 3)
@@ -249,10 +317,13 @@ test_that("FOS similarity matrix matches CMS OverlapMatrix", {
     cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cms <- ConsortiumMetabolismSet(
-        list(cm1, cm2), name = "test"
+        list(cm1, cm2),
+        name = "test"
     )
     sim <- .computePairwiseSimilarityMatrix(
-        cms, "FOS", BiocParallel::SerialParam()
+        cms,
+        "FOS",
+        BiocParallel::SerialParam()
     )
     om <- cms@OverlapMatrix
     expected <- 1 - (om + t(om))
@@ -264,10 +335,13 @@ test_that("Jaccard similarity matrix is symmetric", {
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cm3 <- synCM("c", n_species = 3, max_met = 5, seed = 3)
     cms <- ConsortiumMetabolismSet(
-        list(cm1, cm2, cm3), name = "test"
+        list(cm1, cm2, cm3),
+        name = "test"
     )
     sim <- .computePairwiseSimilarityMatrix(
-        cms, "jaccard", BiocParallel::SerialParam()
+        cms,
+        "jaccard",
+        BiocParallel::SerialParam()
     )
     expect_equal(sim, t(sim))
     expect_equal(unname(diag(sim)), rep(1, 3))
@@ -279,12 +353,14 @@ test_that("expandWeightedAssays returns correct structure", {
     cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cms <- ConsortiumMetabolismSet(
-        list(cm1, cm2), name = "test"
+        list(cm1, cm2),
+        name = "test"
     )
     result <- .expandWeightedAssays(cms)
     expect_equal(length(result), 2L)
-    expect_true(all(c("nEdges", "Consumption",
-        "Production") %in% names(result[[1L]])))
+    expect_true(all(
+        c("nEdges", "Consumption", "Production") %in% names(result[[1L]])
+    ))
     ## Dimensions match universal space
     universal_n <- nrow(cms@BinaryMatrices[[1L]])
     expect_equal(nrow(result[[1L]]$nEdges), universal_n)

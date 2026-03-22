@@ -112,7 +112,8 @@ test_that("sharedPathways() errors for multiple CMA", {
     cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cms <- ConsortiumMetabolismSet(
-        list(cm1, cm2), name = "test"
+        list(cm1, cm2),
+        name = "test"
     )
     cma <- align(cms)
     expect_error(sharedPathways(cma), "pairwise")
@@ -122,7 +123,8 @@ test_that("uniquePathways() errors for multiple CMA", {
     cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cms <- ConsortiumMetabolismSet(
-        list(cm1, cm2), name = "test"
+        list(cm1, cm2),
+        name = "test"
     )
     cma <- align(cms)
     expect_error(uniquePathways(cma), "pairwise")
@@ -148,7 +150,8 @@ test_that("scores() returns Scores list for multiple", {
     cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cms <- ConsortiumMetabolismSet(
-        list(cm1, cm2), name = "test"
+        list(cm1, cm2),
+        name = "test"
     )
     cma <- align(cms)
     s <- scores(cma)
@@ -160,7 +163,8 @@ test_that("similarityMatrix() returns matrix for multiple", {
     cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cms <- ConsortiumMetabolismSet(
-        list(cm1, cm2), name = "test"
+        list(cm1, cm2),
+        name = "test"
     )
     cma <- align(cms)
     sm <- similarityMatrix(cma)
@@ -172,7 +176,8 @@ test_that("prevalence() returns data.frame for multiple", {
     cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cms <- ConsortiumMetabolismSet(
-        list(cm1, cm2), name = "test"
+        list(cm1, cm2),
+        name = "test"
     )
     cma <- align(cms)
     p <- prevalence(cma)
@@ -184,7 +189,8 @@ test_that("consensusEdges() returns data.frame for multiple", {
     cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cms <- ConsortiumMetabolismSet(
-        list(cm1, cm2), name = "test"
+        list(cm1, cm2),
+        name = "test"
     )
     cma <- align(cms)
     ce <- consensusEdges(cma)

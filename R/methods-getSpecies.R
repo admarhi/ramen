@@ -2,7 +2,7 @@
 #' @param object a \code{ConsortiumMetabolism} object
 #' @return A character vector representing the microorganisms.
 setMethod("getSpecies", "ConsortiumMetabolism", function(object) {
-  unique(object@InputData$species)
+    unique(object@InputData$species)
 })
 
 
@@ -18,42 +18,44 @@ setMethod("getSpecies", "ConsortiumMetabolism", function(object) {
 #'
 #' @return A character vector representing the microorganisms.
 setMethod(
-  "getSpecies",
-  "ConsortiumMetabolismSet",
-  function(
-    object,
-    type = c("all", "generalists", "specialists"),
-    quantileCutoff = 0.15
-  ) {
-    type <- match.arg(type)
+    "getSpecies",
+    "ConsortiumMetabolismSet",
+    function(
+        object,
+        type = c("all", "generalists", "specialists"),
+        quantileCutoff = 0.15
+    ) {
+        type <- match.arg(type)
 
-    # Validate quantileCutoff parameter
-    stopifnot(
-      "quantileCutoff must be between 0 and 1" = quantileCutoff > 0 &&
-        quantileCutoff < 1
-    )
+        # Validate quantileCutoff parameter
+        stopifnot(
+            "quantileCutoff must be between 0 and 1" = quantileCutoff > 0 &&
+                quantileCutoff < 1
+        )
 
-    tb <- object@Edges |>
-      dplyr::mutate(edge_name = paste0(.data$consumed, "-", .data$produced)) |>
-      dplyr::reframe(
-        n_edges = dplyr::n_distinct(.data$edge_name),
-        .by = "species"
-      ) |>
-      dplyr::arrange(dplyr::desc(.data$n_edges))
+        tb <- object@Edges |>
+            dplyr::mutate(
+                edge_name = paste0(.data$consumed, "-", .data$produced)
+            ) |>
+            dplyr::reframe(
+                n_edges = dplyr::n_distinct(.data$edge_name),
+                .by = "species"
+            ) |>
+            dplyr::arrange(dplyr::desc(.data$n_edges))
 
-    total_species <- length(unique(tb$species))
-    if (type == "all") {
-      tb
-    } else if (type == "generalists") {
-      # Get the top quantileCutoff fraction of species
-      n_species_to_return <- ceiling(total_species * quantileCutoff)
-      tb |> dplyr::slice_head(n = n_species_to_return)
-    } else if (type == "specialists") {
-      # Get the bottom quantileCutoff fraction of species
-      n_species_to_return <- ceiling(total_species * quantileCutoff)
-      tb |> dplyr::slice_tail(n = n_species_to_return)
+        total_species <- length(unique(tb$species))
+        if (type == "all") {
+            tb
+        } else if (type == "generalists") {
+            # Get the top quantileCutoff fraction of species
+            n_species_to_return <- ceiling(total_species * quantileCutoff)
+            tb |> dplyr::slice_head(n = n_species_to_return)
+        } else if (type == "specialists") {
+            # Get the bottom quantileCutoff fraction of species
+            n_species_to_return <- ceiling(total_species * quantileCutoff)
+            tb |> dplyr::slice_tail(n = n_species_to_return)
+        }
     }
-  }
 )
 
 #' @describeIn getSpecies Return species from a
