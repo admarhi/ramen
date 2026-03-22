@@ -214,3 +214,79 @@ test_that("MAAS handles NA scores", {
     expect_equal(.computeMAAS(scores), expected,
                  tolerance = 1e-10)
 })
+
+## ---- Unit tests: .buildPrevalence() --------------------------------------
+
+test_that("buildPrevalence returns correct structure", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
+    cms <- ConsortiumMetabolismSet(
+        list(cm1, cm2), name = "test"
+    )
+    prev <- .buildPrevalence(cms)
+    expect_true(is.data.frame(prev))
+    expect_true(all(c("consumed", "produced",
+        "nConsortia", "proportion") %in% names(prev)))
+    expect_true(nrow(prev) > 0L)
+    expect_true(all(prev$nConsortia >= 1L))
+    expect_true(all(prev$nConsortia <= 2L))
+})
+
+test_that("buildPrevalence proportions match counts", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
+    cm3 <- synCM("c", n_species = 3, max_met = 5, seed = 3)
+    cms <- ConsortiumMetabolismSet(
+        list(cm1, cm2, cm3), name = "test"
+    )
+    prev <- .buildPrevalence(cms)
+    expect_equal(prev$proportion, prev$nConsortia / 3)
+})
+
+## ---- Unit tests: .computePairwiseSimilarityMatrix() ----------------------
+
+test_that("FOS similarity matrix matches CMS OverlapMatrix", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
+    cms <- ConsortiumMetabolismSet(
+        list(cm1, cm2), name = "test"
+    )
+    sim <- .computePairwiseSimilarityMatrix(
+        cms, "FOS", BiocParallel::SerialParam()
+    )
+    om <- cms@OverlapMatrix
+    expected <- 1 - (om + t(om))
+    expect_equal(sim, expected)
+})
+
+test_that("Jaccard similarity matrix is symmetric", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
+    cm3 <- synCM("c", n_species = 3, max_met = 5, seed = 3)
+    cms <- ConsortiumMetabolismSet(
+        list(cm1, cm2, cm3), name = "test"
+    )
+    sim <- .computePairwiseSimilarityMatrix(
+        cms, "jaccard", BiocParallel::SerialParam()
+    )
+    expect_equal(sim, t(sim))
+    expect_equal(unname(diag(sim)), rep(1, 3))
+})
+
+## ---- Unit tests: .expandWeightedAssays() ---------------------------------
+
+test_that("expandWeightedAssays returns correct structure", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
+    cms <- ConsortiumMetabolismSet(
+        list(cm1, cm2), name = "test"
+    )
+    result <- .expandWeightedAssays(cms)
+    expect_equal(length(result), 2L)
+    expect_true(all(c("nEdges", "Consumption",
+        "Production") %in% names(result[[1L]])))
+    ## Dimensions match universal space
+    universal_n <- nrow(cms@BinaryMatrices[[1L]])
+    expect_equal(nrow(result[[1L]]$nEdges), universal_n)
+    expect_equal(ncol(result[[1L]]$nEdges), universal_n)
+})

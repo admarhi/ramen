@@ -381,3 +381,176 @@
 
     (sum(null_scores >= observed) + 1L) / (nPerm + 1L)
 }
+
+## ---- Multiple alignment helpers -----------------------------------------
+
+#' Pre-expand weighted assays to universal metabolite space
+#'
+#' Expands Consumption, Production, and nEdges assay matrices
+#' for every consortium in a CMS to the universal metabolite
+#' space. Called once at the start of non-FOS multiple alignment
+#' to avoid redundant per-pair expansions.
+#'
+#' @param cms A [ConsortiumMetabolismSet] object.
+#'
+#' @return A named list (keyed by consortium name), each element
+#'   a named list with `Consumption`, `Production`, and `nEdges`
+#'   sparse matrices in universal space. Elements are `NULL` for
+#'   unweighted consortia.
+#'
+#' @noRd
+.expandWeightedAssays <- function(cms) {
+    universal_mets <- rownames(cms@BinaryMatrices[[1L]])
+    cm_names <- names(cms@BinaryMatrices)
+
+    result <- lapply(cms@Consortia, function(cm) {
+        if (!cm@Weighted) {
+            return(NULL)
+        }
+        list(
+            nEdges = .expandMatrix(
+                assays(cm)$nEdges, universal_mets
+            ),
+            Consumption = .expandMatrix(
+                assays(cm)$Consumption, universal_mets
+            ),
+            Production = .expandMatrix(
+                assays(cm)$Production, universal_mets
+            )
+        )
+    })
+    names(result) <- cm_names
+    result
+}
+
+#' Compute pairwise similarity matrix for a CMS
+#'
+#' Builds an n x n symmetric similarity matrix across all
+#' consortia in a CMS using the requested metric. For FOS,
+#' reuses the pre-computed OverlapMatrix. For other metrics,
+#' computes all n*(n-1)/2 pairwise scores, optionally in
+#' parallel via BiocParallel.
+#'
+#' @param cms A [ConsortiumMetabolismSet] object.
+#' @param method Character scalar: metric name.
+#' @param BPPARAM A [BiocParallel::BiocParallelParam] object.
+#'
+#' @return Numeric n x n matrix with dimnames = consortium
+#'   names, diagonal = 1, off-diagonal = similarity scores.
+#'
+#' @noRd
+.computePairwiseSimilarityMatrix <- function(cms, method,
+                                             BPPARAM) {
+    n <- length(cms@Consortia)
+    cm_names <- names(cms@BinaryMatrices)
+    bins <- cms@BinaryMatrices
+
+    ## FOS shortcut: invert pre-computed distance matrix
+    if (method == "FOS") {
+        om <- cms@OverlapMatrix
+        sim_mat <- 1 - (om + t(om))
+        return(sim_mat)
+    }
+
+    ## Pre-expand weighted assays if needed
+    weighted <- NULL
+    needs_weighted <- method %in% c(
+        "brayCurtis", "redundancyOverlap", "MAAS"
+    )
+    if (needs_weighted) {
+        weighted <- .expandWeightedAssays(cms)
+    }
+
+    ## Generate pair indices
+    pairs <- utils::combn(n, 2L)
+
+    ## Compute pairwise scores
+    scores <- BiocParallel::bplapply(
+        seq_len(ncol(pairs)),
+        function(k) {
+            i <- pairs[1L, k]
+            j <- pairs[2L, k]
+            if (method == "jaccard") {
+                .jaccardIndex(bins[[i]], bins[[j]])
+            } else if (method == "brayCurtis") {
+                .brayCurtisSimilarity(
+                    weighted[[i]], weighted[[j]]
+                )
+            } else if (method == "redundancyOverlap") {
+                .redundancyOverlap(
+                    weighted[[i]]$nEdges,
+                    weighted[[j]]$nEdges
+                )
+            } else {
+                ## MAAS
+                all_sc <- .computeAllScores(
+                    bins[[i]], bins[[j]],
+                    weighted[[i]], weighted[[j]]
+                )
+                .computeMAAS(all_sc)
+            }
+        },
+        BPPARAM = BPPARAM
+    )
+
+    ## Fill symmetric matrix
+    sim_mat <- matrix(
+        0, n, n,
+        dimnames = list(cm_names, cm_names)
+    )
+    diag(sim_mat) <- 1
+    scores_vec <- vapply(
+        scores, identity, numeric(1L)
+    )
+    for (k in seq_len(ncol(pairs))) {
+        i <- pairs[1L, k]
+        j <- pairs[2L, k]
+        sim_mat[i, j] <- scores_vec[k]
+        sim_mat[j, i] <- scores_vec[k]
+    }
+    sim_mat
+}
+
+#' Build edge prevalence from a CMS
+#'
+#' Extracts the Levels assay from a CMS (which counts how many
+#' consortia have each metabolite-metabolite edge) and returns
+#' a tidy data.frame of edge prevalence.
+#'
+#' @param cms A [ConsortiumMetabolismSet] object.
+#'
+#' @return A data.frame with columns:
+#'   \describe{
+#'     \item{`consumed`}{Character, consumed metabolite name.}
+#'     \item{`produced`}{Character, produced metabolite name.}
+#'     \item{`nConsortia`}{Integer, number of consortia with
+#'       this edge.}
+#'     \item{`proportion`}{Numeric, nConsortia / total
+#'       consortia.}
+#'   }
+#'
+#' @noRd
+.buildPrevalence <- function(cms) {
+    levels_mat <- assays(cms)$Levels
+    mets <- rownames(levels_mat)
+    n <- length(cms@Consortia)
+
+    idx <- which(levels_mat > 0, arr.ind = TRUE)
+    if (nrow(idx) == 0L) {
+        return(data.frame(
+            consumed = character(0L),
+            produced = character(0L),
+            nConsortia = integer(0L),
+            proportion = numeric(0L),
+            stringsAsFactors = FALSE
+        ))
+    }
+
+    data.frame(
+        consumed = mets[idx[, 1L]],
+        produced = mets[idx[, 2L]],
+        nConsortia = as.integer(levels_mat[idx]),
+        proportion = levels_mat[idx] / n,
+        stringsAsFactors = FALSE
+    )
+}

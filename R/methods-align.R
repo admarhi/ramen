@@ -159,7 +159,7 @@ setMethod(
 #' @return A [ConsortiumMetabolismAlignment] object of type
 #'   `"multiple"`.
 #'
-#' @importFrom BiocParallel SerialParam
+#' @importFrom BiocParallel SerialParam bplapply
 #' @export
 setMethod(
     "align",
@@ -170,8 +170,76 @@ setMethod(
     function(x, y, method = "FOS",
              BPPARAM = BiocParallel::SerialParam(),
              ...) {
-        cli::cli_abort(
-            "Multiple alignment not yet implemented (Phase 2)."
+
+        ## 1. Validate
+        method <- match.arg(
+            method,
+            c("FOS", "jaccard", "brayCurtis",
+              "redundancyOverlap", "MAAS")
+        )
+        n <- length(x@Consortia)
+        if (n < 2L) {
+            cli::cli_abort(
+                "Multiple alignment requires at least 2 \\
+                 consortia."
+            )
+        }
+
+        cm_names <- names(x@BinaryMatrices)
+        cli::cli_inform(
+            "Computing multiple alignment for {n} \\
+             consortia using {.val {method}}."
+        )
+
+        ## 2. Pairwise similarity matrix
+        sim_mat <- .computePairwiseSimilarityMatrix(
+            x, method, BPPARAM
+        )
+
+        ## 3. Summary scores
+        pairwise_vals <- sim_mat[upper.tri(sim_mat)]
+        scores <- list(
+            mean = mean(pairwise_vals),
+            median = stats::median(pairwise_vals),
+            min = min(pairwise_vals),
+            max = max(pairwise_vals),
+            sd = stats::sd(pairwise_vals),
+            nPairs = length(pairwise_vals)
+        )
+        primary <- scores$median
+
+        ## 4. Consensus network and prevalence
+        prevalence <- .buildPrevalence(x)
+
+        ## 5. Dendrogram
+        dist_mat <- stats::as.dist(1 - sim_mat)
+        dend <- stats::hclust(dist_mat) |>
+            stats::as.dendrogram()
+
+        ## 6. Build and return CMA
+        ConsortiumMetabolismAlignment(
+            Type = "multiple",
+            Metric = method,
+            Scores = scores,
+            PrimaryScore = primary,
+            SimilarityMatrix = sim_mat,
+            ConsensusEdges = prevalence,
+            Prevalence = prevalence,
+            Dendrogram = list(dend),
+            Edges = prevalence,
+            Metabolites = data.frame(
+                met = rownames(
+                    x@BinaryMatrices[[1L]]
+                ),
+                stringsAsFactors = FALSE
+            ),
+            Params = list(
+                nConsortia = n,
+                consortiaNames = cm_names,
+                BPPARAM = as.character(
+                    class(BPPARAM)
+                )
+            )
         )
     }
 )
