@@ -1,60 +1,233 @@
 ---
-title: "ConsortiumMetabolismAlignment Class"
-output: rmarkdown::html_vignette
+title: "Alignment of Microbial Consortia"
+output:
+    BiocStyle::html_document:
+        toc: true
+        toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{ConsortiumMetabolismAlignment Class}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+    %\VignetteIndexEntry{Alignment of Microbial Consortia}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
+    collapse = TRUE,
+    comment = "#>",
+    fig.width = 6,
+    fig.height = 5
 )
 ```
 
-```{r setup}
+# Introduction
+
+The `ramen` package provides tools for comparing microbial communities based on
+their metabolic exchange networks. The **alignment system** quantifies how
+similar two or more communities are from a functional perspective -- not by
+which species are present, but by which metabolite-metabolite pathways they
+catalyse.
+
+This vignette covers:
+
+1. **Pairwise alignment** -- comparing two communities
+2. **Multiple alignment** -- comparing all communities in a set
+3. **Visualization** -- heatmaps, networks, and score plots
+4. **Programmatic access** -- extracting results with accessor functions
+
+```{r load-library, message = FALSE}
 library(ramen)
 ```
 
-# Microbial Community Alignment Class
+# Creating test data
 
-- Clarify how the Alignment is represented primarily. Will it also be a TSE object?
-- Could use the assays to store each alignment, this would allow for quick calculation of the depth and breadth as well.
-- Decide on metrics to include in the alignment
-- in how many communities is any given species?
-- How to go about the multiscale entropy?
-- How do we maximise for community overlap in the alignment?
-- What happens if we have completley disconnected grpahs? how do we align with and without gaps?
-- To what extent should the alignment be interactive?
+We use `synCM()` to generate synthetic communities with reproducible random
+metabolic networks. Each consortium has species with random flux values
+across a shared metabolite pool.
 
+```{r create-data}
+cm_alpha <- synCM("Alpha", n_species = 5, max_met = 10, seed = 42)
+cm_beta  <- synCM("Beta",  n_species = 5, max_met = 10, seed = 43)
+cm_gamma <- synCM("Gamma", n_species = 4, max_met = 8,  seed = 44)
+cm_delta <- synCM("Delta", n_species = 6, max_met = 10, seed = 45)
 
-- Takes a number of `ConsortiumMetabolism` objects as input (? list or ...) and an additional argument to specify if a pairwise alignment of the communities is desired. 
-- The default is to align all communities against each other
-- if `pairwise = TRUE` all unique pairwise combinations are aligned. 
-- Should the alignment be calculated upon the creation of the object or should it be calculated on demand?
+cm_alpha
+```
 
-### Methods
+# Pairwise alignment
 
-A variety of methods can be called on a `ConsortiumMetabolismAlignment` object. The output of the methods has to be assigned back to the variable containing the object to persist. 
+## Basic usage
 
-- clusterAlignment: Takes a `ConsortiumMetabolismAlignment` object as input and an additional argument to specify the clustering algorithm to be used, only works on `ConsortiumMetabolismAlignment` objects that have undergone a pairwise alignment. 
+`align(CM, CM)` compares two `ConsortiumMetabolism` objects and returns a
+`ConsortiumMetabolismAlignment` (CMA) object.
 
-### Identity
-A value which gives a scalar value to represent the identity between two communities. 
+```{r pairwise-basic}
+cma <- align(cm_alpha, cm_beta)
+cma
+```
 
-$$ \frac{\alpha}{\sum\limits_{i = 1}^{n}(\sum C_i - \alpha) + \alpha} $$
+## Similarity metrics
 
+Five metrics are available via the `method` argument. All four individual
+metrics are always computed; `method` selects which becomes the primary score.
 
+```{r pairwise-metrics}
+cma_fos <- align(cm_alpha, cm_beta, method = "FOS")
+cma_jac <- align(cm_alpha, cm_beta, method = "jaccard")
+cma_bc  <- align(cm_alpha, cm_beta, method = "brayCurtis")
+cma_ro  <- align(cm_alpha, cm_beta, method = "redundancyOverlap")
 
-## Contents
+## All scores are stored regardless of method choice
+scores(cma_fos)
+```
 
-- Communities hash/list containing the `ConsortiumMetabolism` objects
-- Alignment hash:
-  - overall alignment matrix (binary)
-  - hash for each level calculated (### how many levels?)
-    - alignment matrix
-    - longest connected components for each level
-    - how to score alignments with more communities more highly?
-    - how to figure out the connecctedness for parts of the alignment in whicch there are less communities represented than in the overall alignment?
+| Metric | What it measures | Formula |
+|--------|-----------------|---------|
+| FOS | Structural overlap (Szymkiewicz-Simpson) | \|X AND Y\| / min(\|X\|, \|Y\|) |
+| Jaccard | Symmetric set similarity | \|X AND Y\| / \|X OR Y\| |
+| Bray-Curtis | Flux-weighted similarity | 1 - sum\|x-y\| / sum(x+y) |
+| Redundancy Overlap | Species labor distribution | weighted Jaccard on nEdges |
+| MAAS | Composite (0.4 FOS + 0.2 each) | weighted mean |
+
+## MAAS composite score
+
+The Metabolic Alignment Aggregate Score combines all four metrics. Weights
+are renormalized when some metrics are unavailable (e.g., unweighted networks).
+
+```{r pairwise-maas}
+cma_maas <- align(cm_alpha, cm_beta, method = "MAAS")
+cma_maas@PrimaryScore
+```
+
+## Pathway correspondences
+
+The alignment classifies every metabolite-metabolite edge as shared, unique
+to the query, or unique to the reference.
+
+```{r pairwise-pathways}
+sp <- sharedPathways(cma)
+head(sp[, c("consumed", "produced")])
+
+up <- uniquePathways(cma)
+nrow(sp)             # shared
+nrow(up$query)       # unique to Alpha
+nrow(up$reference)   # unique to Beta
+```
+
+## Permutation p-values
+
+Statistical significance is assessed by degree-preserving network rewiring.
+The query network's edges are shuffled while preserving each metabolite's
+degree, and the metric is recomputed under the null.
+
+```{r pairwise-pvalue}
+cma_p <- align(
+    cm_alpha, cm_beta,
+    method = "FOS",
+    computePvalue = TRUE,
+    nPermutations = 99L
+)
+cma_p@Pvalue
+```
+
+# Multiple alignment
+
+## Aligning a consortium set
+
+`align(CMS)` computes pairwise similarities across all consortia in a
+`ConsortiumMetabolismSet` and returns a CMA with `Type = "multiple"`.
+
+```{r multiple-create, message = FALSE}
+cms <- ConsortiumMetabolismSet(
+    list(cm_alpha, cm_beta, cm_gamma, cm_delta),
+    name = "Demo"
+)
+cma_mult <- align(cms)
+cma_mult
+```
+
+## Similarity matrix
+
+The `SimilarityMatrix` is an n x n symmetric matrix with 1s on the diagonal.
+For FOS, this is derived directly from the pre-computed CMS overlap matrix,
+guaranteeing numerical consistency.
+
+```{r multiple-simmat}
+round(similarityMatrix(cma_mult), 3)
+```
+
+## Summary scores
+
+The `PrimaryScore` for a multiple alignment is the **median** of all
+pairwise scores. Full summary statistics are available via `scores()`.
+
+```{r multiple-scores}
+scores(cma_mult)
+```
+
+## Consensus network and prevalence
+
+Edge prevalence counts how many consortia share each metabolite-metabolite
+pathway. This enables classification of edges as core (present in most
+consortia) or niche (present in few).
+
+```{r multiple-prevalence}
+prev <- prevalence(cma_mult)
+head(prev[order(-prev$nConsortia), ])
+
+## Distribution
+table(prev$nConsortia)
+```
+
+# Visualization
+
+## Heatmap (multiple alignment)
+
+The heatmap shows pairwise similarities with dendrogram-based ordering.
+
+```{r plot-heatmap, fig.cap = "Similarity heatmap across four consortia."}
+plot(cma_mult, type = "heatmap")
+```
+
+## Network (pairwise alignment)
+
+The network view shows shared (green), query-unique (blue), and
+reference-unique (red) pathways as a directed metabolite flow graph.
+
+```{r plot-network, fig.cap = "Pathway network: Alpha vs Beta."}
+plot(cma, type = "network")
+```
+
+## Score comparison
+
+The scores bar chart works for both pairwise and multiple alignments.
+
+```{r plot-scores-pairwise, fig.cap = "Pairwise metric scores."}
+plot(cma, type = "scores")
+```
+
+```{r plot-scores-multiple, fig.cap = "Multiple alignment summary scores."}
+plot(cma_mult, type = "scores")
+```
+
+# Programmatic access
+
+All CMA results are accessible via noun-style accessors with type guards
+that prevent misuse (e.g., calling `sharedPathways()` on a multiple
+alignment raises an informative error).
+
+| Accessor | Type | Returns |
+|----------|------|---------|
+| `scores()` | both | Named list of scores |
+| `sharedPathways()` | pairwise | data.frame of shared edges |
+| `uniquePathways()` | pairwise | list(query, reference) |
+| `similarityMatrix()` | multiple | n x n numeric matrix |
+| `prevalence()` | multiple | data.frame with nConsortia |
+| `consensusEdges()` | multiple | data.frame (same as prevalence) |
+| `getMet()` | both | Character vector of metabolites |
+| `getEdges()` | both | data.frame of edges |
+
+# Session info
+
+```{r session-info}
+sessionInfo()
+```

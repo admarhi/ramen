@@ -30,7 +30,8 @@ Imports:
     tibble,
     tidyr,
     TreeSummarizedExperiment
-Suggests: 
+Suggests:
+    BiocStyle,
     knitr,
     readr,
     rmarkdown,
@@ -53,6 +54,7 @@ Collate:
     'importMisosoup.R'
     'method-setDescription.R'
     'method-setName.R'
+    'methods-accessors-cma.R'
     'methods-align.R'
     'methods-compareSpecies.R'
     'methods-getCluster.R'
