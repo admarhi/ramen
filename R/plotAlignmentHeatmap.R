@@ -13,8 +13,9 @@ plotAlignmentHeatmap <- function(object, top = NULL,
                                 bottom = NULL) {
     cli::cli_abort(
         paste0(
-            "{.fn plotAlignmentHeatmap} is deprecated and ",
-            "will be reimplemented in Phase 3."
+            "{.fn plotAlignmentHeatmap} is deprecated. ",
+            "Use {.code plot(object, type = \"heatmap\")} ",
+            "instead."
         )
     )
 }

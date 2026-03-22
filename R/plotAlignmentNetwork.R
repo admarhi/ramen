@@ -11,8 +11,9 @@
 plotAlignmentNetwork <- function(object, frac) {
     cli::cli_abort(
         paste0(
-            "{.fn plotAlignmentNetwork} is deprecated and ",
-            "will be reimplemented in Phase 3."
+            "{.fn plotAlignmentNetwork} is deprecated. ",
+            "Use {.code plot(object, type = \"network\")} ",
+            "instead."
         )
     )
 }
