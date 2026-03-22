@@ -12,10 +12,10 @@ vignette: >
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-    collapse = TRUE,
-    comment = "#>",
-    fig.width = 6,
-    fig.height = 5
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 6,
+  fig.height = 5
 )
 ```
 
@@ -46,8 +46,8 @@ across a shared metabolite pool.
 
 ```{r create-data}
 cm_alpha <- synCM("Alpha", n_species = 5, max_met = 10, seed = 42)
-cm_beta  <- synCM("Beta",  n_species = 5, max_met = 10, seed = 43)
-cm_gamma <- synCM("Gamma", n_species = 4, max_met = 8,  seed = 44)
+cm_beta <- synCM("Beta", n_species = 5, max_met = 10, seed = 43)
+cm_gamma <- synCM("Gamma", n_species = 4, max_met = 8, seed = 44)
 cm_delta <- synCM("Delta", n_species = 6, max_met = 10, seed = 45)
 
 cm_alpha
@@ -73,8 +73,8 @@ metrics are always computed; `method` selects which becomes the primary score.
 ```{r pairwise-metrics}
 cma_fos <- align(cm_alpha, cm_beta, method = "FOS")
 cma_jac <- align(cm_alpha, cm_beta, method = "jaccard")
-cma_bc  <- align(cm_alpha, cm_beta, method = "brayCurtis")
-cma_ro  <- align(cm_alpha, cm_beta, method = "redundancyOverlap")
+cma_bc <- align(cm_alpha, cm_beta, method = "brayCurtis")
+cma_ro <- align(cm_alpha, cm_beta, method = "redundancyOverlap")
 
 ## All scores are stored regardless of method choice
 scores(cma_fos)
@@ -108,9 +108,9 @@ sp <- sharedPathways(cma)
 head(sp[, c("consumed", "produced")])
 
 up <- uniquePathways(cma)
-nrow(sp)             # shared
-nrow(up$query)       # unique to Alpha
-nrow(up$reference)   # unique to Beta
+nrow(sp) # shared
+nrow(up$query) # unique to Alpha
+nrow(up$reference) # unique to Beta
 ```
 
 ## Permutation p-values
@@ -121,10 +121,11 @@ degree, and the metric is recomputed under the null.
 
 ```{r pairwise-pvalue}
 cma_p <- align(
-    cm_alpha, cm_beta,
-    method = "FOS",
-    computePvalue = TRUE,
-    nPermutations = 99L
+  cm_alpha,
+  cm_beta,
+  method = "FOS",
+  computePvalue = TRUE,
+  nPermutations = 99L
 )
 cma_p@Pvalue
 ```
@@ -138,8 +139,8 @@ cma_p@Pvalue
 
 ```{r multiple-create, message = FALSE}
 cms <- ConsortiumMetabolismSet(
-    list(cm_alpha, cm_beta, cm_gamma, cm_delta),
-    name = "Demo"
+  list(cm_alpha, cm_beta, cm_gamma, cm_delta),
+  name = "Demo"
 )
 cma_mult <- align(cms)
 cma_mult

@@ -10,6 +10,7 @@ figures/
 .RData
 .Rhistory
 .RDataTmp
+Rplots.pdf
 
 /.quarto/
 CLAUDE.md
