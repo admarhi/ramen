@@ -11,7 +11,6 @@
 #' @importFrom dplyr select
 #' @importFrom Matrix sparseMatrix
 #' @importFrom methods show
-#' @importFrom MultiAssayExperiment assays
 #' @importFrom purrr keep
 #' @importFrom purrr map
 #' @importFrom purrr map_chr

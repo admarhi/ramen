@@ -6,12 +6,13 @@
 \alias{ramen-package}
 \title{ramen: Reconstruction and Alignment of Microbial Exchange Networks}
 \description{
-Analysis of the functional (dis-) similarity of microbial communities.
+Reconstructs metabolic exchange networks from microbial community data and aligns them using functional overlap scores to quantify the similarity and dissimilarity of consortium-level metabolic function. Provides tools for visualization and comparison of microbial consortia from a network perspective.
 }
 \seealso{
 Useful links:
 \itemize{
   \item \url{https://admarhi.github.io/ramen/}
+  \item Report bugs at \url{https://github.com/admarhi/ramen/issues}
 }
 
 }

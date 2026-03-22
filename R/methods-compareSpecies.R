@@ -1,5 +1,4 @@
-#' @describeIn compareSpecies Compare Species in a ConsortiumMetabolismSet
-#' @export
+#' @noRd
 setMethod(
   "compareSpecies",
   "ConsortiumMetabolismSet",

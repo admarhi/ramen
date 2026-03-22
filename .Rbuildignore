@@ -1,7 +1,6 @@
 ^ramen\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
-^dev*$
 ^dev$
 ^figures$
 ^dev_data$
@@ -12,6 +11,7 @@ vignettes/func_sim.Rmd
 ^pkgdown$
 ^README\.Rmd$
 ^\.github$
+^CLAUDE\.md$
 ^doc$
 ^Meta$
 .lintr*

@@ -109,7 +109,7 @@ setGeneric(
 #'
 #' @param object A \code{ConsortiumMetabolismSet} object to modify
 #' @return A modified \code{ConsortiumMetabolismSet} object
-#' @export
+#' @noRd
 setGeneric("modify", function(object) standardGeneric("modify"))
 
 
@@ -233,7 +233,7 @@ setGeneric(
 #'
 #' @return A list of tibbles.
 #'
-#' @export
+#' @noRd
 setGeneric(
   "compareSpecies",
   function(object, species) standardGeneric("compareSpecies")
