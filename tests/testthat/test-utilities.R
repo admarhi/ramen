@@ -10,10 +10,10 @@ test_that("pivotCM transforms data correctly", {
   # Pivot the data
   pivoted <- pivotCM(
     test_data,
-    species_col = "species",
+    species = "species",
     from = "uptake",
     to = "secretion",
-    flux_col = "flux"
+    flux = "flux"
   )
 
   # Check structure
@@ -37,10 +37,10 @@ test_that("pivotCM handles custom column names", {
 
   pivoted <- pivotCM(
     test_data,
-    species_col = "org",
+    species = "org",
     from = "consumed",
     to = "produced",
-    flux_col = "flow"
+    flux = "flow"
   )
 
   expect_s3_class(pivoted, "data.frame")

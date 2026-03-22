@@ -6,6 +6,7 @@ newConsortiumMetabolism <- setClass(
   contains = "TreeSummarizedExperiment",
   slots = list(
     Name = "character",
+    Description = "character",
     Edges = "data.frame",
     Weighted = "logical",
     InputData = "data.frame",

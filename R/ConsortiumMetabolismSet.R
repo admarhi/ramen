@@ -165,28 +165,39 @@ ConsortiumMetabolismSet <- function(
   cli::cli_process_done()
 
   # ---- Dendrogram ------------------------------------------------------------
-  # Make the dendrogram
-  cli::cli_status("Creating dendrogram")
-  dend <-
-    stats::dist(overlap_matrix) |>
-    stats::hclust() |>
-    stats::as.dendrogram()
-  cli::cli_process_done()
+  # Make the dendrogram (hclust requires n >= 2)
+  if (nrow(overlap_matrix) >= 2L) {
+    cli::cli_status("Creating dendrogram")
+    dend <-
+      stats::dist(overlap_matrix) |>
+      stats::hclust() |>
+      stats::as.dendrogram()
+    cli::cli_process_done()
 
-  # ---- Dendrogram Node Data --------------------------------------------------
-  # Get node positions in the dendrogram and index without leaves s.t. they can
-  # be used later to retrieve individual clusters.
-  cli::cli_status("Calculating node data")
-  node_data <- dendextend::get_nodes_xy(dend) |>
-    as.data.frame() |>
-    tibble::as_tibble() |>
-    dplyr::rename(x = "V1", y = "V2") |>
-    dplyr::mutate(original_node_id = dplyr::row_number()) |>
-    # Filter out leaves (which have y=0)
-    dplyr::filter(.data$y != 0) |>
-    dplyr::arrange(dplyr::desc(.data$y)) |>
-    dplyr::mutate(node_id = dplyr::row_number())
-  cli::cli_process_done()
+    # ---- Dendrogram Node Data ------------------------------------------------
+    # Get node positions in the dendrogram and index without leaves s.t.
+    # they can be used later to retrieve individual clusters.
+    cli::cli_status("Calculating node data")
+    node_data <- dendextend::get_nodes_xy(dend) |>
+      as.data.frame() |>
+      tibble::as_tibble() |>
+      dplyr::rename(x = "V1", y = "V2") |>
+      dplyr::mutate(original_node_id = dplyr::row_number()) |>
+      # Filter out leaves (which have y=0)
+      dplyr::filter(.data$y != 0) |>
+      dplyr::arrange(dplyr::desc(.data$y)) |>
+      dplyr::mutate(node_id = dplyr::row_number())
+    cli::cli_process_done()
+  } else {
+    dend <- stats::as.dendrogram(
+      stats::hclust(stats::dist(rbind(overlap_matrix, overlap_matrix)))
+    )
+    dend <- dend[[1L]]
+    node_data <- data.frame(
+      x = numeric(0), y = numeric(0),
+      original_node_id = integer(0), node_id = integer(0)
+    )
+  }
 
   # ---- Graphs ----------------------------------------------------------------
   # Store the graphs in a named list to enable the graph based alignment

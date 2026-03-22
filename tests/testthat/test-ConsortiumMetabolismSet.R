@@ -93,30 +93,7 @@ test_that("setName and setDesc work for ConsortiumMetabolismSet", {
   expect_equal(cms_described@Description, "test description")
 })
 
-test_that("cluster method works for ConsortiumMetabolismSet", {
-  # Create test data
-  data1 <- tibble::tibble(
-    species = c("s1", "s1", "s2", "s2"),
-    met = c("m1", "m2", "m1", "m3"),
-    flux = c(-1, 1, -1, 1)
-  )
 
-  data2 <- tibble::tibble(
-    species = c("s3", "s3", "s4", "s4"),
-    met = c("m1", "m2", "m1", "m4"),
-    flux = c(-1, 1, -1, 1)
-  )
-
-  cm1 <- ConsortiumMetabolism(data1, name = "cm1")
-  cm2 <- ConsortiumMetabolism(data2, name = "cm2")
-  cms <- ConsortiumMetabolismSet(list(cm1, cm2), name = "test")
-
-  # Test clustering
-  cms_clustered <- cluster(cms)
-
-  expect_s4_class(cms_clustered, "ConsortiumMetabolismSet")
-  expect_true(length(cms_clustered@Dendrogram) > 0)
-})
 
 ## ---- CMS BinaryMatrices and OverlapMatrix -----------------------------------
 
@@ -149,11 +126,9 @@ test_that("CMS OverlapMatrix unchanged after refactor", {
     expect_true(is.matrix(cms@OverlapMatrix))
 })
 
-test_that("single-consortium CMS cannot be created (needs >= 2)", {
+test_that("single-consortium CMS can be created", {
     cm1 <- synCM("a", n_species = 3, max_met = 5)
-    ## CMS constructor requires >= 2 consortia for hclust
-    expect_error(
-        ConsortiumMetabolismSet(list(cm1), name = "single"),
-        "n >= 2"
-    )
+    cms <- ConsortiumMetabolismSet(list(cm1), name = "single")
+    expect_s4_class(cms, "ConsortiumMetabolismSet")
+    expect_equal(length(cms@Consortia), 1L)
 })

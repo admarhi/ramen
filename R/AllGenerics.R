@@ -112,16 +112,6 @@ setGeneric(
 #' @export
 setGeneric("modify", function(object) standardGeneric("modify"))
 
-#' @title Cluster a \code{ConsortiaMetabolismSet} Object
-#'
-#' @description
-#' Modifies a \code{ConsortiumMetabolismSet} by clustering the binary matrices
-#' and storing the result to the object.
-#'
-#' @param object A \code{ConsortiumMetabolismSet} object to modify
-#' @return A modified \code{ConsortiumMetabolismSet} object
-#' @export
-setGeneric("cluster", function(object) standardGeneric("cluster"))
 
 #' @title Get a cluster from a \code{ConsortiaMetabolismSet} Object
 #'
