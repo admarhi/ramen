@@ -1,40 +1,215 @@
 ---
-title: "Data Visualisation"
-output: rmarkdown::html_vignette
+title: "Visualisation"
+output:
+    BiocStyle::html_document:
+        toc: true
+        toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{Data Visualisation}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+    %\VignetteIndexEntry{Visualisation}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.width = 6,
+  fig.height = 5
 )
 ```
 
-```{r setup}
+# Introduction
+
+`ramen` provides `plot()` methods for all three core classes:
+`ConsortiumMetabolism`, `ConsortiumMetabolismSet`, and
+`ConsortiumMetabolismAlignment`. This vignette demonstrates each plot
+type with synthetic and example data.
+
+```{r load-library, message = FALSE}
 library(ramen)
 ```
 
-*ramen* provides a range of visualisation methods for the different type of objects available in the package. 
+# Preparing example data
 
-## ConsortiumMetabolism
+We create four synthetic consortia, combine them into a CMS, and
+compute both pairwise and multiple alignments.
 
-```{r}
-# # Plots a directed network
-# plot(cm1)
-# # Plot the number of species in edges
-# plot(cm1, type = "nEdges")
-# # Plot the total consumption fluxes in a network
-# plot(cm1, type = "Consumption")
-# # Plot the total production fluxes in a network
-# plot(cm1, type = "Production")
-# # Plot the effective consumption fluxes in a network
-# plot(cm1, type = "EffectiveConsumption")
-# # Plot the effective production fluxes in a network
-# plot(cm1, type = "EffectiveProduction")
+```{r create-data, message = FALSE}
+cm_alpha <- synCM("Alpha", n_species = 5, max_met = 10, seed = 42)
+cm_beta <- synCM("Beta", n_species = 5, max_met = 10, seed = 43)
+cm_gamma <- synCM("Gamma", n_species = 4, max_met = 8, seed = 44)
+cm_delta <- synCM("Delta", n_species = 6, max_met = 10, seed = 45)
+
+cms <- ConsortiumMetabolismSet(
+    cm_alpha, cm_beta, cm_gamma, cm_delta,
+    name = "Demo"
+)
+
+cma_pair <- align(cm_alpha, cm_beta)
+cma_mult <- align(cms)
 ```
 
-## ConsortiumMetabolismSet
+# ConsortiumMetabolism plots
+
+`plot(CM)` renders a directed metabolic flow network using `igraph`.
+Nodes are coloured by role: **lightblue** = source (only outgoing),
+**salmon** = sink (only incoming), **yellow** = intermediate (both).
+The `type` argument selects which assay matrix to use for edge
+weights.
+
+## Binary network
+
+The default view shows the structure of the metabolic network where
+any edge present has weight 1.
+
+```{r plot-cm-binary, fig.cap = "Binary metabolic network for Alpha."}
+plot(cm_alpha, type = "Binary")
+```
+
+## Number of species per edge
+
+Edge weights reflect how many species catalyse each pathway.
+
+```{r plot-cm-nedges, fig.cap = "nEdges network for Alpha."}
+plot(cm_alpha, type = "nEdges")
+```
+
+## Consumption and production
+
+Consumption and production views weight edges by summed flux
+magnitudes.
+
+```{r plot-cm-consumption, fig.cap = "Consumption-weighted network."}
+plot(cm_alpha, type = "Consumption")
+```
+
+```{r plot-cm-production, fig.cap = "Production-weighted network."}
+plot(cm_alpha, type = "Production")
+```
+
+## Effective consumption and production
+
+The effective diversity measures indicate how evenly species
+contribute to each edge (Shannon-based effective number of species).
+
+```{r plot-cm-effcons, fig.cap = "Effective consumption network."}
+plot(cm_alpha, type = "EffectiveConsumption")
+```
+
+```{r plot-cm-effprod, fig.cap = "Effective production network."}
+plot(cm_alpha, type = "EffectiveProduction")
+```
+
+# ConsortiumMetabolismSet plots
+
+## Dendrogram
+
+`plot(CMS)` draws the hierarchical clustering dendrogram with
+numbered internal nodes. These node IDs are used by
+`extractCluster()` to pull sub-clusters.
+
+```{r plot-cms-dend, fig.cap = "CMS dendrogram with numbered nodes."}
+plot(cms)
+```
+
+## Dendrogram with custom label colours
+
+You can supply a tibble mapping leaf labels to colours.
+
+```{r plot-cms-colours, fig.cap = "CMS dendrogram with coloured labels."}
+colour_map <- data.frame(
+    label = c("Alpha", "Beta", "Gamma", "Delta"),
+    colour = c("steelblue", "firebrick",
+               "forestgreen", "darkorange")
+)
+plot(cms, label_colours = colour_map)
+```
+
+# ConsortiumMetabolismAlignment plots
+
+The CMA `plot()` method supports three types: `"heatmap"`,
+`"network"`, and `"scores"`. The default depends on the alignment
+type: `"network"` for pairwise, `"heatmap"` for multiple.
+
+## Heatmap (multiple alignment)
+
+The heatmap shows pairwise FOS similarities with dendrogram-based
+ordering. Values range from 0 (no overlap) to 1 (identical).
+
+```{r plot-cma-heatmap, fig.cap = "Similarity heatmap."}
+plot(cma_mult, type = "heatmap")
+```
+
+## Network (pairwise alignment)
+
+The network view visualises the alignment result as a directed
+metabolite flow graph. Edge colours indicate the source:
+**green** = shared pathways, **blue** = unique to query (Alpha),
+**red** = unique to reference (Beta).
+
+```{r plot-cma-network, fig.cap = "Pairwise alignment network."}
+plot(cma_pair, type = "network")
+```
+
+## Scores (pairwise)
+
+The score bar chart displays all computed similarity metrics for a
+pairwise alignment.
+
+```{r plot-cma-scores-pair, fig.cap = "Pairwise alignment scores."}
+plot(cma_pair, type = "scores")
+```
+
+## Scores (multiple alignment)
+
+For a multiple alignment, the scores plot shows summary statistics
+across all pairwise comparisons.
+
+```{r plot-cma-scores-mult, fig.cap = "Multiple alignment scores."}
+plot(cma_mult, type = "scores")
+```
+
+# Using `plotDirectedFlow()` directly
+
+For fine-grained control over the network layout, you can call
+`plotDirectedFlow()` directly on an igraph object. This is the
+function underlying all CM and CMA network plots.
+
+```{r plot-directed-flow, fig.cap = "Custom directed flow plot."}
+g <- igraph::graph_from_adjacency_matrix(
+    SummarizedExperiment::assay(cm_beta, "nEdges"),
+    mode = "directed",
+    weighted = TRUE
+)
+
+plotDirectedFlow(
+    g,
+    color_edges_by_weight = TRUE,
+    edge_width_range = c(0.5, 2),
+    vertex_size = 12,
+    vertex_label_cex = 0.7,
+    main = "Beta - nEdges (custom)"
+)
+```
+
+# Summary of plot types
+
+| Object class | `type` argument | Description |
+|-------------|-----------------|-------------|
+| CM | `"Binary"` (default) | Directed network, unweighted |
+| CM | `"nEdges"` | Edges weighted by species count |
+| CM | `"Consumption"` | Edges weighted by consumption flux |
+| CM | `"Production"` | Edges weighted by production flux |
+| CM | `"EffectiveConsumption"` | Effective consuming species |
+| CM | `"EffectiveProduction"` | Effective producing species |
+| CMS | (none) | Dendrogram with numbered nodes |
+| CMA | `"heatmap"` | Pairwise similarity heatmap |
+| CMA | `"network"` | Shared/unique pathway graph |
+| CMA | `"scores"` | Bar chart of similarity metrics |
+
+# Session info
+
+```{r session-info}
+sessionInfo()
+```

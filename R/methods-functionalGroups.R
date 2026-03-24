@@ -8,7 +8,10 @@ setMethod(
     "functionalGroups",
     "ConsortiumMetabolismSet",
     function(
-        object, k = 4, label_size = 6, label_colours = NULL
+        object,
+        k = 4,
+        label_size = 6,
+        label_colours = NULL
     ) {
         # Extract edges from the ConsortiumMetabolismSet
         tb <- object@Edges
@@ -19,7 +22,9 @@ setMethod(
             unique() |>
             dplyr::mutate(
                 edge = paste0(
-                    .data$consumed, "-", .data$produced
+                    .data$consumed,
+                    "-",
+                    .data$produced
                 )
             ) |>
             dplyr::select("species", "edge")
@@ -37,10 +42,12 @@ setMethod(
             # Keep only unique pairs (x <= y)
             dplyr::filter(.data$x <= .data$y) |>
             dplyr::left_join(
-                unique_species, by = c("x" = "ind")
+                unique_species,
+                by = c("x" = "ind")
             ) |>
             dplyr::left_join(
-                unique_species, by = c("y" = "ind")
+                unique_species,
+                by = c("y" = "ind")
             ) |>
             dplyr::rename(
                 species_x = "species.x",
@@ -90,13 +97,15 @@ setMethod(
 
         # Color branches of the dendrogram
         gg_dend <- dendextend::color_branches(
-            dend, k = k
+            dend,
+            k = k
         ) |>
             dendextend::as.ggdend()
         if (!is.null(label_colours)) {
             label_tb <- gg_dend$labels |>
                 dplyr::left_join(
-                    label_colours, by = "label"
+                    label_colours,
+                    by = "label"
                 )
         } else {
             label_tb <- gg_dend$labels |>
@@ -107,28 +116,23 @@ setMethod(
 
         # Make ggplot
         plot_obj <- ggplot2::ggplot(
-            gg_dend, horiz = FALSE
+            gg_dend,
+            horiz = FALSE
         ) +
             ggplot2::theme_minimal() +
             ggplot2::theme(
-                axis.title =
-                    ggplot2::element_blank(),
-                axis.text =
-                    ggplot2::element_blank(),
-                axis.ticks =
-                    ggplot2::element_blank(),
-                axis.line =
-                    ggplot2::element_blank(),
-                panel.background =
-                    ggplot2::element_blank(),
-                plot.background =
-                    ggplot2::element_blank(),
-                panel.grid =
-                    ggplot2::element_blank()
+                axis.title = ggplot2::element_blank(),
+                axis.text = ggplot2::element_blank(),
+                axis.ticks = ggplot2::element_blank(),
+                axis.line = ggplot2::element_blank(),
+                panel.background = ggplot2::element_blank(),
+                plot.background = ggplot2::element_blank(),
+                panel.grid = ggplot2::element_blank()
             ) +
             ggplot2::scale_y_continuous(
                 expand = ggplot2::expansion(
-                    mult = c(0, 0), add = c(2, 1)
+                    mult = c(0, 0),
+                    add = c(2, 1)
                 )
             ) +
             ggplot2::geom_text(
