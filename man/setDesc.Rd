@@ -30,3 +30,8 @@ Sets a new name or description of \code{ConsortiumMetabolism},
 \code{ConsortiumMetabolismSet}, or \code{ConsortiumMetabolismAlignment}
 objects
 }
+\examples{
+cm <- synCM("test", n_species = 3, max_met = 5)
+cm <- setDesc(cm, "A test consortium")
+
+}

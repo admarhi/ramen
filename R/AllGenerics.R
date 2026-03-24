@@ -4,6 +4,11 @@
 #' @param ... Object specific arguments.
 #'
 #' @return A character vector containing the names of species in the consortium
+#'
+#' @examples
+#' cm <- synCM("test", n_species = 3, max_met = 5)
+#' getSpecies(cm)
+#'
 #' @export
 setGeneric("getSpecies", function(object, ...) standardGeneric("getSpecies"))
 
@@ -15,6 +20,11 @@ setGeneric("getSpecies", function(object, ...) standardGeneric("getSpecies"))
 #' @param object A \code{ConsortiumMetabolism} or
 #' \code{ConsortiumMetabolismAlignment} object
 #' @return A character vector containing the names of metabolites in the network
+#'
+#' @examples
+#' cm <- synCM("test", n_species = 3, max_met = 5)
+#' getMet(cm)
+#'
 #' @export
 setGeneric("getMet", function(object) standardGeneric("getMet"))
 
@@ -42,6 +52,11 @@ setGeneric("getMet", function(object) standardGeneric("getMet"))
 #'   \item consumption/production sums
 #'   \item effective consumption/production metrics
 #' }
+#'
+#' @examples
+#' cm <- synCM("test", n_species = 3, max_met = 5)
+#' getEdges(cm)
+#'
 #' @export
 setGeneric("getEdges", function(object, ...) standardGeneric("getEdges"))
 
@@ -55,6 +70,11 @@ setGeneric("getEdges", function(object, ...) standardGeneric("getEdges"))
 #' @return For \code{ConsortiumMetabolism} objects, returns a tb with species,
 #' metabolite and flux information. For \code{ConsortiumMetabolismSet} and
 #' \code{ConsortiumMetabolismAlignment} objects, returns a list of such tibbles.
+#'
+#' @examples
+#' cm <- synCM("test", n_species = 3, max_met = 5)
+#' getCo(cm)
+#'
 #' @export
 setGeneric("getCo", function(object) standardGeneric("getCo"))
 
@@ -92,6 +112,12 @@ setGeneric("getCo", function(object) standardGeneric("getCo"))
 #'
 #' @return A [ConsortiumMetabolismAlignment] object.
 #'
+#' @examples
+#' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
+#' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
+#' cma <- align(cm1, cm2)
+#' cma
+#'
 #' @export
 setGeneric(
     "align",
@@ -124,6 +150,15 @@ setGeneric("modify", function(object) standardGeneric("modify"))
 #' @param description Character scalar describing the selection.
 #'
 #' @return A cluster from a \code{ConsortiumMetabolismSet} object
+#'
+#' @examples
+#' \donttest{
+#' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
+#' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
+#' cms <- ConsortiumMetabolismSet(cm1, cm2, name = "test")
+#' getCluster(cms, node_id = 1)
+#' }
+#'
 #' @export
 setGeneric(
     "getCluster",
@@ -151,6 +186,11 @@ setGeneric(
 #' @param value Character scalar specifying a name.
 #'
 #' @return The modified object with updated name
+#'
+#' @examples
+#' cm <- synCM("old_name", n_species = 3, max_met = 5)
+#' cm <- setName(cm, "new_name")
+#'
 #' @export
 setGeneric(
     "setName",
@@ -170,6 +210,11 @@ setGeneric(
 #' @param value Character scalar specifying a description.
 #'
 #' @return The modified object with updated description
+#'
+#' @examples
+#' cm <- synCM("test", n_species = 3, max_met = 5)
+#' cm <- setDesc(cm, "A test consortium")
+#'
 #' @export
 setGeneric(
     "setDesc",
@@ -206,6 +251,14 @@ setGeneric(
 #'   \item reactions_per_species: Tibble mapping species to their reactions
 #' }
 #' The plot is automatically displayed.
+#'
+#' @examples
+#' \donttest{
+#' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
+#' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
+#' cms <- ConsortiumMetabolismSet(cm1, cm2, name = "test")
+#' getFunctionalGroups(cms, k = 2)
+#' }
 #'
 #' @export
 setGeneric(
@@ -256,6 +309,12 @@ setGeneric(
 #'
 #' @return A named list of scores.
 #'
+#' @examples
+#' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
+#' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
+#' cma <- align(cm1, cm2)
+#' scores(cma)
+#'
 #' @export
 setGeneric(
     "scores",
@@ -272,6 +331,12 @@ setGeneric(
 #'   of type `"pairwise"`.
 #'
 #' @return A data.frame of shared pathway edges.
+#'
+#' @examples
+#' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
+#' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
+#' cma <- align(cm1, cm2)
+#' sharedPathways(cma)
 #'
 #' @export
 setGeneric(
@@ -290,6 +355,12 @@ setGeneric(
 #'
 #' @return A list with `query` and `reference` data.frames.
 #'
+#' @examples
+#' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
+#' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
+#' cma <- align(cm1, cm2)
+#' uniquePathways(cma)
+#'
 #' @export
 setGeneric(
     "uniquePathways",
@@ -306,6 +377,15 @@ setGeneric(
 #'   of type `"multiple"`.
 #'
 #' @return A numeric n x n matrix.
+#'
+#' @examples
+#' \donttest{
+#' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
+#' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
+#' cms <- ConsortiumMetabolismSet(cm1, cm2, name = "test")
+#' cma <- align(cms)
+#' similarityMatrix(cma)
+#' }
 #'
 #' @export
 setGeneric(
@@ -325,6 +405,15 @@ setGeneric(
 #' @return A data.frame with columns `consumed`, `produced`,
 #'   `nConsortia`, and `proportion`.
 #'
+#' @examples
+#' \donttest{
+#' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
+#' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
+#' cms <- ConsortiumMetabolismSet(cm1, cm2, name = "test")
+#' cma <- align(cms)
+#' prevalence(cma)
+#' }
+#'
 #' @export
 setGeneric(
     "prevalence",
@@ -342,8 +431,65 @@ setGeneric(
 #'
 #' @return A data.frame of consensus edges with prevalence.
 #'
+#' @examples
+#' \donttest{
+#' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
+#' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
+#' cms <- ConsortiumMetabolismSet(cm1, cm2, name = "test")
+#' cma <- align(cms)
+#' consensusEdges(cma)
+#' }
+#'
 #' @export
 setGeneric(
     "consensusEdges",
     function(object) standardGeneric("consensusEdges")
+)
+
+## ---- Replacement methods ---------------------------------------------------
+
+#' @title Set Object Name
+#'
+#' @description
+#' Replacement method to set the name of a ramen object.
+#'
+#' @param object A [ConsortiumMetabolism],
+#'   [ConsortiumMetabolismSet], or
+#'   [ConsortiumMetabolismAlignment] object.
+#' @param value Character scalar specifying the new name.
+#'
+#' @return The modified object with updated name.
+#'
+#' @examples
+#' cm <- synCM("old_name", n_species = 3, max_met = 5)
+#' name(cm) <- "new_name"
+#'
+#' @export
+setGeneric(
+    "name<-",
+    function(object, value) standardGeneric("name<-")
+)
+
+#' @title Set Object Description
+#'
+#' @description
+#' Replacement method to set the description of a ramen
+#' object.
+#'
+#' @param object A [ConsortiumMetabolism],
+#'   [ConsortiumMetabolismSet], or
+#'   [ConsortiumMetabolismAlignment] object.
+#' @param value Character scalar specifying the new
+#'   description.
+#'
+#' @return The modified object with updated description.
+#'
+#' @examples
+#' cm <- synCM("test", n_species = 3, max_met = 5)
+#' description(cm) <- "A test consortium"
+#'
+#' @export
+setGeneric(
+    "description<-",
+    function(object, value) standardGeneric("description<-")
 )
