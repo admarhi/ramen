@@ -108,7 +108,7 @@ test_that("SharedPathways + UniqueQuery + UniqueRef = total edges", {
     )
 })
 
-test_that("FOS from align matches .binMatOverlap via CMS", {
+test_that("FOS from align matches CMS overlap matrix", {
     cm1 <- synCM("a", n_species = 4, max_met = 8, seed = 42)
     cm2 <- synCM("b", n_species = 4, max_met = 8, seed = 43)
     cma <- align(cm1, cm2, method = "FOS")

@@ -39,6 +39,7 @@
 #' cms <- ConsortiumMetabolismSet(cm1, cm2, name = "example")
 #' cms
 #'
+#' @include helpers-align.R
 #' @export
 ConsortiumMetabolismSet <- function(
     ...,
@@ -194,7 +195,7 @@ ConsortiumMetabolismSet <- function(
         ) |>
         dplyr::mutate(
             overlap_score = mapply(
-                \(x, y) .binMatOverlap(x, y),
+                \(x, y) .functionalOverlap(x, y),
                 .data$cm_x,
                 .data$cm_y
             )
@@ -330,14 +331,3 @@ cms <- ConsortiumMetabolismSet
     )
 }
 
-#' @noRd
-.binMatOverlap <- function(bm1, bm2) {
-    ## Both matrices must be in the same universal space
-    ## (same dimensions and dimnames)
-    int <- bm1 * bm2
-    denom <- min(sum(bm1), sum(bm2))
-    if (denom == 0L) {
-        return(0)
-    }
-    sum(int) / denom
-}

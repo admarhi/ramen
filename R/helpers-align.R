@@ -89,7 +89,7 @@
 #'
 #' Computes FOS = |X AND Y| / min(|X|, |Y|), the
 #' Szymkiewicz-Simpson overlap coefficient applied to binary
-#' pathway matrices. Equivalent to the existing `.binMatOverlap()`
+#' pathway matrices. Also used by CMS overlap matrix construction.
 #' but operates on pre-expanded matrices in the same space.
 #'
 #' @param xBin Sparse binary matrix (query, union space).
