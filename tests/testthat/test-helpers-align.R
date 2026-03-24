@@ -326,7 +326,7 @@ test_that("FOS similarity matrix matches CMS OverlapMatrix", {
         BiocParallel::SerialParam()
     )
     om <- cms@OverlapMatrix
-    expected <- 1 - (om + t(om))
+    expected <- 1 - om
     expect_equal(sim, expected)
 })
 

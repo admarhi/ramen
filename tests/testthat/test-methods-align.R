@@ -168,7 +168,7 @@ test_that("FOS similarity matches CMS OverlapMatrix", {
             if (i != j) {
                 expect_equal(
                     sim[i, j],
-                    1 - (om[i, j] + om[j, i]),
+                    1 - om[i, j],
                     info = paste("pair", i, j)
                 )
             }

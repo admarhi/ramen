@@ -477,7 +477,7 @@
     ## FOS shortcut: invert pre-computed distance matrix
     if (method == "FOS") {
         om <- cms@OverlapMatrix
-        sim_mat <- 1 - (om + t(om))
+        sim_mat <- 1 - om
         return(sim_mat)
     }
 

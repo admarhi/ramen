@@ -46,68 +46,108 @@ ConsortiumMetabolismSet <- function(
     name = NA_character_,
     desc = NA_character_
 ) {
-    cli::cli_h1(paste0("Creating CMS: ", name))
+    t_start <- proc.time()[["elapsed"]]
+    cli::cli_h1("Creating CMS {.val {name}}")
 
-    # ---- Checking args ---------------------------------------------------------
-    ### Include a by = NULL argument that allows the user to read a tibble with
-    ### minimum 4 columns in which one gives the name of the consortia. These will
-    ### then be used as the name of the consortia.
-    cli::cli_status("Checking arguments")
+    ## ---- 1. Validate arguments --------------------------------
     args <- list(...)
     cons <- unlist(args, recursive = FALSE, use.names = FALSE)
-    if (!all(vapply(cons, is, logical(1),
-                     "ConsortiumMetabolism"))) {
+    n_cons <- length(cons)
+    cli::cli_progress_step(
+        "Validating {.val {n_cons}} \\
+        {.cls ConsortiumMetabolism} object{?s}"
+    )
+    if (!all(vapply(
+        cons, is, logical(1L), "ConsortiumMetabolism"
+    ))) {
         cli::cli_abort(
             "All elements in {.arg ...} must be
             {.cls ConsortiumMetabolism} objects."
         )
     }
-    cli::cli_process_done()
+    cm_names <- vapply(
+        cons, \(x) x@Name, character(1L)
+    )
 
-    # ---- Get all mets ----------------------------------------------------------
-    cli::cli_status("Getting metabolites")
-    # Get indeces of met in each consortium for re-indexing
+    ## ---- 2. Collect metabolites -------------------------------
+    cli::cli_progress_step(
+        "Collecting metabolites from \\
+        {.val {n_cons}} consortia"
+    )
     all_met <- Map(
         \(x, y) dplyr::mutate(x, consortium = y),
         lapply(cons, \(x) {
-            tibble::as_tibble(
-                SummarizedExperiment::colData(x)
-            )
+            tibble::as_tibble(x@colData)
         }),
-        vapply(cons, \(x) x@Name, character(1))
+        cm_names
     ) |>
         dplyr::bind_rows() |>
         dplyr::rename(consortium_ind = "index")
-    cli::cli_process_done()
 
-    # ---- Create new indeces for metabolites ------------------------------------
-    # Create an ordered tibble to re-index metabolites. This tibble can then be
-    # joined to the all_met tibble to get the new inds for c and p in each edge.
-    cli::cli_status("Re-indexing metabolites")
-    new_met_ind <- tibble::tibble(met = unique(all_met$met)) |>
+    ## ---- 3. Re-index metabolites ------------------------------
+    new_met_ind <- tibble::tibble(
+        met = unique(all_met$met)
+    ) |>
         dplyr::arrange(.data$met, .locale = "C") |>
         tibble::rowid_to_column("met_ind")
+    universal_mets <- new_met_ind$met
+    n_mets <- length(universal_mets)
 
-    # Join the new indeces to
+    cli::cli_progress_step(
+        "Re-indexing {.val {n_mets}} unique metabolites"
+    )
     all_met <- all_met |>
         dplyr::left_join(new_met_ind, by = "met") |>
         dplyr::relocate("met_ind", "met", "consortium") |>
-        # Still need the wide format here to join into the all_edges tibble
         tidyr::pivot_wider(
             names_from = "consortium",
             values_from = "consortium_ind"
         ) |>
         dplyr::arrange(.data$met_ind)
-    cli::cli_process_done()
 
-    # ---- Get all edges ---------------------------------------------------------
-    # Retrieve the edges tibbles from all objects and bind the new indeces for met
-    cli::cli_status("Getting all edges")
+    ## ---- 4. Expand binary matrices to universal space ---------
+    cli::cli_progress_step(
+        "Expanding {.val {n_cons}} binary matrices \\
+        to {.val {n_mets}}-dimensional space"
+    )
+    expanded_bm <- stats::setNames(
+        lapply(seq_len(n_cons), \(i) {
+            .expandMatrix(
+                cons[[i]]@assays@data$Binary,
+                universal_mets
+            )
+        }),
+        cm_names
+    )
+
+    ## ---- 5. Levels matrix from binary matrices ----------------
+    cli::cli_progress_step(
+        "Computing {.val {n_mets}} x {.val {n_mets}} \\
+        levels matrix"
+    )
+    levels_mat <- as.matrix(Reduce(`+`, expanded_bm))
+
+    ## ---- 6. Pairwise overlap via crossprod --------------------
+    n_pairs <- n_cons * (n_cons - 1L) / 2L
+    cli::cli_progress_step(
+        "Computing pairwise overlap \\
+        ({.val {n_pairs}} pairs via crossprod)"
+    )
+    overlap_matrix <- .computeFOSMatrix(
+        expanded_bm, cm_names
+    )
+
+    ## ---- 7. Assemble edges ------------------------------------
+    cli::cli_progress_step(
+        "Assembling edge data from \\
+        {.val {n_cons}} consortia"
+    )
     all_edges <-
-        lapply(
-            cons,
-            \(x) dplyr::mutate(x@Edges, cm_name = x@Name)
-        ) |>
+        lapply(seq_len(n_cons), \(i) {
+            dplyr::mutate(
+                cons[[i]]@Edges, cm_name = cm_names[[i]]
+            )
+        }) |>
         dplyr::bind_rows() |>
         dplyr::left_join(
             dplyr::select(all_met, 1:2),
@@ -120,127 +160,38 @@ ConsortiumMetabolismSet <- function(
         ) |>
         dplyr::rename(p_ind_alig = "met_ind") |>
         tidyr::unnest("data") |>
-        tidyr::unnest("c_prob") |>
-        tidyr::unnest("p_prob")
-    cli::cli_process_done()
+        dplyr::select(-"c_prob", -"p_prob")
 
-    # ---- Levels Matrix ---------------------------------------------------------
-    # Count the number of consortia for each edge to allow easy creation of the
-    # levels matrix. This serves as the basis for visualisation and evaluation of
-    # the different levels of the alignment object later.
-    cli::cli_status("Counting consortia for each edge")
-    n_cons <- all_edges |>
-        dplyr::reframe(
-            n = dplyr::n_distinct(.data$cm_name),
-            .by = c("c_ind_alig", "p_ind_alig")
+    ## ---- 8. Dendrogram ----------------------------------------
+    if (n_cons >= 2L) {
+        cli::cli_progress_step(
+            "Building dendrogram from \\
+            {.val {n_cons}} x {.val {n_cons}} \\
+            dissimilarity matrix"
         )
-    # Make a sparse matrix as not all edges exist, convert to dense for graph use.
-    levels_mat <- sparseMatrix(
-        n_cons$c_ind_alig,
-        n_cons$p_ind_alig,
-        x = n_cons$n,
-        dims = c(nrow(new_met_ind), nrow(new_met_ind)),
-        dimnames = list(new_met_ind$met, new_met_ind$met)
-    ) |>
-        Matrix::as.matrix()
-    cli::cli_process_done()
-
-    # ---- Getting binary matrices -----------------------------------------------
-    # Store the binary matrices in a tibble with the names and indeces. This is
-    # used to create only unique combinations between consortia in order to min
-    # computation time.
-    cli::cli_status("Getting binary matrices")
-    bm_tb <- stats::setNames(
-        lapply(cons, \(x) assays(x)$Binary),
-        vapply(cons, \(x) x@Name, character(1))
-    ) |>
-        tibble::enframe() |>
-        tibble::rowid_to_column("ind")
-    cli::cli_process_done()
-
-    # ---- Pre-expand binary matrices to universal space -------------------------
-    cli::cli_status("Expanding binary matrices to universal space")
-    universal_mets <- sort(unique(all_met$met))
-    expanded_bm <- stats::setNames(
-        lapply(
-            bm_tb$value,
-            \(bm) .expandToUniversalSpace(
-                bm, universal_mets
-            )
-        ),
-        bm_tb$name
-    )
-    cli::cli_process_done()
-
-    # ---- Overlap score ---------------------------------------------------------
-    cli::cli_status("Calculating overlap scores")
-    ## Build tibble of pre-expanded matrices for pairwise comparison
-    exp_tb <- tibble::tibble(
-        ind = seq_along(names(expanded_bm)),
-        name = names(expanded_bm),
-        value = unname(expanded_bm)
-    )
-    tb <-
-        tidyr::expand_grid(x = exp_tb$ind, y = exp_tb$ind) |>
-        dplyr::filter(.data$x <= .data$y) |>
-        dplyr::left_join(exp_tb, by = c("x" = "ind")) |>
-        dplyr::left_join(exp_tb, by = c("y" = "ind")) |>
-        dplyr::select(
-            "x",
-            name_x = "name.x",
-            cm_x = "value.x",
-            "y",
-            name_y = "name.y",
-            cm_y = "value.y"
-        ) |>
-        dplyr::mutate(
-            overlap_score = mapply(
-                \(x, y) .functionalOverlap(x, y),
-                .data$cm_x,
-                .data$cm_y
-            )
-        )
-    cli::cli_process_done()
-
-    # Create sparse matrix because not all combinations exist
-    cli::cli_status("Create new edge matrix")
-    overlap_matrix <- Matrix::sparseMatrix(
-        tb$x,
-        tb$y,
-        x = 1 - tb$overlap_score,
-        dimnames = list(bm_tb$name, bm_tb$name)
-    ) |>
-        # Convert to dense matrix so we can use it for dendrogram
-        Matrix::as.matrix()
-    cli::cli_process_done()
-
-    # ---- Dendrogram ------------------------------------------------------------
-    # Make the dendrogram (hclust requires n >= 2)
-    if (nrow(overlap_matrix) >= 2L) {
-        cli::cli_status("Creating dendrogram")
         dend <-
             stats::dist(overlap_matrix) |>
             stats::hclust() |>
             stats::as.dendrogram()
-        cli::cli_process_done()
 
-        # ---- Dendrogram Node Data ------------------------------------------------
-        # Get node positions in the dendrogram and index without leaves s.t.
-        # they can be used later to retrieve individual clusters.
-        cli::cli_status("Calculating node data")
+        cli::cli_progress_step(
+            "Extracting dendrogram node positions"
+        )
         node_data <- dendextend::get_nodes_xy(dend) |>
             as.data.frame() |>
             tibble::as_tibble() |>
             dplyr::rename(x = "V1", y = "V2") |>
-            dplyr::mutate(original_node_id = dplyr::row_number()) |>
-            # Filter out leaves (which have y=0)
+            dplyr::mutate(
+                original_node_id = dplyr::row_number()
+            ) |>
             dplyr::filter(.data$y != 0) |>
             dplyr::arrange(dplyr::desc(.data$y)) |>
             dplyr::mutate(node_id = dplyr::row_number())
-        cli::cli_process_done()
     } else {
         dend <- stats::as.dendrogram(
-            stats::hclust(stats::dist(rbind(overlap_matrix, overlap_matrix)))
+            stats::hclust(stats::dist(
+                rbind(overlap_matrix, overlap_matrix)
+            ))
         )
         dend <- dend[[1L]]
         node_data <- data.frame(
@@ -251,23 +202,24 @@ ConsortiumMetabolismSet <- function(
         )
     }
 
-    # ---- Graphs ----------------------------------------------------------------
-    # Store the graphs in a named list to enable the graph based alignment
-    cli::cli_status("Getting all graphs")
-    graph_list <- stats::setNames(
-        lapply(cons, \(x) x@Graphs[[1]]),
-        vapply(cons, \(x) x@Name, character(1))
+    ## ---- 9. Graphs --------------------------------------------
+    cli::cli_progress_step(
+        "Collecting {.val {n_cons}} consortium graphs"
     )
-    cli::cli_process_done()
+    graph_list <- stats::setNames(
+        lapply(cons, \(x) x@Graphs[[1L]]),
+        cm_names
+    )
 
-    # ---- Pathways --------------------------------------------------------------
-
-    # ---- cli -------------------------------------------------------------------
-    msg <- paste0("ConsortiumMetabolismSet '", name, "' successfully created.")
-    cli::cli_alert_success(msg)
-    d <- cli::cli_div(theme = list(rule = list(color = "cyan")))
-    cli::cli_rule()
-    cli::cli_end(d)
+    ## ---- Done -------------------------------------------------
+    elapsed <- round(
+        proc.time()[["elapsed"]] - t_start, 1L
+    )
+    cli::cli_alert_success(
+        "CMS {.val {name}} created: \\
+        {.val {n_cons}} consortia, \\
+        {.val {n_mets}} metabolites ({elapsed}s)"
+    )
 
     newConsortiumMetabolismSet(
         TreeSummarizedExperiment(
@@ -290,44 +242,68 @@ ConsortiumMetabolismSet <- function(
 #' @noRd
 cms <- ConsortiumMetabolismSet
 
-#' Expand a sparse binary matrix to universal metabolite space
+#' Compute pairwise FOS dissimilarity matrix via crossprod
 #'
-#' Takes a binary matrix from a single CM (with its local metabolite
-#' set as row/colnames) and expands it to the full metabolite
-#' universe. Missing metabolites get zero rows/columns.
+#' Flattens each m x m expanded binary matrix into a length-m^2
+#' sparse column vector, stacks them into one m^2 x n matrix, and
+#' uses a single \code{Matrix::crossprod()} to compute all pairwise
+#' intersections at once.
 #'
-#' @param bm A sparse binary matrix from a CM's Binary assay.
-#' @param all_mets Character vector of all metabolites in universal
-#'   space, sorted.
+#' @param expanded_bm Named list of expanded sparse binary matrices
+#'   (all same dimensions).
+#' @param cm_names Character vector of consortium names.
 #'
-#' @return A sparse binary matrix with dimensions
-#'   `length(all_mets) x length(all_mets)`.
+#' @return A dense n x n symmetric dissimilarity matrix
+#'   (1 - FOS) with \code{cm_names} as dimnames.
 #'
 #' @noRd
-.expandToUniversalSpace <- function(bm, all_mets) {
-    local_mets <- rownames(bm)
-    n <- length(all_mets)
-    ## Map local indices to universal indices
-    idx <- match(local_mets, all_mets)
-    ## Extract triplet form from the local matrix
-    bm_t <- Matrix::summary(bm)
-    if (nrow(bm_t) == 0L) {
-        return(
-            Matrix::sparseMatrix(
+.computeFOSMatrix <- function(expanded_bm, cm_names) {
+    n <- length(expanded_bm)
+    m <- nrow(expanded_bm[[1L]])
+
+    ## Flatten each m x m sparse matrix to a length-m^2
+    ## sparse column, then cbind into one m^2 x n matrix
+    flat_list <- lapply(expanded_bm, function(bm) {
+        trip <- Matrix::summary(bm)
+        if (nrow(trip) == 0L) {
+            return(Matrix::sparseMatrix(
                 i = integer(0L),
                 j = integer(0L),
                 x = numeric(0L),
-                dims = c(n, n),
-                dimnames = list(all_mets, all_mets)
-            )
+                dims = c(m * m, 1L)
+            ))
+        }
+        ## Column-major flat index: (j-1)*m + i
+        flat_idx <- (trip$j - 1L) * m + trip$i
+        Matrix::sparseMatrix(
+            i = flat_idx,
+            j = rep(1L, length(flat_idx)),
+            x = trip$x,
+            dims = c(m * m, 1L)
         )
-    }
-    Matrix::sparseMatrix(
-        i = idx[bm_t$i],
-        j = idx[bm_t$j],
-        x = bm_t$x,
-        dims = c(n, n),
-        dimnames = list(all_mets, all_mets)
+    })
+    big_mat <- do.call(cbind, flat_list)
+
+    ## Single crossprod = all n*(n-1)/2 intersections
+    intersection <- as.matrix(
+        Matrix::crossprod(big_mat)
     )
+
+    ## Pre-computed column sums = sum of each binary matrix
+    col_sums <- Matrix::colSums(big_mat)
+
+    ## FOS = intersection / min(sum_i, sum_j)
+    denom <- outer(col_sums, col_sums, pmin)
+    fos_mat <- matrix(
+        0, n, n,
+        dimnames = list(cm_names, cm_names)
+    )
+    nonzero <- denom > 0
+    fos_mat[nonzero] <- intersection[nonzero] /
+        denom[nonzero]
+
+    ## Return full symmetric dissimilarity matrix
+    1 - fos_mat
 }
+
 
