@@ -1,3 +1,6 @@
+#' @include AllClasses.R AllGenerics.R
+NULL
+
 #' @param object An object of class \code{ConsortiumMetabolism}
 #' @describeIn getCo Get the Community
 #' @return A list with the community data.

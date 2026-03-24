@@ -63,3 +63,8 @@ a \code{ConsortiumMetabolismSet} type object.
 \code{ConsortiumMetabolismAlignment} Object
 
 }}
+\examples{
+cm <- synCM("test", n_species = 3, max_met = 5)
+getEdges(cm)
+
+}

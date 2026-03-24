@@ -8,6 +8,12 @@
 #'
 #' @return None. Raises an error.
 #' @export
+#'
+#' @examples
+#' \donttest{
+#' # This function is deprecated. Use plot() instead:
+#' # plot(cma, type = "network")
+#' }
 plotAlignmentNetwork <- function(object, frac) {
     cli::cli_abort(
         paste0(

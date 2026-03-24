@@ -12,6 +12,12 @@
 #'
 #' @return None. Raises an error.
 #' @export
+#'
+#' @examples
+#' \donttest{
+#' # This function is deprecated and will be
+#' # reimplemented in a future version.
+#' }
 compareAlignments <- function(
     ...,
     names,

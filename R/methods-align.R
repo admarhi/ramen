@@ -1,4 +1,5 @@
-#' @include helpers-align.R
+#' @include AllClasses.R AllGenerics.R helpers-align.R
+NULL
 
 #' @describeIn align Pairwise alignment of two
 #'   [ConsortiumMetabolism] objects

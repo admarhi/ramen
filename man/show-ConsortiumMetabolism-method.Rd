@@ -9,6 +9,13 @@
 \arguments{
 \item{object}{An object of class \code{ConsortiumMetabolism}}
 }
+\value{
+The object, invisibly.
+}
 \description{
 Show Method for \code{ConsortiumMetabolism} Object
+}
+\examples{
+cm <- synCM("test", n_species = 3, max_met = 5)
+show(cm)
 }

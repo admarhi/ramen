@@ -1,3 +1,6 @@
+#' @include AllClasses.R AllGenerics.R
+NULL
+
 #' @rdname getMet
 setMethod("getMet", "ConsortiumMetabolism", function(object) {
     object@Metabolites

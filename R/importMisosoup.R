@@ -16,6 +16,13 @@
 #' @seealso \code{\link{overviewMisosoup}} for a summary of the input data
 #'
 #' @export
+#'
+#' @examples
+#' \donttest{
+#' # Requires MiSoSoup YAML data parsed as a nested list
+#' # data <- yaml::read_yaml("path/to/misosoup_output.yaml")
+#' # result <- importMisosoup(data)
+#' }
 importMisosoup <- function(data) {
     tb_import <- overviewMisosoup(data) |>
         dplyr::filter(.data$n_cons != .data$n_zero_growth)
@@ -115,6 +122,13 @@ importMisosoup <- function(data) {
 #' @seealso \code{\link{importMisosoup}} for processing the full data
 #'
 #' @export
+#'
+#' @examples
+#' \donttest{
+#' # Requires MiSoSoup YAML data parsed as a nested list
+#' # data <- yaml::read_yaml("path/to/misosoup_output.yaml")
+#' # overviewMisosoup(data)
+#' }
 overviewMisosoup <- function(data) {
     lapply(data, \(x) names(x)) |>
         tibble::enframe(

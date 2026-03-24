@@ -25,3 +25,8 @@ A character vector containing the names of metabolites in the network
 \description{
 Retrieves the metabolites involved in the metabolic network.
 }
+\examples{
+cm <- synCM("test", n_species = 3, max_met = 5)
+getMet(cm)
+
+}

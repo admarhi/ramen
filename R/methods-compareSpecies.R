@@ -1,3 +1,6 @@
+#' @include AllClasses.R AllGenerics.R
+NULL
+
 #' @noRd
 setMethod(
     "compareSpecies",

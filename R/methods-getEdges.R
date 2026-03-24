@@ -1,3 +1,6 @@
+#' @include AllClasses.R AllGenerics.R
+NULL
+
 ### The output of the two methods should be standardised.
 
 #' @describeIn getEdges Get Edges From a \code{ConsortiumMetabolism} Object

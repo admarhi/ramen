@@ -1,8 +1,43 @@
 #' @title Set of \code{ConsortiumMetabolism} Objects
 #'
-#' @param ... Lists or individual \code{ConsortiumMetabolism} objects.
+#' @description Creates a \code{ConsortiumMetabolismSet} combining
+#'   multiple \code{ConsortiumMetabolism} objects into a unified
+#'   metabolite space. Computes pairwise overlap scores and builds
+#'   a dendrogram for clustering.
+#'
+#' @slot Name character. Display name for the set.
+#' @slot Consortia list. List of \code{ConsortiumMetabolism}
+#'   objects.
+#' @slot Description character. Optional short description.
+#' @slot OverlapMatrix matrix. Pairwise dissimilarity matrix
+#'   (1 - overlap) between consortia.
+#' @slot Dendrogram list. Hierarchical clustering dendrogram.
+#' @slot NodeData data.frame. Internal node positions from the
+#'   dendrogram.
+#' @slot Graphs list. Named list of igraph objects, one per
+#'   consortium.
+#' @slot BinaryMatrices list. Named list of binary matrices
+#'   expanded to universal metabolite space.
+#' @slot Edges data.frame. Combined edge list from all consortia
+#'   with re-indexed metabolite positions.
+#' @slot Metabolites data.frame. Metabolite mapping between
+#'   per-consortium and universal indices.
+#'
+#' @param ... Lists or individual \code{ConsortiumMetabolism}
+#'   objects.
 #' @param name Character scalar giving the name of the set.
-#' @param desc Optional, short description of the sets purpose.
+#' @param desc Optional short description of the set.
+#'
+#' @return A \code{ConsortiumMetabolismSet} object.
+#'
+#' @seealso \linkS4class{ConsortiumMetabolism},
+#'   \link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{TreeSummarizedExperiment}
+#'
+#' @examples
+#' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
+#' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
+#' cms <- ConsortiumMetabolismSet(cm1, cm2, name = "example")
+#' cms
 #'
 #' @export
 ConsortiumMetabolismSet <- function(

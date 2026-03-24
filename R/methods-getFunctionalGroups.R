@@ -1,3 +1,6 @@
+#' @include AllClasses.R AllGenerics.R
+NULL
+
 #' @rdname getFunctionalGroups
 #' @aliases getFunctionalGroups,ConsortiumMetabolismSet-method
 #' @export

@@ -1,3 +1,6 @@
+#' @include AllClasses.R AllGenerics.R
+NULL
+
 #' @describeIn getSpecies Return Species in a Microbiome
 #' @param object a \code{ConsortiumMetabolism} object
 #' @return A character vector representing the microorganisms.

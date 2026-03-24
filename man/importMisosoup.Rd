@@ -22,6 +22,13 @@ Processes raw misosoup data into a structured format containing consortia,
 media, and growth information. The function handles data cleaning,
 transformation, and organization of metabolic flux data.
 }
+\examples{
+\donttest{
+# Requires MiSoSoup YAML data parsed as a nested list
+# data <- yaml::read_yaml("path/to/misosoup_output.yaml")
+# result <- importMisosoup(data)
+}
+}
 \seealso{
 \code{\link{overviewMisosoup}} for a summary of the input data
 }

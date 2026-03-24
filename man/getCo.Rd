@@ -32,3 +32,8 @@ Returns the consortia data in a tabular format.
 \item \code{getCo(ConsortiumMetabolismAlignment)}: Not applicable for alignments
 
 }}
+\examples{
+cm <- synCM("test", n_species = 3, max_met = 5)
+getCo(cm)
+
+}

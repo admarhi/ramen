@@ -55,3 +55,8 @@ Return Species in a Consortium
 \code{ConsortiumMetabolismAlignment}
 
 }}
+\examples{
+cm <- synCM("test", n_species = 3, max_met = 5)
+getSpecies(cm)
+
+}

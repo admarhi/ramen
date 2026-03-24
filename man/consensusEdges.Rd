@@ -26,3 +26,13 @@ alignment.
 multiple \link{ConsortiumMetabolismAlignment}
 
 }}
+\examples{
+\donttest{
+cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
+cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
+cms <- ConsortiumMetabolismSet(cm1, cm2, name = "test")
+cma <- align(cms)
+consensusEdges(cma)
+}
+
+}

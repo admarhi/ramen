@@ -9,6 +9,12 @@
 #'
 #' @return None. Raises an error.
 #' @export
+#'
+#' @examples
+#' \donttest{
+#' # This function is deprecated. Use plot() instead:
+#' # plot(cma, type = "heatmap")
+#' }
 plotAlignmentHeatmap <- function(object, top = NULL, bottom = NULL) {
     cli::cli_abort(
         paste0(

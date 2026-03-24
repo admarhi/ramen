@@ -1,3 +1,16 @@
+#' @include AllClasses.R AllGenerics.R
+NULL
+
+#' Plot a ConsortiumMetabolism object
+#'
+#' @param x A \code{ConsortiumMetabolism} object.
+#' @param type Character specifying the assay to plot.
+#' @return A \code{ggplot} object (returned invisibly).
+#' @examples
+#' \donttest{
+#' cm <- synCM("test", n_species = 3, max_met = 5)
+#' plot(cm)
+#' }
 #' @exportMethod plot
 setMethod(
     "plot",
@@ -29,6 +42,21 @@ setMethod(
     }
 )
 
+#' Plot a ConsortiumMetabolismSet object
+#'
+#' @param x A \code{ConsortiumMetabolismSet} object.
+#' @param label_colours Optional tibble with label and
+#'   colour columns.
+#' @param max_nodes Maximum number of dendrogram nodes.
+#' @param label_size Numeric label size.
+#' @return A \code{ggplot} object (returned invisibly).
+#' @examples
+#' \donttest{
+#' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
+#' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
+#' cms <- ConsortiumMetabolismSet(cm1, cm2, name = "test")
+#' plot(cms)
+#' }
 #' @exportMethod plot
 setMethod(
     "plot",
@@ -108,6 +136,20 @@ setMethod(
     }
 )
 
+#' Plot a ConsortiumMetabolismAlignment object
+#'
+#' @param x A \code{ConsortiumMetabolismAlignment} object.
+#' @param type Character specifying the plot type:
+#'   \code{"heatmap"}, \code{"network"}, or
+#'   \code{"scores"}.
+#' @return A \code{ggplot} object (returned invisibly).
+#' @examples
+#' \donttest{
+#' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
+#' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
+#' cma <- align(cm1, cm2)
+#' plot(cma)
+#' }
 #' @exportMethod plot
 #' @importFrom rlang .data
 setMethod(

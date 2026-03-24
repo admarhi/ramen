@@ -73,3 +73,15 @@ The layout within the intermediate column is determined using the
 Fruchterman-Reingold algorithm. This visualization helps understand the
 overall flow structure within the graph.
 }
+\examples{
+\donttest{
+cm <- synCM("test", n_species = 3, max_met = 5)
+g <- igraph::graph_from_adjacency_matrix(
+    SummarizedExperiment::assays(cm)[["Binary"]],
+    mode = "directed",
+    weighted = TRUE
+)
+plotDirectedFlow(g)
+}
+
+}

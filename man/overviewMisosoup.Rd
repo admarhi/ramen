@@ -23,6 +23,13 @@ Provides a summary of the misosoup data structure, including the number of
 consortia and zero-growth solutions for each substrate and focal strain
 combination.
 }
+\examples{
+\donttest{
+# Requires MiSoSoup YAML data parsed as a nested list
+# data <- yaml::read_yaml("path/to/misosoup_output.yaml")
+# overviewMisosoup(data)
+}
+}
 \seealso{
 \code{\link{importMisosoup}} for processing the full data
 }

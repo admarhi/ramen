@@ -1,32 +1,41 @@
-#' @title Functional Microbiome Representation based on TreeSummarizedExperiment
+#' @title Functional Microbiome Representation
 #'
-#' @description Creates a ConsortiumMetabolism object representing metabolic
-#' interactions in a microbial community. The object contains information about
-#' metabolite consumption
-#' and production by different species, along with various metrics like flux
-#' sums and
-#' effective fluxes.
+#' @description Creates a \code{ConsortiumMetabolism} object
+#'   representing metabolic interactions in a microbial community.
+#'   The object stores metabolite consumption and production by
+#'   different species, along with flux sums and effective fluxes.
 #'
-#' @param data a DataFrame-like object that includes columns specifying
-#' the species, metabolites and fluxes in the microbiome. The fluxes can
-#' either be weighted or unweighted (all of magnitude 1).
-#' @param name a character scalar specifying the name of the Microbiome
-#' @param species_col Character scalar specifying the name of the species
-#' column, defaults to 'species'.
-#' @param metabolite_col Character scalar specifying the name of the metabolite
-#' column, defaults to 'met'.
-#' @param flux_col Character scalar specifying the name of the flux column,
-#' defaults to 'flux'.
-#' @param ... Additional arguments to be passed to the constructor.
+#' @slot Name character. Display name for the consortium.
+#' @slot Description character. Optional short description.
+#' @slot Edges data.frame. Edge list of metabolic interactions
+#'   with per-edge metrics (species, flux sums, effective
+#'   diversity).
+#' @slot Weighted logical. Whether flux magnitudes are used.
+#' @slot InputData data.frame. Original input data (species,
+#'   metabolite, flux columns).
+#' @slot Metabolites character. Unique metabolite identifiers.
+#' @slot Graphs list. List containing an igraph object of the
+#'   metabolic network.
 #'
-#' @return A ConsortiumMetabolism object containing:
-#' \itemize{
-#'   \item Assays for binary interactions, edge counts, consumption/production
-#' metrics
-#'   \item Row and column data about metabolites
-#'   \item Graph representation of the metabolic network
-#'   \item Original input data and computed edge information
-#' }
+#' @param data a data.frame with columns for species, metabolites
+#'   and fluxes. Fluxes can be weighted or unweighted (magnitude
+#'   1).
+#' @param name Character scalar giving the consortium name.
+#' @param species_col Character scalar for the species column
+#'   name, defaults to \code{"species"}.
+#' @param metabolite_col Character scalar for the metabolite
+#'   column name, defaults to \code{"met"}.
+#' @param flux_col Character scalar for the flux column name,
+#'   defaults to \code{"flux"}.
+#' @param ... Additional arguments passed to the constructor.
+#'
+#' @return A \code{ConsortiumMetabolism} object.
+#'
+#' @seealso \link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{TreeSummarizedExperiment}
+#'
+#' @examples
+#' cm <- synCM("example", n_species = 3, max_met = 5)
+#' cm
 #'
 #' @export
 #'

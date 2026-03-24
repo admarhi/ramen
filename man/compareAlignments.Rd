@@ -33,3 +33,9 @@ None. Raises an error.
 This function is deprecated and will be reimplemented in a
 future version.
 }
+\examples{
+\donttest{
+# This function is deprecated and will be
+# reimplemented in a future version.
+}
+}

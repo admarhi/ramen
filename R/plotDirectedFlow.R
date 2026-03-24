@@ -40,6 +40,17 @@
 #'
 #' @export
 #'
+#' @examples
+#' \donttest{
+#' cm <- synCM("test", n_species = 3, max_met = 5)
+#' g <- igraph::graph_from_adjacency_matrix(
+#'     SummarizedExperiment::assays(cm)[["Binary"]],
+#'     mode = "directed",
+#'     weighted = TRUE
+#' )
+#' plotDirectedFlow(g)
+#' }
+#'
 #' @importFrom igraph is_directed degree vcount induced_subgraph
 #' @importFrom igraph layout_with_fr E ecount is_weighted plot.igraph
 #' @importFrom scales rescale gradient_n_pal

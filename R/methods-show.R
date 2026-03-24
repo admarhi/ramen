@@ -1,6 +1,13 @@
+#' @include AllClasses.R AllGenerics.R
+NULL
+
 #' Show Method for \code{ConsortiumMetabolism} Object
 #'
 #' @param object An object of class \code{ConsortiumMetabolism}
+#' @return The object, invisibly.
+#' @examples
+#' cm <- synCM("test", n_species = 3, max_met = 5)
+#' show(cm)
 #' @export
 setMethod("show", "ConsortiumMetabolism", function(object) {
     weight_label <- if (object@Weighted) {
@@ -21,6 +28,12 @@ setMethod("show", "ConsortiumMetabolism", function(object) {
 #' Show Method for \code{ConsortiumMetabolismSet} Object
 #'
 #' @param object An object of class \code{ConsortiumMetabolismSet}
+#' @return The object, invisibly.
+#' @examples
+#' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
+#' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
+#' cms <- ConsortiumMetabolismSet(cm1, cm2, name = "test")
+#' show(cms)
 #' @export
 setMethod("show", "ConsortiumMetabolismSet", function(object) {
     n_cons <- length(object@Consortia)
@@ -38,6 +51,12 @@ setMethod("show", "ConsortiumMetabolismSet", function(object) {
 #' Show method for \code{ConsortiumMetabolismAlignment} Objects
 #'
 #' @param object A \code{ConsortiumMetabolismAlignment} object.
+#' @return The object, invisibly.
+#' @examples
+#' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
+#' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
+#' cma <- align(cm1, cm2)
+#' show(cma)
 #' @export
 setMethod("show", "ConsortiumMetabolismAlignment", function(object) {
     ## Helper: TRUE if slot is a length-1 non-NA value
