@@ -82,28 +82,28 @@ test_that("uniquePathways() returns list for pairwise", {
     expect_true(is.data.frame(up$query))
 })
 
-test_that("getMet() returns character vector for CMA", {
+test_that("metabolites() returns character vector for CMA", {
     cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cma <- align(cm1, cm2)
-    m <- getMet(cma)
+    m <- metabolites(cma)
     expect_true(is.character(m))
     expect_true(length(m) > 0L)
 })
 
-test_that("getEdges() returns data.frame for CMA", {
+test_that("pathways() returns data.frame for CMA", {
     cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cma <- align(cm1, cm2)
-    e <- getEdges(cma)
+    e <- pathways(cma)
     expect_true(is.data.frame(e))
 })
 
-test_that("getCo() errors for CMA", {
+test_that("consortia() errors for CMA", {
     cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cma <- align(cm1, cm2)
-    expect_error(getCo(cma), "not applicable")
+    expect_error(consortia(cma), "not applicable")
 })
 
 ## ---- CMA accessors: type guards ------------------------------------------

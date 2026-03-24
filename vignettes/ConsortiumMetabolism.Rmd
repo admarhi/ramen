@@ -61,11 +61,11 @@ Each of these slots is described in the `ConsortiumMetabolism-class()` class doc
 
 
 ## Available Methods 
-- `getCo()`: Returns the community in tibble format.
-- `getSpecies()`: Retrieves the species from a community.
-- `getMet()`: Retrieves metabolites from a community.
+- `consortia()`: Returns the community in tibble format.
+- `species()`: Retrieves the species from a community.
+- `metabolites()`: Retrieves metabolites from a community.
 - `getFlux()`: Retrieves the fluxes from a community.
-- `getEdges()`: Retrieves the edges from a community.
+- `pathways()`: Retrieves the edges from a community.
 
 ## Examples
 To create an object of type `MiCo`, the user must input the data listed below. This data can either be contained in a single tibble or data frame, saved in a CSV file, or input as separate vectors.

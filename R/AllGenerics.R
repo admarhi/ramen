@@ -1,51 +1,73 @@
 #' @title Return Species in a Consortium
 #'
-#' @param object A \code{ConsortiumMetabolism} object
-#' @param ... Object specific arguments.
+#' @description
+#' Returns the species present in a consortium or set of
+#' consortia.
 #'
-#' @return A character vector containing the names of species in the consortium
+#' @param object A [ConsortiumMetabolism],
+#'   [ConsortiumMetabolismSet], or
+#'   [ConsortiumMetabolismAlignment] object.
+#' @param ... Additional arguments passed to methods.
+#'
+#' @return A character vector of species names, or a
+#'   tibble with species and edge counts (for
+#'   [ConsortiumMetabolismSet]).
 #'
 #' @examples
 #' cm <- synCM("test", n_species = 3, max_met = 5)
-#' getSpecies(cm)
+#' species(cm)
 #'
 #' @export
-setGeneric("getSpecies", function(object, ...) standardGeneric("getSpecies"))
+setGeneric(
+    "species",
+    function(object, ...) standardGeneric("species")
+)
 
 #' @title Get Metabolites
 #'
 #' @description
-#' Retrieves the metabolites involved in the metabolic network.
+#' Retrieves the metabolites involved in the metabolic
+#' network.
 #'
 #' @param object A \code{ConsortiumMetabolism} or
-#' \code{ConsortiumMetabolismAlignment} object
-#' @return A character vector containing the names of metabolites in the network
+#'   \code{ConsortiumMetabolismAlignment} object.
+#'
+#' @return A character vector containing the names of
+#'   metabolites in the network.
 #'
 #' @examples
 #' cm <- synCM("test", n_species = 3, max_met = 5)
-#' getMet(cm)
+#' metabolites(cm)
 #'
 #' @export
-setGeneric("getMet", function(object) standardGeneric("getMet"))
+setGeneric(
+    "metabolites",
+    function(object) standardGeneric("metabolites")
+)
 
-#' @title Get Edges From a \code{ConsortiumMetabolism} Object
+#' @title Retrieve Metabolic Pathways
 #'
 #' @description
-#' Retrieves the edges representing metabolic interactions between species.
-#' The argument `type` can be used to return only specfic types of Edges from
-#' a `ConsortiumMetabolismSet` type object.
+#' Retrieves the pathways representing metabolic
+#' interactions between species.
+#' The argument `type` can be used to return only specific
+#' types of pathways from a `ConsortiumMetabolismSet` type
+#' object.
 #' \itemize{
-#'   \item `all` will return all edges
-#'   \item `pan-cons` will return only edges that exist in all consortia
-#'   \item `niche` will return niche edges specific to individual consortia
-#'   \item `core` will return core metabolic edges
-#'   \item `aux` will return auxiliary edges
+#'   \item `all` will return all pathways
+#'   \item `pan-cons` will return only pathways that exist
+#'     in all consortia
+#'   \item `niche` will return niche pathways specific to
+#'     individual consortia
+#'   \item `core` will return core metabolic pathways
+#'   \item `aux` will return auxiliary pathways
 #' }
 #'
-#' @param object A \code{ConsortiumMetabolism} object
+#' @param object A \code{ConsortiumMetabolism} object.
 #' @param ... Object specific arguments.
 #'
-#' @return A tibble containing edge information including:
+#' @return A tibble containing pathway information
+#'   including:
 #' \itemize{
 #'   \item consumed/produced metabolites
 #'   \item number of species involved
@@ -55,28 +77,38 @@ setGeneric("getMet", function(object) standardGeneric("getMet"))
 #'
 #' @examples
 #' cm <- synCM("test", n_species = 3, max_met = 5)
-#' getEdges(cm)
+#' pathways(cm)
 #'
 #' @export
-setGeneric("getEdges", function(object, ...) standardGeneric("getEdges"))
+setGeneric(
+    "pathways",
+    function(object, ...) standardGeneric("pathways")
+)
 
 #' @title Get the Consortia
 #'
 #' @description
 #' Returns the consortia data in a tabular format.
 #'
-#' @param object A \code{ConsortiumMetabolism}, \code{ConsortiumMetabolismSet},
-#' or \code{ConsortiumMetabolismAlignment} object
-#' @return For \code{ConsortiumMetabolism} objects, returns a tb with species,
-#' metabolite and flux information. For \code{ConsortiumMetabolismSet} and
-#' \code{ConsortiumMetabolismAlignment} objects, returns a list of such tibbles.
+#' @param object A \code{ConsortiumMetabolism},
+#'   \code{ConsortiumMetabolismSet}, or
+#'   \code{ConsortiumMetabolismAlignment} object.
+#'
+#' @return For \code{ConsortiumMetabolism} objects, returns
+#'   a tibble with species, metabolite and flux
+#'   information. For \code{ConsortiumMetabolismSet} and
+#'   \code{ConsortiumMetabolismAlignment} objects, returns
+#'   a list of such tibbles.
 #'
 #' @examples
 #' cm <- synCM("test", n_species = 3, max_met = 5)
-#' getCo(cm)
+#' consortia(cm)
 #'
 #' @export
-setGeneric("getCo", function(object) standardGeneric("getCo"))
+setGeneric(
+    "consortia",
+    function(object) standardGeneric("consortia")
+)
 
 #' @title Align Consortium Metabolisms
 #'
@@ -139,116 +171,85 @@ setGeneric(
 setGeneric("modify", function(object) standardGeneric("modify"))
 
 
-#' @title Get a cluster from a \code{ConsortiaMetabolismSet} Object
+#' @title Extract a Cluster
 #'
 #' @description
-#' Gets a cluster from a \code{ConsortiumMetabolismSet} object.
+#' Extracts a cluster from a
+#' \code{ConsortiumMetabolismSet} object.
 #'
-#' @param object A \code{ConsortiumMetabolismSet} object
-#' @param node_id Numeric scalar giving the node to be extracted.
-#' @param name Character scalar specifying a name for the selection.
-#' @param description Character scalar describing the selection.
+#' @param object A \code{ConsortiumMetabolismSet} object.
+#' @param node_id Numeric scalar giving the node to be
+#'   extracted.
+#' @param name Character scalar specifying a name for the
+#'   selection.
+#' @param description Character scalar describing the
+#'   selection.
 #'
-#' @return A cluster from a \code{ConsortiumMetabolismSet} object
+#' @return A \code{ConsortiumMetabolismSet} object
+#'   containing the extracted cluster.
 #'
 #' @examples
 #' \donttest{
 #' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
 #' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
-#' cms <- ConsortiumMetabolismSet(cm1, cm2, name = "test")
-#' getCluster(cms, node_id = 1)
+#' cms <- ConsortiumMetabolismSet(
+#'     cm1, cm2, name = "test"
+#' )
+#' extractCluster(cms, node_id = 1)
 #' }
 #'
 #' @export
 setGeneric(
-    "getCluster",
+    "extractCluster",
     function(
         object,
         node_id,
         name = NA_character_,
         description = NA_character_
     ) {
-        standardGeneric("getCluster")
+        standardGeneric("extractCluster")
     }
 )
 
 
-#' @title Set Names or description of ramen Objects
-#'
-#' @description
-#' Sets a new name or description of \code{ConsortiumMetabolism},
-#' \code{ConsortiumMetabolismSet}, or \code{ConsortiumMetabolismAlignment}
-#' objects
-#'
-#' @param object A \code{ConsortiumMetabolism},
-#' \code{ConsortiumMetabolismSet}, or \code{ConsortiumMetabolismAlignment}
-#' object
-#' @param value Character scalar specifying a name.
-#'
-#' @return The modified object with updated name
-#'
-#' @examples
-#' cm <- synCM("old_name", n_species = 3, max_met = 5)
-#' cm <- setName(cm, "new_name")
-#'
-#' @export
-setGeneric(
-    "setName",
-    function(object, value = NA_character_) standardGeneric("setName")
-)
-
-#' @title Set Names or description of ramen Objects
-#'
-#' @description
-#' Sets a new name or description of \code{ConsortiumMetabolism},
-#' \code{ConsortiumMetabolismSet}, or \code{ConsortiumMetabolismAlignment}
-#' objects
-#'
-#' @param object A \code{ConsortiumMetabolism},
-#' \code{ConsortiumMetabolismSet}, or \code{ConsortiumMetabolismAlignment}
-#' object
-#' @param value Character scalar specifying a description.
-#'
-#' @return The modified object with updated description
-#'
-#' @examples
-#' cm <- synCM("test", n_species = 3, max_met = 5)
-#' cm <- setDesc(cm, "A test consortium")
-#'
-#' @export
-setGeneric(
-    "setDesc",
-    function(object, value = NA_character_) standardGeneric("setDesc")
-)
-
 #' @title Get Functional Groups
 #'
 #' @description
-#' Calculates and returns functional groups based on metabolic reactions.
-#' For \code{ConsortiumMetabolismSet} objects, this involves analyzing shared
-#' reactions across species to identify clusters of species with similar
-#' metabolic capabilities.
+#' Calculates and returns functional groups based on
+#' metabolic reactions. For
+#' \code{ConsortiumMetabolismSet} objects, this involves
+#' analyzing shared reactions across species to identify
+#' clusters of species with similar metabolic
+#' capabilities.
 #'
 #' @details
-#' This method is currently implemented for \code{ConsortiumMetabolismSet}
-#' objects. Future versions will extend functionality to
-#' \code{ConsortiumMetabolismAlignment} objects to allow for comparative
-#' functional group analysis across different alignments.
+#' This method is currently implemented for
+#' \code{ConsortiumMetabolismSet} objects. Future versions
+#' will extend functionality to
+#' \code{ConsortiumMetabolismAlignment} objects to allow
+#' for comparative functional group analysis across
+#' different alignments.
 #'
 #' @param object A \code{ConsortiumMetabolismSet} object.
-#' @param k An integer scalar specifying the number of clusters to color in the
-#'   dendrogram.
-#' @param label_size Numeric scalar specifying label size in the output plot.
-#' @param label_colours If not `NULL`, tb with two columns, label and colour.
-#' @param ... Additional arguments to be passed to specific methods.
+#' @param k An integer scalar specifying the number of
+#'   clusters to color in the dendrogram.
+#' @param label_size Numeric scalar specifying label size
+#'   in the output plot.
+#' @param label_colours If not \code{NULL}, a tibble with
+#'   columns \code{label} and \code{colour}.
+#' @param ... Additional arguments to be passed to
+#'   specific methods.
 #'
 #' @return A list (returned invisibly) containing:
 #' \itemize{
 #'   \item plot: The ggplot2 dendrogram visualization
 #'   \item dendrogram: The dendrogram object
-#'   \item similarity_matrix: Matrix of Jaccard similarities between species
-#'   \item species_combinations: Tibble with pairwise species comparisons
-#'   \item reactions_per_species: Tibble mapping species to their reactions
+#'   \item similarity_matrix: Matrix of Jaccard
+#'     similarities between species
+#'   \item species_combinations: Tibble with pairwise
+#'     species comparisons
+#'   \item reactions_per_species: Tibble mapping species
+#'     to their reactions
 #' }
 #' The plot is automatically displayed.
 #'
@@ -256,14 +257,18 @@ setGeneric(
 #' \donttest{
 #' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
 #' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
-#' cms <- ConsortiumMetabolismSet(cm1, cm2, name = "test")
-#' getFunctionalGroups(cms, k = 2)
+#' cms <- ConsortiumMetabolismSet(
+#'     cm1, cm2, name = "test"
+#' )
+#' functionalGroups(cms, k = 2)
 #' }
 #'
 #' @export
 setGeneric(
-    "getFunctionalGroups",
-    function(object, k = 4, ...) standardGeneric("getFunctionalGroups")
+    "functionalGroups",
+    function(object, k = 4, ...) {
+        standardGeneric("functionalGroups")
+    }
 )
 
 
@@ -446,35 +451,32 @@ setGeneric(
     function(object) standardGeneric("consensusEdges")
 )
 
-## ---- Replacement methods ---------------------------------------------------
+## ---- Read accessors --------------------------------------------------------
 
-#' @title Set Object Name
+#' @title Get or Set Object Name
 #'
 #' @description
-#' Replacement method to set the name of a ramen object.
+#' Returns or sets the name of a ramen object.
 #'
 #' @param object A [ConsortiumMetabolism],
 #'   [ConsortiumMetabolismSet], or
 #'   [ConsortiumMetabolismAlignment] object.
 #' @param value Character scalar specifying the new name.
 #'
-#' @return The modified object with updated name.
+#' @return A character scalar (getter), or the modified
+#'   object (setter).
 #'
 #' @examples
-#' cm <- synCM("old_name", n_species = 3, max_met = 5)
-#' name(cm) <- "new_name"
+#' cm <- synCM("test", n_species = 3, max_met = 5)
+#' name(cm)
 #'
 #' @export
-setGeneric(
-    "name<-",
-    function(object, value) standardGeneric("name<-")
-)
+setGeneric("name", function(object) standardGeneric("name"))
 
-#' @title Set Object Description
+#' @title Get or Set Object Description
 #'
 #' @description
-#' Replacement method to set the description of a ramen
-#' object.
+#' Returns or sets the description of a ramen object.
 #'
 #' @param object A [ConsortiumMetabolism],
 #'   [ConsortiumMetabolismSet], or
@@ -482,12 +484,29 @@ setGeneric(
 #' @param value Character scalar specifying the new
 #'   description.
 #'
-#' @return The modified object with updated description.
+#' @return A character scalar (getter), or the modified
+#'   object (setter).
 #'
 #' @examples
 #' cm <- synCM("test", n_species = 3, max_met = 5)
-#' description(cm) <- "A test consortium"
+#' description(cm)
 #'
+#' @export
+setGeneric(
+    "description",
+    function(object) standardGeneric("description")
+)
+
+## ---- Replacement methods ---------------------------------------------------
+
+#' @rdname name
+#' @export
+setGeneric(
+    "name<-",
+    function(object, value) standardGeneric("name<-")
+)
+
+#' @rdname description
 #' @export
 setGeneric(
     "description<-",

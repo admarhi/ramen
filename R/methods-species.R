@@ -1,27 +1,30 @@
 #' @include AllClasses.R AllGenerics.R
 NULL
 
-#' @describeIn getSpecies Return Species in a Microbiome
+#' @describeIn species Return Species in a Microbiome
 #' @param object a \code{ConsortiumMetabolism} object
 #' @return A character vector representing the microorganisms.
-setMethod("getSpecies", "ConsortiumMetabolism", function(object) {
+setMethod("species", "ConsortiumMetabolism", function(object) {
     unique(object@InputData$species)
 })
 
 
-#' @describeIn getSpecies Return Species in a Microbiome
+#' @describeIn species Return Species in a Microbiome
 #' @param object a \code{ConsortiumMetabolismSet} Object
 #' @param type Character scalar giving the type of species to output.
-#' @param quantileCutoff Numeric scalar between 0 and 1 specifying the fraction
-#'   of species to return when \code{type} is "generalists" or "specialists".
-#'   For "generalists", the top \code{quantileCutoff} fraction of species with
-#'   the most edges is returned. For "specialists", the bottom
-#'   \code{quantileCutoff} fraction with the fewest edges is returned.
-#'   Defaults to 0.15 (i.e., 15 percent). Ignored when \code{type = "all"}.
+#' @param quantileCutoff Numeric scalar between 0 and 1 specifying
+#'   the fraction of species to return when \code{type} is
+#'   "generalists" or "specialists".
+#'   For "generalists", the top \code{quantileCutoff} fraction of
+#'   species with the most edges is returned. For "specialists",
+#'   the bottom \code{quantileCutoff} fraction with the fewest
+#'   edges is returned.
+#'   Defaults to 0.15 (i.e., 15 percent). Ignored when
+#'   \code{type = "all"}.
 #'
 #' @return A character vector representing the microorganisms.
 setMethod(
-    "getSpecies",
+    "species",
     "ConsortiumMetabolismSet",
     function(
         object,
@@ -40,7 +43,9 @@ setMethod(
 
         tb <- object@Edges |>
             dplyr::mutate(
-                edge_name = paste0(.data$consumed, "-", .data$produced)
+                edge_name = paste0(
+                    .data$consumed, "-", .data$produced
+                )
             ) |>
             dplyr::reframe(
                 n_edges = dplyr::n_distinct(.data$edge_name),
@@ -53,27 +58,33 @@ setMethod(
             tb
         } else if (type == "generalists") {
             # Get the top quantileCutoff fraction of species
-            n_species_to_return <- ceiling(total_species * quantileCutoff)
+            n_species_to_return <- ceiling(
+                total_species * quantileCutoff
+            )
             tb |> dplyr::slice_head(n = n_species_to_return)
         } else if (type == "specialists") {
             # Get the bottom quantileCutoff fraction of species
-            n_species_to_return <- ceiling(total_species * quantileCutoff)
+            n_species_to_return <- ceiling(
+                total_species * quantileCutoff
+            )
             tb |> dplyr::slice_tail(n = n_species_to_return)
         }
     }
 )
 
-#' @describeIn getSpecies Return species from a
+#' @describeIn species Return species from a
 #'   \code{ConsortiumMetabolismAlignment}
 #' @param object A \code{ConsortiumMetabolismAlignment} object.
 #' @return A character vector of species names.
 setMethod(
-    "getSpecies",
+    "species",
     "ConsortiumMetabolismAlignment",
     function(object) {
         if (object@Type == "pairwise") {
             sp <- unique(c(
-                unlist(object@SharedPathways$querySpecies),
+                unlist(
+                    object@SharedPathways$querySpecies
+                ),
                 unlist(
                     object@SharedPathways$referenceSpecies
                 )
@@ -81,7 +92,7 @@ setMethod(
             return(sort(sp[!is.na(sp)]))
         }
         cli::cli_abort(
-            "{.fun getSpecies} is not available for \\
+            "{.fun species} is not available for \\
              multiple alignments. Use the original \\
              {.cls ConsortiumMetabolismSet} instead."
         )

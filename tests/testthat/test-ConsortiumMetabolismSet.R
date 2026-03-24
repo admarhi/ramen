@@ -25,7 +25,7 @@ test_that("ConsortiumMetabolismSet constructor works", {
     expect_s3_class(cms@Edges, "data.frame")
 })
 
-test_that("ConsortiumMetabolismSet getSpecies works", {
+test_that("ConsortiumMetabolismSet species works", {
     # Create test consortia with overlapping species
     data1 <- tibble::tibble(
         species = c("s1", "s1", "s2", "s2"),
@@ -44,14 +44,14 @@ test_that("ConsortiumMetabolismSet getSpecies works", {
     cms <- ConsortiumMetabolismSet(list(cm1, cm2), name = "test")
 
     # Get all species (returns a tibble with species and n_edges columns)
-    all_species <- getSpecies(cms, type = "all")
+    all_species <- species(cms, type = "all")
     expect_s3_class(all_species, "tbl_df")
     expect_true("s1" %in% all_species$species)
     expect_true("s2" %in% all_species$species)
     expect_true("s3" %in% all_species$species)
 })
 
-test_that("ConsortiumMetabolismSet getEdges works", {
+test_that("ConsortiumMetabolismSet pathways works", {
     data1 <- tibble::tibble(
         species = c("s1", "s1", "s2", "s2"),
         met = c("m1", "m2", "m1", "m3"),
@@ -69,12 +69,12 @@ test_that("ConsortiumMetabolismSet getEdges works", {
     cms <- ConsortiumMetabolismSet(list(cm1, cm2), name = "test")
 
     # Get all edges
-    edges <- getEdges(cms, type = "all")
+    edges <- pathways(cms, type = "all")
     expect_s3_class(edges, "data.frame")
     expect_true(nrow(edges) > 0)
 })
 
-test_that("setName and setDesc work for ConsortiumMetabolismSet", {
+test_that("name<- and description<- work for ConsortiumMetabolismSet", {
     data1 <- tibble::tibble(
         species = c("s1", "s1"),
         met = c("m1", "m2"),
@@ -84,13 +84,13 @@ test_that("setName and setDesc work for ConsortiumMetabolismSet", {
     cm1 <- ConsortiumMetabolism(data1, name = "cm1")
     cms <- ConsortiumMetabolismSet(list(cm1), name = "original")
 
-    # Test setName
-    cms_renamed <- setName(cms, "new_name")
-    expect_equal(cms_renamed@Name, "new_name")
+    # Test name<-
+    name(cms) <- "new_name"
+    expect_equal(name(cms), "new_name")
 
-    # Test setDesc
-    cms_described <- setDesc(cms, "test description")
-    expect_equal(cms_described@Description, "test description")
+    # Test description<-
+    description(cms) <- "test description"
+    expect_equal(description(cms), "test description")
 })
 
 

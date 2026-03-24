@@ -1,28 +1,25 @@
 #' @include AllClasses.R AllGenerics.R
 NULL
 
-#' @rdname setDesc
+#' @rdname description
 #' @export
-setMethod("setDesc", "ConsortiumMetabolism", function(object, value) {
-    object@Description <- value
-    object
-})
+setMethod("description", "ConsortiumMetabolism",
+    function(object) object@Description
+)
 
-#' @rdname setDesc
+#' @rdname description
 #' @export
-setMethod("setDesc", "ConsortiumMetabolismSet", function(object, value) {
-    object@Description <- value
-    object
-})
+setMethod("description", "ConsortiumMetabolismSet",
+    function(object) object@Description
+)
 
-#' @rdname setDesc
+#' @rdname description
 #' @export
-setMethod("setDesc", "ConsortiumMetabolismAlignment", function(object, value) {
-    object@Description <- value
-    object
-})
+setMethod("description", "ConsortiumMetabolismAlignment",
+    function(object) object@Description
+)
 
-#' @rdname description-set
+#' @rdname description
 #' @export
 setReplaceMethod("description", "ConsortiumMetabolism",
     function(object, value) {
@@ -32,7 +29,7 @@ setReplaceMethod("description", "ConsortiumMetabolism",
     }
 )
 
-#' @rdname description-set
+#' @rdname description
 #' @export
 setReplaceMethod("description", "ConsortiumMetabolismSet",
     function(object, value) {
@@ -42,7 +39,7 @@ setReplaceMethod("description", "ConsortiumMetabolismSet",
     }
 )
 
-#' @rdname description-set
+#' @rdname description
 #' @export
 setReplaceMethod("description", "ConsortiumMetabolismAlignment",
     function(object, value) {

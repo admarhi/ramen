@@ -47,7 +47,7 @@ test_that("pivotCM handles custom column names", {
     expect_equal(nrow(pivoted), 2) # One row for consumption, one for production
 })
 
-test_that("setName works for ConsortiumMetabolism", {
+test_that("name<- works for ConsortiumMetabolism", {
     test_data <- tibble::tibble(
         species = c("s1", "s1"),
         met = c("m1", "m2"),
@@ -55,12 +55,12 @@ test_that("setName works for ConsortiumMetabolism", {
     )
 
     cm <- ConsortiumMetabolism(test_data, name = "original")
-    cm_renamed <- setName(cm, "new_name")
+    name(cm) <- "new_name"
 
-    expect_equal(cm_renamed@Name, "new_name")
+    expect_equal(name(cm), "new_name")
 })
 
-test_that("setDesc works for ConsortiumMetabolism", {
+test_that("description<- works for ConsortiumMetabolism", {
     test_data <- tibble::tibble(
         species = c("s1", "s1"),
         met = c("m1", "m2"),
@@ -68,13 +68,13 @@ test_that("setDesc works for ConsortiumMetabolism", {
     )
 
     cm <- ConsortiumMetabolism(test_data, name = "test")
-    cm_described <- setDesc(cm, "Test description")
+    description(cm) <- "Test description"
 
     # ConsortiumMetabolism doesn't have Description slot, but method should work
-    expect_s4_class(cm_described, "ConsortiumMetabolism")
+    expect_s4_class(cm, "ConsortiumMetabolism")
 })
 
-test_that("getCo returns consortium data", {
+test_that("consortia returns consortium data", {
     test_data <- tibble::tibble(
         species = c("s1", "s1", "s2", "s2"),
         met = c("m1", "m2", "m1", "m3"),
@@ -82,7 +82,7 @@ test_that("getCo returns consortium data", {
     )
 
     cm <- ConsortiumMetabolism(test_data, name = "test")
-    co_data <- getCo(cm)
+    co_data <- consortia(cm)
 
     expect_s3_class(co_data, "data.frame")
     expect_true(nrow(co_data) > 0)

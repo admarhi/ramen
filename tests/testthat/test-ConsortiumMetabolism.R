@@ -38,7 +38,7 @@ test_that("ConsortiumMetabolism handles weighted vs unweighted networks", {
     expect_true(cm_weighted@Weighted)
 })
 
-test_that("getSpecies returns correct species", {
+test_that("species returns correct species", {
     test_data <- tibble::tibble(
         species = c("s1", "s1", "s2", "s2", "s3", "s3"),
         met = c("m1", "m2", "m1", "m3", "m2", "m4"),
@@ -46,14 +46,14 @@ test_that("getSpecies returns correct species", {
     )
 
     cm <- ConsortiumMetabolism(test_data, name = "test")
-    species <- getSpecies(cm)
+    sp <- species(cm)
 
-    expect_type(species, "character")
-    expect_true(length(species) >= 2)
-    expect_true(all(c("s1", "s2", "s3") %in% species))
+    expect_type(sp, "character")
+    expect_true(length(sp) >= 2)
+    expect_true(all(c("s1", "s2", "s3") %in% sp))
 })
 
-test_that("getMet returns metabolites", {
+test_that("metabolites returns metabolites", {
     test_data <- tibble::tibble(
         species = c("s1", "s1", "s2", "s2"),
         met = c("m1", "m2", "m1", "m3"),
@@ -61,13 +61,13 @@ test_that("getMet returns metabolites", {
     )
 
     cm <- ConsortiumMetabolism(test_data, name = "test")
-    mets <- getMet(cm)
+    mets <- metabolites(cm)
 
     expect_type(mets, "character")
     expect_true(length(mets) > 0)
 })
 
-test_that("getEdges returns edge data", {
+test_that("pathways returns edge data", {
     test_data <- tibble::tibble(
         species = c("s1", "s1", "s2", "s2"),
         met = c("m1", "m2", "m1", "m3"),
@@ -75,7 +75,7 @@ test_that("getEdges returns edge data", {
     )
 
     cm <- ConsortiumMetabolism(test_data, name = "test")
-    edges <- getEdges(cm)
+    edges <- pathways(cm)
 
     expect_s3_class(edges, "data.frame")
     expect_true(nrow(edges) > 0)

@@ -224,8 +224,8 @@ alignment raises an informative error).
 | `similarityMatrix()` | multiple | n x n numeric matrix |
 | `prevalence()` | multiple | data.frame with nConsortia |
 | `consensusEdges()` | multiple | data.frame (same as prevalence) |
-| `getMet()` | both | Character vector of metabolites |
-| `getEdges()` | both | data.frame of edges |
+| `metabolites()` | both | Character vector of metabolites |
+| `pathways()` | both | data.frame of edges |
 
 # Session info
 
