@@ -1,4 +1,5 @@
-#' @noRd
+#' @rdname ConsortiumMetabolism
+#' @exportClass ConsortiumMetabolism
 #' @import methods
 #' @importClassesFrom TreeSummarizedExperiment TreeSummarizedExperiment
 newConsortiumMetabolism <- setClass(
@@ -15,7 +16,8 @@ newConsortiumMetabolism <- setClass(
     )
 )
 
-#' @noRd
+#' @rdname ConsortiumMetabolismSet
+#' @exportClass ConsortiumMetabolismSet
 #' @import methods
 #' @importClassesFrom TreeSummarizedExperiment TreeSummarizedExperiment
 newConsortiumMetabolismSet <- setClass(
@@ -35,7 +37,8 @@ newConsortiumMetabolismSet <- setClass(
     )
 )
 
-#' @noRd
+#' @rdname ConsortiumMetabolismAlignment
+#' @exportClass ConsortiumMetabolismAlignment
 #' @import methods
 #' @importClassesFrom TreeSummarizedExperiment TreeSummarizedExperiment
 newConsortiumMetabolismAlignment <- setClass(
@@ -71,6 +74,137 @@ newConsortiumMetabolismAlignment <- setClass(
     )
 )
 
+## ---- Validity: ConsortiumMetabolism ----
+setValidity("ConsortiumMetabolism", function(object) {
+    errors <- character()
+
+    ## Name must be length-1 non-NA character
+    if (length(object@Name) != 1L || is.na(object@Name)) {
+        errors <- c(
+            errors,
+            "'Name' must be a length-1 non-NA character"
+        )
+    }
+
+    ## Weighted must be length-1 non-NA logical
+    if (
+        length(object@Weighted) != 1L ||
+            is.na(object@Weighted)
+    ) {
+        errors <- c(
+            errors,
+            "'Weighted' must be a length-1 non-NA logical"
+        )
+    }
+
+    ## Metabolites must be character (can be length 0)
+    if (!is.character(object@Metabolites)) {
+        errors <- c(
+            errors,
+            "'Metabolites' must be a character vector"
+        )
+    }
+
+    ## Edges must be a data.frame
+    if (!is.data.frame(object@Edges)) {
+        errors <- c(
+            errors,
+            "'Edges' must be a data.frame"
+        )
+    }
+
+    ## Graphs must be a list
+    if (!is.list(object@Graphs)) {
+        errors <- c(
+            errors,
+            "'Graphs' must be a list"
+        )
+    }
+
+    if (length(errors) == 0L) TRUE else errors
+})
+
+## ---- Validity: ConsortiumMetabolismSet ----
+setValidity("ConsortiumMetabolismSet", function(object) {
+    errors <- character()
+
+    ## Name must be length-1 non-NA character
+    if (length(object@Name) != 1L || is.na(object@Name)) {
+        errors <- c(
+            errors,
+            "'Name' must be a length-1 non-NA character"
+        )
+    }
+
+    ## Consortia must be a list
+    if (!is.list(object@Consortia)) {
+        errors <- c(
+            errors,
+            "'Consortia' must be a list"
+        )
+    } else if (length(object@Consortia) > 0L) {
+        ## If non-empty, all elements must be CM objects
+        is_cm <- vapply(
+            object@Consortia,
+            function(x) is(x, "ConsortiumMetabolism"),
+            logical(1L)
+        )
+        if (!all(is_cm)) {
+            errors <- c(
+                errors,
+                paste0(
+                    "All elements of 'Consortia' must be ",
+                    "'ConsortiumMetabolism' objects"
+                )
+            )
+        }
+    }
+
+    ## OverlapMatrix must be a matrix
+    if (!is.matrix(object@OverlapMatrix)) {
+        errors <- c(
+            errors,
+            "'OverlapMatrix' must be a matrix"
+        )
+    } else if (
+        length(object@OverlapMatrix) > 0L &&
+            nrow(object@OverlapMatrix) !=
+                ncol(object@OverlapMatrix)
+    ) {
+        errors <- c(
+            errors,
+            "'OverlapMatrix' must be square"
+        )
+    }
+
+    ## Dendrogram must be a list
+    if (!is.list(object@Dendrogram)) {
+        errors <- c(
+            errors,
+            "'Dendrogram' must be a list"
+        )
+    }
+
+    ## NodeData must be a data.frame
+    if (!is.data.frame(object@NodeData)) {
+        errors <- c(
+            errors,
+            "'NodeData' must be a data.frame"
+        )
+    }
+
+    ## Edges must be a data.frame
+    if (!is.data.frame(object@Edges)) {
+        errors <- c(
+            errors,
+            "'Edges' must be a data.frame"
+        )
+    }
+
+    if (length(errors) == 0L) TRUE else errors
+})
+
+## ---- Validity: ConsortiumMetabolismAlignment ----
 setValidity("ConsortiumMetabolismAlignment", function(object) {
     errors <- character()
 
