@@ -1,7 +1,7 @@
-# Compare Alignments
+# Compare Alignments (Deprecated)
 
-Visual comparison of multiple alignments by plotting the number of
-aligned reactions against the fraction of aligned communities
+This function is deprecated and will be reimplemented in a future
+version.
 
 ## Usage
 
@@ -20,28 +20,37 @@ compareAlignments(
 
 - ...:
 
-  MiCoAl objects
+  Alignment objects.
 
 - names:
 
-  Character vector supplying names to be used as labels in plot
+  Character vector of names.
 
 - smooth:
 
-  Boolean to toggle a smooth line
+  Logical; add smooth line.
 
 - se:
 
-  Boolean to toggle std. error bands
+  Logical; add standard error bands.
 
 - min_frac:
 
-  Numerical value specifying minimum fraction in alignment
+  Numeric; minimum fraction.
 
 - max_frac:
 
-  Numerical value specifying maximum fraction in alignment
+  Numeric; maximum fraction.
 
 ## Value
 
-A ggplot for the comparison of multiple MiCoAl objects.
+None. Raises an error.
+
+## Examples
+
+``` r
+# \donttest{
+# This function is deprecated and will be
+# reimplemented in a future version.
+# }
+```

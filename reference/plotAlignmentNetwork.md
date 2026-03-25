@@ -1,6 +1,6 @@
-# MiCoAl Network Plot
+# Plot Alignment Network (Deprecated)
 
-MiCoAl Network Plot
+This function is deprecated and will be reimplemented in Phase 3.
 
 ## Usage
 
@@ -12,12 +12,21 @@ plotAlignmentNetwork(object, frac)
 
 - object:
 
-  An object of class MiCoAl.
+  A `ConsortiumMetabolismAlignment` object.
 
 - frac:
 
-  Minimum relative weight of maximum weight to plot.
+  Numeric; minimum fraction to plot.
 
 ## Value
 
-An igraph network
+None. Raises an error.
+
+## Examples
+
+``` r
+# \donttest{
+# This function is deprecated. Use plot() instead:
+# plot(cma, type = "network")
+# }
+```

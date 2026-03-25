@@ -18,13 +18,15 @@
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/ConsortiumMetabolism.html">ConsortiumMetabolism Class</a></li>
-    <li><a class="dropdown-item" href="../articles/ConsortiumMetabolismAlignment.html">ConsortiumMetabolismAlignment Class</a></li>
-    <li><a class="dropdown-item" href="../articles/ConsortiumMetabolismSet.html">ConsortiumMetabolismSet</a></li>
-    <li><a class="dropdown-item" href="../articles/visualisation.html">Data Visualisation</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/ConsortiumMetabolism.html">The ConsortiumMetabolism Class</a></li>
+    <li><a class="dropdown-item" href="../articles/ConsortiumMetabolismAlignment.html">Alignment of Microbial Consortia</a></li>
+    <li><a class="dropdown-item" href="../articles/ConsortiumMetabolismSet.html">The ConsortiumMetabolismSet Class</a></li>
+    <li><a class="dropdown-item" href="../articles/visualisation.html">Visualisation</a></li>
   </ul></li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/admarhi/ramen/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
 
 
@@ -51,7 +53,14 @@
           <code><a href="ConsortiumMetabolism.html">ConsortiumMetabolism()</a></code>
 
         </dt>
-        <dd>Functional Microbiome Representation based on TreeSummarizedExperiment</dd>
+        <dd>Functional Microbiome Representation</dd>
+
+        <dt>
+
+          <code><a href="ConsortiumMetabolismAlignment.html">ConsortiumMetabolismAlignment()</a></code>
+
+        </dt>
+        <dd>Constructor for <code>ConsortiumMetabolismAlignment</code> Objects</dd>
 
         <dt>
 
@@ -65,77 +74,49 @@
           <code><a href="align.html">align()</a></code>
 
         </dt>
-        <dd>Align a <code>ConsortiaMetabolismSet</code> Object</dd>
-
-        <dt>
-
-          <code><a href="cluster.html">cluster()</a></code>
-
-        </dt>
-        <dd>Cluster a <code>ConsortiaMetabolismSet</code> Object</dd>
+        <dd>Align Consortium Metabolisms</dd>
 
         <dt>
 
           <code><a href="compareAlignments.html">compareAlignments()</a></code>
 
         </dt>
-        <dd>Compare Alignments</dd>
+        <dd>Compare Alignments (Deprecated)</dd>
 
         <dt>
 
-          <code><a href="compareSpecies.html">compareSpecies()</a></code>
+          <code><a href="consensusPathways.html">consensusPathways()</a></code>
 
         </dt>
-        <dd>Compare Species</dd>
+        <dd>Get Consensus Pathways</dd>
 
         <dt>
 
-          <code><a href="dot-rxnsPerLevel.html">.rxnsPerLevel()</a></code>
-
-        </dt>
-        <dd>Get Count of Reactions Per Level of Alignment</dd>
-
-        <dt>
-
-          <code><a href="getCluster.html">getCluster()</a></code>
-
-        </dt>
-        <dd>Get a cluster from a <code>ConsortiaMetabolismSet</code> Object</dd>
-
-        <dt>
-
-          <code><a href="getCo.html">getCo()</a></code>
+          <code><a href="consortia.html">consortia()</a></code>
 
         </dt>
         <dd>Get the Consortia</dd>
 
         <dt>
 
-          <code><a href="getEdges.html">getEdges()</a></code>
+          <code><a href="description.html">description()</a></code> <code><a href="description.html">`description&lt;-`()</a></code>
 
         </dt>
-        <dd>Get Edges From a <code>ConsortiumMetabolism</code> Object</dd>
+        <dd>Get or Set Object Description</dd>
 
         <dt>
 
-          <code><a href="getFunctionalGroups.html">getFunctionalGroups()</a></code>
+          <code><a href="extractCluster.html">extractCluster()</a></code>
+
+        </dt>
+        <dd>Extract a Cluster</dd>
+
+        <dt>
+
+          <code><a href="functionalGroups.html">functionalGroups()</a></code>
 
         </dt>
         <dd>Get Functional Groups</dd>
-
-        <dt>
-
-          <code><a href="getMet.html">getMet()</a></code>
-
-        </dt>
-        <dd>Get Metabolites</dd>
-
-        <dt>
-
-          <code><a href="getSpecies.html">getSpecies()</a></code>
-
-        </dt>
-        <dd>Return Species in a Consortium</dd>
 
         <dt>
 
@@ -146,6 +127,13 @@
 
         <dt>
 
+          <code><a href="metabolites.html">metabolites()</a></code>
+
+        </dt>
+        <dd>Get Metabolites</dd>
+
+        <dt>
+
           <code><a href="misosoup24.html">misosoup24</a></code>
 
         </dt>
@@ -153,10 +141,10 @@
 
         <dt>
 
-          <code><a href="modify.html">modify()</a></code>
+          <code><a href="name.html">name()</a></code> <code><a href="name.html">`name&lt;-`()</a></code>
 
         </dt>
-        <dd>Modify a <code>ConsortiaMetabolismSet</code> Object</dd>
+        <dd>Get or Set Object Name</dd>
 
         <dt>
 
@@ -167,6 +155,13 @@
 
         <dt>
 
+          <code><a href="pathways.html">pathways()</a></code>
+
+        </dt>
+        <dd>Retrieve Metabolic Pathways</dd>
+
+        <dt>
+
           <code><a href="pivotCM.html">pivotCM()</a></code>
 
         </dt>
@@ -174,17 +169,38 @@
 
         <dt>
 
+          <code><a href="plot-ConsortiumMetabolism-ANY-method.html">plot(<i>&lt;ConsortiumMetabolism&gt;</i>,<i>&lt;ANY&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Plot a ConsortiumMetabolism object</dd>
+
+        <dt>
+
+          <code><a href="plot-ConsortiumMetabolismAlignment-ANY-method.html">plot(<i>&lt;ConsortiumMetabolismAlignment&gt;</i>,<i>&lt;ANY&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Plot a ConsortiumMetabolismAlignment object</dd>
+
+        <dt>
+
+          <code><a href="plot-ConsortiumMetabolismSet-ANY-method.html">plot(<i>&lt;ConsortiumMetabolismSet&gt;</i>,<i>&lt;ANY&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Plot a ConsortiumMetabolismSet object</dd>
+
+        <dt>
+
           <code><a href="plotAlignmentHeatmap.html">plotAlignmentHeatmap()</a></code>
 
         </dt>
-        <dd>MiCoAl Heatmap</dd>
+        <dd>Plot Alignment Heatmap (Deprecated)</dd>
 
         <dt>
 
           <code><a href="plotAlignmentNetwork.html">plotAlignmentNetwork()</a></code>
 
         </dt>
-        <dd>MiCoAl Network Plot</dd>
+        <dd>Plot Alignment Network (Deprecated)</dd>
 
         <dt>
 
@@ -195,17 +211,24 @@
 
         <dt>
 
-          <code><a href="setDesc.html">setDesc()</a></code>
+          <code><a href="prevalence.html">prevalence()</a></code>
 
         </dt>
-        <dd>Set Names or description of ramen Objects</dd>
+        <dd>Get Pathway Prevalence</dd>
 
         <dt>
 
-          <code><a href="setName.html">setName()</a></code>
+          <code><a href="scores.html">scores()</a></code>
 
         </dt>
-        <dd>Set Names or description of ramen Objects</dd>
+        <dd>Get Alignment Scores</dd>
+
+        <dt>
+
+          <code><a href="sharedPathways.html">sharedPathways()</a></code>
+
+        </dt>
+        <dd>Get Shared Pathways</dd>
 
         <dt>
 
@@ -230,10 +253,31 @@
 
         <dt>
 
+          <code><a href="similarityMatrix.html">similarityMatrix()</a></code>
+
+        </dt>
+        <dd>Get Similarity Matrix</dd>
+
+        <dt>
+
+          <code><a href="species.html">species()</a></code>
+
+        </dt>
+        <dd>Return Species in a Consortium</dd>
+
+        <dt>
+
           <code><a href="synCM.html">synCM()</a></code>
 
         </dt>
-        <dd>Generate Random Synthetic Consortium Metabolism</dd>
+        <dd>Generate Synthetic Consortium Metabolism</dd>
+
+        <dt>
+
+          <code><a href="uniquePathways.html">uniquePathways()</a></code>
+
+        </dt>
+        <dd>Get Unique Pathways</dd>
       </dl></div>
   </main></div>
 

@@ -7,6 +7,9 @@
 
 ## Citation
 
+Source:
+[`DESCRIPTION`](https://github.com/admarhi/ramen/blob/main/DESCRIPTION)
+
 Hirt A (2026). *ramen: Reconstruction and Alignment of Microbial
 Exchange Networks*. R package version 0.0.0.9001,
 <https://admarhi.github.io/ramen/>.

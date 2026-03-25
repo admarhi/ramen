@@ -95,3 +95,18 @@ plotDirectedFlow(
 
 Invisibly returns `NULL`. This function is called for its side effect of
 generating a plot.
+
+## Examples
+
+``` r
+# \donttest{
+cm <- synCM("test", n_species = 3, max_met = 5)
+g <- igraph::graph_from_adjacency_matrix(
+    SummarizedExperiment::assays(cm)[["Binary"]],
+    mode = "directed",
+    weighted = TRUE
+)
+plotDirectedFlow(g)
+
+# }
+```

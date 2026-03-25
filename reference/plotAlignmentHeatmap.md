@@ -1,6 +1,6 @@
-# MiCoAl Heatmap
+# Plot Alignment Heatmap (Deprecated)
 
-MiCoAl Heatmap
+This function is deprecated and will be reimplemented in Phase 3.
 
 ## Usage
 
@@ -12,20 +12,25 @@ plotAlignmentHeatmap(object, top = NULL, bottom = NULL)
 
 - object:
 
-  An object of class MiCoAl.
+  A `ConsortiumMetabolismAlignment` object.
 
 - top:
 
-  Character scalar giving the top fraction of consortia in which a
-  pathway should be present to be output in the heatmap. Defaults to
-  NULL, in which case all are plotted.
+  Numeric; top fraction filter.
 
 - bottom:
 
-  Character scalar giving the bottom fraction of consortia in which a
-  pathway should be present to be output in the heatmap. Defaults to
-  NULL, in which case all are plotted.
+  Numeric; bottom fraction filter.
 
 ## Value
 
-A ggplot heatmap
+None. Raises an error.
+
+## Examples
+
+``` r
+# \donttest{
+# This function is deprecated. Use plot() instead:
+# plot(cma, type = "heatmap")
+# }
+```

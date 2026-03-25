@@ -1,9 +1,9 @@
-# Functional Microbiome Representation based on TreeSummarizedExperiment
+# Functional Microbiome Representation
 
-Creates a ConsortiumMetabolism object representing metabolic
-interactions in a microbial community. The object contains information
-about metabolite consumption and production by different species, along
-with various metrics like flux sums and effective fluxes.
+Creates a `ConsortiumMetabolism` object representing metabolic
+interactions in a microbial community. The object stores metabolite
+consumption and production by different species, along with flux sums
+and effective fluxes.
 
 ## Usage
 
@@ -22,42 +22,75 @@ ConsortiumMetabolism(
 
 - data:
 
-  a DataFrame-like object that includes columns specifying the species,
-  metabolites and fluxes in the microbiome. The fluxes can either be
-  weighted or unweighted (all of magnitude 1).
+  a data.frame with columns for species, metabolites and fluxes. Fluxes
+  can be weighted or unweighted (magnitude 1).
 
 - name:
 
-  a character scalar specifying the name of the Microbiome
+  Character scalar giving the consortium name.
 
 - species_col:
 
-  Character scalar specifying the name of the species column, defaults
-  to 'species'.
+  Character scalar for the species column name, defaults to `"species"`.
 
 - metabolite_col:
 
-  Character scalar specifying the name of the metabolite column,
-  defaults to 'met'.
+  Character scalar for the metabolite column name, defaults to `"met"`.
 
 - flux_col:
 
-  Character scalar specifying the name of the flux column, defaults to
-  'flux'.
+  Character scalar for the flux column name, defaults to `"flux"`.
 
 - ...:
 
-  Additional arguments to be passed to the constructor.
+  Additional arguments passed to the constructor.
 
 ## Value
 
-A ConsortiumMetabolism object containing:
+A `ConsortiumMetabolism` object.
 
-- Assays for binary interactions, edge counts, consumption/production
-  metrics
+## Slots
 
-- Row and column data about metabolites
+- `Name`:
 
-- Graph representation of the metabolic network
+  character. Display name for the consortium.
 
-- Original input data and computed edge information
+- `Description`:
+
+  character. Optional short description.
+
+- `Pathways`:
+
+  data.frame. Pathway list of metabolic interactions with per-pathway
+  metrics (species, flux sums, effective diversity).
+
+- `Weighted`:
+
+  logical. Whether flux magnitudes are used.
+
+- `InputData`:
+
+  data.frame. Original input data (species, metabolite, flux columns).
+
+- `Metabolites`:
+
+  character. Unique metabolite identifiers.
+
+- `Graphs`:
+
+  list. List containing an igraph object of the metabolic network.
+
+## See also
+
+[TreeSummarizedExperiment](https://rdrr.io/pkg/TreeSummarizedExperiment/man/TreeSummarizedExperiment-class.html)
+
+## Examples
+
+``` r
+cm <- synCM("example", n_species = 3, max_met = 5)
+cm
+#> 
+#> ── ConsortiumMetabolism 
+#> Name: "example"
+#> Weighted metabolic network with 5 metabolites.
+```

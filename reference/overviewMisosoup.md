@@ -42,3 +42,13 @@ A tibble with columns:
 
 [`importMisosoup`](https://admarhi.github.io/ramen/reference/importMisosoup.md)
 for processing the full data
+
+## Examples
+
+``` r
+# \donttest{
+# Requires MiSoSoup YAML data parsed as a nested list
+# data <- yaml::read_yaml("path/to/misosoup_output.yaml")
+# overviewMisosoup(data)
+# }
+```

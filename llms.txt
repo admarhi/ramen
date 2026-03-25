@@ -22,8 +22,12 @@ Classes: `UpperCamelCase` - Methods and functions: `lowerCamelCase`
 ## All functions
 
 - [`ConsortiumMetabolism()`](https://admarhi.github.io/ramen/reference/ConsortiumMetabolism.md)
-  : Functional Microbiome Representation based on
-  TreeSummarizedExperiment
+  : Functional Microbiome Representation
+
+- [`ConsortiumMetabolismAlignment()`](https://admarhi.github.io/ramen/reference/ConsortiumMetabolismAlignment.md)
+  :
+
+  Constructor for `ConsortiumMetabolismAlignment` Objects
 
 - [`ConsortiumMetabolismSet()`](https://admarhi.github.io/ramen/reference/ConsortiumMetabolismSet.md)
   :
@@ -31,75 +35,76 @@ Classes: `UpperCamelCase` - Methods and functions: `lowerCamelCase`
   Set of `ConsortiumMetabolism` Objects
 
 - [`align()`](https://admarhi.github.io/ramen/reference/align.md) :
-
-  Align a `ConsortiaMetabolismSet` Object
-
-- [`cluster()`](https://admarhi.github.io/ramen/reference/cluster.md) :
-
-  Cluster a `ConsortiaMetabolismSet` Object
+  Align Consortium Metabolisms
 
 - [`compareAlignments()`](https://admarhi.github.io/ramen/reference/compareAlignments.md)
-  : Compare Alignments
+  : Compare Alignments (Deprecated)
 
-- [`compareSpecies()`](https://admarhi.github.io/ramen/reference/compareSpecies.md)
-  : Compare Species
+- [`consensusPathways()`](https://admarhi.github.io/ramen/reference/consensusPathways.md)
+  : Get Consensus Pathways
 
-- [`.rxnsPerLevel()`](https://admarhi.github.io/ramen/reference/dot-rxnsPerLevel.md)
-  : Get Count of Reactions Per Level of Alignment
+- [`consortia()`](https://admarhi.github.io/ramen/reference/consortia.md)
+  : Get the Consortia
 
-- [`getCluster()`](https://admarhi.github.io/ramen/reference/getCluster.md)
-  :
+- [`description()`](https://admarhi.github.io/ramen/reference/description.md)
+  [`` `description<-`() ``](https://admarhi.github.io/ramen/reference/description.md)
+  : Get or Set Object Description
 
-  Get a cluster from a `ConsortiaMetabolismSet` Object
+- [`extractCluster()`](https://admarhi.github.io/ramen/reference/extractCluster.md)
+  : Extract a Cluster
 
-- [`getCo()`](https://admarhi.github.io/ramen/reference/getCo.md) : Get
-  the Consortia
-
-- [`getEdges()`](https://admarhi.github.io/ramen/reference/getEdges.md)
-  :
-
-  Get Edges From a `ConsortiumMetabolism` Object
-
-- [`getFunctionalGroups()`](https://admarhi.github.io/ramen/reference/getFunctionalGroups.md)
+- [`functionalGroups()`](https://admarhi.github.io/ramen/reference/functionalGroups.md)
   : Get Functional Groups
-
-- [`getMet()`](https://admarhi.github.io/ramen/reference/getMet.md) :
-  Get Metabolites
-
-- [`getSpecies()`](https://admarhi.github.io/ramen/reference/getSpecies.md)
-  : Return Species in a Consortium
 
 - [`importMisosoup()`](https://admarhi.github.io/ramen/reference/importMisosoup.md)
   : Import and Process Misosoup Data
 
+- [`metabolites()`](https://admarhi.github.io/ramen/reference/metabolites.md)
+  : Get Metabolites
+
 - [`misosoup24`](https://admarhi.github.io/ramen/reference/misosoup24.md)
   : Example Data from MiSoSoup 2024
 
-- [`modify()`](https://admarhi.github.io/ramen/reference/modify.md) :
-
-  Modify a `ConsortiaMetabolismSet` Object
+- [`name()`](https://admarhi.github.io/ramen/reference/name.md)
+  [`` `name<-`() ``](https://admarhi.github.io/ramen/reference/name.md)
+  : Get or Set Object Name
 
 - [`overviewMisosoup()`](https://admarhi.github.io/ramen/reference/overviewMisosoup.md)
   : Overview of Misosoup Data Structure
+
+- [`pathways()`](https://admarhi.github.io/ramen/reference/pathways.md)
+  : Retrieve Metabolic Pathways
 
 - [`pivotCM()`](https://admarhi.github.io/ramen/reference/pivotCM.md) :
 
   Pivot `ConsortiaMetabolism` Input Data
 
+- [`plot(`*`<ConsortiumMetabolism>`*`,`*`<ANY>`*`)`](https://admarhi.github.io/ramen/reference/plot-ConsortiumMetabolism-ANY-method.md)
+  : Plot a ConsortiumMetabolism object
+
+- [`plot(`*`<ConsortiumMetabolismAlignment>`*`,`*`<ANY>`*`)`](https://admarhi.github.io/ramen/reference/plot-ConsortiumMetabolismAlignment-ANY-method.md)
+  : Plot a ConsortiumMetabolismAlignment object
+
+- [`plot(`*`<ConsortiumMetabolismSet>`*`,`*`<ANY>`*`)`](https://admarhi.github.io/ramen/reference/plot-ConsortiumMetabolismSet-ANY-method.md)
+  : Plot a ConsortiumMetabolismSet object
+
 - [`plotAlignmentHeatmap()`](https://admarhi.github.io/ramen/reference/plotAlignmentHeatmap.md)
-  : MiCoAl Heatmap
+  : Plot Alignment Heatmap (Deprecated)
 
 - [`plotAlignmentNetwork()`](https://admarhi.github.io/ramen/reference/plotAlignmentNetwork.md)
-  : MiCoAl Network Plot
+  : Plot Alignment Network (Deprecated)
 
 - [`plotDirectedFlow()`](https://admarhi.github.io/ramen/reference/plotDirectedFlow.md)
   : Plot a Directed Graph Emphasizing Flow
 
-- [`setDesc()`](https://admarhi.github.io/ramen/reference/setDesc.md) :
-  Set Names or description of ramen Objects
+- [`prevalence()`](https://admarhi.github.io/ramen/reference/prevalence.md)
+  : Get Pathway Prevalence
 
-- [`setName()`](https://admarhi.github.io/ramen/reference/setName.md) :
-  Set Names or description of ramen Objects
+- [`scores()`](https://admarhi.github.io/ramen/reference/scores.md) :
+  Get Alignment Scores
+
+- [`sharedPathways()`](https://admarhi.github.io/ramen/reference/sharedPathways.md)
+  : Get Shared Pathways
 
 - [`show(`*`<ConsortiumMetabolism>`*`)`](https://admarhi.github.io/ramen/reference/show-ConsortiumMetabolism-method.md)
   :
@@ -116,17 +121,26 @@ Classes: `UpperCamelCase` - Methods and functions: `lowerCamelCase`
 
   Show Method for `ConsortiumMetabolismSet` Object
 
+- [`similarityMatrix()`](https://admarhi.github.io/ramen/reference/similarityMatrix.md)
+  : Get Similarity Matrix
+
+- [`species()`](https://admarhi.github.io/ramen/reference/species.md) :
+  Return Species in a Consortium
+
 - [`synCM()`](https://admarhi.github.io/ramen/reference/synCM.md) :
-  Generate Random Synthetic Consortium Metabolism
+  Generate Synthetic Consortium Metabolism
+
+- [`uniquePathways()`](https://admarhi.github.io/ramen/reference/uniquePathways.md)
+  : Get Unique Pathways
 
 # Articles
 
 ### All vignettes
 
-- [ConsortiumMetabolism
+- [The ConsortiumMetabolism
   Class](https://admarhi.github.io/ramen/articles/ConsortiumMetabolism.md):
-- [ConsortiumMetabolismAlignment
-  Class](https://admarhi.github.io/ramen/articles/ConsortiumMetabolismAlignment.md):
-- [ConsortiumMetabolismSet](https://admarhi.github.io/ramen/articles/ConsortiumMetabolismSet.md):
-- [Data
-  Visualisation](https://admarhi.github.io/ramen/articles/visualisation.md):
+- [Alignment of Microbial
+  Consortia](https://admarhi.github.io/ramen/articles/ConsortiumMetabolismAlignment.md):
+- [The ConsortiumMetabolismSet
+  Class](https://admarhi.github.io/ramen/articles/ConsortiumMetabolismSet.md):
+- [Visualisation](https://admarhi.github.io/ramen/articles/visualisation.md):

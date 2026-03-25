@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>ConsortiumMetabolismAlignment Class • ramen</title>
+<title>Alignment of Microbial Consortia • ramen</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="ConsortiumMetabolismAlignment Class">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Alignment of Microbial Consortia">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -33,17 +33,19 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/ConsortiumMetabolism.html">ConsortiumMetabolism Class</a></li>
-    <li><a class="dropdown-item" href="../articles/ConsortiumMetabolismAlignment.html">ConsortiumMetabolismAlignment Class</a></li>
-    <li><a class="dropdown-item" href="../articles/ConsortiumMetabolismSet.html">ConsortiumMetabolismSet</a></li>
-    <li><a class="dropdown-item" href="../articles/visualisation.html">Data Visualisation</a></li>
+<li><a class="dropdown-item" href="../articles/ConsortiumMetabolism.html">The ConsortiumMetabolism Class</a></li>
+    <li><a class="dropdown-item" href="../articles/ConsortiumMetabolismAlignment.html">Alignment of Microbial Consortia</a></li>
+    <li><a class="dropdown-item" href="../articles/ConsortiumMetabolismSet.html">The ConsortiumMetabolismSet Class</a></li>
+    <li><a class="dropdown-item" href="../articles/visualisation.html">Visualisation</a></li>
   </ul>
 </li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/admarhi/ramen/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -57,88 +59,462 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>ConsortiumMetabolismAlignment Class</h1>
+      <h1>Alignment of Microbial Consortia</h1>
             
       
-
+      <small class="dont-index">Source: <a href="https://github.com/admarhi/ramen/blob/main/vignettes/ConsortiumMetabolismAlignment.Rmd" class="external-link"><code>vignettes/ConsortiumMetabolismAlignment.Rmd</code></a></small>
       <div class="d-none name"><code>ConsortiumMetabolismAlignment.Rmd</code></div>
     </div>
 
     
     
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
+<p>The <code>ramen</code> package provides tools for comparing microbial
+communities based on their metabolic exchange networks. The
+<strong>alignment system</strong> quantifies how similar two or more
+communities are from a functional perspective – not by which species are
+present, but by which metabolite-metabolite pathways they catalyse.</p>
+<p>This vignette covers:</p>
+<ol style="list-style-type: decimal">
+<li>
+<strong>Pairwise alignment</strong> – comparing two communities</li>
+<li>
+<strong>Multiple alignment</strong> – comparing all communities in a
+set</li>
+<li>
+<strong>Visualization</strong> – heatmaps, networks, and score
+plots</li>
+<li>
+<strong>Programmatic access</strong> – extracting results with
+accessor functions</li>
+</ol>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://admarhi.github.io/ramen/">ramen</a></span><span class="op">)</span></span></code></pre></div>
-<div class="section level2">
-<h2 id="microbial-community-alignment-class">Microbial Community Alignment Class<a class="anchor" aria-label="anchor" href="#microbial-community-alignment-class"></a>
-</h2>
-<ul>
-<li><p>Clarify how the Alignment is represented primarily. Will it also
-be a TSE object?</p></li>
-<li><p>Could use the assays to store each alignment, this would allow
-for quick calculation of the depth and breadth as well.</p></li>
-<li><p>Decide on metrics to include in the alignment</p></li>
-<li><p>in how many communities is any given species?</p></li>
-<li><p>How to go about the multiscale entropy?</p></li>
-<li><p>How do we maximise for community overlap in the
-alignment?</p></li>
-<li><p>What happens if we have completley disconnected grpahs? how do we
-align with and without gaps?</p></li>
-<li><p>To what extent should the alignment be interactive?</p></li>
-<li><p>Takes a number of <code>ConsortiumMetabolism</code> objects as
-input (? list or …) and an additional argument to specify if a pairwise
-alignment of the communities is desired.</p></li>
-<li><p>The default is to align all communities against each
-other</p></li>
-<li><p>if <code>pairwise = TRUE</code> all unique pairwise combinations
-are aligned.</p></li>
-<li><p>Should the alignment be calculated upon the creation of the
-object or should it be calculated on demand?</p></li>
-</ul>
-<div class="section level4">
-<h4 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a>
-</h4>
-<p>A variety of methods can be called on a
-<code>ConsortiumMetabolismAlignment</code> object. The output of the
-methods has to be assigned back to the variable containing the object to
-persist.</p>
-<ul>
-<li>clusterAlignment: Takes a <code>ConsortiumMetabolismAlignment</code>
-object as input and an additional argument to specify the clustering
-algorithm to be used, only works on
-<code>ConsortiumMetabolismAlignment</code> objects that have undergone a
-pairwise alignment.</li>
-</ul>
 </div>
-<div class="section level4">
-<h4 id="identity">Identity<a class="anchor" aria-label="anchor" href="#identity"></a>
-</h4>
-<p>A value which gives a scalar value to represent the identity between
-two communities.</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><mi>α</mi><mrow><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mrow><mo stretchy="true" form="prefix">(</mo><mo>∑</mo><msub><mi>C</mi><mi>i</mi></msub><mo>−</mo><mi>α</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>α</mi></mrow></mfrac><annotation encoding="application/x-tex"> \frac{\alpha}{\sum\limits_{i = 1}^{n}(\sum C_i - \alpha) + \alpha} </annotation></semantics></math></p>
+<div class="section level2">
+<h2 id="creating-test-data">Creating test data<a class="anchor" aria-label="anchor" href="#creating-test-data"></a>
+</h2>
+<p>We use <code><a href="../reference/synCM.html">synCM()</a></code> to generate synthetic communities with
+reproducible random metabolic networks. Each consortium has species with
+random flux values across a shared metabolite pool.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cm_alpha</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/synCM.html">synCM</a></span><span class="op">(</span><span class="st">"Alpha"</span>, n_species <span class="op">=</span> <span class="fl">5</span>, max_met <span class="op">=</span> <span class="fl">10</span>, seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
+<span><span class="va">cm_beta</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/synCM.html">synCM</a></span><span class="op">(</span><span class="st">"Beta"</span>, n_species <span class="op">=</span> <span class="fl">5</span>, max_met <span class="op">=</span> <span class="fl">10</span>, seed <span class="op">=</span> <span class="fl">43</span><span class="op">)</span></span>
+<span><span class="va">cm_gamma</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/synCM.html">synCM</a></span><span class="op">(</span><span class="st">"Gamma"</span>, n_species <span class="op">=</span> <span class="fl">4</span>, max_met <span class="op">=</span> <span class="fl">8</span>, seed <span class="op">=</span> <span class="fl">44</span><span class="op">)</span></span>
+<span><span class="va">cm_delta</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/synCM.html">synCM</a></span><span class="op">(</span><span class="st">"Delta"</span>, n_species <span class="op">=</span> <span class="fl">6</span>, max_met <span class="op">=</span> <span class="fl">10</span>, seed <span class="op">=</span> <span class="fl">45</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">cm_alpha</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── ConsortiumMetabolism</span></span>
+<span><span class="co">#&gt; Name: <span style="color: #0000BB;">"Alpha"</span></span></span>
+<span><span class="co">#&gt; Weighted metabolic network with <span style="color: #0000BB;">10</span> metabolites.</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="pairwise-alignment">Pairwise alignment<a class="anchor" aria-label="anchor" href="#pairwise-alignment"></a>
+</h2>
+<div class="section level3">
+<h3 id="basic-usage">Basic usage<a class="anchor" aria-label="anchor" href="#basic-usage"></a>
+</h3>
+<p><code>align(CM, CM)</code> compares two
+<code>ConsortiumMetabolism</code> objects and returns a
+<code>ConsortiumMetabolismAlignment</code> (CMA) object.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cma</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/align.html">align</a></span><span class="op">(</span><span class="va">cm_alpha</span>, <span class="va">cm_beta</span><span class="op">)</span></span>
+<span><span class="va">cma</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── ConsortiumMetabolismAlignment</span></span>
+<span><span class="co">#&gt; Name: <span style="color: #0000BB;">NA</span></span></span>
+<span><span class="co">#&gt; Type: <span style="color: #0000BB;">"pairwise"</span></span></span>
+<span><span class="co">#&gt; Metric: <span style="color: #0000BB;">"FOS"</span></span></span>
+<span><span class="co">#&gt; Score: <span style="color: #0000BB;">0.4474</span></span></span>
+<span><span class="co">#&gt; Query: <span style="color: #0000BB;">"Alpha"</span>, Reference: <span style="color: #0000BB;">"Beta"</span></span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="contents">Contents<a class="anchor" aria-label="anchor" href="#contents"></a>
+<h3 id="similarity-metrics">Similarity metrics<a class="anchor" aria-label="anchor" href="#similarity-metrics"></a>
 </h3>
-<ul>
-<li>Communities hash/list containing the
-<code>ConsortiumMetabolism</code> objects</li>
-<li>Alignment hash:
-<ul>
-<li>overall alignment matrix (binary)</li>
-<li>hash for each level calculated (### how many levels?)
-<ul>
-<li>alignment matrix</li>
-<li>longest connected components for each level</li>
-<li>how to score alignments with more communities more highly?</li>
-<li>how to figure out the connecctedness for parts of the alignment in
-whicch there are less communities represented than in the overall
-alignment?</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
+<p>Five metrics are available via the <code>method</code> argument. All
+four individual metrics are always computed; <code>method</code> selects
+which becomes the primary score.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cma_fos</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/align.html">align</a></span><span class="op">(</span><span class="va">cm_alpha</span>, <span class="va">cm_beta</span>, method <span class="op">=</span> <span class="st">"FOS"</span><span class="op">)</span></span>
+<span><span class="va">cma_jac</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/align.html">align</a></span><span class="op">(</span><span class="va">cm_alpha</span>, <span class="va">cm_beta</span>, method <span class="op">=</span> <span class="st">"jaccard"</span><span class="op">)</span></span>
+<span><span class="va">cma_bc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/align.html">align</a></span><span class="op">(</span><span class="va">cm_alpha</span>, <span class="va">cm_beta</span>, method <span class="op">=</span> <span class="st">"brayCurtis"</span><span class="op">)</span></span>
+<span><span class="va">cma_ro</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/align.html">align</a></span><span class="op">(</span><span class="va">cm_alpha</span>, <span class="va">cm_beta</span>, method <span class="op">=</span> <span class="st">"redundancyOverlap"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## All scores are stored regardless of method choice</span></span>
+<span><span class="fu"><a href="../reference/scores.html">scores</a></span><span class="op">(</span><span class="va">cma_fos</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $FOS</span></span>
+<span><span class="co">#&gt; [1] 0.4473684</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $jaccard</span></span>
+<span><span class="co">#&gt; [1] 0.265625</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $brayCurtis</span></span>
+<span><span class="co">#&gt; [1] 0.2616082</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $redundancyOverlap</span></span>
+<span><span class="co">#&gt; [1] 0.202381</span></span></code></pre></div>
+<table class="table">
+<colgroup>
+<col width="23%">
+<col width="50%">
+<col width="26%">
+</colgroup>
+<thead><tr class="header">
+<th>Metric</th>
+<th>What it measures</th>
+<th>Formula</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>FOS</td>
+<td>Structural overlap (Szymkiewicz-Simpson)</td>
+<td>|X AND Y| / min(|X|, |Y|)</td>
+</tr>
+<tr class="even">
+<td>Jaccard</td>
+<td>Symmetric set similarity</td>
+<td>|X AND Y| / |X OR Y|</td>
+</tr>
+<tr class="odd">
+<td>Bray-Curtis</td>
+<td>Flux-weighted similarity</td>
+<td>1 - sum|x-y| / sum(x+y)</td>
+</tr>
+<tr class="even">
+<td>Redundancy Overlap</td>
+<td>Species labor distribution</td>
+<td>weighted Jaccard on nSpecies</td>
+</tr>
+<tr class="odd">
+<td>MAAS</td>
+<td>Composite (0.4 FOS + 0.2 each)</td>
+<td>weighted mean</td>
+</tr>
+</tbody>
+</table>
 </div>
+<div class="section level3">
+<h3 id="maas-composite-score">MAAS composite score<a class="anchor" aria-label="anchor" href="#maas-composite-score"></a>
+</h3>
+<p>The Metabolic Alignment Aggregate Score combines all four metrics.
+Weights are renormalized when some metrics are unavailable (e.g.,
+unweighted networks).</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cma_maas</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/align.html">align</a></span><span class="op">(</span><span class="va">cm_alpha</span>, <span class="va">cm_beta</span>, method <span class="op">=</span> <span class="st">"MAAS"</span><span class="op">)</span></span>
+<span><span class="va">cma_maas</span><span class="op">@</span><span class="va">PrimaryScore</span></span>
+<span><span class="co">#&gt; [1] 0.3248702</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="pathway-correspondences">Pathway correspondences<a class="anchor" aria-label="anchor" href="#pathway-correspondences"></a>
+</h3>
+<p>The alignment classifies every metabolite-metabolite pathway as
+shared, unique to the query, or unique to the reference.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sharedPathways.html">sharedPathways</a></span><span class="op">(</span><span class="va">cma</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sp</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"consumed"</span>, <span class="st">"produced"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 2</span></span></span>
+<span><span class="co">#&gt;   consumed produced</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> met1     met10   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> met3     met10   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> met4     met10   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> met7     met10   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> met8     met10   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> met9     met10</span></span>
+<span></span>
+<span><span class="va">up</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/uniquePathways.html">uniquePathways</a></span><span class="op">(</span><span class="va">cma</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">sp</span><span class="op">)</span> <span class="co"># shared</span></span>
+<span><span class="co">#&gt; [1] 17</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">up</span><span class="op">$</span><span class="va">query</span><span class="op">)</span> <span class="co"># unique to Alpha</span></span>
+<span><span class="co">#&gt; [1] 26</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">up</span><span class="op">$</span><span class="va">reference</span><span class="op">)</span> <span class="co"># unique to Beta</span></span>
+<span><span class="co">#&gt; [1] 21</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="permutation-p-values">Permutation p-values<a class="anchor" aria-label="anchor" href="#permutation-p-values"></a>
+</h3>
+<p>Statistical significance is assessed by degree-preserving network
+rewiring. The query network’s pathways are shuffled while preserving
+each metabolite’s degree, and the metric is recomputed under the
+null.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cma_p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/align.html">align</a></span><span class="op">(</span></span>
+<span>  <span class="va">cm_alpha</span>,</span>
+<span>  <span class="va">cm_beta</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"FOS"</span>,</span>
+<span>  computePvalue <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  nPermutations <span class="op">=</span> <span class="fl">99L</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">cma_p</span><span class="op">@</span><span class="va">Pvalue</span></span>
+<span><span class="co">#&gt; [1] 0.75</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="multiple-alignment">Multiple alignment<a class="anchor" aria-label="anchor" href="#multiple-alignment"></a>
+</h2>
+<div class="section level3">
+<h3 id="aligning-a-consortium-set">Aligning a consortium set<a class="anchor" aria-label="anchor" href="#aligning-a-consortium-set"></a>
+</h3>
+<p><code>align(CMS)</code> computes pairwise similarities across all
+consortia in a <code>ConsortiumMetabolismSet</code> and returns a CMA
+with <code>Type = "multiple"</code>.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cms</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ConsortiumMetabolismSet.html">ConsortiumMetabolismSet</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">cm_alpha</span>, <span class="va">cm_beta</span>, <span class="va">cm_gamma</span>, <span class="va">cm_delta</span><span class="op">)</span>,</span>
+<span>  name <span class="op">=</span> <span class="st">"Demo"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">cma_mult</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/align.html">align</a></span><span class="op">(</span><span class="va">cms</span><span class="op">)</span></span>
+<span><span class="va">cma_mult</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="similarity-matrix">Similarity matrix<a class="anchor" aria-label="anchor" href="#similarity-matrix"></a>
+</h3>
+<p>The <code>SimilarityMatrix</code> is an n x n symmetric matrix with
+1s on the diagonal. For FOS, this is derived directly from the
+pre-computed CMS overlap matrix, guaranteeing numerical consistency.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="../reference/similarityMatrix.html">similarityMatrix</a></span><span class="op">(</span><span class="va">cma_mult</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="co">#&gt;       Alpha  Beta Gamma Delta</span></span>
+<span><span class="co">#&gt; Alpha 1.000 0.447 0.556 0.538</span></span>
+<span><span class="co">#&gt; Beta  0.447 1.000 0.481 0.526</span></span>
+<span><span class="co">#&gt; Gamma 0.556 0.481 1.000 0.481</span></span>
+<span><span class="co">#&gt; Delta 0.538 0.526 0.481 1.000</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="summary-scores">Summary scores<a class="anchor" aria-label="anchor" href="#summary-scores"></a>
+</h3>
+<p>The <code>PrimaryScore</code> for a multiple alignment is the
+<strong>median</strong> of all pairwise scores. Full summary statistics
+are available via <code><a href="../reference/scores.html">scores()</a></code>.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/scores.html">scores</a></span><span class="op">(</span><span class="va">cma_mult</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $mean</span></span>
+<span><span class="co">#&gt; [1] 0.5051107</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $median</span></span>
+<span><span class="co">#&gt; [1] 0.5038986</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $min</span></span>
+<span><span class="co">#&gt; [1] 0.4473684</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $max</span></span>
+<span><span class="co">#&gt; [1] 0.5555556</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $sd</span></span>
+<span><span class="co">#&gt; [1] 0.0413702</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $nPairs</span></span>
+<span><span class="co">#&gt; [1] 6</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="consensus-network-and-prevalence">Consensus network and prevalence<a class="anchor" aria-label="anchor" href="#consensus-network-and-prevalence"></a>
+</h3>
+<p>Pathway prevalence counts how many consortia share each
+metabolite-metabolite pathway. This enables classification of pathways
+as core (present in most consortia) or niche (present in few).</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">prev</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prevalence.html">prevalence</a></span><span class="op">(</span><span class="va">cma_mult</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">prev</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">prev</span><span class="op">$</span><span class="va">nConsortia</span><span class="op">)</span>, <span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    consumed produced nConsortia proportion</span></span>
+<span><span class="co">#&gt; 16     met1     met2          4       1.00</span></span>
+<span><span class="co">#&gt; 22     met7     met2          4       1.00</span></span>
+<span><span class="co">#&gt; 41     met1     met5          4       1.00</span></span>
+<span><span class="co">#&gt; 66     met1     met8          4       1.00</span></span>
+<span><span class="co">#&gt; 8      met1    met10          3       0.75</span></span>
+<span><span class="co">#&gt; 9      met3    met10          3       0.75</span></span>
+<span></span>
+<span><span class="co">## Distribution</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">prev</span><span class="op">$</span><span class="va">nConsortia</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  1  2  3  4 </span></span>
+<span><span class="co">#&gt; 32 24 17  4</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="visualization">Visualization<a class="anchor" aria-label="anchor" href="#visualization"></a>
+</h2>
+<div class="section level3">
+<h3 id="heatmap-multiple-alignment">Heatmap (multiple alignment)<a class="anchor" aria-label="anchor" href="#heatmap-multiple-alignment"></a>
+</h3>
+<p>The heatmap shows pairwise similarities with dendrogram-based
+ordering.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cma_mult</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="ConsortiumMetabolismAlignment_files/figure-html/plot-heatmap-1.png" class="r-plt" alt="Similarity heatmap across four consortia." width="576"><p class="caption">
+Similarity heatmap across four consortia.
+</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="network-pairwise-alignment">Network (pairwise alignment)<a class="anchor" aria-label="anchor" href="#network-pairwise-alignment"></a>
+</h3>
+<p>The network view shows shared (green), query-unique (blue), and
+reference-unique (red) pathways as a directed metabolite flow graph.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cma</span>, type <span class="op">=</span> <span class="st">"network"</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="ConsortiumMetabolismAlignment_files/figure-html/plot-network-1.png" class="r-plt" alt="Pathway network: Alpha vs Beta." width="576"><p class="caption">
+Pathway network: Alpha vs Beta.
+</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="score-comparison">Score comparison<a class="anchor" aria-label="anchor" href="#score-comparison"></a>
+</h3>
+<p>The scores bar chart works for both pairwise and multiple
+alignments.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cma</span>, type <span class="op">=</span> <span class="st">"scores"</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="ConsortiumMetabolismAlignment_files/figure-html/plot-scores-pairwise-1.png" class="r-plt" alt="Pairwise metric scores." width="576"><p class="caption">
+Pairwise metric scores.
+</p>
+</div>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cma_mult</span>, type <span class="op">=</span> <span class="st">"scores"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Removed 1 row containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; (`geom_col()`).</span></span>
+<span><span class="co">#&gt; Warning: Removed 1 row containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; (`geom_text()`).</span></span></code></pre></div>
+<div class="figure">
+<img src="ConsortiumMetabolismAlignment_files/figure-html/plot-scores-multiple-1.png" class="r-plt" alt="Multiple alignment summary scores." width="576"><p class="caption">
+Multiple alignment summary scores.
+</p>
+</div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="programmatic-access">Programmatic access<a class="anchor" aria-label="anchor" href="#programmatic-access"></a>
+</h2>
+<p>All CMA results are accessible via noun-style accessors with type
+guards that prevent misuse (e.g., calling <code><a href="../reference/sharedPathways.html">sharedPathways()</a></code>
+on a multiple alignment raises an informative error).</p>
+<table class="table">
+<thead><tr class="header">
+<th>Accessor</th>
+<th>Type</th>
+<th>Returns</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code><a href="../reference/scores.html">scores()</a></code></td>
+<td>both</td>
+<td>Named list of scores</td>
+</tr>
+<tr class="even">
+<td><code><a href="../reference/sharedPathways.html">sharedPathways()</a></code></td>
+<td>pairwise</td>
+<td>data.frame of shared pathways</td>
+</tr>
+<tr class="odd">
+<td><code><a href="../reference/uniquePathways.html">uniquePathways()</a></code></td>
+<td>pairwise</td>
+<td>list(query, reference)</td>
+</tr>
+<tr class="even">
+<td><code><a href="../reference/similarityMatrix.html">similarityMatrix()</a></code></td>
+<td>multiple</td>
+<td>n x n numeric matrix</td>
+</tr>
+<tr class="odd">
+<td><code><a href="../reference/prevalence.html">prevalence()</a></code></td>
+<td>multiple</td>
+<td>data.frame with nConsortia</td>
+</tr>
+<tr class="even">
+<td><code><a href="../reference/consensusPathways.html">consensusPathways()</a></code></td>
+<td>multiple</td>
+<td>data.frame (same as prevalence)</td>
+</tr>
+<tr class="odd">
+<td><code><a href="../reference/metabolites.html">metabolites()</a></code></td>
+<td>both</td>
+<td>Character vector of metabolites</td>
+</tr>
+<tr class="even">
+<td><code><a href="../reference/pathways.html">pathways()</a></code></td>
+<td>both</td>
+<td>data.frame of pathways</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level2">
+<h2 id="session-info">Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
+</h2>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; R version 4.5.3 (2026-03-11)</span></span>
+<span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
+<span><span class="co">#&gt; Running under: Ubuntu 24.04.4 LTS</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Matrix products: default</span></span>
+<span><span class="co">#&gt; BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
+<span><span class="co">#&gt; LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; locale:</span></span>
+<span><span class="co">#&gt;  [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       </span></span>
+<span><span class="co">#&gt;  [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   </span></span>
+<span><span class="co">#&gt;  [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          </span></span>
+<span><span class="co">#&gt; [10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; time zone: UTC</span></span>
+<span><span class="co">#&gt; tzcode source: system (glibc)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; attached base packages:</span></span>
+<span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; other attached packages:</span></span>
+<span><span class="co">#&gt; [1] ramen_0.0.0.9001 BiocStyle_2.38.0</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
+<span><span class="co">#&gt;  [1] SummarizedExperiment_1.40.0     gtable_0.3.6                   </span></span>
+<span><span class="co">#&gt;  [3] ggplot2_4.0.2                   xfun_0.57                      </span></span>
+<span><span class="co">#&gt;  [5] bslib_0.10.0                    Biobase_2.70.0                 </span></span>
+<span><span class="co">#&gt;  [7] lattice_0.22-9                  yulab.utils_0.2.4              </span></span>
+<span><span class="co">#&gt;  [9] vctrs_0.7.2                     tools_4.5.3                    </span></span>
+<span><span class="co">#&gt; [11] generics_0.1.4                  stats4_4.5.3                   </span></span>
+<span><span class="co">#&gt; [13] parallel_4.5.3                  tibble_3.3.1                   </span></span>
+<span><span class="co">#&gt; [15] pkgconfig_2.0.3                 Matrix_1.7-4                   </span></span>
+<span><span class="co">#&gt; [17] RColorBrewer_1.1-3              S7_0.2.1                       </span></span>
+<span><span class="co">#&gt; [19] desc_1.4.3                      S4Vectors_0.48.0               </span></span>
+<span><span class="co">#&gt; [21] lifecycle_1.0.5                 farver_2.1.2                   </span></span>
+<span><span class="co">#&gt; [23] compiler_4.5.3                  treeio_1.34.0                  </span></span>
+<span><span class="co">#&gt; [25] textshaping_1.0.5               Biostrings_2.78.0              </span></span>
+<span><span class="co">#&gt; [27] Seqinfo_1.0.0                   codetools_0.2-20               </span></span>
+<span><span class="co">#&gt; [29] htmltools_0.5.9                 sass_0.4.10                    </span></span>
+<span><span class="co">#&gt; [31] yaml_2.3.12                     lazyeval_0.2.2                 </span></span>
+<span><span class="co">#&gt; [33] pkgdown_2.2.0                   pillar_1.11.1                  </span></span>
+<span><span class="co">#&gt; [35] crayon_1.5.3                    jquerylib_0.1.4                </span></span>
+<span><span class="co">#&gt; [37] tidyr_1.3.2                     BiocParallel_1.44.0            </span></span>
+<span><span class="co">#&gt; [39] SingleCellExperiment_1.32.0     DelayedArray_0.36.0            </span></span>
+<span><span class="co">#&gt; [41] cachem_1.1.0                    viridis_0.6.5                  </span></span>
+<span><span class="co">#&gt; [43] abind_1.4-8                     nlme_3.1-168                   </span></span>
+<span><span class="co">#&gt; [45] tidyselect_1.2.1                digest_0.6.39                  </span></span>
+<span><span class="co">#&gt; [47] dplyr_1.2.0                     purrr_1.2.1                    </span></span>
+<span><span class="co">#&gt; [49] bookdown_0.46                   labeling_0.4.3                 </span></span>
+<span><span class="co">#&gt; [51] TreeSummarizedExperiment_2.18.0 fastmap_1.2.0                  </span></span>
+<span><span class="co">#&gt; [53] grid_4.5.3                      cli_3.6.5                      </span></span>
+<span><span class="co">#&gt; [55] SparseArray_1.10.9              magrittr_2.0.4                 </span></span>
+<span><span class="co">#&gt; [57] S4Arrays_1.10.1                 utf8_1.2.6                     </span></span>
+<span><span class="co">#&gt; [59] ape_5.8-1                       withr_3.0.2                    </span></span>
+<span><span class="co">#&gt; [61] scales_1.4.0                    rappdirs_0.3.4                 </span></span>
+<span><span class="co">#&gt; [63] rmarkdown_2.30                  XVector_0.50.0                 </span></span>
+<span><span class="co">#&gt; [65] matrixStats_1.5.0               igraph_2.2.2                   </span></span>
+<span><span class="co">#&gt; [67] gridExtra_2.3                   ragg_1.5.2                     </span></span>
+<span><span class="co">#&gt; [69] evaluate_1.0.5                  knitr_1.51                     </span></span>
+<span><span class="co">#&gt; [71] GenomicRanges_1.62.1            IRanges_2.44.0                 </span></span>
+<span><span class="co">#&gt; [73] viridisLite_0.4.3               rlang_1.1.7                    </span></span>
+<span><span class="co">#&gt; [75] dendextend_1.19.1               Rcpp_1.1.1                     </span></span>
+<span><span class="co">#&gt; [77] glue_1.8.0                      tidytree_0.4.7                 </span></span>
+<span><span class="co">#&gt; [79] BiocManager_1.30.27             BiocGenerics_0.56.0            </span></span>
+<span><span class="co">#&gt; [81] jsonlite_2.0.0                  R6_2.6.1                       </span></span>
+<span><span class="co">#&gt; [83] MatrixGenerics_1.22.0           systemfonts_1.3.2              </span></span>
+<span><span class="co">#&gt; [85] fs_2.0.1</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

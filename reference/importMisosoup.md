@@ -38,3 +38,13 @@ A list containing three tibbles:
 
 [`overviewMisosoup`](https://admarhi.github.io/ramen/reference/overviewMisosoup.md)
 for a summary of the input data
+
+## Examples
+
+``` r
+# \donttest{
+# Requires MiSoSoup YAML data parsed as a nested list
+# data <- yaml::read_yaml("path/to/misosoup_output.yaml")
+# result <- importMisosoup(data)
+# }
+```

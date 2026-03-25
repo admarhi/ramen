@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Data Visualisation • ramen</title>
+<title>Visualisation • ramen</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Data Visualisation">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Visualisation">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -33,17 +33,19 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/ConsortiumMetabolism.html">ConsortiumMetabolism Class</a></li>
-    <li><a class="dropdown-item" href="../articles/ConsortiumMetabolismAlignment.html">ConsortiumMetabolismAlignment Class</a></li>
-    <li><a class="dropdown-item" href="../articles/ConsortiumMetabolismSet.html">ConsortiumMetabolismSet</a></li>
-    <li><a class="dropdown-item" href="../articles/visualisation.html">Data Visualisation</a></li>
+<li><a class="dropdown-item" href="../articles/ConsortiumMetabolism.html">The ConsortiumMetabolism Class</a></li>
+    <li><a class="dropdown-item" href="../articles/ConsortiumMetabolismAlignment.html">Alignment of Microbial Consortia</a></li>
+    <li><a class="dropdown-item" href="../articles/ConsortiumMetabolismSet.html">The ConsortiumMetabolismSet Class</a></li>
+    <li><a class="dropdown-item" href="../articles/visualisation.html">Visualisation</a></li>
   </ul>
 </li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/admarhi/ramen/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -57,39 +59,386 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Data Visualisation</h1>
+      <h1>Visualisation</h1>
             
       
-
+      <small class="dont-index">Source: <a href="https://github.com/admarhi/ramen/blob/main/vignettes/visualisation.Rmd" class="external-link"><code>vignettes/visualisation.Rmd</code></a></small>
       <div class="d-none name"><code>visualisation.Rmd</code></div>
     </div>
 
     
     
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
+<p><code>ramen</code> provides <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> methods for all three
+core classes: <code>ConsortiumMetabolism</code>,
+<code>ConsortiumMetabolismSet</code>, and
+<code>ConsortiumMetabolismAlignment</code>. This vignette demonstrates
+each plot type with synthetic and example data.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://admarhi.github.io/ramen/">ramen</a></span><span class="op">)</span></span></code></pre></div>
-<p><em>ramen</em> provides a range of visualisation methods for the
-different type of objects available in the package.</p>
-<div class="section level2">
-<h2 id="consortiummetabolism">ConsortiumMetabolism<a class="anchor" aria-label="anchor" href="#consortiummetabolism"></a>
-</h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># # Plots a directed network</span></span>
-<span><span class="co"># plot(cm1)</span></span>
-<span><span class="co"># # Plot the number of species in edges</span></span>
-<span><span class="co"># plot(cm1, type = "nEdges")</span></span>
-<span><span class="co"># # Plot the total consumption fluxes in a network</span></span>
-<span><span class="co"># plot(cm1, type = "Consumption")</span></span>
-<span><span class="co"># # Plot the total production fluxes in a network</span></span>
-<span><span class="co"># plot(cm1, type = "Production")</span></span>
-<span><span class="co"># # Plot the effective consumption fluxes in a network</span></span>
-<span><span class="co"># plot(cm1, type = "EffectiveConsumption")</span></span>
-<span><span class="co"># # Plot the effective production fluxes in a network</span></span>
-<span><span class="co"># plot(cm1, type = "EffectiveProduction")</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="consortiummetabolismset">ConsortiumMetabolismSet<a class="anchor" aria-label="anchor" href="#consortiummetabolismset"></a>
+<h2 id="preparing-example-data">Preparing example data<a class="anchor" aria-label="anchor" href="#preparing-example-data"></a>
 </h2>
+<p>We create four synthetic consortia, combine them into a CMS, and
+compute both pairwise and multiple alignments.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cm_alpha</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/synCM.html">synCM</a></span><span class="op">(</span><span class="st">"Alpha"</span>, n_species <span class="op">=</span> <span class="fl">5</span>, max_met <span class="op">=</span> <span class="fl">10</span>, seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
+<span><span class="va">cm_beta</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/synCM.html">synCM</a></span><span class="op">(</span><span class="st">"Beta"</span>, n_species <span class="op">=</span> <span class="fl">5</span>, max_met <span class="op">=</span> <span class="fl">10</span>, seed <span class="op">=</span> <span class="fl">43</span><span class="op">)</span></span>
+<span><span class="va">cm_gamma</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/synCM.html">synCM</a></span><span class="op">(</span><span class="st">"Gamma"</span>, n_species <span class="op">=</span> <span class="fl">4</span>, max_met <span class="op">=</span> <span class="fl">8</span>, seed <span class="op">=</span> <span class="fl">44</span><span class="op">)</span></span>
+<span><span class="va">cm_delta</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/synCM.html">synCM</a></span><span class="op">(</span><span class="st">"Delta"</span>, n_species <span class="op">=</span> <span class="fl">6</span>, max_met <span class="op">=</span> <span class="fl">10</span>, seed <span class="op">=</span> <span class="fl">45</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">cms</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ConsortiumMetabolismSet.html">ConsortiumMetabolismSet</a></span><span class="op">(</span></span>
+<span>    <span class="va">cm_alpha</span>, <span class="va">cm_beta</span>, <span class="va">cm_gamma</span>, <span class="va">cm_delta</span>,</span>
+<span>    name <span class="op">=</span> <span class="st">"Demo"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">cma_pair</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/align.html">align</a></span><span class="op">(</span><span class="va">cm_alpha</span>, <span class="va">cm_beta</span><span class="op">)</span></span>
+<span><span class="va">cma_mult</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/align.html">align</a></span><span class="op">(</span><span class="va">cms</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="consortiummetabolism-plots">ConsortiumMetabolism plots<a class="anchor" aria-label="anchor" href="#consortiummetabolism-plots"></a>
+</h2>
+<p><code>plot(CM)</code> renders a directed metabolic flow network using
+<code>igraph</code>. Nodes are coloured by role:
+<strong>lightblue</strong> = source (only outgoing),
+<strong>salmon</strong> = sink (only incoming), <strong>yellow</strong>
+= intermediate (both). The <code>type</code> argument selects which
+assay matrix to use for edge weights.</p>
+<div class="section level3">
+<h3 id="binary-network">Binary network<a class="anchor" aria-label="anchor" href="#binary-network"></a>
+</h3>
+<p>The default view shows the structure of the metabolic network where
+any edge present has weight 1.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cm_alpha</span>, type <span class="op">=</span> <span class="st">"Binary"</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="visualisation_files/figure-html/plot-cm-binary-1.png" class="r-plt" alt="Binary metabolic network for Alpha." width="576"><p class="caption">
+Binary metabolic network for Alpha.
+</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="number-of-species-per-pathway">Number of species per pathway<a class="anchor" aria-label="anchor" href="#number-of-species-per-pathway"></a>
+</h3>
+<p>Edge weights reflect how many species catalyse each pathway.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cm_alpha</span>, type <span class="op">=</span> <span class="st">"nSpecies"</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="visualisation_files/figure-html/plot-cm-nspecies-1.png" class="r-plt" alt="nSpecies network for Alpha." width="576"><p class="caption">
+nSpecies network for Alpha.
+</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="consumption-and-production">Consumption and production<a class="anchor" aria-label="anchor" href="#consumption-and-production"></a>
+</h3>
+<p>Consumption and production views weight edges by summed flux
+magnitudes.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cm_alpha</span>, type <span class="op">=</span> <span class="st">"Consumption"</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="visualisation_files/figure-html/plot-cm-consumption-1.png" class="r-plt" alt="Consumption-weighted network." width="576"><p class="caption">
+Consumption-weighted network.
+</p>
+</div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cm_alpha</span>, type <span class="op">=</span> <span class="st">"Production"</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="visualisation_files/figure-html/plot-cm-production-1.png" class="r-plt" alt="Production-weighted network." width="576"><p class="caption">
+Production-weighted network.
+</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="effective-consumption-and-production">Effective consumption and production<a class="anchor" aria-label="anchor" href="#effective-consumption-and-production"></a>
+</h3>
+<p>The effective diversity measures indicate how evenly species
+contribute to each pathway (Shannon-based effective number of
+species).</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cm_alpha</span>, type <span class="op">=</span> <span class="st">"EffectiveConsumption"</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="visualisation_files/figure-html/plot-cm-effcons-1.png" class="r-plt" alt="Effective consumption network." width="576"><p class="caption">
+Effective consumption network.
+</p>
+</div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cm_alpha</span>, type <span class="op">=</span> <span class="st">"EffectiveProduction"</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="visualisation_files/figure-html/plot-cm-effprod-1.png" class="r-plt" alt="Effective production network." width="576"><p class="caption">
+Effective production network.
+</p>
+</div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="consortiummetabolismset-plots">ConsortiumMetabolismSet plots<a class="anchor" aria-label="anchor" href="#consortiummetabolismset-plots"></a>
+</h2>
+<div class="section level3">
+<h3 id="dendrogram">Dendrogram<a class="anchor" aria-label="anchor" href="#dendrogram"></a>
+</h3>
+<p><code>plot(CMS)</code> draws the hierarchical clustering dendrogram
+with numbered internal nodes. These node IDs are used by
+<code><a href="../reference/extractCluster.html">extractCluster()</a></code> to pull sub-clusters.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cms</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="visualisation_files/figure-html/plot-cms-dend-1.png" class="r-plt" alt="CMS dendrogram with numbered nodes." width="576"><p class="caption">
+CMS dendrogram with numbered nodes.
+</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="dendrogram-with-custom-label-colours">Dendrogram with custom label colours<a class="anchor" aria-label="anchor" href="#dendrogram-with-custom-label-colours"></a>
+</h3>
+<p>You can supply a tibble mapping leaf labels to colours.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">colour_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>    label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Alpha"</span>, <span class="st">"Beta"</span>, <span class="st">"Gamma"</span>, <span class="st">"Delta"</span><span class="op">)</span>,</span>
+<span>    colour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"steelblue"</span>, <span class="st">"firebrick"</span>,</span>
+<span>               <span class="st">"forestgreen"</span>, <span class="st">"darkorange"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cms</span>, label_colours <span class="op">=</span> <span class="va">colour_map</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="visualisation_files/figure-html/plot-cms-colours-1.png" class="r-plt" alt="CMS dendrogram with coloured labels." width="576"><p class="caption">
+CMS dendrogram with coloured labels.
+</p>
+</div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="consortiummetabolismalignment-plots">ConsortiumMetabolismAlignment plots<a class="anchor" aria-label="anchor" href="#consortiummetabolismalignment-plots"></a>
+</h2>
+<p>The CMA <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> method supports three types:
+<code>"heatmap"</code>, <code>"network"</code>, and
+<code>"scores"</code>. The default depends on the alignment type:
+<code>"network"</code> for pairwise, <code>"heatmap"</code> for
+multiple.</p>
+<div class="section level3">
+<h3 id="heatmap-multiple-alignment">Heatmap (multiple alignment)<a class="anchor" aria-label="anchor" href="#heatmap-multiple-alignment"></a>
+</h3>
+<p>The heatmap shows pairwise FOS similarities with dendrogram-based
+ordering. Values range from 0 (no overlap) to 1 (identical).</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cma_mult</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="visualisation_files/figure-html/plot-cma-heatmap-1.png" class="r-plt" alt="Similarity heatmap." width="576"><p class="caption">
+Similarity heatmap.
+</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="network-pairwise-alignment">Network (pairwise alignment)<a class="anchor" aria-label="anchor" href="#network-pairwise-alignment"></a>
+</h3>
+<p>The network view visualises the alignment result as a directed
+metabolite flow graph. Edge colours indicate the source:
+<strong>green</strong> = shared pathways, <strong>blue</strong> = unique
+to query (Alpha), <strong>red</strong> = unique to reference (Beta).</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cma_pair</span>, type <span class="op">=</span> <span class="st">"network"</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="visualisation_files/figure-html/plot-cma-network-1.png" class="r-plt" alt="Pairwise alignment network." width="576"><p class="caption">
+Pairwise alignment network.
+</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="scores-pairwise">Scores (pairwise)<a class="anchor" aria-label="anchor" href="#scores-pairwise"></a>
+</h3>
+<p>The score bar chart displays all computed similarity metrics for a
+pairwise alignment.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cma_pair</span>, type <span class="op">=</span> <span class="st">"scores"</span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="visualisation_files/figure-html/plot-cma-scores-pair-1.png" class="r-plt" alt="Pairwise alignment scores." width="576"><p class="caption">
+Pairwise alignment scores.
+</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="scores-multiple-alignment">Scores (multiple alignment)<a class="anchor" aria-label="anchor" href="#scores-multiple-alignment"></a>
+</h3>
+<p>For a multiple alignment, the scores plot shows summary statistics
+across all pairwise comparisons.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cma_mult</span>, type <span class="op">=</span> <span class="st">"scores"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Removed 1 row containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; (`geom_col()`).</span></span>
+<span><span class="co">#&gt; Warning: Removed 1 row containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; (`geom_text()`).</span></span></code></pre></div>
+<div class="figure">
+<img src="visualisation_files/figure-html/plot-cma-scores-mult-1.png" class="r-plt" alt="Multiple alignment scores." width="576"><p class="caption">
+Multiple alignment scores.
+</p>
+</div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="using-plotdirectedflow-directly">Using <code>plotDirectedFlow()</code> directly<a class="anchor" aria-label="anchor" href="#using-plotdirectedflow-directly"></a>
+</h2>
+<p>For fine-grained control over the network layout, you can call
+<code><a href="../reference/plotDirectedFlow.html">plotDirectedFlow()</a></code> directly on an igraph object. This is
+the function underlying all CM and CMA network plots.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://r.igraph.org/reference/graph_from_adjacency_matrix.html" class="external-link">graph_from_adjacency_matrix</a></span><span class="op">(</span></span>
+<span>    <span class="fu">SummarizedExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></span><span class="op">(</span><span class="va">cm_beta</span>, <span class="st">"nSpecies"</span><span class="op">)</span>,</span>
+<span>    mode <span class="op">=</span> <span class="st">"directed"</span>,</span>
+<span>    weighted <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/plotDirectedFlow.html">plotDirectedFlow</a></span><span class="op">(</span></span>
+<span>    <span class="va">g</span>,</span>
+<span>    color_edges_by_weight <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    edge_width_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">2</span><span class="op">)</span>,</span>
+<span>    vertex_size <span class="op">=</span> <span class="fl">12</span>,</span>
+<span>    vertex_label_cex <span class="op">=</span> <span class="fl">0.7</span>,</span>
+<span>    main <span class="op">=</span> <span class="st">"Beta - nSpecies (custom)"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="visualisation_files/figure-html/plot-directed-flow-1.png" class="r-plt" alt="Custom directed flow plot." width="576"><p class="caption">
+Custom directed flow plot.
+</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="summary-of-plot-types">Summary of plot types<a class="anchor" aria-label="anchor" href="#summary-of-plot-types"></a>
+</h2>
+<table class="table">
+<thead><tr class="header">
+<th>Object class</th>
+<th>
+<code>type</code> argument</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>CM</td>
+<td>
+<code>"Binary"</code> (default)</td>
+<td>Directed network, unweighted</td>
+</tr>
+<tr class="even">
+<td>CM</td>
+<td><code>"nSpecies"</code></td>
+<td>Pathways weighted by species count</td>
+</tr>
+<tr class="odd">
+<td>CM</td>
+<td><code>"Consumption"</code></td>
+<td>Pathways weighted by consumption flux</td>
+</tr>
+<tr class="even">
+<td>CM</td>
+<td><code>"Production"</code></td>
+<td>Pathways weighted by production flux</td>
+</tr>
+<tr class="odd">
+<td>CM</td>
+<td><code>"EffectiveConsumption"</code></td>
+<td>Effective consuming species</td>
+</tr>
+<tr class="even">
+<td>CM</td>
+<td><code>"EffectiveProduction"</code></td>
+<td>Effective producing species</td>
+</tr>
+<tr class="odd">
+<td>CMS</td>
+<td>(none)</td>
+<td>Dendrogram with numbered nodes</td>
+</tr>
+<tr class="even">
+<td>CMA</td>
+<td><code>"heatmap"</code></td>
+<td>Pairwise similarity heatmap</td>
+</tr>
+<tr class="odd">
+<td>CMA</td>
+<td><code>"network"</code></td>
+<td>Shared/unique pathway graph</td>
+</tr>
+<tr class="even">
+<td>CMA</td>
+<td><code>"scores"</code></td>
+<td>Bar chart of similarity metrics</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level2">
+<h2 id="session-info">Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
+</h2>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; R version 4.5.3 (2026-03-11)</span></span>
+<span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
+<span><span class="co">#&gt; Running under: Ubuntu 24.04.4 LTS</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Matrix products: default</span></span>
+<span><span class="co">#&gt; BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
+<span><span class="co">#&gt; LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; locale:</span></span>
+<span><span class="co">#&gt;  [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       </span></span>
+<span><span class="co">#&gt;  [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   </span></span>
+<span><span class="co">#&gt;  [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          </span></span>
+<span><span class="co">#&gt; [10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; time zone: UTC</span></span>
+<span><span class="co">#&gt; tzcode source: system (glibc)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; attached base packages:</span></span>
+<span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; other attached packages:</span></span>
+<span><span class="co">#&gt; [1] ramen_0.0.0.9001 BiocStyle_2.38.0</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
+<span><span class="co">#&gt;  [1] SummarizedExperiment_1.40.0     gtable_0.3.6                   </span></span>
+<span><span class="co">#&gt;  [3] ggplot2_4.0.2                   xfun_0.57                      </span></span>
+<span><span class="co">#&gt;  [5] bslib_0.10.0                    Biobase_2.70.0                 </span></span>
+<span><span class="co">#&gt;  [7] lattice_0.22-9                  yulab.utils_0.2.4              </span></span>
+<span><span class="co">#&gt;  [9] vctrs_0.7.2                     tools_4.5.3                    </span></span>
+<span><span class="co">#&gt; [11] generics_0.1.4                  stats4_4.5.3                   </span></span>
+<span><span class="co">#&gt; [13] parallel_4.5.3                  tibble_3.3.1                   </span></span>
+<span><span class="co">#&gt; [15] pkgconfig_2.0.3                 Matrix_1.7-4                   </span></span>
+<span><span class="co">#&gt; [17] RColorBrewer_1.1-3              S7_0.2.1                       </span></span>
+<span><span class="co">#&gt; [19] desc_1.4.3                      S4Vectors_0.48.0               </span></span>
+<span><span class="co">#&gt; [21] lifecycle_1.0.5                 farver_2.1.2                   </span></span>
+<span><span class="co">#&gt; [23] compiler_4.5.3                  treeio_1.34.0                  </span></span>
+<span><span class="co">#&gt; [25] textshaping_1.0.5               Biostrings_2.78.0              </span></span>
+<span><span class="co">#&gt; [27] Seqinfo_1.0.0                   codetools_0.2-20               </span></span>
+<span><span class="co">#&gt; [29] htmltools_0.5.9                 sass_0.4.10                    </span></span>
+<span><span class="co">#&gt; [31] yaml_2.3.12                     lazyeval_0.2.2                 </span></span>
+<span><span class="co">#&gt; [33] pkgdown_2.2.0                   pillar_1.11.1                  </span></span>
+<span><span class="co">#&gt; [35] crayon_1.5.3                    jquerylib_0.1.4                </span></span>
+<span><span class="co">#&gt; [37] tidyr_1.3.2                     BiocParallel_1.44.0            </span></span>
+<span><span class="co">#&gt; [39] SingleCellExperiment_1.32.0     DelayedArray_0.36.0            </span></span>
+<span><span class="co">#&gt; [41] cachem_1.1.0                    viridis_0.6.5                  </span></span>
+<span><span class="co">#&gt; [43] abind_1.4-8                     nlme_3.1-168                   </span></span>
+<span><span class="co">#&gt; [45] tidyselect_1.2.1                digest_0.6.39                  </span></span>
+<span><span class="co">#&gt; [47] dplyr_1.2.0                     purrr_1.2.1                    </span></span>
+<span><span class="co">#&gt; [49] bookdown_0.46                   labeling_0.4.3                 </span></span>
+<span><span class="co">#&gt; [51] TreeSummarizedExperiment_2.18.0 fastmap_1.2.0                  </span></span>
+<span><span class="co">#&gt; [53] grid_4.5.3                      cli_3.6.5                      </span></span>
+<span><span class="co">#&gt; [55] SparseArray_1.10.9              magrittr_2.0.4                 </span></span>
+<span><span class="co">#&gt; [57] S4Arrays_1.10.1                 ape_5.8-1                      </span></span>
+<span><span class="co">#&gt; [59] withr_3.0.2                     scales_1.4.0                   </span></span>
+<span><span class="co">#&gt; [61] rappdirs_0.3.4                  rmarkdown_2.30                 </span></span>
+<span><span class="co">#&gt; [63] XVector_0.50.0                  matrixStats_1.5.0              </span></span>
+<span><span class="co">#&gt; [65] igraph_2.2.2                    gridExtra_2.3                  </span></span>
+<span><span class="co">#&gt; [67] ragg_1.5.2                      evaluate_1.0.5                 </span></span>
+<span><span class="co">#&gt; [69] knitr_1.51                      GenomicRanges_1.62.1           </span></span>
+<span><span class="co">#&gt; [71] IRanges_2.44.0                  viridisLite_0.4.3              </span></span>
+<span><span class="co">#&gt; [73] rlang_1.1.7                     dendextend_1.19.1              </span></span>
+<span><span class="co">#&gt; [75] Rcpp_1.1.1                      glue_1.8.0                     </span></span>
+<span><span class="co">#&gt; [77] tidytree_0.4.7                  BiocManager_1.30.27            </span></span>
+<span><span class="co">#&gt; [79] BiocGenerics_0.56.0             jsonlite_2.0.0                 </span></span>
+<span><span class="co">#&gt; [81] R6_2.6.1                        MatrixGenerics_1.22.0          </span></span>
+<span><span class="co">#&gt; [83] systemfonts_1.3.2               fs_2.0.1</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
