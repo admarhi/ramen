@@ -13,21 +13,21 @@ setMethod(
         label_size = 6,
         label_colours = NULL
     ) {
-        # Extract edges from the ConsortiumMetabolismSet
-        tb <- object@Edges
+        # Extract pathways from the ConsortiumMetabolismSet
+        tb <- object@Pathways
 
         # Create a tibble with all unique reactions per species
         rxns_per_species <- tb |>
             dplyr::select(1:3) |>
             unique() |>
             dplyr::mutate(
-                edge = paste0(
+                pathway = paste0(
                     .data$consumed,
                     "-",
                     .data$produced
                 )
             ) |>
-            dplyr::select("species", "edge")
+            dplyr::select("species", "pathway")
 
         # Create a tibble of unique species with a row ID
         unique_species <- rxns_per_species |>
@@ -58,10 +58,10 @@ setMethod(
         # Calculate Jaccard similarity for each pair
         species_combinations$similarity <- mapply(
             function(sp_x, sp_y) {
-                rxns_set_x <- rxns_per_species$edge[
+                rxns_set_x <- rxns_per_species$pathway[
                     rxns_per_species$species == sp_x
                 ]
-                rxns_set_y <- rxns_per_species$edge[
+                rxns_set_y <- rxns_per_species$pathway[
                     rxns_per_species$species == sp_y
                 ]
                 intersection <- length(

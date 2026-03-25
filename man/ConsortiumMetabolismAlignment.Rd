@@ -69,16 +69,16 @@ reference.}
 \item{\code{SimilarityMatrix}}{matrix. Pairwise similarity matrix
 (multiple alignment).}
 
-\item{\code{ConsensusEdges}}{data.frame. Consensus network edges
-(multiple alignment).}
+\item{\code{ConsensusPathways}}{data.frame. Consensus network
+pathways (multiple alignment).}
 
-\item{\code{Prevalence}}{data.frame. Edge prevalence across
+\item{\code{Prevalence}}{data.frame. Pathway prevalence across
 consortia (multiple alignment).}
 
 \item{\code{Dendrogram}}{list. Hierarchical clustering dendrogram
 (multiple alignment).}
 
-\item{\code{Edges}}{data.frame. Combined edge list.}
+\item{\code{Pathways}}{data.frame. Combined pathway list.}
 
 \item{\code{Graphs}}{list. List of igraph objects.}
 

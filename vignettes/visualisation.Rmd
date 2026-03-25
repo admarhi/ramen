@@ -67,12 +67,12 @@ any edge present has weight 1.
 plot(cm_alpha, type = "Binary")
 ```
 
-## Number of species per edge
+## Number of species per pathway
 
 Edge weights reflect how many species catalyse each pathway.
 
-```{r plot-cm-nedges, fig.cap = "nEdges network for Alpha."}
-plot(cm_alpha, type = "nEdges")
+```{r plot-cm-nspecies, fig.cap = "nSpecies network for Alpha."}
+plot(cm_alpha, type = "nSpecies")
 ```
 
 ## Consumption and production
@@ -91,7 +91,7 @@ plot(cm_alpha, type = "Production")
 ## Effective consumption and production
 
 The effective diversity measures indicate how evenly species
-contribute to each edge (Shannon-based effective number of species).
+contribute to each pathway (Shannon-based effective number of species).
 
 ```{r plot-cm-effcons, fig.cap = "Effective consumption network."}
 plot(cm_alpha, type = "EffectiveConsumption")
@@ -178,7 +178,7 @@ function underlying all CM and CMA network plots.
 
 ```{r plot-directed-flow, fig.cap = "Custom directed flow plot."}
 g <- igraph::graph_from_adjacency_matrix(
-    SummarizedExperiment::assay(cm_beta, "nEdges"),
+    SummarizedExperiment::assay(cm_beta, "nSpecies"),
     mode = "directed",
     weighted = TRUE
 )
@@ -189,7 +189,7 @@ plotDirectedFlow(
     edge_width_range = c(0.5, 2),
     vertex_size = 12,
     vertex_label_cex = 0.7,
-    main = "Beta - nEdges (custom)"
+    main = "Beta - nSpecies (custom)"
 )
 ```
 
@@ -198,9 +198,9 @@ plotDirectedFlow(
 | Object class | `type` argument | Description |
 |-------------|-----------------|-------------|
 | CM | `"Binary"` (default) | Directed network, unweighted |
-| CM | `"nEdges"` | Edges weighted by species count |
-| CM | `"Consumption"` | Edges weighted by consumption flux |
-| CM | `"Production"` | Edges weighted by production flux |
+| CM | `"nSpecies"` | Pathways weighted by species count |
+| CM | `"Consumption"` | Pathways weighted by consumption flux |
+| CM | `"Production"` | Pathways weighted by production flux |
 | CM | `"EffectiveConsumption"` | Effective consuming species |
 | CM | `"EffectiveProduction"` | Effective producing species |
 | CMS | (none) | Dendrogram with numbered nodes |

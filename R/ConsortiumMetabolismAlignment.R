@@ -32,13 +32,13 @@
 #'   reference.
 #' @slot SimilarityMatrix matrix. Pairwise similarity matrix
 #'   (multiple alignment).
-#' @slot ConsensusEdges data.frame. Consensus network edges
-#'   (multiple alignment).
-#' @slot Prevalence data.frame. Edge prevalence across
+#' @slot ConsensusPathways data.frame. Consensus network
+#'   pathways (multiple alignment).
+#' @slot Prevalence data.frame. Pathway prevalence across
 #'   consortia (multiple alignment).
 #' @slot Dendrogram list. Hierarchical clustering dendrogram
 #'   (multiple alignment).
-#' @slot Edges data.frame. Combined edge list.
+#' @slot Pathways data.frame. Combined pathway list.
 #' @slot Graphs list. List of igraph objects.
 #' @slot Metabolites data.frame. Metabolite mapping table.
 #'
@@ -89,10 +89,10 @@ ConsortiumMetabolismAlignment <- function(..., tse = NULL) {
         UniqueQuery = data.frame(),
         UniqueReference = data.frame(),
         SimilarityMatrix = matrix(0, 0, 0),
-        ConsensusEdges = data.frame(),
+        ConsensusPathways = data.frame(),
         Prevalence = data.frame(),
         Dendrogram = list(),
-        Edges = data.frame(),
+        Pathways = data.frame(),
         Graphs = list(),
         Metabolites = data.frame()
     )

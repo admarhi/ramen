@@ -6,7 +6,7 @@
 \usage{
 \S4method{plot}{ConsortiumMetabolism,ANY}(
   x,
-  type = c("Binary", "nEdges", "Consumption", "Production", "EffectiveConsumption",
+  type = c("Binary", "nSpecies", "Consumption", "Production", "EffectiveConsumption",
     "EffectiveProduction")
 )
 }

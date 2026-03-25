@@ -29,10 +29,10 @@ consumption and production by its member species.
 A CM object stores:
 
 - **Six assay matrices** (square, metabolite-by-metabolite, sparse):
-  Binary, nEdges, Consumption, Production, EffectiveConsumption,
+  Binary, nSpecies, Consumption, Production, EffectiveConsumption,
   EffectiveProduction
-- **Edge data** linking consumed and produced metabolites with per-edge
-  summary statistics
+- **Pathway data** linking consumed and produced metabolites with
+  per-pathway summary statistics
 - **An igraph object** of the directed metabolic network
 
 This vignette covers construction, accessors, replacement methods,
@@ -183,7 +183,7 @@ metabolites(cm_syn)
 
 ## `pathways()`
 
-Returns the edge data.frame, which contains per-edge summary
+Returns the pathway data.frame, which contains per-pathway summary
 statistics including the number of species catalysing each pathway,
 summed consumption and production fluxes, and effective diversity.
 
@@ -230,8 +230,8 @@ Each matrix encodes a different view of the metabolic network:
 
 | Assay | Content |
 |-------|---------|
-| Binary | 1 if an edge exists, 0 otherwise |
-| nEdges | Number of species catalysing the edge |
+| Binary | 1 if a pathway exists, 0 otherwise |
+| nSpecies | Number of species catalysing the pathway |
 | Consumption | Summed consumption flux across species |
 | Production | Summed production flux across species |
 | EffectiveConsumption | Effective number of consuming species |

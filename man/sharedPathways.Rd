@@ -14,7 +14,7 @@ sharedPathways(object)
 of type \code{"pairwise"}.}
 }
 \value{
-A data.frame of shared pathway edges.
+A data.frame of shared pathways.
 }
 \description{
 Returns pathways shared between query and reference

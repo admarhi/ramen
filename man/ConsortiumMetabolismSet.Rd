@@ -50,8 +50,8 @@ consortium.}
 \item{\code{BinaryMatrices}}{list. Named list of binary matrices
 expanded to universal metabolite space.}
 
-\item{\code{Edges}}{data.frame. Combined edge list from all consortia
-with re-indexed metabolite positions.}
+\item{\code{Pathways}}{data.frame. Combined pathway list from all
+consortia with re-indexed metabolite positions.}
 
 \item{\code{Metabolites}}{data.frame. Metabolite mapping between
 per-consortium and universal indices.}

@@ -50,9 +50,9 @@ different species, along with flux sums and effective fluxes.
 
 \item{\code{Description}}{character. Optional short description.}
 
-\item{\code{Edges}}{data.frame. Edge list of metabolic interactions
-with per-edge metrics (species, flux sums, effective
-diversity).}
+\item{\code{Pathways}}{data.frame. Pathway list of metabolic
+interactions with per-pathway metrics (species, flux
+sums, effective diversity).}
 
 \item{\code{Weighted}}{logical. Whether flux magnitudes are used.}
 

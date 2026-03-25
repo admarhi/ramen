@@ -16,9 +16,9 @@ setMethod("species", "ConsortiumMetabolism", function(object) {
 #'   the fraction of species to return when \code{type} is
 #'   "generalists" or "specialists".
 #'   For "generalists", the top \code{quantileCutoff} fraction of
-#'   species with the most edges is returned. For "specialists",
-#'   the bottom \code{quantileCutoff} fraction with the fewest
-#'   edges is returned.
+#'   species with the most pathways is returned. For
+#'   "specialists", the bottom \code{quantileCutoff} fraction
+#'   with the fewest pathways is returned.
 #'   Defaults to 0.15 (i.e., 15 percent). Ignored when
 #'   \code{type = "all"}.
 #'
@@ -41,17 +41,19 @@ setMethod(
             )
         }
 
-        tb <- object@Edges |>
+        tb <- object@Pathways |>
             dplyr::mutate(
-                edge_name = paste0(
+                pathway_name = paste0(
                     .data$consumed, "-", .data$produced
                 )
             ) |>
             dplyr::reframe(
-                n_edges = dplyr::n_distinct(.data$edge_name),
+                n_pathways = dplyr::n_distinct(
+                    .data$pathway_name
+                ),
                 .by = "species"
             ) |>
-            dplyr::arrange(dplyr::desc(.data$n_edges))
+            dplyr::arrange(dplyr::desc(.data$n_pathways))
 
         total_species <- length(unique(tb$species))
         if (type == "all") {

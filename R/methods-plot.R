@@ -19,7 +19,7 @@ setMethod(
         x,
         type = c(
             "Binary",
-            "nEdges",
+            "nSpecies",
             "Consumption",
             "Production",
             "EffectiveConsumption",
@@ -259,8 +259,8 @@ setMethod(
         )
     }
 
-    ## Combine edges with source labels
-    edges <- data.frame(
+    ## Combine pathways with source labels
+    pw_df <- data.frame(
         consumed = character(0L),
         produced = character(0L),
         source = character(0L),
@@ -268,8 +268,8 @@ setMethod(
     )
 
     if (nrow(cma@SharedPathways) > 0L) {
-        edges <- rbind(
-            edges,
+        pw_df <- rbind(
+            pw_df,
             data.frame(
                 consumed = cma@SharedPathways$consumed,
                 produced = cma@SharedPathways$produced,
@@ -279,8 +279,8 @@ setMethod(
         )
     }
     if (nrow(cma@UniqueQuery) > 0L) {
-        edges <- rbind(
-            edges,
+        pw_df <- rbind(
+            pw_df,
             data.frame(
                 consumed = cma@UniqueQuery$consumed,
                 produced = cma@UniqueQuery$produced,
@@ -290,8 +290,8 @@ setMethod(
         )
     }
     if (nrow(cma@UniqueReference) > 0L) {
-        edges <- rbind(
-            edges,
+        pw_df <- rbind(
+            pw_df,
             data.frame(
                 consumed = cma@UniqueReference$consumed,
                 produced = cma@UniqueReference$produced,
@@ -301,14 +301,14 @@ setMethod(
         )
     }
 
-    if (nrow(edges) == 0L) {
-        cli::cli_warn("No edges to plot.")
+    if (nrow(pw_df) == 0L) {
+        cli::cli_warn("No pathways to plot.")
         return(invisible(NULL))
     }
 
     ## Build igraph
     g <- igraph::graph_from_data_frame(
-        edges[, c("consumed", "produced")],
+        pw_df[, c("consumed", "produced")],
         directed = TRUE
     )
 
@@ -318,7 +318,7 @@ setMethod(
         query = "#377EB8",
         reference = "#E41A1C"
     )
-    igraph::E(g)$color <- color_map[edges$source]
+    igraph::E(g)$color <- color_map[pw_df$source]
 
     plotDirectedFlow(
         g,

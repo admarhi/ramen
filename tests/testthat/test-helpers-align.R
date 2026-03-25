@@ -359,10 +359,10 @@ test_that("expandWeightedAssays returns correct structure", {
     result <- .expandWeightedAssays(cms)
     expect_equal(length(result), 2L)
     expect_true(all(
-        c("nEdges", "Consumption", "Production") %in% names(result[[1L]])
+        c("nSpecies", "Consumption", "Production") %in% names(result[[1L]])
     ))
     ## Dimensions match universal space
     universal_n <- nrow(cms@BinaryMatrices[[1L]])
-    expect_equal(nrow(result[[1L]]$nEdges), universal_n)
-    expect_equal(ncol(result[[1L]]$nEdges), universal_n)
+    expect_equal(nrow(result[[1L]]$nSpecies), universal_n)
+    expect_equal(ncol(result[[1L]]$nSpecies), universal_n)
 })

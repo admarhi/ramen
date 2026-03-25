@@ -56,8 +56,8 @@ setMethod(
                     assays(x)$Production,
                     union_mets
                 ),
-                nEdges = .expandMatrix(
-                    assays(x)$nEdges,
+                nSpecies = .expandMatrix(
+                    assays(x)$nSpecies,
                     union_mets
                 )
             )
@@ -70,8 +70,8 @@ setMethod(
                     assays(y)$Production,
                     union_mets
                 ),
-                nEdges = .expandMatrix(
-                    assays(y)$nEdges,
+                nSpecies = .expandMatrix(
+                    assays(y)$nSpecies,
                     union_mets
                 )
             )
@@ -105,8 +105,8 @@ setMethod(
         correspondences <- .identifyPathwayCorrespondences(
             xBin,
             yBin,
-            x@Edges,
-            y@Edges
+            x@Pathways,
+            y@Pathways
         )
 
         ## 7. Optional: compute p-value
@@ -154,7 +154,7 @@ setMethod(
                 computePvalue = computePvalue,
                 nPermutations = nPermutations
             ),
-            Edges = correspondences$shared,
+            Pathways = correspondences$shared,
             Metabolites = data.frame(
                 met = union_mets,
                 stringsAsFactors = FALSE
@@ -238,10 +238,10 @@ setMethod(
             Scores = scores,
             PrimaryScore = primary,
             SimilarityMatrix = sim_mat,
-            ConsensusEdges = prevalence,
+            ConsensusPathways = prevalence,
             Prevalence = prevalence,
             Dendrogram = list(dend),
-            Edges = prevalence,
+            Pathways = prevalence,
             Metabolites = data.frame(
                 met = rownames(
                     x@BinaryMatrices[[1L]]

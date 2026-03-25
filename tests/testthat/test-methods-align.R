@@ -91,7 +91,7 @@ test_that("align with computePvalue returns valid p-value", {
     expect_true(cma@Pvalue >= 0 && cma@Pvalue <= 1)
 })
 
-test_that("SharedPathways + UniqueQuery + UniqueRef = total edges", {
+test_that("SharedPathways + UniqueQuery + UniqueRef = total pathways", {
     cm1 <- synCM("a", n_species = 4, max_met = 6, seed = 10)
     cm2 <- synCM("b", n_species = 4, max_met = 6, seed = 20)
     cma <- align(cm1, cm2)
@@ -269,7 +269,7 @@ test_that("Prevalence data.frame has correct structure", {
     ))
 })
 
-test_that("ConsensusEdges matches Prevalence", {
+test_that("ConsensusPathways matches Prevalence", {
     cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cms <- ConsortiumMetabolismSet(
@@ -277,7 +277,7 @@ test_that("ConsensusEdges matches Prevalence", {
         name = "test"
     )
     cma <- align(cms)
-    expect_identical(cma@ConsensusEdges, cma@Prevalence)
+    expect_identical(cma@ConsensusPathways, cma@Prevalence)
 })
 
 test_that("Dendrogram is present and valid", {

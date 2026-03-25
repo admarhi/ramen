@@ -22,7 +22,7 @@ test_that("ConsortiumMetabolismSet constructor works", {
     expect_s4_class(cms, "ConsortiumMetabolismSet")
     expect_equal(cms@Name, "test_set")
     expect_equal(length(cms@Consortia), 2)
-    expect_s3_class(cms@Edges, "data.frame")
+    expect_s3_class(cms@Pathways, "data.frame")
 })
 
 test_that("ConsortiumMetabolismSet species works", {
@@ -43,7 +43,7 @@ test_that("ConsortiumMetabolismSet species works", {
     cm2 <- ConsortiumMetabolism(data2, name = "cm2")
     cms <- ConsortiumMetabolismSet(list(cm1, cm2), name = "test")
 
-    # Get all species (returns a tibble with species and n_edges columns)
+    # Get all species (returns a tibble with species and n_pathways columns)
     all_species <- species(cms, type = "all")
     expect_s3_class(all_species, "tbl_df")
     expect_true("s1" %in% all_species$species)
@@ -68,10 +68,10 @@ test_that("ConsortiumMetabolismSet pathways works", {
     cm2 <- ConsortiumMetabolism(data2, name = "cm2")
     cms <- ConsortiumMetabolismSet(list(cm1, cm2), name = "test")
 
-    # Get all edges
-    edges <- pathways(cms, type = "all")
-    expect_s3_class(edges, "data.frame")
-    expect_true(nrow(edges) > 0)
+    # Get all pathways
+    pw <- pathways(cms, type = "all")
+    expect_s3_class(pw, "data.frame")
+    expect_true(nrow(pw) > 0)
 })
 
 test_that("name<- and description<- work for ConsortiumMetabolismSet", {

@@ -85,7 +85,7 @@ scores(cma_fos)
 | FOS | Structural overlap (Szymkiewicz-Simpson) | \|X AND Y\| / min(\|X\|, \|Y\|) |
 | Jaccard | Symmetric set similarity | \|X AND Y\| / \|X OR Y\| |
 | Bray-Curtis | Flux-weighted similarity | 1 - sum\|x-y\| / sum(x+y) |
-| Redundancy Overlap | Species labor distribution | weighted Jaccard on nEdges |
+| Redundancy Overlap | Species labor distribution | weighted Jaccard on nSpecies |
 | MAAS | Composite (0.4 FOS + 0.2 each) | weighted mean |
 
 ## MAAS composite score
@@ -100,7 +100,7 @@ cma_maas@PrimaryScore
 
 ## Pathway correspondences
 
-The alignment classifies every metabolite-metabolite edge as shared, unique
+The alignment classifies every metabolite-metabolite pathway as shared, unique
 to the query, or unique to the reference.
 
 ```{r pairwise-pathways}
@@ -116,7 +116,7 @@ nrow(up$reference) # unique to Beta
 ## Permutation p-values
 
 Statistical significance is assessed by degree-preserving network rewiring.
-The query network's edges are shuffled while preserving each metabolite's
+The query network's pathways are shuffled while preserving each metabolite's
 degree, and the metric is recomputed under the null.
 
 ```{r pairwise-pvalue}
@@ -167,9 +167,9 @@ scores(cma_mult)
 
 ## Consensus network and prevalence
 
-Edge prevalence counts how many consortia share each metabolite-metabolite
-pathway. This enables classification of edges as core (present in most
-consortia) or niche (present in few).
+Pathway prevalence counts how many consortia share each
+metabolite-metabolite pathway. This enables classification of pathways
+as core (present in most consortia) or niche (present in few).
 
 ```{r multiple-prevalence}
 prev <- prevalence(cma_mult)
@@ -219,13 +219,13 @@ alignment raises an informative error).
 | Accessor | Type | Returns |
 |----------|------|---------|
 | `scores()` | both | Named list of scores |
-| `sharedPathways()` | pairwise | data.frame of shared edges |
+| `sharedPathways()` | pairwise | data.frame of shared pathways |
 | `uniquePathways()` | pairwise | list(query, reference) |
 | `similarityMatrix()` | multiple | n x n numeric matrix |
 | `prevalence()` | multiple | data.frame with nConsortia |
-| `consensusEdges()` | multiple | data.frame (same as prevalence) |
+| `consensusPathways()` | multiple | data.frame (same as prevalence) |
 | `metabolites()` | both | Character vector of metabolites |
-| `pathways()` | both | data.frame of edges |
+| `pathways()` | both | data.frame of pathways |
 
 # Session info
 

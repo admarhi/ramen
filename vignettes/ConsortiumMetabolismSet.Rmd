@@ -118,7 +118,7 @@ description(cms_syn)
 ## `species()`
 
 For a CMS, `species()` returns a tibble of all species across
-consortia with the number of distinct edges each species catalyses,
+consortia with the number of distinct pathways each species catalyses,
 sorted in descending order.
 
 ```{r acc-species}
@@ -178,12 +178,12 @@ cms_syn@NodeData
 
 # Pathway classification
 
-The `pathways()` method with a `type` argument classifies edges by
+The `pathways()` method with a `type` argument classifies pathways by
 prevalence across consortia or species.
 
 ## Pan-consortia pathways
 
-Edges present in many consortia (top fraction).
+Pathways present in many consortia (top fraction).
 
 ```{r pathways-pancons}
 pathways(cms_syn, type = "pan-cons")
@@ -191,7 +191,7 @@ pathways(cms_syn, type = "pan-cons")
 
 ## Niche pathways
 
-Edges present in few consortia (bottom fraction).
+Pathways present in few consortia (bottom fraction).
 
 ```{r pathways-niche}
 pathways(cms_syn, type = "niche")
@@ -199,7 +199,7 @@ pathways(cms_syn, type = "niche")
 
 ## Core pathways
 
-Edges catalysed by many species (top fraction).
+Pathways catalysed by many species (top fraction).
 
 ```{r pathways-core}
 pathways(cms_syn, type = "core")
@@ -207,7 +207,7 @@ pathways(cms_syn, type = "core")
 
 ## Auxiliary pathways
 
-Edges catalysed by few species (bottom fraction).
+Pathways catalysed by few species (bottom fraction).
 
 ```{r pathways-aux}
 pathways(cms_syn, type = "aux")
@@ -221,7 +221,7 @@ The `species()` method for CMS supports filtering by metabolic role.
 
 ## Generalists
 
-Species with the most distinct edges (top 15% by default).
+Species with the most distinct pathways (top 15% by default).
 
 ```{r species-generalists}
 species(cms_syn, type = "generalists")
@@ -229,7 +229,7 @@ species(cms_syn, type = "generalists")
 
 ## Specialists
 
-Species with the fewest distinct edges (bottom 15% by default).
+Species with the fewest distinct pathways (bottom 15% by default).
 
 ```{r species-specialists}
 species(cms_syn, type = "specialists")

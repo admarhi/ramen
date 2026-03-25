@@ -24,14 +24,15 @@ pathways(object, ...)
 
 \item{...}{Object specific arguments.}
 
-\item{type}{Character scalar giving the type of edges to output.}
+\item{type}{Character scalar giving the type of pathways to
+output.}
 
-\item{quantileCutoff}{Numeric scalar between 0 and 1 giving the
-quantile threshold to use for filtering edges. For "pan-cons"
-and "core" types, edges above \code{1 - quantileCutoff} are
-returned. For "niche" and "aux" types, edges below
-\code{quantileCutoff} are returned. Defaults to 0.1
-(i.e., top/bottom 10 percent).}
+\item{quantileCutoff}{Numeric scalar between 0 and 1 giving
+the quantile threshold to use for filtering pathways. For
+"pan-cons" and "core" types, pathways above
+\code{1 - quantileCutoff} are returned. For "niche" and
+"aux" types, pathways below \code{quantileCutoff} are
+returned. Defaults to 0.1 (i.e., top/bottom 10 percent).}
 }
 \value{
 A tibble containing pathway information
@@ -61,13 +62,13 @@ individual consortia
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{pathways(ConsortiumMetabolism)}: Get Edges From a
+\item \code{pathways(ConsortiumMetabolism)}: Get Pathways From a
 \code{ConsortiumMetabolism} Object
 
-\item \code{pathways(ConsortiumMetabolismSet)}: Get Edges From a
+\item \code{pathways(ConsortiumMetabolismSet)}: Get Pathways From a
 \code{ConsortiumMetabolismSet} Object
 
-\item \code{pathways(ConsortiumMetabolismAlignment)}: Get Edges From a
+\item \code{pathways(ConsortiumMetabolismAlignment)}: Get Pathways From a
 \code{ConsortiumMetabolismAlignment} Object
 
 }}

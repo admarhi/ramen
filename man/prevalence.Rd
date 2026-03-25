@@ -3,7 +3,7 @@
 \name{prevalence}
 \alias{prevalence}
 \alias{prevalence,ConsortiumMetabolismAlignment-method}
-\title{Get Edge Prevalence}
+\title{Get Pathway Prevalence}
 \usage{
 prevalence(object)
 
@@ -18,12 +18,12 @@ A data.frame with columns \code{consumed}, \code{produced},
 \code{nConsortia}, and \code{proportion}.
 }
 \description{
-Returns edge prevalence across consortia from a
+Returns pathway prevalence across consortia from a
 multiple alignment.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{prevalence(ConsortiumMetabolismAlignment)}: Edge prevalence from a
+\item \code{prevalence(ConsortiumMetabolismAlignment)}: Pathway prevalence from a
 multiple \link{ConsortiumMetabolismAlignment}
 
 }}

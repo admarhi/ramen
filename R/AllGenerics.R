@@ -10,7 +10,7 @@
 #' @param ... Additional arguments passed to methods.
 #'
 #' @return A character vector of species names, or a
-#'   tibble with species and edge counts (for
+#'   tibble with species and pathway counts (for
 #'   [ConsortiumMetabolismSet]).
 #'
 #' @examples
@@ -281,7 +281,7 @@ setGeneric(
 #' unique pathways per species compared, while the consistency tibble contains
 #' information on whether or not a specie's set of pathways is consistent in
 #' all of the consortia in which it is present or not. If all species contain
-#' the same edges in all consortia in which they appear, this tibble will be
+#' the same pathways in all consortia in which they appear, this tibble will be
 #' returned with 0 rows.
 #' For \code{ConsortiumMetabolismSet} objects.
 #'
@@ -335,7 +335,7 @@ setGeneric(
 #' @param object A [ConsortiumMetabolismAlignment] object
 #'   of type `"pairwise"`.
 #'
-#' @return A data.frame of shared pathway edges.
+#' @return A data.frame of shared pathways.
 #'
 #' @examples
 #' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
@@ -398,10 +398,10 @@ setGeneric(
     function(object) standardGeneric("similarityMatrix")
 )
 
-#' @title Get Edge Prevalence
+#' @title Get Pathway Prevalence
 #'
 #' @description
-#' Returns edge prevalence across consortia from a
+#' Returns pathway prevalence across consortia from a
 #' multiple alignment.
 #'
 #' @param object A [ConsortiumMetabolismAlignment] object
@@ -425,16 +425,17 @@ setGeneric(
     function(object) standardGeneric("prevalence")
 )
 
-#' @title Get Consensus Edges
+#' @title Get Consensus Pathways
 #'
 #' @description
-#' Returns the consensus network edges from a multiple
+#' Returns the consensus network pathways from a multiple
 #' alignment.
 #'
 #' @param object A [ConsortiumMetabolismAlignment] object
 #'   of type `"multiple"`.
 #'
-#' @return A data.frame of consensus edges with prevalence.
+#' @return A data.frame of consensus pathways with
+#'   prevalence.
 #'
 #' @examples
 #' \donttest{
@@ -442,13 +443,13 @@ setGeneric(
 #' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
 #' cms <- ConsortiumMetabolismSet(cm1, cm2, name = "test")
 #' cma <- align(cms)
-#' consensusEdges(cma)
+#' consensusPathways(cma)
 #' }
 #'
 #' @export
 setGeneric(
-    "consensusEdges",
-    function(object) standardGeneric("consensusEdges")
+    "consensusPathways",
+    function(object) standardGeneric("consensusPathways")
 )
 
 ## ---- Read accessors --------------------------------------------------------

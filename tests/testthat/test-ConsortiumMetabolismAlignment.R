@@ -185,7 +185,7 @@ test_that("prevalence() returns data.frame for multiple", {
     expect_true("nConsortia" %in% names(p))
 })
 
-test_that("consensusEdges() returns data.frame for multiple", {
+test_that("consensusPathways() returns data.frame for multiple", {
     cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cms <- ConsortiumMetabolismSet(
@@ -193,7 +193,7 @@ test_that("consensusEdges() returns data.frame for multiple", {
         name = "test"
     )
     cma <- align(cms)
-    ce <- consensusEdges(cma)
-    expect_true(is.data.frame(ce))
-    expect_identical(ce, prevalence(cma))
+    cp <- consensusPathways(cma)
+    expect_true(is.data.frame(cp))
+    expect_identical(cp, prevalence(cma))
 })

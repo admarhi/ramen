@@ -160,19 +160,21 @@
 
 #' Redundancy Overlap
 #'
-#' Computes weighted Jaccard on species-count (nEdges) matrices.
-#' Measures how similarly two consortia distribute metabolic
-#' labor across species for shared pathways.
+#' Computes weighted Jaccard on species-count (nSpecies)
+#' matrices. Measures how similarly two consortia distribute
+#' metabolic labor across species for shared pathways.
 #'
-#' @param xEdges nEdges assay matrix for query (union space).
-#' @param yEdges nEdges assay matrix for reference (union space).
+#' @param xSpecies nSpecies assay matrix for query (union
+#'   space).
+#' @param ySpecies nSpecies assay matrix for reference (union
+#'   space).
 #'
 #' @return Numeric scalar in \[0, 1\].
 #'
 #' @noRd
-.redundancyOverlap <- function(xEdges, yEdges) {
-    diff_mat <- abs(xEdges - yEdges)
-    total <- xEdges + yEdges
+.redundancyOverlap <- function(xSpecies, ySpecies) {
+    diff_mat <- abs(xSpecies - ySpecies)
+    total <- xSpecies + ySpecies
     numer <- sum(total - diff_mat) / 2
     denom <- sum(total + diff_mat) / 2
     if (denom == 0) {
@@ -191,7 +193,7 @@
 #' @param yBin Sparse binary matrix for reference (union space).
 #' @param xWeighted Named list of weighted assay matrices for
 #'   query. Expected names: `"Consumption"`, `"Production"`,
-#'   `"nEdges"`. `NULL` if unweighted.
+#'   `"nSpecies"`. `NULL` if unweighted.
 #' @param yWeighted Named list of weighted assay matrices for
 #'   reference. Same structure as `xWeighted`.
 #'
@@ -222,8 +224,8 @@
             )
         )
         scores$redundancyOverlap <- .redundancyOverlap(
-            xWeighted$nEdges,
-            yWeighted$nEdges
+            xWeighted$nSpecies,
+            yWeighted$nSpecies
         )
     } else {
         scores$brayCurtis <- NA_real_
@@ -278,15 +280,15 @@
 #' Identify pathway correspondences
 #'
 #' Given two binary matrices in the same metabolite space,
-#' identifies shared pathways (edges present in both), pathways
+#' identifies shared pathways (present in both), pathways
 #' unique to the query, and pathways unique to the reference.
 #' Returns results as tibbles with columns: consumed, produced,
 #' source (species involved).
 #'
 #' @param xBin Sparse binary matrix (query, union space).
 #' @param yBin Sparse binary matrix (reference, union space).
-#' @param xEdges Edge data.frame from the query CM.
-#' @param yEdges Edge data.frame from the reference CM.
+#' @param xPathways Pathway data.frame from the query CM.
+#' @param yPathways Pathway data.frame from the reference CM.
 #'
 #' @return A named list with elements:
 #'   \describe{
@@ -297,14 +299,14 @@
 #'   }
 #'
 #' @noRd
-.identifyPathwayCorrespondences <- function(xBin, yBin, xEdges, yEdges) {
+.identifyPathwayCorrespondences <- function(xBin, yBin, xPathways, yPathways) {
     metabolites <- rownames(xBin)
 
     shared_mat <- Matrix::drop0(xBin * yBin)
     unique_x <- Matrix::drop0(xBin - shared_mat)
     unique_y <- Matrix::drop0(yBin - shared_mat)
 
-    .matToEdgeList <- function(mat) {
+    .matToPathwayList <- function(mat) {
         triplet <- Matrix::summary(mat)
         if (nrow(triplet) == 0L) {
             return(tibble::tibble(
@@ -318,16 +320,16 @@
         )
     }
 
-    shared_edges <- .matToEdgeList(shared_mat)
-    unique_x_edges <- .matToEdgeList(unique_x)
-    unique_y_edges <- .matToEdgeList(unique_y)
+    shared_pw <- .matToPathwayList(shared_mat)
+    unique_x_pw <- .matToPathwayList(unique_x)
+    unique_y_pw <- .matToPathwayList(unique_y)
 
-    ## Enrich shared edges with species info
-    if (nrow(shared_edges) > 0L) {
-        shared_edges <- shared_edges |>
+    ## Enrich shared pathways with species info
+    if (nrow(shared_pw) > 0L) {
+        shared_pw <- shared_pw |>
             dplyr::left_join(
                 dplyr::select(
-                    xEdges,
+                    xPathways,
                     "consumed",
                     "produced",
                     "data"
@@ -337,7 +339,7 @@
             dplyr::rename(querySpecies = "data") |>
             dplyr::left_join(
                 dplyr::select(
-                    yEdges,
+                    yPathways,
                     "consumed",
                     "produced",
                     "data"
@@ -348,9 +350,9 @@
     }
 
     list(
-        shared = shared_edges,
-        uniqueQuery = unique_x_edges,
-        uniqueReference = unique_y_edges
+        shared = shared_pw,
+        uniqueQuery = unique_x_pw,
+        uniqueReference = unique_y_pw
     )
 }
 
@@ -413,7 +415,7 @@
 
 #' Pre-expand weighted assays to universal metabolite space
 #'
-#' Expands Consumption, Production, and nEdges assay matrices
+#' Expands Consumption, Production, and nSpecies assay matrices
 #' for every consortium in a CMS to the universal metabolite
 #' space. Called once at the start of non-FOS multiple alignment
 #' to avoid redundant per-pair expansions.
@@ -421,9 +423,9 @@
 #' @param cms A [ConsortiumMetabolismSet] object.
 #'
 #' @return A named list (keyed by consortium name), each element
-#'   a named list with `Consumption`, `Production`, and `nEdges`
-#'   sparse matrices in universal space. Elements are `NULL` for
-#'   unweighted consortia.
+#'   a named list with `Consumption`, `Production`, and
+#'   `nSpecies` sparse matrices in universal space. Elements are
+#'   `NULL` for unweighted consortia.
 #'
 #' @noRd
 .expandWeightedAssays <- function(cms) {
@@ -435,8 +437,8 @@
             return(NULL)
         }
         list(
-            nEdges = .expandMatrix(
-                assays(cm)$nEdges,
+            nSpecies = .expandMatrix(
+                assays(cm)$nSpecies,
                 universal_mets
             ),
             Consumption = .expandMatrix(
@@ -511,8 +513,8 @@
                 )
             } else if (method == "redundancyOverlap") {
                 .redundancyOverlap(
-                    weighted[[i]]$nEdges,
-                    weighted[[j]]$nEdges
+                    weighted[[i]]$nSpecies,
+                    weighted[[j]]$nSpecies
                 )
             } else {
                 ## MAAS
@@ -550,11 +552,11 @@
     sim_mat
 }
 
-#' Build edge prevalence from a CMS
+#' Build pathway prevalence from a CMS
 #'
 #' Extracts the Levels assay from a CMS (which counts how many
-#' consortia have each metabolite-metabolite edge) and returns
-#' a tidy data.frame of edge prevalence.
+#' consortia have each metabolite-metabolite pathway) and
+#' returns a tidy data.frame of pathway prevalence.
 #'
 #' @param cms A [ConsortiumMetabolismSet] object.
 #'

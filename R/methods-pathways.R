@@ -3,22 +3,23 @@ NULL
 
 ### The output of the two methods should be standardised.
 
-#' @describeIn pathways Get Edges From a
+#' @describeIn pathways Get Pathways From a
 #'   \code{ConsortiumMetabolism} Object
 #' @export
 setMethod("pathways", "ConsortiumMetabolism", function(object) {
-    object@Edges
+    object@Pathways
 })
 
-#' @describeIn pathways Get Edges From a
+#' @describeIn pathways Get Pathways From a
 #'   \code{ConsortiumMetabolismSet} Object
-#' @param type Character scalar giving the type of edges to output.
-#' @param quantileCutoff Numeric scalar between 0 and 1 giving the
-#'   quantile threshold to use for filtering edges. For "pan-cons"
-#'   and "core" types, edges above \code{1 - quantileCutoff} are
-#'   returned. For "niche" and "aux" types, edges below
-#'   \code{quantileCutoff} are returned. Defaults to 0.1
-#'   (i.e., top/bottom 10 percent).
+#' @param type Character scalar giving the type of pathways to
+#'   output.
+#' @param quantileCutoff Numeric scalar between 0 and 1 giving
+#'   the quantile threshold to use for filtering pathways. For
+#'   "pan-cons" and "core" types, pathways above
+#'   \code{1 - quantileCutoff} are returned. For "niche" and
+#'   "aux" types, pathways below \code{quantileCutoff} are
+#'   returned. Defaults to 0.1 (i.e., top/bottom 10 percent).
 #' @export
 setMethod(
     "pathways",
@@ -39,7 +40,7 @@ setMethod(
             )
         }
 
-        pathways_cons <- object@Edges |>
+        pathways_cons <- object@Pathways |>
             dplyr::reframe(
                 n_cons = dplyr::n_distinct(.data$cm_name),
                 .by = c(
@@ -49,7 +50,7 @@ setMethod(
             ) |>
             dplyr::arrange(dplyr::desc(.data$n_cons))
 
-        pathways_species <- object@Edges |>
+        pathways_species <- object@Pathways |>
             dplyr::reframe(
                 n_species = dplyr::n_distinct(
                     .data$species
@@ -70,7 +71,7 @@ setMethod(
             pathways_cons
         } else {
             if (type == "pan-cons") {
-                # Edges in top (1 - quantileCutoff) of consortia
+                # Pathways in top (1 - quantileCutoff) of consortia
                 quant <- stats::quantile(
                     1:total_cons,
                     p = 1 - quantileCutoff
@@ -83,7 +84,7 @@ setMethod(
                         dplyr::desc(.data$n_cons)
                     )
             } else if (type == "niche") {
-                # Edges in bottom quantileCutoff of consortia
+                # Pathways in bottom quantileCutoff of consortia
                 quant <- stats::quantile(
                     1:total_cons, p = quantileCutoff
                 )
@@ -93,7 +94,7 @@ setMethod(
                     ) |>
                     dplyr::arrange(.data$n_cons)
             } else if (type == "core") {
-                # Edges in top (1 - quantileCutoff) of species
+                # Pathways in top (1 - quantileCutoff) of species
                 quant <- stats::quantile(
                     2:total_species,
                     p = 1 - quantileCutoff
@@ -106,7 +107,7 @@ setMethod(
                         dplyr::desc(.data$n_species)
                     )
             } else if (type == "aux") {
-                # Edges in bottom quantileCutoff of species
+                # Pathways in bottom quantileCutoff of species
                 quant <- stats::quantile(
                     1:total_species,
                     p = quantileCutoff
@@ -121,13 +122,13 @@ setMethod(
     }
 )
 
-#' @describeIn pathways Get Edges From a
+#' @describeIn pathways Get Pathways From a
 #'   \code{ConsortiumMetabolismAlignment} Object
 #' @export
 setMethod(
     "pathways",
     "ConsortiumMetabolismAlignment",
     function(object) {
-        object@Edges
+        object@Pathways
     }
 )

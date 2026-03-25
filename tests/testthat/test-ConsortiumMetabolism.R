@@ -13,7 +13,7 @@ test_that("ConsortiumMetabolism constructor works with basic data", {
     expect_s4_class(cm, "ConsortiumMetabolism")
     expect_equal(cm@Name, "test_cm")
     expect_true(length(cm@Metabolites) > 0)
-    expect_s3_class(cm@Edges, "data.frame")
+    expect_s3_class(cm@Pathways, "data.frame")
 })
 
 test_that("ConsortiumMetabolism handles weighted vs unweighted networks", {
@@ -67,7 +67,7 @@ test_that("metabolites returns metabolites", {
     expect_true(length(mets) > 0)
 })
 
-test_that("pathways returns edge data", {
+test_that("pathways returns pathway data", {
     test_data <- tibble::tibble(
         species = c("s1", "s1", "s2", "s2"),
         met = c("m1", "m2", "m1", "m3"),
@@ -75,10 +75,10 @@ test_that("pathways returns edge data", {
     )
 
     cm <- ConsortiumMetabolism(test_data, name = "test")
-    edges <- pathways(cm)
+    pw <- pathways(cm)
 
-    expect_s3_class(edges, "data.frame")
-    expect_true(nrow(edges) > 0)
+    expect_s3_class(pw, "data.frame")
+    expect_true(nrow(pw) > 0)
 })
 
 test_that("synCM generates synthetic communities", {
@@ -87,5 +87,5 @@ test_that("synCM generates synthetic communities", {
 
     expect_s4_class(syn, "ConsortiumMetabolism")
     expect_equal(syn@Name, "synthetic")
-    expect_true(nrow(syn@Edges) > 0)
+    expect_true(nrow(syn@Pathways) > 0)
 })

@@ -18,8 +18,8 @@
 #'   consortium.
 #' @slot BinaryMatrices list. Named list of binary matrices
 #'   expanded to universal metabolite space.
-#' @slot Edges data.frame. Combined edge list from all consortia
-#'   with re-indexed metabolite positions.
+#' @slot Pathways data.frame. Combined pathway list from all
+#'   consortia with re-indexed metabolite positions.
 #' @slot Metabolites data.frame. Metabolite mapping between
 #'   per-consortium and universal indices.
 #'
@@ -137,15 +137,15 @@ ConsortiumMetabolismSet <- function(
         expanded_bm, cm_names
     )
 
-    ## ---- 7. Assemble edges ------------------------------------
+    ## ---- 7. Assemble pathways ---------------------------------
     cli::cli_progress_step(
-        "Assembling edge data from \\
+        "Assembling pathway data from \\
         {.val {n_cons}} consortia"
     )
-    all_edges <-
+    all_pathways <-
         lapply(seq_len(n_cons), \(i) {
             dplyr::mutate(
-                cons[[i]]@Edges, cm_name = cm_names[[i]]
+                cons[[i]]@Pathways, cm_name = cm_names[[i]]
             )
         }) |>
         dplyr::bind_rows() |>
@@ -234,7 +234,7 @@ ConsortiumMetabolismSet <- function(
         NodeData = node_data,
         Graphs = graph_list,
         BinaryMatrices = expanded_bm,
-        Edges = all_edges,
+        Pathways = all_pathways,
         Metabolites = all_met
     )
 }

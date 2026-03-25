@@ -7,9 +7,9 @@
 #'
 #' @slot Name character. Display name for the consortium.
 #' @slot Description character. Optional short description.
-#' @slot Edges data.frame. Edge list of metabolic interactions
-#'   with per-edge metrics (species, flux sums, effective
-#'   diversity).
+#' @slot Pathways data.frame. Pathway list of metabolic
+#'   interactions with per-pathway metrics (species, flux
+#'   sums, effective diversity).
 #' @slot Weighted logical. Whether flux magnitudes are used.
 #' @slot InputData data.frame. Original input data (species,
 #'   metabolite, flux columns).
@@ -96,8 +96,8 @@ ConsortiumMetabolism <- function(
         }
     }
 
-    # Create edge data with metrics
-    out <- .createEdgeData(cons, prod, mets)
+    # Create pathway data with metrics
+    out <- .createPathwayData(cons, prod, mets)
 
     # Generate assay matrices
     assays <- .createAssayMatrices(out, mets)
@@ -121,7 +121,7 @@ ConsortiumMetabolism <- function(
     newConsortiumMetabolism(
         tse,
         Name = name,
-        Edges = out,
+        Pathways = out,
         Weighted = !all(data$flux**2 == 1),
         InputData = as.data.frame(data),
         Metabolites = unique(data$met),
@@ -189,9 +189,9 @@ ConsortiumMetabolism <- function(
         rename(produced = "met")
 }
 
-#' Create edge data with all metrics
+#' Create pathway data with all metrics
 #' @noRd
-.createEdgeData <- function(cons, prod, mets) {
+.createPathwayData <- function(cons, prod, mets) {
     cons |>
         dplyr::inner_join(
             prod,
@@ -251,7 +251,7 @@ ConsortiumMetabolism <- function(
             dims = c(n, n),
             dimnames = dimnames
         ),
-        nEdges = sparseMatrix(
+        nSpecies = sparseMatrix(
             out$c_ind,
             out$p_ind,
             x = out$n_species,

@@ -66,7 +66,7 @@ setMethod(
     }
 )
 
-#' @describeIn prevalence Edge prevalence from a
+#' @describeIn prevalence Pathway prevalence from a
 #'   multiple [ConsortiumMetabolismAlignment]
 #' @export
 setMethod(
@@ -83,19 +83,19 @@ setMethod(
     }
 )
 
-#' @describeIn consensusEdges Consensus edges from a
-#'   multiple [ConsortiumMetabolismAlignment]
+#' @describeIn consensusPathways Consensus pathways from
+#'   a multiple [ConsortiumMetabolismAlignment]
 #' @export
 setMethod(
-    "consensusEdges",
+    "consensusPathways",
     "ConsortiumMetabolismAlignment",
     function(object) {
         if (object@Type != "multiple") {
             cli::cli_abort(
-                "{.fun consensusEdges} is only available \\
-                 for multiple alignments."
+                "{.fun consensusPathways} is only \\
+                 available for multiple alignments."
             )
         }
-        object@ConsensusEdges
+        object@ConsensusPathways
     }
 )

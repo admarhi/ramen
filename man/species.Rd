@@ -30,15 +30,15 @@ species(object, ...)
 the fraction of species to return when \code{type} is
 "generalists" or "specialists".
 For "generalists", the top \code{quantileCutoff} fraction of
-species with the most edges is returned. For "specialists",
-the bottom \code{quantileCutoff} fraction with the fewest
-edges is returned.
+species with the most pathways is returned. For
+"specialists", the bottom \code{quantileCutoff} fraction
+with the fewest pathways is returned.
 Defaults to 0.15 (i.e., 15 percent). Ignored when
 \code{type = "all"}.}
 }
 \value{
 A character vector of species names, or a
-tibble with species and edge counts (for
+tibble with species and pathway counts (for
 \link{ConsortiumMetabolismSet}).
 
 A character vector representing the microorganisms.

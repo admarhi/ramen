@@ -8,7 +8,7 @@ newConsortiumMetabolism <- setClass(
     slots = list(
         Name = "character",
         Description = "character",
-        Edges = "data.frame",
+        Pathways = "data.frame",
         Weighted = "logical",
         InputData = "data.frame",
         Metabolites = "character",
@@ -32,7 +32,7 @@ newConsortiumMetabolismSet <- setClass(
         NodeData = "data.frame",
         Graphs = "list",
         BinaryMatrices = "list",
-        Edges = "data.frame",
+        Pathways = "data.frame",
         Metabolites = "data.frame"
     )
 )
@@ -64,11 +64,11 @@ newConsortiumMetabolismAlignment <- setClass(
         UniqueReference = "data.frame",
         ## -- Multiple alignment --
         SimilarityMatrix = "matrix",
-        ConsensusEdges = "data.frame",
+        ConsensusPathways = "data.frame",
         Prevalence = "data.frame",
         Dendrogram = "list",
         ## -- Carried over --
-        Edges = "data.frame",
+        Pathways = "data.frame",
         Graphs = "list",
         Metabolites = "data.frame"
     )
@@ -105,11 +105,11 @@ setValidity("ConsortiumMetabolism", function(object) {
         )
     }
 
-    ## Edges must be a data.frame
-    if (!is.data.frame(object@Edges)) {
+    ## Pathways must be a data.frame
+    if (!is.data.frame(object@Pathways)) {
         errors <- c(
             errors,
-            "'Edges' must be a data.frame"
+            "'Pathways' must be a data.frame"
         )
     }
 
@@ -193,11 +193,11 @@ setValidity("ConsortiumMetabolismSet", function(object) {
         )
     }
 
-    ## Edges must be a data.frame
-    if (!is.data.frame(object@Edges)) {
+    ## Pathways must be a data.frame
+    if (!is.data.frame(object@Pathways)) {
         errors <- c(
             errors,
-            "'Edges' must be a data.frame"
+            "'Pathways' must be a data.frame"
         )
     }
 
