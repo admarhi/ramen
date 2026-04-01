@@ -9,55 +9,77 @@
 \usage{
 pathways(object, ...)
 
-\S4method{pathways}{ConsortiumMetabolism}(object)
+\S4method{pathways}{ConsortiumMetabolism}(object, verbose = FALSE)
 
 \S4method{pathways}{ConsortiumMetabolismSet}(
   object,
   type = c("all", "pan-cons", "niche", "core", "aux"),
-  quantileCutoff = 0.1
+  quantileCutoff = 0.1,
+  verbose = FALSE
 )
 
 \S4method{pathways}{ConsortiumMetabolismAlignment}(object)
 }
 \arguments{
-\item{object}{A \code{ConsortiumMetabolism} object.}
+\item{object}{A \code{ConsortiumMetabolism},
+\code{ConsortiumMetabolismSet}, or
+\code{ConsortiumMetabolismAlignment} object.}
 
-\item{...}{Object specific arguments.}
+\item{...}{Object specific arguments. See methods for
+details.}
 
-\item{type}{Character scalar giving the type of pathways to
-output.}
+\item{verbose}{Logical scalar. If \code{FALSE}
+(default), returns a concise summary with columns
+\code{consumed}, \code{produced}, and
+\code{n_species}. If \code{TRUE}, returns the full
+pathway data including flux statistics, effective
+values, and per-species detail.}
 
-\item{quantileCutoff}{Numeric scalar between 0 and 1 giving
-the quantile threshold to use for filtering pathways. For
-"pan-cons" and "core" types, pathways above
-\code{1 - quantileCutoff} are returned. For "niche" and
-"aux" types, pathways below \code{quantileCutoff} are
-returned. Defaults to 0.1 (i.e., top/bottom 10 percent).}
+\item{type}{Character scalar giving the type of
+pathways to output.}
+
+\item{quantileCutoff}{Numeric scalar between 0 and 1
+giving the quantile threshold to use for filtering
+pathways. For \code{"pan-cons"} and \code{"core"}
+types, pathways above \code{1 - quantileCutoff}
+are returned. For \code{"niche"} and \code{"aux"}
+types, pathways below \code{quantileCutoff} are
+returned. Defaults to 0.1 (i.e., top/bottom 10
+percent).}
 }
 \value{
-A tibble containing pathway information
-including:
-\itemize{
-\item consumed/produced metabolites
-\item number of species involved
-\item consumption/production sums
-\item effective consumption/production metrics
-}
+A data.frame of pathway information. With
+\code{verbose = FALSE} (default): \code{consumed},
+\code{produced}, \code{n_species} (and
+\code{n_cons} for CMS objects). With
+\code{verbose = TRUE}: all available columns
+including flux statistics and indices.
 }
 \description{
 Retrieves the pathways representing metabolic
 interactions between species.
-The argument \code{type} can be used to return only specific
-types of pathways from a \code{ConsortiumMetabolismSet} type
-object.
+
+By default, returns a concise summary with columns
+\code{consumed}, \code{produced}, and
+\code{n_species}. For
+\code{ConsortiumMetabolismSet} objects, \code{n_cons}
+is included as well. Set \code{verbose = TRUE} to
+return the full pathway data including flux
+statistics, indices, and per-species detail.
+
+The argument \code{type} can be used to return only
+specific types of pathways from a
+\code{ConsortiumMetabolismSet} object:
 \itemize{
-\item \code{all} will return all pathways
-\item \code{pan-cons} will return only pathways that exist
-in all consortia
-\item \code{niche} will return niche pathways specific to
-individual consortia
-\item \code{core} will return core metabolic pathways
-\item \code{aux} will return auxiliary pathways
+\item \code{"all"} returns all pathways
+\item \code{"pan-cons"} returns pathways present in
+most consortia
+\item \code{"niche"} returns niche pathways specific
+to few consortia
+\item \code{"core"} returns core metabolic pathways
+shared across most species
+\item \code{"aux"} returns auxiliary pathways found
+in few species
 }
 }
 \section{Methods (by class)}{
@@ -75,5 +97,6 @@ individual consortia
 \examples{
 cm <- synCM("test", n_species = 3, max_met = 5)
 pathways(cm)
+pathways(cm, verbose = TRUE)
 
 }

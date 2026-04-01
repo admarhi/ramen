@@ -51,7 +51,7 @@ test_that("ConsortiumMetabolismSet species works", {
     expect_true("s3" %in% all_species$species)
 })
 
-test_that("ConsortiumMetabolismSet pathways works", {
+test_that("CMS pathways returns concise output by default", {
     data1 <- tibble::tibble(
         species = c("s1", "s1", "s2", "s2"),
         met = c("m1", "m2", "m1", "m3"),
@@ -68,10 +68,63 @@ test_that("ConsortiumMetabolismSet pathways works", {
     cm2 <- ConsortiumMetabolism(data2, name = "cm2")
     cms <- ConsortiumMetabolismSet(list(cm1, cm2), name = "test")
 
-    # Get all pathways
-    pw <- pathways(cms, type = "all")
+    pw <- pathways(cms)
     expect_s3_class(pw, "data.frame")
     expect_true(nrow(pw) > 0)
+    expect_named(
+        pw,
+        c("consumed", "produced", "n_species", "n_cons")
+    )
+})
+
+test_that("CMS pathways verbose returns full detail", {
+    data1 <- tibble::tibble(
+        species = c("s1", "s1", "s2", "s2"),
+        met = c("m1", "m2", "m1", "m3"),
+        flux = c(-1, 1, -1, 1)
+    )
+
+    data2 <- tibble::tibble(
+        species = c("s1", "s1", "s3", "s3"),
+        met = c("m1", "m2", "m2", "m4"),
+        flux = c(-1, 1, -1, 1)
+    )
+
+    cm1 <- ConsortiumMetabolism(data1, name = "cm1")
+    cm2 <- ConsortiumMetabolism(data2, name = "cm2")
+    cms <- ConsortiumMetabolismSet(list(cm1, cm2), name = "test")
+
+    pw <- pathways(cms, verbose = TRUE)
+    expect_s3_class(pw, "data.frame")
+    expect_true("cm_name" %in% names(pw))
+    expect_true("species" %in% names(pw))
+    expect_true("n_cons" %in% names(pw))
+    expect_true(ncol(pw) > 4)
+})
+
+test_that("CMS pathways type filtering works", {
+    data1 <- tibble::tibble(
+        species = c("s1", "s1", "s2", "s2"),
+        met = c("m1", "m2", "m1", "m3"),
+        flux = c(-1, 1, -1, 1)
+    )
+
+    data2 <- tibble::tibble(
+        species = c("s1", "s1", "s3", "s3"),
+        met = c("m1", "m2", "m2", "m4"),
+        flux = c(-1, 1, -1, 1)
+    )
+
+    cm1 <- ConsortiumMetabolism(data1, name = "cm1")
+    cm2 <- ConsortiumMetabolism(data2, name = "cm2")
+    cms <- ConsortiumMetabolismSet(list(cm1, cm2), name = "test")
+
+    pw_all <- pathways(cms, type = "all")
+    expect_true(nrow(pw_all) > 0)
+    expect_named(
+        pw_all,
+        c("consumed", "produced", "n_species", "n_cons")
+    )
 })
 
 test_that("name<- and description<- work for ConsortiumMetabolismSet", {

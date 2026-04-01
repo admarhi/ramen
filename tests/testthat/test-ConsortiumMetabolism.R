@@ -67,7 +67,7 @@ test_that("metabolites returns metabolites", {
     expect_true(length(mets) > 0)
 })
 
-test_that("pathways returns pathway data", {
+test_that("pathways returns concise output by default", {
     test_data <- tibble::tibble(
         species = c("s1", "s1", "s2", "s2"),
         met = c("m1", "m2", "m1", "m3"),
@@ -79,6 +79,24 @@ test_that("pathways returns pathway data", {
 
     expect_s3_class(pw, "data.frame")
     expect_true(nrow(pw) > 0)
+    expect_named(pw, c("consumed", "produced", "n_species"))
+})
+
+test_that("pathways verbose returns full detail", {
+    test_data <- tibble::tibble(
+        species = c("s1", "s1", "s2", "s2"),
+        met = c("m1", "m2", "m1", "m3"),
+        flux = c(-1, 1, -1, 1)
+    )
+
+    cm <- ConsortiumMetabolism(test_data, name = "test")
+    pw <- pathways(cm, verbose = TRUE)
+
+    expect_s3_class(pw, "data.frame")
+    expect_true(ncol(pw) > 3)
+    expect_true("c_sum" %in% names(pw))
+    expect_true("c_eff" %in% names(pw))
+    expect_true("data" %in% names(pw))
 })
 
 test_that("synCM generates synthetic communities", {

@@ -50,34 +50,47 @@ setGeneric(
 #' @description
 #' Retrieves the pathways representing metabolic
 #' interactions between species.
-#' The argument `type` can be used to return only specific
-#' types of pathways from a `ConsortiumMetabolismSet` type
-#' object.
+#'
+#' By default, returns a concise summary with columns
+#' \code{consumed}, \code{produced}, and
+#' \code{n_species}. For
+#' \code{ConsortiumMetabolismSet} objects, \code{n_cons}
+#' is included as well. Set \code{verbose = TRUE} to
+#' return the full pathway data including flux
+#' statistics, indices, and per-species detail.
+#'
+#' The argument \code{type} can be used to return only
+#' specific types of pathways from a
+#' \code{ConsortiumMetabolismSet} object:
 #' \itemize{
-#'   \item `all` will return all pathways
-#'   \item `pan-cons` will return only pathways that exist
-#'     in all consortia
-#'   \item `niche` will return niche pathways specific to
-#'     individual consortia
-#'   \item `core` will return core metabolic pathways
-#'   \item `aux` will return auxiliary pathways
+#'   \item \code{"all"} returns all pathways
+#'   \item \code{"pan-cons"} returns pathways present in
+#'     most consortia
+#'   \item \code{"niche"} returns niche pathways specific
+#'     to few consortia
+#'   \item \code{"core"} returns core metabolic pathways
+#'     shared across most species
+#'   \item \code{"aux"} returns auxiliary pathways found
+#'     in few species
 #' }
 #'
-#' @param object A \code{ConsortiumMetabolism} object.
-#' @param ... Object specific arguments.
+#' @param object A \code{ConsortiumMetabolism},
+#'   \code{ConsortiumMetabolismSet}, or
+#'   \code{ConsortiumMetabolismAlignment} object.
+#' @param ... Object specific arguments. See methods for
+#'   details.
 #'
-#' @return A tibble containing pathway information
-#'   including:
-#' \itemize{
-#'   \item consumed/produced metabolites
-#'   \item number of species involved
-#'   \item consumption/production sums
-#'   \item effective consumption/production metrics
-#' }
+#' @return A data.frame of pathway information. With
+#'   \code{verbose = FALSE} (default): \code{consumed},
+#'   \code{produced}, \code{n_species} (and
+#'   \code{n_cons} for CMS objects). With
+#'   \code{verbose = TRUE}: all available columns
+#'   including flux statistics and indices.
 #'
 #' @examples
 #' cm <- synCM("test", n_species = 3, max_met = 5)
 #' pathways(cm)
+#' pathways(cm, verbose = TRUE)
 #'
 #' @export
 setGeneric(
