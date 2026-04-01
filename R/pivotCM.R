@@ -30,6 +30,19 @@
 #'   flux = "flux"
 #' )
 pivotCM <- function(tb, species, from, to, flux) {
+    if (!is.data.frame(tb)) {
+        cli::cli_abort(
+            "{.arg tb} must be a data.frame, not {.cls {class(tb)}}."
+        )
+    }
+    required <- c(species, from, to, flux)
+    missing_cols <- setdiff(required, names(tb))
+    if (length(missing_cols) > 0) {
+        cli::cli_abort(
+            "Column{?s} {.val {missing_cols}} not found
+            in {.arg tb}."
+        )
+    }
     tb |>
         tidyr::pivot_longer(cols = c(from, to)) |>
         dplyr::rename(

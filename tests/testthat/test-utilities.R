@@ -47,6 +47,40 @@ test_that("pivotCM handles custom column names", {
     expect_equal(nrow(pivoted), 2) # One row for consumption, one for production
 })
 
+test_that("pivotCM errors on non-data.frame input", {
+    expect_error(
+        pivotCM(list(a = 1), "a", "b", "c", "d"),
+        "must be a data.frame"
+    )
+})
+
+test_that("pivotCM errors on missing columns", {
+    tb <- tibble::tibble(species = "s1", flux = 1)
+    expect_error(
+        pivotCM(tb, "species", "uptake", "secretion", "flux"),
+        "uptake.*secretion|secretion.*uptake"
+    )
+})
+
+test_that("synCM errors on invalid name", {
+    expect_error(synCM(123, 3, 5), "single character string")
+    expect_error(synCM(c("a", "b"), 3, 5), "single character string")
+})
+
+test_that("synCM errors on non-positive n_species", {
+    expect_error(synCM("x", 0, 5), "positive integer")
+    expect_error(synCM("x", -1, 5), "positive integer")
+})
+
+test_that("synCM errors on max_met < 2", {
+    expect_error(synCM("x", 3, 1), "integer >= 2")
+    expect_error(synCM("x", 3, 0), "integer >= 2")
+})
+
+test_that("synCM errors on non-positive scale_fac", {
+    expect_error(synCM("x", 3, 5, scale_fac = 0), "positive integer")
+})
+
 test_that("name<- works for ConsortiumMetabolism", {
     test_data <- tibble::tibble(
         species = c("s1", "s1"),

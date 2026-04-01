@@ -48,6 +48,32 @@ synCM <- function(
     dead_ends = FALSE,
     cm = TRUE
 ) {
+    if (!is.character(name) || length(name) != 1L) {
+        cli::cli_abort(
+            "{.arg name} must be a single character string."
+        )
+    }
+    if (!is.numeric(n_species) || length(n_species) != 1L ||
+        n_species < 1L) {
+        cli::cli_abort(
+            "{.arg n_species} must be a positive integer,
+            not {.val {n_species}}."
+        )
+    }
+    if (!is.numeric(max_met) || length(max_met) != 1L ||
+        max_met < 2L) {
+        cli::cli_abort(
+            "{.arg max_met} must be an integer >= 2,
+            not {.val {max_met}}."
+        )
+    }
+    if (!is.numeric(scale_fac) || length(scale_fac) != 1L ||
+        scale_fac < 1L) {
+        cli::cli_abort(
+            "{.arg scale_fac} must be a positive integer,
+            not {.val {scale_fac}}."
+        )
+    }
     .rNames <- function(n = 5000) {
         a <- do.call(paste0, replicate(3, sample(LETTERS, n, TRUE), FALSE))
         paste0(
