@@ -159,15 +159,15 @@ filters to specific subsets.
 ## All pathways with consortium counts
 pw <- pathways(cms_syn)
 head(pw)
-#> # A tibble: 6 × 5
-#>   consumed produced c_ind_alig p_ind_alig n_cons
-#>   <chr>    <chr>         <int>      <int>  <int>
-#> 1 met7     met2              8          3      4
-#> 2 met1     met5              1          6      4
-#> 3 met1     met2              1          3      4
-#> 4 met1     met8              1          9      4
-#> 5 met8     met4              9          5      3
-#> 6 met8     met5              9          6      3
+#> # A tibble: 6 × 4
+#>   consumed produced n_species n_cons
+#>   <chr>    <chr>        <int>  <int>
+#> 1 met7     met2             5      4
+#> 2 met1     met5             4      4
+#> 3 met1     met2             4      4
+#> 4 met1     met8             6      4
+#> 5 met8     met4             3      3
+#> 6 met8     met5             4      3
 ```
 
 ## Overlap matrix
@@ -228,13 +228,13 @@ Pathways present in many consortia (top fraction).
 
 ``` r
 pathways(cms_syn, type = "pan-cons")
-#> # A tibble: 4 × 5
-#>   consumed produced c_ind_alig p_ind_alig n_cons
-#>   <chr>    <chr>         <int>      <int>  <int>
-#> 1 met7     met2              8          3      4
-#> 2 met1     met5              1          6      4
-#> 3 met1     met2              1          3      4
-#> 4 met1     met8              1          9      4
+#> # A tibble: 4 × 4
+#>   consumed produced n_species n_cons
+#>   <chr>    <chr>        <int>  <int>
+#> 1 met7     met2             5      4
+#> 2 met1     met5             4      4
+#> 3 met1     met2             4      4
+#> 4 met1     met8             6      4
 ```
 
 ### Niche pathways
@@ -243,19 +243,19 @@ Pathways present in few consortia (bottom fraction).
 
 ``` r
 pathways(cms_syn, type = "niche")
-#> # A tibble: 32 × 5
-#>    consumed produced c_ind_alig p_ind_alig n_cons
-#>    <chr>    <chr>         <int>      <int>  <int>
-#>  1 met2     met1              3          1      1
-#>  2 met2     met7              3          8      1
-#>  3 met2     met4              3          5      1
-#>  4 met8     met1              9          1      1
-#>  5 met4     met5              5          6      1
-#>  6 met10    met4              2          5      1
-#>  7 met10    met6              2          7      1
-#>  8 met10    met2              2          3      1
-#>  9 met10    met5              2          6      1
-#> 10 met10    met1              2          1      1
+#> # A tibble: 32 × 4
+#>    consumed produced n_species n_cons
+#>    <chr>    <chr>        <int>  <int>
+#>  1 met2     met1             1      1
+#>  2 met2     met7             1      1
+#>  3 met2     met4             1      1
+#>  4 met8     met1             1      1
+#>  5 met4     met5             1      1
+#>  6 met10    met4             1      1
+#>  7 met10    met6             1      1
+#>  8 met10    met2             1      1
+#>  9 met10    met5             1      1
+#> 10 met10    met1             1      1
 #> # ℹ 22 more rows
 ```
 
@@ -265,9 +265,8 @@ Pathways catalysed by many species (top fraction).
 
 ``` r
 pathways(cms_syn, type = "core")
-#> # A tibble: 0 × 5
-#> # ℹ 5 variables: consumed <chr>, produced <chr>, c_ind_alig <int>,
-#> #   p_ind_alig <int>, n_species <int>
+#> # A tibble: 0 × 4
+#> # ℹ 4 variables: consumed <chr>, produced <chr>, n_species <int>, n_cons <int>
 ```
 
 ### Auxiliary pathways
@@ -276,19 +275,19 @@ Pathways catalysed by few species (bottom fraction).
 
 ``` r
 pathways(cms_syn, type = "aux")
-#> # A tibble: 46 × 5
-#>    consumed produced c_ind_alig p_ind_alig n_species
-#>    <chr>    <chr>         <int>      <int>     <int>
-#>  1 met2     met1              3          1         1
-#>  2 met2     met7              3          8         1
-#>  3 met2     met4              3          5         1
-#>  4 met8     met1              9          1         1
-#>  5 met4     met5              5          6         1
-#>  6 met10    met4              2          5         1
-#>  7 met10    met6              2          7         1
-#>  8 met10    met2              2          3         1
-#>  9 met10    met5              2          6         1
-#> 10 met10    met1              2          1         1
+#> # A tibble: 46 × 4
+#>    consumed produced n_species n_cons
+#>    <chr>    <chr>        <int>  <int>
+#>  1 met2     met1             1      1
+#>  2 met2     met7             1      1
+#>  3 met2     met4             1      1
+#>  4 met8     met1             1      1
+#>  5 met4     met5             1      1
+#>  6 met10    met4             1      1
+#>  7 met10    met6             1      1
+#>  8 met10    met2             1      1
+#>  9 met10    met5             1      1
+#> 10 met10    met1             1      1
 #> # ℹ 36 more rows
 ```
 
@@ -458,11 +457,11 @@ sessionInfo()
 #> [49] bookdown_0.46                   labeling_0.4.3                 
 #> [51] TreeSummarizedExperiment_2.18.0 fastmap_1.2.0                  
 #> [53] grid_4.5.3                      cli_3.6.5                      
-#> [55] SparseArray_1.10.9              magrittr_2.0.4                 
+#> [55] SparseArray_1.10.10             magrittr_2.0.4                 
 #> [57] S4Arrays_1.10.1                 utf8_1.2.6                     
 #> [59] ape_5.8-1                       withr_3.0.2                    
 #> [61] scales_1.4.0                    rappdirs_0.3.4                 
-#> [63] rmarkdown_2.30                  XVector_0.50.0                 
+#> [63] rmarkdown_2.31                  XVector_0.50.0                 
 #> [65] matrixStats_1.5.0               igraph_2.2.2                   
 #> [67] gridExtra_2.3                   ragg_1.5.2                     
 #> [69] evaluate_1.0.5                  knitr_1.51                     

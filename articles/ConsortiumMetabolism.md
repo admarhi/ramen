@@ -375,11 +375,11 @@ sessionInfo()
 #> [43] dplyr_1.2.0                     purrr_1.2.1                    
 #> [45] bookdown_0.46                   TreeSummarizedExperiment_2.18.0
 #> [47] fastmap_1.2.0                   grid_4.5.3                     
-#> [49] cli_3.6.5                       SparseArray_1.10.9             
+#> [49] cli_3.6.5                       SparseArray_1.10.10            
 #> [51] magrittr_2.0.4                  S4Arrays_1.10.1                
 #> [53] utf8_1.2.6                      ape_5.8-1                      
 #> [55] withr_3.0.2                     scales_1.4.0                   
-#> [57] rappdirs_0.3.4                  rmarkdown_2.30                 
+#> [57] rappdirs_0.3.4                  rmarkdown_2.31                 
 #> [59] XVector_0.50.0                  matrixStats_1.5.0              
 #> [61] igraph_2.2.2                    ragg_1.5.2                     
 #> [63] evaluate_1.0.5                  knitr_1.51                     
