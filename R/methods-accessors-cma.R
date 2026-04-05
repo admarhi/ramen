@@ -47,3 +47,141 @@ setMethod(
     }
 )
 
+## ---- Additional CMA accessors ----------------------------------------------
+
+#' @describeIn pathways Get Pathways From a
+#'   \code{ConsortiumMetabolismAlignment} Object
+#' @export
+setMethod(
+    "pathways",
+    "ConsortiumMetabolismAlignment",
+    function(
+        object,
+        type = c(
+            "all", "shared", "unique", "consensus"
+        ),
+        verbose = FALSE
+    ) {
+        type <- match.arg(type)
+        alnType <- object@Type
+
+        if (type == "shared") {
+            if (alnType != "pairwise") {
+                cli::cli_abort(
+                    "{.arg type} = {.val shared} is \\
+                     only available for pairwise \\
+                     alignments, not \\
+                     {.val {alnType}}."
+                )
+            }
+            pw <- object@SharedPathways
+            if (verbose) return(pw)
+            pw[, c("consumed", "produced")]
+        } else if (type == "unique") {
+            if (alnType != "pairwise") {
+                cli::cli_abort(
+                    "{.arg type} = {.val unique} is \\
+                     only available for pairwise \\
+                     alignments, not \\
+                     {.val {alnType}}."
+                )
+            }
+            if (verbose) {
+                list(
+                    query = object@UniqueQuery,
+                    reference =
+                        object@UniqueReference
+                )
+            } else {
+                list(
+                    query = object@UniqueQuery[
+                        , c("consumed", "produced")
+                    ],
+                    reference =
+                        object@UniqueReference[
+                            , c(
+                                "consumed",
+                                "produced"
+                            )
+                        ]
+                )
+            }
+        } else if (type == "consensus") {
+            if (alnType != "multiple") {
+                cli::cli_abort(
+                    "{.arg type} = {.val consensus} \\
+                     is only available for multiple \\
+                     alignments, not \\
+                     {.val {alnType}}."
+                )
+            }
+            pw <- object@ConsensusPathways
+            if (verbose) return(pw)
+            pw[
+                , c(
+                    "consumed", "produced",
+                    "nConsortia", "proportion"
+                )
+            ]
+        } else {
+            # type == "all"
+            if (verbose) return(object@Pathways)
+            object@Pathways[
+                , c("consumed", "produced")
+            ]
+        }
+    }
+)
+
+#' @rdname metabolites
+setMethod(
+    "metabolites",
+    "ConsortiumMetabolismAlignment",
+    function(object) {
+        object@Metabolites$met
+    }
+)
+
+#' @describeIn species Return species from a
+#'   \code{ConsortiumMetabolismAlignment}
+#' @param object A \code{ConsortiumMetabolismAlignment} object.
+#' @return A character vector of species names.
+setMethod(
+    "species",
+    "ConsortiumMetabolismAlignment",
+    function(object) {
+        if (object@Type == "pairwise") {
+            sp <- unique(c(
+                unlist(
+                    object@SharedPathways$querySpecies
+                ),
+                unlist(
+                    object@SharedPathways$referenceSpecies
+                )
+            ))
+            return(sort(sp[!is.na(sp)]))
+        }
+        cli::cli_abort(
+            "{.fun species} is not available for \\
+             multiple alignments. Use the original \\
+             {.cls ConsortiumMetabolismSet} instead."
+        )
+    }
+)
+
+#' @describeIn consortia Not applicable for alignments
+#' @param object A \code{ConsortiumMetabolismAlignment} object.
+#' @export
+setMethod(
+    "consortia",
+    "ConsortiumMetabolismAlignment",
+    function(object) {
+        cli::cli_abort(
+            "{.fun consortia} is not applicable for \\
+             {.cls ConsortiumMetabolismAlignment} \\
+             objects. Use {.fun scores}, \\
+             {.fun pathways}, or \\
+             {.fun similarityMatrix} instead."
+        )
+    }
+)

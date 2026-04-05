@@ -1,25 +1,7 @@
 #' @include AllClasses.R AllGenerics.R
 NULL
 
-#' @describeIn pathways Get Pathways From a
-#'   \code{ConsortiumMetabolism} Object
-#' @param verbose Logical scalar. If \code{FALSE}
-#'   (default), returns a concise summary with columns
-#'   \code{consumed}, \code{produced}, and
-#'   \code{n_species}. If \code{TRUE}, returns the full
-#'   pathway data including flux statistics, effective
-#'   values, and per-species detail.
-#' @export
-setMethod(
-    "pathways",
-    "ConsortiumMetabolism",
-    function(object, verbose = FALSE) {
-        if (verbose) return(object@Pathways)
-        object@Pathways[
-            , c("consumed", "produced", "n_species")
-        ]
-    }
-)
+## ---- CMS accessor methods --------------------------------------------------
 
 #' @describeIn pathways Get Pathways From a
 #'   \code{ConsortiumMetabolismSet} Object
@@ -146,86 +128,89 @@ setMethod(
     }
 )
 
-#' @describeIn pathways Get Pathways From a
-#'   \code{ConsortiumMetabolismAlignment} Object
-#' @export
+#' @rdname metabolites
+setMethod("metabolites", "ConsortiumMetabolismSet",
+    function(object) {
+        Map(
+            \(x, y) dplyr::mutate(x, consortium = y),
+            lapply(object@Consortia, \(x) {
+                tibble::as_tibble(
+                    SummarizedExperiment::colData(x)
+                )
+            }),
+            vapply(
+                object@Consortia,
+                \(x) x@Name, character(1)
+            )
+        ) |>
+            dplyr::bind_rows() |>
+            dplyr::pull("met") |>
+            unique() |>
+            sort()
+    }
+)
+
+#' @describeIn species Return Species in a Microbiome
+#' @param object a \code{ConsortiumMetabolismSet} Object
+#' @param type Character scalar giving the type of species to output.
+#' @param quantileCutoff Numeric scalar between 0 and 1 specifying
+#'   the fraction of species to return when \code{type} is
+#'   "generalists" or "specialists".
+#'   For "generalists", the top \code{quantileCutoff} fraction of
+#'   species with the most pathways is returned. For
+#'   "specialists", the bottom \code{quantileCutoff} fraction
+#'   with the fewest pathways is returned.
+#'   Defaults to 0.15 (i.e., 15 percent). Ignored when
+#'   \code{type = "all"}.
+#'
+#' @return A character vector representing the microorganisms.
 setMethod(
-    "pathways",
-    "ConsortiumMetabolismAlignment",
+    "species",
+    "ConsortiumMetabolismSet",
     function(
         object,
-        type = c(
-            "all", "shared", "unique", "consensus"
-        ),
-        verbose = FALSE
+        type = c("all", "generalists", "specialists"),
+        quantileCutoff = 0.15
     ) {
         type <- match.arg(type)
-        alnType <- object@Type
 
-        if (type == "shared") {
-            if (alnType != "pairwise") {
-                cli::cli_abort(
-                    "{.arg type} = {.val shared} is \\
-                     only available for pairwise \\
-                     alignments, not \\
-                     {.val {alnType}}."
+        # Validate quantileCutoff parameter
+        if (quantileCutoff <= 0 || quantileCutoff >= 1) {
+            cli::cli_abort(
+                "{.arg quantileCutoff} must be between 0 and 1 \\
+                 (exclusive), not {.val {quantileCutoff}}."
+            )
+        }
+
+        tb <- object@Pathways |>
+            dplyr::mutate(
+                pathway_name = paste0(
+                    .data$consumed, "-", .data$produced
                 )
-            }
-            pw <- object@SharedPathways
-            if (verbose) return(pw)
-            pw[, c("consumed", "produced")]
-        } else if (type == "unique") {
-            if (alnType != "pairwise") {
-                cli::cli_abort(
-                    "{.arg type} = {.val unique} is \\
-                     only available for pairwise \\
-                     alignments, not \\
-                     {.val {alnType}}."
-                )
-            }
-            if (verbose) {
-                list(
-                    query = object@UniqueQuery,
-                    reference =
-                        object@UniqueReference
-                )
-            } else {
-                list(
-                    query = object@UniqueQuery[
-                        , c("consumed", "produced")
-                    ],
-                    reference =
-                        object@UniqueReference[
-                            , c(
-                                "consumed",
-                                "produced"
-                            )
-                        ]
-                )
-            }
-        } else if (type == "consensus") {
-            if (alnType != "multiple") {
-                cli::cli_abort(
-                    "{.arg type} = {.val consensus} \\
-                     is only available for multiple \\
-                     alignments, not \\
-                     {.val {alnType}}."
-                )
-            }
-            pw <- object@ConsensusPathways
-            if (verbose) return(pw)
-            pw[
-                , c(
-                    "consumed", "produced",
-                    "nConsortia", "proportion"
-                )
-            ]
-        } else {
-            # type == "all"
-            if (verbose) return(object@Pathways)
-            object@Pathways[
-                , c("consumed", "produced")
-            ]
+            ) |>
+            dplyr::reframe(
+                n_pathways = dplyr::n_distinct(
+                    .data$pathway_name
+                ),
+                .by = "species"
+            ) |>
+            dplyr::arrange(dplyr::desc(.data$n_pathways))
+
+        total_species <- length(unique(tb$species))
+        if (type == "all") {
+            tb
+        } else if (type == "generalists") {
+            # Get the top quantileCutoff fraction of species
+            n_species_to_return <- ceiling(
+                total_species * quantileCutoff
+            )
+            tb |> dplyr::slice_head(n = n_species_to_return)
+        } else if (type == "specialists") {
+            # Get the bottom quantileCutoff fraction of species
+            n_species_to_return <- ceiling(
+                total_species * quantileCutoff
+            )
+            tb |> dplyr::slice_tail(n = n_species_to_return)
         }
     }
 )
