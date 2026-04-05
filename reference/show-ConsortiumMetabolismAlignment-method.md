@@ -31,6 +31,6 @@ show(cma)
 #> Name: NA
 #> Type: "pairwise"
 #> Metric: "FOS"
-#> Score: 0.625
+#> Score: 0.1667
 #> Query: "comm_1", Reference: "comm_2"
 ```

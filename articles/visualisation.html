@@ -29,13 +29,12 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
+<li class="nav-item"><a class="nav-link" href="../articles/ramen.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/ConsortiumMetabolism.html">The ConsortiumMetabolism Class</a></li>
-    <li><a class="dropdown-item" href="../articles/ConsortiumMetabolismAlignment.html">Alignment of Microbial Consortia</a></li>
-    <li><a class="dropdown-item" href="../articles/ConsortiumMetabolismSet.html">The ConsortiumMetabolismSet Class</a></li>
+<li><a class="dropdown-item" href="../articles/alignment.html">Alignment of Microbial Consortia</a></li>
     <li><a class="dropdown-item" href="../articles/visualisation.html">Visualisation</a></li>
   </ul>
 </li>
@@ -74,28 +73,30 @@
 <p><code>ramen</code> provides <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> methods for all three
 core classes: <code>ConsortiumMetabolism</code>,
 <code>ConsortiumMetabolismSet</code>, and
-<code>ConsortiumMetabolismAlignment</code>. This vignette demonstrates
-each plot type with synthetic and example data.</p>
+<code>ConsortiumMetabolismAlignment</code>. This vignette is a visual
+gallery of every plot type. For context on the underlying analyses, see
+<code><a href="../articles/ramen.html">vignette("ramen", package = "ramen")</a></code> and
+<code><a href="../articles/alignment.html">vignette("alignment", package = "ramen")</a></code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://admarhi.github.io/ramen/">ramen</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="preparing-example-data">Preparing example data<a class="anchor" aria-label="anchor" href="#preparing-example-data"></a>
+<h2 id="example-data">Example data<a class="anchor" aria-label="anchor" href="#example-data"></a>
 </h2>
-<p>We create four synthetic consortia, combine them into a CMS, and
-compute both pairwise and multiple alignments.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cm_alpha</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/synCM.html">synCM</a></span><span class="op">(</span><span class="st">"Alpha"</span>, n_species <span class="op">=</span> <span class="fl">5</span>, max_met <span class="op">=</span> <span class="fl">10</span>, seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
-<span><span class="va">cm_beta</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/synCM.html">synCM</a></span><span class="op">(</span><span class="st">"Beta"</span>, n_species <span class="op">=</span> <span class="fl">5</span>, max_met <span class="op">=</span> <span class="fl">10</span>, seed <span class="op">=</span> <span class="fl">43</span><span class="op">)</span></span>
-<span><span class="va">cm_gamma</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/synCM.html">synCM</a></span><span class="op">(</span><span class="st">"Gamma"</span>, n_species <span class="op">=</span> <span class="fl">4</span>, max_met <span class="op">=</span> <span class="fl">8</span>, seed <span class="op">=</span> <span class="fl">44</span><span class="op">)</span></span>
-<span><span class="va">cm_delta</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/synCM.html">synCM</a></span><span class="op">(</span><span class="st">"Delta"</span>, n_species <span class="op">=</span> <span class="fl">6</span>, max_met <span class="op">=</span> <span class="fl">10</span>, seed <span class="op">=</span> <span class="fl">45</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"misosoup24"</span><span class="op">)</span></span>
+<span><span class="va">cm_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fl">6</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="../reference/ConsortiumMetabolism.html">ConsortiumMetabolism</a></span><span class="op">(</span></span>
+<span>        <span class="va">misosoup24</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>        name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">misosoup24</span><span class="op">)</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>,</span>
+<span>        species_col <span class="op">=</span> <span class="st">"species"</span>,</span>
+<span>        metabolite_col <span class="op">=</span> <span class="st">"metabolites"</span>,</span>
+<span>        flux_col <span class="op">=</span> <span class="st">"fluxes"</span></span>
+<span>    <span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">cms</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ConsortiumMetabolismSet.html">ConsortiumMetabolismSet</a></span><span class="op">(</span></span>
-<span>    <span class="va">cm_alpha</span>, <span class="va">cm_beta</span>, <span class="va">cm_gamma</span>, <span class="va">cm_delta</span>,</span>
-<span>    name <span class="op">=</span> <span class="st">"Demo"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">cma_pair</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/align.html">align</a></span><span class="op">(</span><span class="va">cm_alpha</span>, <span class="va">cm_beta</span><span class="op">)</span></span>
+<span><span class="va">cms</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ConsortiumMetabolismSet.html">ConsortiumMetabolismSet</a></span><span class="op">(</span><span class="va">cm_list</span>, name <span class="op">=</span> <span class="st">"Demo"</span><span class="op">)</span></span>
+<span><span class="va">cma_pair</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/align.html">align</a></span><span class="op">(</span><span class="va">cm_list</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">cm_list</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">cma_mult</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/align.html">align</a></span><span class="op">(</span><span class="va">cms</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -103,20 +104,21 @@ compute both pairwise and multiple alignments.</p>
 </h2>
 <p><code>plot(CM)</code> renders a directed metabolic flow network using
 <code>igraph</code>. Nodes are coloured by role:
-<strong>lightblue</strong> = source (only outgoing),
-<strong>salmon</strong> = sink (only incoming), <strong>yellow</strong>
-= intermediate (both). The <code>type</code> argument selects which
-assay matrix to use for edge weights.</p>
+<strong>lightblue</strong> for sources (only outgoing edges),
+<strong>salmon</strong> for sinks (only incoming edges), and
+<strong>lightgoldenrod</strong> for intermediate nodes (both incoming
+and outgoing). The <code>type</code> argument selects which assay matrix
+determines edge weights.</p>
 <div class="section level3">
 <h3 id="binary-network">Binary network<a class="anchor" aria-label="anchor" href="#binary-network"></a>
 </h3>
-<p>The default view shows the structure of the metabolic network where
-any edge present has weight 1.</p>
+<p>The default view shows network structure with uniform edge
+weights.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cm_alpha</span>, type <span class="op">=</span> <span class="st">"Binary"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cm_list</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"Binary"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="visualisation_files/figure-html/plot-cm-binary-1.png" class="r-plt" alt="Binary metabolic network for Alpha." width="576"><p class="caption">
-Binary metabolic network for Alpha.
+<img src="visualisation_files/figure-html/plot-cm-binary-1.png" class="r-plt" alt="Binary metabolic network." width="576"><p class="caption">
+Binary metabolic network.
 </p>
 </div>
 </div>
@@ -125,27 +127,26 @@ Binary metabolic network for Alpha.
 </h3>
 <p>Edge weights reflect how many species catalyse each pathway.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cm_alpha</span>, type <span class="op">=</span> <span class="st">"nSpecies"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cm_list</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"nSpecies"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
-<img src="visualisation_files/figure-html/plot-cm-nspecies-1.png" class="r-plt" alt="nSpecies network for Alpha." width="576"><p class="caption">
-nSpecies network for Alpha.
+<img src="visualisation_files/figure-html/plot-cm-nspecies-1.png" class="r-plt" alt="nSpecies-weighted network." width="576"><p class="caption">
+nSpecies-weighted network.
 </p>
 </div>
 </div>
 <div class="section level3">
 <h3 id="consumption-and-production">Consumption and production<a class="anchor" aria-label="anchor" href="#consumption-and-production"></a>
 </h3>
-<p>Consumption and production views weight edges by summed flux
-magnitudes.</p>
+<p>Edges weighted by summed flux magnitudes.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cm_alpha</span>, type <span class="op">=</span> <span class="st">"Consumption"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cm_list</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"Consumption"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="visualisation_files/figure-html/plot-cm-consumption-1.png" class="r-plt" alt="Consumption-weighted network." width="576"><p class="caption">
 Consumption-weighted network.
 </p>
 </div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cm_alpha</span>, type <span class="op">=</span> <span class="st">"Production"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cm_list</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"Production"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="visualisation_files/figure-html/plot-cm-production-1.png" class="r-plt" alt="Production-weighted network." width="576"><p class="caption">
 Production-weighted network.
@@ -155,18 +156,17 @@ Production-weighted network.
 <div class="section level3">
 <h3 id="effective-consumption-and-production">Effective consumption and production<a class="anchor" aria-label="anchor" href="#effective-consumption-and-production"></a>
 </h3>
-<p>The effective diversity measures indicate how evenly species
-contribute to each pathway (Shannon-based effective number of
-species).</p>
+<p>Effective diversity measures how evenly species contribute to each
+pathway (Shannon-based effective number of species).</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cm_alpha</span>, type <span class="op">=</span> <span class="st">"EffectiveConsumption"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cm_list</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"EffectiveConsumption"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="visualisation_files/figure-html/plot-cm-effcons-1.png" class="r-plt" alt="Effective consumption network." width="576"><p class="caption">
 Effective consumption network.
 </p>
 </div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cm_alpha</span>, type <span class="op">=</span> <span class="st">"EffectiveProduction"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cm_list</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"EffectiveProduction"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="visualisation_files/figure-html/plot-cm-effprod-1.png" class="r-plt" alt="Effective production network." width="576"><p class="caption">
 Effective production network.
@@ -180,7 +180,7 @@ Effective production network.
 <div class="section level3">
 <h3 id="dendrogram">Dendrogram<a class="anchor" aria-label="anchor" href="#dendrogram"></a>
 </h3>
-<p><code>plot(CMS)</code> draws the hierarchical clustering dendrogram
+<p><code>plot(CMS)</code> draws a hierarchical clustering dendrogram
 with numbered internal nodes. These node IDs are used by
 <code><a href="../reference/extractCluster.html">extractCluster()</a></code> to pull sub-clusters.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
@@ -192,14 +192,16 @@ CMS dendrogram with numbered nodes.
 </div>
 </div>
 <div class="section level3">
-<h3 id="dendrogram-with-custom-label-colours">Dendrogram with custom label colours<a class="anchor" aria-label="anchor" href="#dendrogram-with-custom-label-colours"></a>
+<h3 id="custom-label-colours">Custom label colours<a class="anchor" aria-label="anchor" href="#custom-label-colours"></a>
 </h3>
-<p>You can supply a tibble mapping leaf labels to colours.</p>
+<p>Supply a data.frame mapping leaf labels to colours.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">colour_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>    label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Alpha"</span>, <span class="st">"Beta"</span>, <span class="st">"Gamma"</span>, <span class="st">"Delta"</span><span class="op">)</span>,</span>
-<span>    colour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"steelblue"</span>, <span class="st">"firebrick"</span>,</span>
-<span>               <span class="st">"forestgreen"</span>, <span class="st">"darkorange"</span><span class="op">)</span></span>
+<span>    label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">misosoup24</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span>,</span>
+<span>    colour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>        <span class="st">"steelblue"</span>, <span class="st">"firebrick"</span>, <span class="st">"forestgreen"</span>,</span>
+<span>        <span class="st">"darkorange"</span>, <span class="st">"purple"</span>, <span class="st">"darkred"</span></span>
+<span>    <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cms</span>, label_colours <span class="op">=</span> <span class="va">colour_map</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
@@ -214,14 +216,13 @@ CMS dendrogram with coloured labels.
 </h2>
 <p>The CMA <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> method supports three types:
 <code>"heatmap"</code>, <code>"network"</code>, and
-<code>"scores"</code>. The default depends on the alignment type:
-<code>"network"</code> for pairwise, <code>"heatmap"</code> for
-multiple.</p>
+<code>"scores"</code>. The default is <code>"network"</code> for
+pairwise and <code>"heatmap"</code> for multiple alignments.</p>
 <div class="section level3">
 <h3 id="heatmap-multiple-alignment">Heatmap (multiple alignment)<a class="anchor" aria-label="anchor" href="#heatmap-multiple-alignment"></a>
 </h3>
-<p>The heatmap shows pairwise FOS similarities with dendrogram-based
-ordering. Values range from 0 (no overlap) to 1 (identical).</p>
+<p>Pairwise FOS similarities with dendrogram-based ordering. Values
+range from 0 (no overlap) to 1 (identical).</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cma_mult</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
@@ -233,10 +234,8 @@ Similarity heatmap.
 <div class="section level3">
 <h3 id="network-pairwise-alignment">Network (pairwise alignment)<a class="anchor" aria-label="anchor" href="#network-pairwise-alignment"></a>
 </h3>
-<p>The network view visualises the alignment result as a directed
-metabolite flow graph. Edge colours indicate the source:
-<strong>green</strong> = shared pathways, <strong>blue</strong> = unique
-to query (Alpha), <strong>red</strong> = unique to reference (Beta).</p>
+<p>Shared pathways in <strong>green</strong>, query-unique in
+<strong>blue</strong>, reference-unique in <strong>red</strong>.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cma_pair</span>, type <span class="op">=</span> <span class="st">"network"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
@@ -246,10 +245,10 @@ Pairwise alignment network.
 </div>
 </div>
 <div class="section level3">
-<h3 id="scores-pairwise">Scores (pairwise)<a class="anchor" aria-label="anchor" href="#scores-pairwise"></a>
+<h3 id="scores">Scores<a class="anchor" aria-label="anchor" href="#scores"></a>
 </h3>
-<p>The score bar chart displays all computed similarity metrics for a
-pairwise alignment.</p>
+<p>The bar chart displays similarity metrics for pairwise alignments or
+summary statistics for multiple alignments.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cma_pair</span>, type <span class="op">=</span> <span class="st">"scores"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
@@ -257,12 +256,6 @@ pairwise alignment.</p>
 Pairwise alignment scores.
 </p>
 </div>
-</div>
-<div class="section level3">
-<h3 id="scores-multiple-alignment">Scores (multiple alignment)<a class="anchor" aria-label="anchor" href="#scores-multiple-alignment"></a>
-</h3>
-<p>For a multiple alignment, the scores plot shows summary statistics
-across all pairwise comparisons.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cma_mult</span>, type <span class="op">=</span> <span class="st">"scores"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Removed 1 row containing missing values or values outside the scale range</span></span>
@@ -270,8 +263,8 @@ across all pairwise comparisons.</p>
 <span><span class="co">#&gt; Warning: Removed 1 row containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_text()`).</span></span></code></pre></div>
 <div class="figure">
-<img src="visualisation_files/figure-html/plot-cma-scores-mult-1.png" class="r-plt" alt="Multiple alignment scores." width="576"><p class="caption">
-Multiple alignment scores.
+<img src="visualisation_files/figure-html/plot-cma-scores-mult-1.png" class="r-plt" alt="Multiple alignment summary scores." width="576"><p class="caption">
+Multiple alignment summary scores.
 </p>
 </div>
 </div>
@@ -279,12 +272,12 @@ Multiple alignment scores.
 <div class="section level2">
 <h2 id="using-plotdirectedflow-directly">Using <code>plotDirectedFlow()</code> directly<a class="anchor" aria-label="anchor" href="#using-plotdirectedflow-directly"></a>
 </h2>
-<p>For fine-grained control over the network layout, you can call
+<p>For fine-grained control over the network layout, call
 <code><a href="../reference/plotDirectedFlow.html">plotDirectedFlow()</a></code> directly on an igraph object. This is
 the function underlying all CM and CMA network plots.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://r.igraph.org/reference/graph_from_adjacency_matrix.html" class="external-link">graph_from_adjacency_matrix</a></span><span class="op">(</span></span>
-<span>    <span class="fu">SummarizedExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></span><span class="op">(</span><span class="va">cm_beta</span>, <span class="st">"nSpecies"</span><span class="op">)</span>,</span>
+<span>    <span class="fu">SummarizedExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></span><span class="op">(</span><span class="va">cm_list</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, <span class="st">"nSpecies"</span><span class="op">)</span>,</span>
 <span>    mode <span class="op">=</span> <span class="st">"directed"</span>,</span>
 <span>    weighted <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
@@ -295,7 +288,7 @@ the function underlying all CM and CMA network plots.</p>
 <span>    edge_width_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">2</span><span class="op">)</span>,</span>
 <span>    vertex_size <span class="op">=</span> <span class="fl">12</span>,</span>
 <span>    vertex_label_cex <span class="op">=</span> <span class="fl">0.7</span>,</span>
-<span>    main <span class="op">=</span> <span class="st">"Beta - nSpecies (custom)"</span></span>
+<span>    main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="../reference/name.html">name</a></span><span class="op">(</span><span class="va">cm_list</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>, <span class="st">" - nSpecies (custom)"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="visualisation_files/figure-html/plot-directed-flow-1.png" class="r-plt" alt="Custom directed flow plot." width="576"><p class="caption">
@@ -304,7 +297,7 @@ Custom directed flow plot.
 </div>
 </div>
 <div class="section level2">
-<h2 id="summary-of-plot-types">Summary of plot types<a class="anchor" aria-label="anchor" href="#summary-of-plot-types"></a>
+<h2 id="plot-type-summary">Plot type summary<a class="anchor" aria-label="anchor" href="#plot-type-summary"></a>
 </h2>
 <table class="table">
 <thead><tr class="header">

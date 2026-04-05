@@ -76,19 +76,21 @@ synCM("Ex. Community", n_species = 5, max_met = 10)
 #> 
 #> ── ConsortiumMetabolism 
 #> Name: "Ex. Community"
-#> Weighted metabolic network with 10 metabolites.
+#> Weighted metabolic network with 7 metabolites.
 
 # Return raw edge list instead
 synCM("Test", n_species = 3, max_met = 8, cm = FALSE)
-#> # A tibble: 8 × 3
-#>   species  metabolites fluxes
-#>   <chr>    <chr>        <dbl>
-#> 1 JJK1290J met6         4.03 
-#> 2 JJK1290J met2        -7.52 
-#> 3 JJK1290J met8        -1.30 
-#> 4 TDT3997J met2         0.748
-#> 5 TDT3997J met5        -2.38 
-#> 6 TDT3997J met8        -0.408
-#> 7 QOY141U  met8         3.62 
-#> 8 QOY141U  met1        -0.642
+#> # A tibble: 10 × 3
+#>    species  metabolites fluxes
+#>    <chr>    <chr>        <dbl>
+#>  1 KYS3742B met5         3.77 
+#>  2 PCI233C  met5        -3.77 
+#>  3 PCI233C  met4         0.875
+#>  4 MKI7263L met4        -0.875
+#>  5 MKI7263L met5         1.48 
+#>  6 KYS3742B met5        -1.48 
+#>  7 KYS3742B met6        -0.894
+#>  8 MKI7263L met7         0.904
+#>  9 MKI7263L met8         2.87 
+#> 10 MKI7263L met6        -4.32 
 ```

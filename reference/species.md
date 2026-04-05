@@ -10,22 +10,22 @@ species(object, ...)
 # S4 method for class 'ConsortiumMetabolism'
 species(object)
 
+# S4 method for class 'ConsortiumMetabolismAlignment'
+species(object)
+
 # S4 method for class 'ConsortiumMetabolismSet'
 species(
   object,
   type = c("all", "generalists", "specialists"),
   quantileCutoff = 0.15
 )
-
-# S4 method for class 'ConsortiumMetabolismAlignment'
-species(object)
 ```
 
 ## Arguments
 
 - object:
 
-  A `ConsortiumMetabolismAlignment` object.
+  a `ConsortiumMetabolismSet` Object
 
 - ...:
 
@@ -52,23 +52,23 @@ pathway counts (for
 
 A character vector representing the microorganisms.
 
-A character vector representing the microorganisms.
-
 A character vector of species names.
+
+A character vector representing the microorganisms.
 
 ## Methods (by class)
 
 - `species(ConsortiumMetabolism)`: Return Species in a Microbiome
 
-- `species(ConsortiumMetabolismSet)`: Return Species in a Microbiome
-
 - `species(ConsortiumMetabolismAlignment)`: Return species from a
   `ConsortiumMetabolismAlignment`
+
+- `species(ConsortiumMetabolismSet)`: Return Species in a Microbiome
 
 ## Examples
 
 ``` r
 cm <- synCM("test", n_species = 3, max_met = 5)
 species(cm)
-#> [1] "RZQ1660H" "TCB696S"  "IRL7860P"
+#> [1] "RRS7261B" "VZM5367U" "LAC5007J"
 ```

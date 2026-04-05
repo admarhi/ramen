@@ -17,12 +17,11 @@ ConsortiumMetabolismSet object."></head><body>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/ramen.html">Get started</a></li>
+<li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/ConsortiumMetabolism.html">The ConsortiumMetabolism Class</a></li>
-    <li><a class="dropdown-item" href="../articles/ConsortiumMetabolismAlignment.html">Alignment of Microbial Consortia</a></li>
-    <li><a class="dropdown-item" href="../articles/ConsortiumMetabolismSet.html">The ConsortiumMetabolismSet Class</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/alignment.html">Alignment of Microbial Consortia</a></li>
     <li><a class="dropdown-item" href="../articles/visualisation.html">Visualisation</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -105,10 +104,45 @@ containing the extracted cluster.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Creating CMS </span><span style="color: #0000BB; font-weight: bold;">"test"</span> <span style="color: #00BBBB;">─────────────────────────────────────────────────────────</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Validating <span style="color: #0000BB;">2</span> <span style="color: #0000BB;">&lt;ConsortiumMetabolism&gt;</span> objects</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Validating <span style="color: #0000BB;">2</span> <span style="color: #0000BB;">&lt;ConsortiumMetabolism&gt;</span> objects <span style="color: #B2B2B2;">[11ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Validating <span style="color: #0000BB;">2</span> <span style="color: #0000BB;">&lt;ConsortiumMetabolism&gt;</span> objects <span style="color: #B2B2B2;">[17ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Collecting metabolites from <span style="color: #0000BB;">2</span> consortia</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Collecting metabolites from <span style="color: #0000BB;">2</span> consortia <span style="color: #B2B2B2;">[30ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Collecting metabolites from <span style="color: #0000BB;">2</span> consortia <span style="color: #B2B2B2;">[28ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Re-indexing <span style="color: #0000BB;">6</span> unique metabolites</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Re-indexing <span style="color: #0000BB;">6</span> unique metabolites <span style="color: #B2B2B2;">[25ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Expanding <span style="color: #0000BB;">2</span> binary matrices to <span style="color: #0000BB;">6</span>-dimensional space</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Expanding <span style="color: #0000BB;">2</span> binary matrices to <span style="color: #0000BB;">6</span>-dimensional space <span style="color: #B2B2B2;">[22ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Computing <span style="color: #0000BB;">6</span> x <span style="color: #0000BB;">6</span> levels matrix</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Computing <span style="color: #0000BB;">6</span> x <span style="color: #0000BB;">6</span> levels matrix <span style="color: #B2B2B2;">[23ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Computing pairwise overlap (<span style="color: #0000BB;">1</span> pairs via crossprod)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Computing pairwise overlap (<span style="color: #0000BB;">1</span> pairs via crossprod) <span style="color: #B2B2B2;">[21ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Assembling pathway data from <span style="color: #0000BB;">2</span> consortia</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Assembling pathway data from <span style="color: #0000BB;">2</span> consortia <span style="color: #B2B2B2;">[29ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Building dendrogram from <span style="color: #0000BB;">2</span> x <span style="color: #0000BB;">2</span> dissimilarity matrix</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Building dendrogram from <span style="color: #0000BB;">2</span> x <span style="color: #0000BB;">2</span> dissimilarity matrix <span style="color: #B2B2B2;">[20ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Extracting dendrogram node positions</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Extracting dendrogram node positions <span style="color: #B2B2B2;">[23ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Collecting <span style="color: #0000BB;">2</span> consortium graphs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> CMS <span style="color: #0000BB;">"test"</span> created: <span style="color: #0000BB;">2</span> consortia, <span style="color: #0000BB;">6</span> metabolites (0.2s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Collecting <span style="color: #0000BB;">2</span> consortium graphs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Collecting <span style="color: #0000BB;">2</span> consortium graphs <span style="color: #B2B2B2;">[76ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span><span class="fu">extractCluster</span><span class="op">(</span><span class="va">cms</span>, node_id <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Creating CMS </span><span style="color: #0000BB; font-weight: bold;">"Cluster 1 from test"</span> <span style="color: #00BBBB;">──────────────────────────────────────────</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Validating <span style="color: #0000BB;">2</span> <span style="color: #0000BB;">&lt;ConsortiumMetabolism&gt;</span> objects</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Validating <span style="color: #0000BB;">2</span> <span style="color: #0000BB;">&lt;ConsortiumMetabolism&gt;</span> objects <span style="color: #B2B2B2;">[10ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Collecting metabolites from <span style="color: #0000BB;">2</span> consortia</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Collecting metabolites from <span style="color: #0000BB;">2</span> consortia <span style="color: #B2B2B2;">[28ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Re-indexing <span style="color: #0000BB;">6</span> unique metabolites</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Re-indexing <span style="color: #0000BB;">6</span> unique metabolites <span style="color: #B2B2B2;">[26ms]</span></span>
@@ -117,10 +151,10 @@ containing the extracted cluster.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Expanding <span style="color: #0000BB;">2</span> binary matrices to <span style="color: #0000BB;">6</span>-dimensional space <span style="color: #B2B2B2;">[23ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Computing <span style="color: #0000BB;">6</span> x <span style="color: #0000BB;">6</span> levels matrix</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Computing <span style="color: #0000BB;">6</span> x <span style="color: #0000BB;">6</span> levels matrix <span style="color: #B2B2B2;">[25ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Computing <span style="color: #0000BB;">6</span> x <span style="color: #0000BB;">6</span> levels matrix <span style="color: #B2B2B2;">[29ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Computing pairwise overlap (<span style="color: #0000BB;">1</span> pairs via crossprod)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Computing pairwise overlap (<span style="color: #0000BB;">1</span> pairs via crossprod) <span style="color: #B2B2B2;">[28ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Computing pairwise overlap (<span style="color: #0000BB;">1</span> pairs via crossprod) <span style="color: #B2B2B2;">[22ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Assembling pathway data from <span style="color: #0000BB;">2</span> consortia</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Assembling pathway data from <span style="color: #0000BB;">2</span> consortia <span style="color: #B2B2B2;">[29ms]</span></span>
@@ -132,44 +166,9 @@ containing the extracted cluster.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Extracting dendrogram node positions <span style="color: #B2B2B2;">[22ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Collecting <span style="color: #0000BB;">2</span> consortium graphs</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> CMS <span style="color: #0000BB;">"test"</span> created: <span style="color: #0000BB;">2</span> consortia, <span style="color: #0000BB;">6</span> metabolites (0.2s)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Collecting <span style="color: #0000BB;">2</span> consortium graphs</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Collecting <span style="color: #0000BB;">2</span> consortium graphs <span style="color: #B2B2B2;">[80ms]</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span><span class="fu">extractCluster</span><span class="op">(</span><span class="va">cms</span>, node_id <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Creating CMS </span><span style="color: #0000BB; font-weight: bold;">"Cluster 1 from test"</span> <span style="color: #00BBBB;">──────────────────────────────────────────</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Validating <span style="color: #0000BB;">2</span> <span style="color: #0000BB;">&lt;ConsortiumMetabolism&gt;</span> objects</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Validating <span style="color: #0000BB;">2</span> <span style="color: #0000BB;">&lt;ConsortiumMetabolism&gt;</span> objects <span style="color: #B2B2B2;">[11ms]</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Collecting metabolites from <span style="color: #0000BB;">2</span> consortia</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Collecting metabolites from <span style="color: #0000BB;">2</span> consortia <span style="color: #B2B2B2;">[29ms]</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Re-indexing <span style="color: #0000BB;">6</span> unique metabolites</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Re-indexing <span style="color: #0000BB;">6</span> unique metabolites <span style="color: #B2B2B2;">[26ms]</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Expanding <span style="color: #0000BB;">2</span> binary matrices to <span style="color: #0000BB;">6</span>-dimensional space</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Expanding <span style="color: #0000BB;">2</span> binary matrices to <span style="color: #0000BB;">6</span>-dimensional space <span style="color: #B2B2B2;">[23ms]</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Computing <span style="color: #0000BB;">6</span> x <span style="color: #0000BB;">6</span> levels matrix</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Computing <span style="color: #0000BB;">6</span> x <span style="color: #0000BB;">6</span> levels matrix <span style="color: #B2B2B2;">[24ms]</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Computing pairwise overlap (<span style="color: #0000BB;">1</span> pairs via crossprod)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Computing pairwise overlap (<span style="color: #0000BB;">1</span> pairs via crossprod) <span style="color: #B2B2B2;">[23ms]</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Assembling pathway data from <span style="color: #0000BB;">2</span> consortia</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Assembling pathway data from <span style="color: #0000BB;">2</span> consortia <span style="color: #B2B2B2;">[31ms]</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Building dendrogram from <span style="color: #0000BB;">2</span> x <span style="color: #0000BB;">2</span> dissimilarity matrix</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Building dendrogram from <span style="color: #0000BB;">2</span> x <span style="color: #0000BB;">2</span> dissimilarity matrix <span style="color: #B2B2B2;">[21ms]</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Extracting dendrogram node positions</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Extracting dendrogram node positions <span style="color: #B2B2B2;">[23ms]</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Collecting <span style="color: #0000BB;">2</span> consortium graphs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> CMS <span style="color: #0000BB;">"Cluster 1 from test"</span> created: <span style="color: #0000BB;">2</span> consortia, <span style="color: #0000BB;">6</span> metabolites (0.2s)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Collecting <span style="color: #0000BB;">2</span> consortium graphs</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Collecting <span style="color: #0000BB;">2</span> consortium graphs <span style="color: #B2B2B2;">[83ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Collecting <span style="color: #0000BB;">2</span> consortium graphs <span style="color: #B2B2B2;">[74ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── ConsortiumMetabolismSet </span>

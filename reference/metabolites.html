@@ -17,12 +17,11 @@ network."></head><body>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/ramen.html">Get started</a></li>
+<li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/ConsortiumMetabolism.html">The ConsortiumMetabolism Class</a></li>
-    <li><a class="dropdown-item" href="../articles/ConsortiumMetabolismAlignment.html">Alignment of Microbial Consortia</a></li>
-    <li><a class="dropdown-item" href="../articles/ConsortiumMetabolismSet.html">The ConsortiumMetabolismSet Class</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/alignment.html">Alignment of Microbial Consortia</a></li>
     <li><a class="dropdown-item" href="../articles/visualisation.html">Visualisation</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -38,7 +37,7 @@ network."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Get Metabolites</h1>
-      <small class="dont-index">Source: <a href="https://github.com/admarhi/ramen/blob/main/R/AllGenerics.R" class="external-link"><code>R/AllGenerics.R</code></a>, <a href="https://github.com/admarhi/ramen/blob/main/R/methods-metabolites.R" class="external-link"><code>R/methods-metabolites.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/admarhi/ramen/blob/main/R/AllGenerics.R" class="external-link"><code>R/AllGenerics.R</code></a>, <a href="https://github.com/admarhi/ramen/blob/main/R/methods-accessors-cm.R" class="external-link"><code>R/methods-accessors-cm.R</code></a>, <a href="https://github.com/admarhi/ramen/blob/main/R/methods-accessors-cma.R" class="external-link"><code>R/methods-accessors-cma.R</code></a>, and 1 more</small>
       <div class="d-none name"><code>metabolites.Rd</code></div>
     </div>
 
@@ -54,10 +53,10 @@ network.</p>
 <span><span class="co"># S4 method for class 'ConsortiumMetabolism'</span></span>
 <span><span class="fu">metabolites</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S4 method for class 'ConsortiumMetabolismSet'</span></span>
+<span><span class="co"># S4 method for class 'ConsortiumMetabolismAlignment'</span></span>
 <span><span class="fu">metabolites</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S4 method for class 'ConsortiumMetabolismAlignment'</span></span>
+<span><span class="co"># S4 method for class 'ConsortiumMetabolismSet'</span></span>
 <span><span class="fu">metabolites</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -80,7 +79,7 @@ metabolites in the network.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">cm</span> <span class="op">&lt;-</span> <span class="fu"><a href="synCM.html">synCM</a></span><span class="op">(</span><span class="st">"test"</span>, n_species <span class="op">=</span> <span class="fl">3</span>, max_met <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">metabolites</span><span class="op">(</span><span class="va">cm</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "met5" "met3" "met4" "met1" "met2"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "met2" "met3"</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

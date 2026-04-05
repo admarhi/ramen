@@ -17,12 +17,11 @@ consortia."></head><body>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/ramen.html">Get started</a></li>
+<li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/ConsortiumMetabolism.html">The ConsortiumMetabolism Class</a></li>
-    <li><a class="dropdown-item" href="../articles/ConsortiumMetabolismAlignment.html">Alignment of Microbial Consortia</a></li>
-    <li><a class="dropdown-item" href="../articles/ConsortiumMetabolismSet.html">The ConsortiumMetabolismSet Class</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/alignment.html">Alignment of Microbial Consortia</a></li>
     <li><a class="dropdown-item" href="../articles/visualisation.html">Visualisation</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -38,7 +37,7 @@ consortia."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Return Species in a Consortium</h1>
-      <small class="dont-index">Source: <a href="https://github.com/admarhi/ramen/blob/main/R/AllGenerics.R" class="external-link"><code>R/AllGenerics.R</code></a>, <a href="https://github.com/admarhi/ramen/blob/main/R/methods-species.R" class="external-link"><code>R/methods-species.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/admarhi/ramen/blob/main/R/AllGenerics.R" class="external-link"><code>R/AllGenerics.R</code></a>, <a href="https://github.com/admarhi/ramen/blob/main/R/methods-accessors-cm.R" class="external-link"><code>R/methods-accessors-cm.R</code></a>, <a href="https://github.com/admarhi/ramen/blob/main/R/methods-accessors-cma.R" class="external-link"><code>R/methods-accessors-cma.R</code></a>, and 1 more</small>
       <div class="d-none name"><code>species.Rd</code></div>
     </div>
 
@@ -54,15 +53,15 @@ consortia.</p>
 <span><span class="co"># S4 method for class 'ConsortiumMetabolism'</span></span>
 <span><span class="fu">species</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># S4 method for class 'ConsortiumMetabolismAlignment'</span></span>
+<span><span class="fu">species</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># S4 method for class 'ConsortiumMetabolismSet'</span></span>
 <span><span class="fu">species</span><span class="op">(</span></span>
 <span>  <span class="va">object</span>,</span>
 <span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"generalists"</span>, <span class="st">"specialists"</span><span class="op">)</span>,</span>
 <span>  quantileCutoff <span class="op">=</span> <span class="fl">0.15</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S4 method for class 'ConsortiumMetabolismAlignment'</span></span>
-<span><span class="fu">species</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -70,7 +69,7 @@ consortia.</p>
 
 
 <dl><dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
-<dd><p>A <code>ConsortiumMetabolismAlignment</code> object.</p></dd>
+<dd><p>a <code>ConsortiumMetabolismSet</code> Object</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -99,23 +98,23 @@ Defaults to 0.15 (i.e., 15 percent). Ignored when
 tibble with species and pathway counts (for
 <a href="ConsortiumMetabolismSet.html">ConsortiumMetabolismSet</a>).</p>
 <p>A character vector representing the microorganisms.</p>
-<p>A character vector representing the microorganisms.</p>
 <p>A character vector of species names.</p>
+<p>A character vector representing the microorganisms.</p>
     </div>
     <div class="section level2">
     <h2 id="methods-by-class-">Methods (by class)<a class="anchor" aria-label="anchor" href="#methods-by-class-"></a></h2>
 
 <ul><li><p><code>species(ConsortiumMetabolism)</code>: Return Species in a Microbiome</p></li>
-<li><p><code>species(ConsortiumMetabolismSet)</code>: Return Species in a Microbiome</p></li>
 <li><p><code>species(ConsortiumMetabolismAlignment)</code>: Return species from a
 <code>ConsortiumMetabolismAlignment</code></p></li>
+<li><p><code>species(ConsortiumMetabolismSet)</code>: Return Species in a Microbiome</p></li>
 </ul></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">cm</span> <span class="op">&lt;-</span> <span class="fu"><a href="synCM.html">synCM</a></span><span class="op">(</span><span class="st">"test"</span>, n_species <span class="op">=</span> <span class="fl">3</span>, max_met <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">species</span><span class="op">(</span><span class="va">cm</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "RZQ1660H" "TCB696S"  "IRL7860P"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "RRS7261B" "VZM5367U" "LAC5007J"</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

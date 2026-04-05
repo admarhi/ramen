@@ -109,6 +109,6 @@ cma
 #> Name: NA
 #> Type: "pairwise"
 #> Metric: "FOS"
-#> Score: 0.2222
+#> Score: 0
 #> Query: "comm_1", Reference: "comm_2"
 ```

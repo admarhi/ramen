@@ -1,0 +1,417 @@
+# Alignment of Microbial Consortia
+
+## Introduction
+
+The alignment system in `ramen` quantifies how similar two or more
+microbial communities are from a functional perspective – not by which
+species are present, but by which metabolite-to-metabolite pathways they
+catalyse. The result is a `ConsortiumMetabolismAlignment` (CMA) object
+containing similarity scores, pathway correspondences, and (for multiple
+alignments) a consensus network.
+
+This vignette covers the alignment system in depth. For a general
+introduction to the package, see
+[`vignette("ramen", package = "ramen")`](https://admarhi.github.io/ramen/articles/ramen.md).
+
+``` r
+library(ramen)
+```
+
+## Test data
+
+We build six consortia from the bundled `misosoup24` dataset to use
+throughout this vignette.
+
+``` r
+data("misosoup24")
+cm_list <- lapply(seq_len(6), function(i) {
+    ConsortiumMetabolism(
+        misosoup24[[i]],
+        name = names(misosoup24)[i],
+        species_col = "species",
+        metabolite_col = "metabolites",
+        flux_col = "fluxes"
+    )
+})
+
+cms <- ConsortiumMetabolismSet(cm_list, name = "Demo")
+```
+
+## Pairwise alignment
+
+### Basic usage
+
+`align(CM, CM)` compares two `ConsortiumMetabolism` objects and returns
+a CMA with `Type = "pairwise"`.
+
+``` r
+cma <- align(cm_list[[1]], cm_list[[2]])
+cma
+#> 
+#> ── ConsortiumMetabolismAlignment
+#> Name: NA
+#> Type: "pairwise"
+#> Metric: "FOS"
+#> Score: 0.7634
+#> Query: "ac_A1R12_1", Reference: "ac_A1R12_10"
+```
+
+### Similarity metrics
+
+Five metrics are available via the `method` argument. Regardless of
+which is selected as the primary score, all applicable metrics are
+always computed and stored.
+
+``` r
+cma_fos <- align(cm_list[[1]], cm_list[[2]], method = "FOS")
+cma_jac <- align(cm_list[[1]], cm_list[[2]], method = "jaccard")
+scores(cma_fos)
+#> $FOS
+#> [1] 0.7634409
+#> 
+#> $jaccard
+#> [1] 0.3397129
+#> 
+#> $brayCurtis
+#> [1] 0.3115158
+#> 
+#> $redundancyOverlap
+#> [1] 0.3397129
+```
+
+| Metric             | Description                            |
+|--------------------|----------------------------------------|
+| FOS                | Szymkiewicz-Simpson on binary matrices |
+| Jaccard            | Symmetric set similarity               |
+| Bray-Curtis        | Flux-weighted similarity               |
+| Redundancy Overlap | Weighted Jaccard on nSpecies           |
+| MAAS               | 0.4 FOS + 0.2 each of the rest         |
+
+The **Metabolic Alignment Aggregate Score** (MAAS) combines all four
+metrics. Weights are renormalized when some metrics are unavailable
+(e.g., unweighted networks lack Bray-Curtis):
+
+``` r
+cma_maas <- align(cm_list[[1]], cm_list[[2]], method = "MAAS")
+scores(cma_maas)
+#> $FOS
+#> [1] 0.7634409
+#> 
+#> $jaccard
+#> [1] 0.3397129
+#> 
+#> $brayCurtis
+#> [1] 0.3115158
+#> 
+#> $redundancyOverlap
+#> [1] 0.3397129
+```
+
+### Pathway correspondences
+
+The alignment classifies every metabolite-to-metabolite pathway as
+shared, unique to the query, or unique to the reference.
+
+``` r
+## All pathways in the alignment
+head(pathways(cma))
+#> # A tibble: 6 × 2
+#>   consumed produced
+#>   <chr>    <chr>   
+#> 1 acald    ac      
+#> 2 asp__L   ac      
+#> 3 gly      ac      
+#> 4 gthrd    ac      
+#> 5 h2o2     ac      
+#> 6 h2s      ac
+
+## Shared pathways only
+shared <- pathways(cma, type = "shared")
+nrow(shared)
+#> [1] 71
+
+## Unique pathways (returns a list with $query and $reference)
+unique_pw <- pathways(cma, type = "unique")
+nrow(unique_pw$query)
+#> [1] 22
+nrow(unique_pw$reference)
+#> [1] 116
+```
+
+### Permutation p-values
+
+Statistical significance is assessed by degree-preserving network
+rewiring. The query network’s pathways are shuffled while preserving
+each metabolite’s degree, and the metric is recomputed under the null
+distribution.
+
+``` r
+cma_p <- align(
+    cm_list[[1]],
+    cm_list[[2]],
+    method = "FOS",
+    computePvalue = TRUE,
+    nPermutations = 99L
+)
+scores(cma_p)
+#> $FOS
+#> [1] 0.7634409
+#> 
+#> $jaccard
+#> [1] 0.3397129
+#> 
+#> $brayCurtis
+#> [1] 0.3115158
+#> 
+#> $redundancyOverlap
+#> [1] 0.3397129
+```
+
+### Visualization
+
+#### Network plot
+
+The network view shows shared (green), query-unique (blue), and
+reference-unique (red) pathways as a directed metabolite flow graph.
+
+``` r
+plot(cma, type = "network")
+```
+
+![Pairwise alignment
+network.](alignment_files/figure-html/plot-network-1.png)
+
+Pairwise alignment network.
+
+#### Score bar chart
+
+``` r
+plot(cma, type = "scores")
+```
+
+![Pairwise metric
+scores.](alignment_files/figure-html/plot-scores-pair-1.png)
+
+Pairwise metric scores.
+
+## Multiple alignment
+
+### Aligning a consortium set
+
+`align(CMS)` computes pairwise similarities across all consortia in a
+`ConsortiumMetabolismSet` and returns a CMA with `Type = "multiple"`.
+
+``` r
+cma_mult <- align(cms)
+cma_mult
+```
+
+### Similarity matrix
+
+The similarity matrix is an n x n symmetric matrix with 1s on the
+diagonal. For FOS, this is derived from the pre-computed CMS overlap
+matrix:
+
+``` r
+round(similarityMatrix(cma_mult), 3)
+#>             ac_A1R12_1 ac_A1R12_10 ac_A1R12_11 ac_A1R12_12 ac_A1R12_13
+#> ac_A1R12_1       1.000       0.763       0.538       0.785       0.538
+#> ac_A1R12_10      0.763       1.000       0.438       0.542       0.549
+#> ac_A1R12_11      0.538       0.438       1.000       0.507       1.000
+#> ac_A1R12_12      0.785       0.542       0.507       1.000       0.430
+#> ac_A1R12_13      0.538       0.549       1.000       0.430       1.000
+#> ac_A1R12_14      0.785       0.551       0.567       0.764       0.567
+#>             ac_A1R12_14
+#> ac_A1R12_1        0.785
+#> ac_A1R12_10       0.551
+#> ac_A1R12_11       0.567
+#> ac_A1R12_12       0.764
+#> ac_A1R12_13       0.567
+#> ac_A1R12_14       1.000
+```
+
+### Summary scores
+
+For a multiple alignment, the primary score is the **median** of all
+pairwise scores.
+[`scores()`](https://admarhi.github.io/ramen/reference/scores.md)
+returns full summary statistics:
+
+``` r
+scores(cma_mult)
+#> $mean
+#> [1] 0.6215862
+#> 
+#> $median
+#> [1] 0.5511811
+#> 
+#> $min
+#> [1] 0.4295775
+#> 
+#> $max
+#> [1] 1
+#> 
+#> $sd
+#> [1] 0.1597042
+#> 
+#> $nPairs
+#> [1] 15
+```
+
+### Consensus network and prevalence
+
+Pathway prevalence counts how many consortia share each
+metabolite-to-metabolite pathway. This enables classification of
+pathways as core (present in most consortia) or niche (present in few).
+
+``` r
+prev <- prevalence(cma_mult)
+head(prev[order(-prev$nConsortia), ])
+#>    consumed produced nConsortia proportion
+#> 21   asp__L       ac          6          1
+#> 24      gly       ac          6          1
+#> 30      pyr       ac          6          1
+#> 56   asp__L   ala__D          6          1
+#> 59      gly   ala__D          6          1
+#> 65      pyr   ala__D          6          1
+
+## Distribution of prevalence
+table(prev$nConsortia)
+#> 
+#>   1   2   3   4   5   6 
+#> 100  75  55  51  14  30
+```
+
+The
+[`pathways()`](https://admarhi.github.io/ramen/reference/pathways.md)
+method with `type = "consensus"` returns the same information:
+
+``` r
+head(pathways(cma_mult, type = "consensus"))
+#>   consumed produced nConsortia proportion
+#> 1    acald    4abut          1  0.1666667
+#> 2   arg__L    4abut          1  0.1666667
+#> 3   asp__L    4abut          1  0.1666667
+#> 4     etoh    4abut          1  0.1666667
+#> 5      gly    4abut          1  0.1666667
+#> 6   leu__L    4abut          1  0.1666667
+```
+
+### Visualization
+
+#### Heatmap
+
+The heatmap shows pairwise similarities with dendrogram-based ordering:
+
+``` r
+plot(cma_mult, type = "heatmap")
+```
+
+![Similarity heatmap.](alignment_files/figure-html/plot-heatmap-1.png)
+
+Similarity heatmap.
+
+#### Score summary
+
+``` r
+plot(cma_mult, type = "scores")
+#> Warning: Removed 1 row containing missing values or values outside the scale range
+#> (`geom_col()`).
+#> Warning: Removed 1 row containing missing values or values outside the scale range
+#> (`geom_text()`).
+```
+
+![Multiple alignment summary
+scores.](alignment_files/figure-html/plot-scores-mult-1.png)
+
+Multiple alignment summary scores.
+
+## Accessor reference
+
+| Accessor                                                                              | Alignment type | Returns                         |
+|---------------------------------------------------------------------------------------|----------------|---------------------------------|
+| [`scores()`](https://admarhi.github.io/ramen/reference/scores.md)                     | both           | Named list of scores            |
+| [`pathways()`](https://admarhi.github.io/ramen/reference/pathways.md)                 | both           | data.frame of all pathways      |
+| `pathways(type = "shared")`                                                           | pairwise       | data.frame of shared pathways   |
+| `pathways(type = "unique")`                                                           | pairwise       | list(query, reference)          |
+| `pathways(type = "consensus")`                                                        | multiple       | data.frame with prevalence      |
+| [`similarityMatrix()`](https://admarhi.github.io/ramen/reference/similarityMatrix.md) | multiple       | n x n numeric matrix            |
+| [`prevalence()`](https://admarhi.github.io/ramen/reference/prevalence.md)             | multiple       | data.frame with nConsortia      |
+| [`metabolites()`](https://admarhi.github.io/ramen/reference/metabolites.md)           | both           | Character vector of metabolites |
+
+Type guards prevent misuse – for example, calling
+`pathways(type = "shared")` on a multiple alignment raises an
+informative error.
+
+## Session info
+
+``` r
+sessionInfo()
+#> R version 4.5.3 (2026-03-11)
+#> Platform: x86_64-pc-linux-gnu
+#> Running under: Ubuntu 24.04.4 LTS
+#> 
+#> Matrix products: default
+#> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
+#> LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0
+#> 
+#> locale:
+#>  [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       
+#>  [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   
+#>  [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          
+#> [10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   
+#> 
+#> time zone: UTC
+#> tzcode source: system (glibc)
+#> 
+#> attached base packages:
+#> [1] stats     graphics  grDevices utils     datasets  methods   base     
+#> 
+#> other attached packages:
+#> [1] ramen_0.0.0.9001 BiocStyle_2.38.0
+#> 
+#> loaded via a namespace (and not attached):
+#>  [1] SummarizedExperiment_1.40.0     gtable_0.3.6                   
+#>  [3] ggplot2_4.0.2                   xfun_0.57                      
+#>  [5] bslib_0.10.0                    Biobase_2.70.0                 
+#>  [7] lattice_0.22-9                  yulab.utils_0.2.4              
+#>  [9] vctrs_0.7.2                     tools_4.5.3                    
+#> [11] generics_0.1.4                  stats4_4.5.3                   
+#> [13] parallel_4.5.3                  tibble_3.3.1                   
+#> [15] pkgconfig_2.0.3                 Matrix_1.7-4                   
+#> [17] RColorBrewer_1.1-3              S7_0.2.1                       
+#> [19] desc_1.4.3                      S4Vectors_0.48.0               
+#> [21] lifecycle_1.0.5                 farver_2.1.2                   
+#> [23] compiler_4.5.3                  treeio_1.34.0                  
+#> [25] textshaping_1.0.5               Biostrings_2.78.0              
+#> [27] Seqinfo_1.0.0                   codetools_0.2-20               
+#> [29] htmltools_0.5.9                 sass_0.4.10                    
+#> [31] yaml_2.3.12                     lazyeval_0.2.2                 
+#> [33] pkgdown_2.2.0                   pillar_1.11.1                  
+#> [35] crayon_1.5.3                    jquerylib_0.1.4                
+#> [37] tidyr_1.3.2                     BiocParallel_1.44.0            
+#> [39] SingleCellExperiment_1.32.0     DelayedArray_0.36.1            
+#> [41] cachem_1.1.0                    viridis_0.6.5                  
+#> [43] abind_1.4-8                     nlme_3.1-168                   
+#> [45] tidyselect_1.2.1                digest_0.6.39                  
+#> [47] dplyr_1.2.1                     purrr_1.2.1                    
+#> [49] bookdown_0.46                   labeling_0.4.3                 
+#> [51] TreeSummarizedExperiment_2.18.0 fastmap_1.2.0                  
+#> [53] grid_4.5.3                      cli_3.6.5                      
+#> [55] SparseArray_1.10.10             magrittr_2.0.4                 
+#> [57] S4Arrays_1.10.1                 utf8_1.2.6                     
+#> [59] ape_5.8-1                       withr_3.0.2                    
+#> [61] scales_1.4.0                    rappdirs_0.3.4                 
+#> [63] rmarkdown_2.31                  XVector_0.50.0                 
+#> [65] matrixStats_1.5.0               igraph_2.2.2                   
+#> [67] gridExtra_2.3                   ragg_1.5.2                     
+#> [69] evaluate_1.0.5                  knitr_1.51                     
+#> [71] GenomicRanges_1.62.1            IRanges_2.44.0                 
+#> [73] viridisLite_0.4.3               rlang_1.1.7                    
+#> [75] dendextend_1.19.1               Rcpp_1.1.1                     
+#> [77] glue_1.8.0                      tidytree_0.4.7                 
+#> [79] BiocManager_1.30.27             BiocGenerics_0.56.0            
+#> [81] jsonlite_2.0.0                  R6_2.6.1                       
+#> [83] MatrixGenerics_1.22.0           systemfonts_1.3.2              
+#> [85] fs_2.0.1
+```

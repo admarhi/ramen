@@ -10,10 +10,10 @@ metabolites(object)
 # S4 method for class 'ConsortiumMetabolism'
 metabolites(object)
 
-# S4 method for class 'ConsortiumMetabolismSet'
+# S4 method for class 'ConsortiumMetabolismAlignment'
 metabolites(object)
 
-# S4 method for class 'ConsortiumMetabolismAlignment'
+# S4 method for class 'ConsortiumMetabolismSet'
 metabolites(object)
 ```
 
@@ -32,5 +32,5 @@ A character vector containing the names of metabolites in the network.
 ``` r
 cm <- synCM("test", n_species = 3, max_met = 5)
 metabolites(cm)
-#> [1] "met5" "met3" "met4" "met1" "met2"
+#> [1] "met2" "met3"
 ```

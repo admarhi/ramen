@@ -19,12 +19,11 @@ ramen package functionality."></head><body>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/ramen.html">Get started</a></li>
+<li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/ConsortiumMetabolism.html">The ConsortiumMetabolism Class</a></li>
-    <li><a class="dropdown-item" href="../articles/ConsortiumMetabolismAlignment.html">Alignment of Microbial Consortia</a></li>
-    <li><a class="dropdown-item" href="../articles/ConsortiumMetabolismSet.html">The ConsortiumMetabolismSet Class</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/alignment.html">Alignment of Microbial Consortia</a></li>
     <li><a class="dropdown-item" href="../articles/visualisation.html">Visualisation</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -124,21 +123,23 @@ fluxes (i.e., no dead ends).</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── ConsortiumMetabolism </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Name: <span style="color: #0000BB;">"Ex. Community"</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Weighted metabolic network with <span style="color: #0000BB;">10</span> metabolites.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Weighted metabolic network with <span style="color: #0000BB;">7</span> metabolites.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Return raw edge list instead</span></span></span>
 <span class="r-in"><span><span class="fu">synCM</span><span class="op">(</span><span class="st">"Test"</span>, n_species <span class="op">=</span> <span class="fl">3</span>, max_met <span class="op">=</span> <span class="fl">8</span>, cm <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 8 × 3</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   species  metabolites fluxes</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> JJK1290J met6         4.03 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> JJK1290J met2        -<span style="color: #BB0000;">7.52</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> JJK1290J met8        -<span style="color: #BB0000;">1.30</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> TDT3997J met2         0.748</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> TDT3997J met5        -<span style="color: #BB0000;">2.38</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> TDT3997J met8        -<span style="color: #BB0000;">0.408</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">7</span> QOY141U  met8         3.62 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">8</span> QOY141U  met1        -<span style="color: #BB0000;">0.642</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    species  metabolites fluxes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> KYS3742B met5         3.77 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> PCI233C  met5        -<span style="color: #BB0000;">3.77</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> PCI233C  met4         0.875</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> MKI7263L met4        -<span style="color: #BB0000;">0.875</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> MKI7263L met5         1.48 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> KYS3742B met5        -<span style="color: #BB0000;">1.48</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> KYS3742B met6        -<span style="color: #BB0000;">0.894</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> MKI7263L met7         0.904</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> MKI7263L met8         2.87 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> MKI7263L met6        -<span style="color: #BB0000;">4.32</span> </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

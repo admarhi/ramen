@@ -40,60 +40,47 @@ cms <- ConsortiumMetabolismSet(cm1, cm2, name = "test")
 #> 
 #> ── Creating CMS "test" ─────────────────────────────────────────────────────────
 #> ℹ Validating 2 <ConsortiumMetabolism> objects
-#> ✔ Validating 2 <ConsortiumMetabolism> objects [11ms]
+#> ✔ Validating 2 <ConsortiumMetabolism> objects [10ms]
 #> 
 #> ℹ Collecting metabolites from 2 consortia
-#> ✔ Collecting metabolites from 2 consortia [29ms]
+#> ✔ Collecting metabolites from 2 consortia [28ms]
 #> 
 #> ℹ Re-indexing 6 unique metabolites
-#> ✔ Re-indexing 6 unique metabolites [26ms]
+#> ✔ Re-indexing 6 unique metabolites [25ms]
 #> 
 #> ℹ Expanding 2 binary matrices to 6-dimensional space
-#> ✔ Expanding 2 binary matrices to 6-dimensional space [23ms]
+#> ✔ Expanding 2 binary matrices to 6-dimensional space [22ms]
 #> 
 #> ℹ Computing 6 x 6 levels matrix
-#> ✔ Computing 6 x 6 levels matrix [25ms]
+#> ✔ Computing 6 x 6 levels matrix [23ms]
 #> 
 #> ℹ Computing pairwise overlap (1 pairs via crossprod)
-#> ✔ Computing pairwise overlap (1 pairs via crossprod) [23ms]
+#> ✔ Computing pairwise overlap (1 pairs via crossprod) [21ms]
 #> 
 #> ℹ Assembling pathway data from 2 consortia
-#> ✔ Assembling pathway data from 2 consortia [30ms]
+#> ✔ Assembling pathway data from 2 consortia [29ms]
 #> 
 #> ℹ Building dendrogram from 2 x 2 dissimilarity matrix
-#> ✔ Building dendrogram from 2 x 2 dissimilarity matrix [29ms]
+#> ✔ Building dendrogram from 2 x 2 dissimilarity matrix [20ms]
 #> 
 #> ℹ Extracting dendrogram node positions
-#> ✔ Extracting dendrogram node positions [23ms]
+#> ✔ Extracting dendrogram node positions [22ms]
 #> 
 #> ℹ Collecting 2 consortium graphs
 #> ✔ CMS "test" created: 2 consortia, 6 metabolites (0.2s)
 #> ℹ Collecting 2 consortium graphs
-#> ✔ Collecting 2 consortium graphs [78ms]
+#> ✔ Collecting 2 consortium graphs [74ms]
 #> 
 cma <- align(cms)
 #> Computing multiple alignment for 2 consortia using "FOS".
 prevalence(cma)
-#>    consumed produced nConsortia proportion
-#> 1      met3     met1          1        0.5
-#> 2      met1     met2          1        0.5
-#> 3      met3     met2          1        0.5
-#> 4      met4     met2          1        0.5
-#> 5      met5     met2          2        1.0
-#> 6      met2     met3          1        0.5
-#> 7      met5     met3          1        0.5
-#> 8      met6     met3          1        0.5
-#> 9      met1     met4          1        0.5
-#> 10     met2     met4          1        0.5
-#> 11     met3     met4          1        0.5
-#> 12     met5     met4          1        0.5
-#> 13     met1     met5          1        0.5
-#> 14     met2     met5          1        0.5
-#> 15     met3     met5          1        0.5
-#> 16     met4     met5          1        0.5
-#> 17     met1     met6          1        0.5
-#> 18     met3     met6          1        0.5
-#> 19     met4     met6          1        0.5
-#> 20     met5     met6          1        0.5
+#>   consumed produced nConsortia proportion
+#> 1     met2     met1          1        0.5
+#> 2     met1     met2          1        0.5
+#> 3     met2     met2          1        0.5
+#> 4     met2     met3          1        0.5
+#> 5     met6     met4          1        0.5
+#> 6     met1     met5          1        0.5
+#> 7     met4     met6          1        0.5
 # }
 ```
