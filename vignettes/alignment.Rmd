@@ -1,0 +1,248 @@
+---
+title: "Alignment of Microbial Consortia"
+output:
+    BiocStyle::html_document:
+        toc: true
+        toc_depth: 3
+vignette: >
+    %\VignetteIndexEntry{Alignment of Microbial Consortia}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+    collapse = TRUE,
+    comment = "#>",
+    fig.width = 6,
+    fig.height = 5
+)
+```
+
+# Introduction
+
+The alignment system in `ramen` quantifies how similar two or more
+microbial communities are from a functional perspective -- not by
+which species are present, but by which metabolite-to-metabolite
+pathways they catalyse. The result is a
+`ConsortiumMetabolismAlignment` (CMA) object containing similarity
+scores, pathway correspondences, and (for multiple alignments) a
+consensus network.
+
+This vignette covers the alignment system in depth. For a general
+introduction to the package, see
+`vignette("ramen", package = "ramen")`.
+
+```{r load-library, message = FALSE}
+library(ramen)
+```
+
+# Test data
+
+We build six consortia from the bundled `misosoup24` dataset to use
+throughout this vignette.
+
+```{r create-data, message = FALSE}
+data("misosoup24")
+cm_list <- lapply(seq_len(6), function(i) {
+    ConsortiumMetabolism(
+        misosoup24[[i]],
+        name = names(misosoup24)[i],
+        species_col = "species",
+        metabolite_col = "metabolites",
+        flux_col = "fluxes"
+    )
+})
+
+cms <- ConsortiumMetabolismSet(cm_list, name = "Demo")
+```
+
+# Pairwise alignment
+
+## Basic usage
+
+`align(CM, CM)` compares two `ConsortiumMetabolism` objects and
+returns a CMA with `Type = "pairwise"`.
+
+```{r pairwise-basic}
+cma <- align(cm_list[[1]], cm_list[[2]])
+cma
+```
+
+## Similarity metrics
+
+Five metrics are available via the `method` argument. Regardless of
+which is selected as the primary score, all applicable metrics are
+always computed and stored.
+
+```{r pairwise-all-methods}
+cma_fos <- align(cm_list[[1]], cm_list[[2]], method = "FOS")
+cma_jac <- align(cm_list[[1]], cm_list[[2]], method = "jaccard")
+scores(cma_fos)
+```
+
+| Metric | Description |
+|--------|-------------|
+| FOS | Szymkiewicz-Simpson on binary matrices |
+| Jaccard | Symmetric set similarity |
+| Bray-Curtis | Flux-weighted similarity |
+| Redundancy Overlap | Weighted Jaccard on nSpecies |
+| MAAS | 0.4 FOS + 0.2 each of the rest |
+
+The **Metabolic Alignment Aggregate Score** (MAAS) combines all
+four metrics. Weights are renormalized when some metrics are
+unavailable (e.g., unweighted networks lack Bray-Curtis):
+
+```{r pairwise-maas}
+cma_maas <- align(cm_list[[1]], cm_list[[2]], method = "MAAS")
+scores(cma_maas)
+```
+
+## Pathway correspondences
+
+The alignment classifies every metabolite-to-metabolite pathway as
+shared, unique to the query, or unique to the reference.
+
+```{r pairwise-pathways}
+## All pathways in the alignment
+head(pathways(cma))
+
+## Shared pathways only
+shared <- pathways(cma, type = "shared")
+nrow(shared)
+
+## Unique pathways (returns a list with $query and $reference)
+unique_pw <- pathways(cma, type = "unique")
+nrow(unique_pw$query)
+nrow(unique_pw$reference)
+```
+
+## Permutation p-values
+
+Statistical significance is assessed by degree-preserving network
+rewiring. The query network's pathways are shuffled while preserving
+each metabolite's degree, and the metric is recomputed under the
+null distribution.
+
+```{r pairwise-pvalue}
+cma_p <- align(
+    cm_list[[1]],
+    cm_list[[2]],
+    method = "FOS",
+    computePvalue = TRUE,
+    nPermutations = 99L
+)
+scores(cma_p)
+```
+
+## Visualization
+
+### Network plot
+
+The network view shows shared (green), query-unique (blue), and
+reference-unique (red) pathways as a directed metabolite flow
+graph.
+
+```{r plot-network, fig.cap = "Pairwise alignment network."}
+plot(cma, type = "network")
+```
+
+### Score bar chart
+
+```{r plot-scores-pair, fig.cap = "Pairwise metric scores."}
+plot(cma, type = "scores")
+```
+
+# Multiple alignment
+
+## Aligning a consortium set
+
+`align(CMS)` computes pairwise similarities across all consortia
+in a `ConsortiumMetabolismSet` and returns a CMA with
+`Type = "multiple"`.
+
+```{r multiple-create, message = FALSE}
+cma_mult <- align(cms)
+cma_mult
+```
+
+## Similarity matrix
+
+The similarity matrix is an n x n symmetric matrix with 1s on the
+diagonal. For FOS, this is derived from the pre-computed CMS
+overlap matrix:
+
+```{r multiple-simmat}
+round(similarityMatrix(cma_mult), 3)
+```
+
+## Summary scores
+
+For a multiple alignment, the primary score is the **median** of
+all pairwise scores. `scores()` returns full summary statistics:
+
+```{r multiple-scores}
+scores(cma_mult)
+```
+
+## Consensus network and prevalence
+
+Pathway prevalence counts how many consortia share each
+metabolite-to-metabolite pathway. This enables classification of
+pathways as core (present in most consortia) or niche (present in
+few).
+
+```{r multiple-prevalence}
+prev <- prevalence(cma_mult)
+head(prev[order(-prev$nConsortia), ])
+
+## Distribution of prevalence
+table(prev$nConsortia)
+```
+
+The `pathways()` method with `type = "consensus"` returns the same
+information:
+
+```{r multiple-consensus}
+head(pathways(cma_mult, type = "consensus"))
+```
+
+## Visualization
+
+### Heatmap
+
+The heatmap shows pairwise similarities with dendrogram-based
+ordering:
+
+```{r plot-heatmap, fig.cap = "Similarity heatmap."}
+plot(cma_mult, type = "heatmap")
+```
+
+### Score summary
+
+```{r plot-scores-mult, fig.cap = "Multiple alignment summary scores."}
+plot(cma_mult, type = "scores")
+```
+
+# Accessor reference
+
+| Accessor | Alignment type | Returns |
+|----------|---------------|---------|
+| `scores()` | both | Named list of scores |
+| `pathways()` | both | data.frame of all pathways |
+| `pathways(type = "shared")` | pairwise | data.frame of shared pathways |
+| `pathways(type = "unique")` | pairwise | list(query, reference) |
+| `pathways(type = "consensus")` | multiple | data.frame with prevalence |
+| `similarityMatrix()` | multiple | n x n numeric matrix |
+| `prevalence()` | multiple | data.frame with nConsortia |
+| `metabolites()` | both | Character vector of metabolites |
+
+Type guards prevent misuse -- for example, calling
+`pathways(type = "shared")` on a multiple alignment raises an
+informative error.
+
+# Session info
+
+```{r session-info}
+sessionInfo()
+```

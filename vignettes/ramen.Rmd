@@ -1,0 +1,354 @@
+---
+title: "Introduction to ramen"
+output:
+    BiocStyle::html_document:
+        toc: true
+        toc_depth: 3
+vignette: >
+    %\VignetteIndexEntry{Introduction to ramen}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+    collapse = TRUE,
+    comment = "#>",
+    fig.width = 6,
+    fig.height = 5
+)
+```
+
+# Installation
+
+`ramen` can be installed from Bioconductor:
+
+```{r install, eval = FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("ramen")
+```
+
+```{r load-library, message = FALSE}
+library(ramen)
+```
+
+# Overview
+
+`ramen` (**R**econstruction and **A**lignment of **M**icrobial
+**E**xchange **N**etworks) analyses the functional similarity of
+microbial communities from a metabolic network perspective. Rather
+than comparing communities by species composition, `ramen` asks:
+*which metabolite-to-metabolite pathways does each community
+catalyse, and how similar are the resulting networks?*
+
+The package provides three S4 classes that build on Bioconductor's
+`TreeSummarizedExperiment`:
+`r BiocStyle::Biocpkg("TreeSummarizedExperiment")`:
+
+- **`ConsortiumMetabolism`** (CM) -- a single community's metabolic
+  exchange network
+- **`ConsortiumMetabolismSet`** (CMS) -- a collection of CMs with
+  precomputed overlap scores and a dendrogram
+- **`ConsortiumMetabolismAlignment`** (CMA) -- the result of
+  aligning two or more communities
+
+This vignette walks through a complete analysis from data import to
+alignment using the bundled `misosoup24` dataset (56 metabolic
+solutions from [MiSoSoup](https://github.com/sirno/misosoup)). For
+details on alignment metrics, see
+`vignette("alignment", package = "ramen")`; for a gallery of all
+plot types, see `vignette("visualisation", package = "ramen")`.
+
+# Data import
+
+## The `misosoup24` dataset
+
+`ramen` ships with `misosoup24`, a list of 56 metabolic solutions.
+Each element is a data.frame with columns `metabolites`, `species`,
+and `fluxes`, where negative fluxes indicate consumption and
+positive fluxes indicate production.
+
+```{r load-data}
+data("misosoup24")
+length(misosoup24)
+names(misosoup24)[1:8]
+head(misosoup24[[1]])
+```
+
+## Importing raw MiSoSoup YAML
+
+For raw MiSoSoup output (nested YAML), `importMisosoup()` parses
+the data into structured tibbles of consortia, media, and growth
+information. `overviewMisosoup()` provides a quick summary of the
+data structure before full import.
+
+```{r import-misosoup, eval = FALSE}
+## Parse raw MiSoSoup YAML (not run -- requires external data)
+raw <- yaml::read_yaml("path/to/misosoup_output.yaml")
+overviewMisosoup(raw)
+result <- importMisosoup(raw)
+names(result) # "consortia", "media", "growth"
+```
+
+## Alternative input formats
+
+The `ConsortiumMetabolism()` constructor accepts any data.frame with
+columns for species, metabolite, and flux. Custom column names are
+specified via `species_col`, `metabolite_col`, and `flux_col`.
+
+If your data is in wide format with separate columns for consumed
+and produced metabolites, `pivotCM()` converts it to the long
+format that `ConsortiumMetabolism()` expects:
+
+```{r pivot-cm}
+wide_data <- data.frame(
+    species = c("Sp_A", "Sp_B", "Sp_C"),
+    uptake = c("met1", "met2", "met3"),
+    secretion = c("met2", "met3", "met1"),
+    flux = c(1, 1, 1)
+)
+
+long_data <- pivotCM(
+    wide_data,
+    species = "species",
+    from = "uptake",
+    to = "secretion",
+    flux = "flux"
+)
+head(long_data)
+```
+
+# Building a ConsortiumMetabolism
+
+## From `misosoup24`
+
+```{r build-cm}
+cm1 <- ConsortiumMetabolism(
+    misosoup24[[1]],
+    name = names(misosoup24)[1],
+    species_col = "species",
+    metabolite_col = "metabolites",
+    flux_col = "fluxes"
+)
+cm1
+```
+
+## Synthetic data with `synCM()`
+
+For quick testing, `synCM()` generates a random consortium:
+
+```{r syn-cm}
+cm_syn <- synCM("Synthetic", n_species = 4, max_met = 8, seed = 42)
+cm_syn
+```
+
+## Inspecting a CM
+
+A CM inherits from `TreeSummarizedExperiment`, so standard
+dimension accessors work. Rows and columns both correspond to
+metabolites (it is a square metabolite-by-metabolite matrix):
+
+```{r cm-dim}
+dim(cm1)
+```
+
+The six assay matrices encode different views of the network:
+
+```{r cm-assays}
+SummarizedExperiment::assayNames(cm1)
+```
+
+| Assay | Content |
+|-------|---------|
+| Binary | 1 if a pathway exists, 0 otherwise |
+| nSpecies | Number of species catalysing the pathway |
+| Consumption | Summed consumption flux |
+| Production | Summed production flux |
+| EffectiveConsumption | Effective number of consuming species |
+| EffectiveProduction | Effective number of producing species |
+
+## Accessors
+
+```{r cm-accessors}
+name(cm1)
+species(cm1)
+metabolites(cm1)
+```
+
+`pathways()` returns per-pathway summary statistics:
+
+```{r cm-pathways}
+head(pathways(cm1))
+```
+
+`consortia()` returns the tidy input data:
+
+```{r cm-consortia}
+head(consortia(cm1))
+```
+
+Replacement methods allow renaming:
+
+```{r cm-replace}
+name(cm1) <- "first_solution"
+name(cm1)
+```
+
+# Building a ConsortiumMetabolismSet
+
+A `ConsortiumMetabolismSet` groups multiple CMs. During
+construction, `ramen` automatically expands all binary matrices to a
+shared universal metabolite space, computes pairwise overlap scores,
+and builds a hierarchical clustering dendrogram.
+
+```{r build-cms, message = FALSE}
+## Build 20 CMs from misosoup24
+cm_list <- lapply(seq_len(20), function(i) {
+    ConsortiumMetabolism(
+        misosoup24[[i]],
+        name = names(misosoup24)[i],
+        species_col = "species",
+        metabolite_col = "metabolites",
+        flux_col = "fluxes"
+    )
+})
+
+cms <- ConsortiumMetabolismSet(cm_list, name = "MiSoSoup_20")
+cms
+```
+
+## Species across the set
+
+`species()` returns all species with the number of distinct pathways
+each catalyses:
+
+```{r cms-species}
+species(cms)
+```
+
+Filter by metabolic role -- generalists (top fraction by pathway
+count) or specialists (bottom fraction):
+
+```{r cms-species-types}
+species(cms, type = "generalists")
+species(cms, type = "specialists")
+```
+
+## Pathway classification
+
+`pathways()` with a `type` argument classifies pathways by
+prevalence:
+
+```{r cms-pathways-types}
+## Pan-consortia: present in many consortia (top fraction)
+head(pathways(cms, type = "pan-cons"))
+
+## Niche: present in few consortia (bottom fraction)
+head(pathways(cms, type = "niche"))
+```
+
+The `quantileCutoff` parameter controls the threshold (default
+0.1).
+
+## Functional groups
+
+`functionalGroups()` clusters species by the Jaccard similarity of
+their pathway sets:
+
+```{r cms-func-groups, fig.cap = "Functional groups dendrogram."}
+fg <- functionalGroups(cms, k = 3)
+```
+
+## Dendrogram and cluster extraction
+
+```{r cms-dendrogram, fig.cap = "CMS dendrogram with numbered nodes."}
+plot(cms)
+```
+
+The numbered internal nodes can be used to extract sub-clusters:
+
+```{r cms-extract, message = FALSE}
+sub_cms <- extractCluster(cms, node_id = 1)
+sub_cms
+```
+
+# Alignment
+
+## Pairwise alignment
+
+`align()` compares two CMs and returns a
+`ConsortiumMetabolismAlignment`:
+
+```{r align-pairwise}
+cma_pair <- align(cm_list[[1]], cm_list[[2]])
+cma_pair
+```
+
+All similarity metrics are computed automatically:
+
+```{r align-scores}
+scores(cma_pair)
+```
+
+Pathway correspondences show shared and unique pathways:
+
+```{r align-pathways}
+shared <- pathways(cma_pair, type = "shared")
+unique_pw <- pathways(cma_pair, type = "unique")
+nrow(shared)
+nrow(unique_pw$query)
+nrow(unique_pw$reference)
+```
+
+## Multiple alignment
+
+`align()` on a CMS computes all pairwise similarities:
+
+```{r align-multiple, message = FALSE}
+cma_mult <- align(cms)
+cma_mult
+```
+
+The similarity matrix and summary scores:
+
+```{r align-mult-results}
+scores(cma_mult)
+round(similarityMatrix(cma_mult)[1:5, 1:5], 3)
+```
+
+Pathway prevalence across consortia:
+
+```{r align-prevalence}
+prev <- prevalence(cma_mult)
+head(prev[order(-prev$nConsortia), ])
+```
+
+For a detailed treatment of alignment metrics, p-values, and
+accessor functions, see
+`vignette("alignment", package = "ramen")`.
+
+# Visualization
+
+Each class has a `plot()` method. Here is one example per class;
+for the full gallery, see
+`vignette("visualisation", package = "ramen")`.
+
+```{r plot-cm, fig.cap = "Metabolic network for the first consortium."}
+plot(cm_list[[1]], type = "Binary")
+```
+
+```{r plot-cms, fig.cap = "Dendrogram of 20 consortia."}
+plot(cms)
+```
+
+```{r plot-cma, fig.cap = "Pairwise similarity heatmap."}
+plot(cma_mult, type = "heatmap")
+```
+
+# Session info
+
+```{r session-info}
+sessionInfo()
+```
