@@ -61,21 +61,20 @@ test_that("scores() returns Scores list for pairwise", {
     expect_true("jaccard" %in% names(s))
 })
 
-test_that("sharedPathways() returns data.frame for pairwise", {
+test_that("pathways(type='shared') returns data.frame for pairwise", {
     cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cma <- align(cm1, cm2)
-    sp <- sharedPathways(cma)
+    sp <- pathways(cma, type = "shared")
     expect_true(is.data.frame(sp))
-    expect_true("consumed" %in% names(sp))
-    expect_true("produced" %in% names(sp))
+    expect_named(sp, c("consumed", "produced"))
 })
 
-test_that("uniquePathways() returns list for pairwise", {
+test_that("pathways(type='unique') returns list for pairwise", {
     cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cma <- align(cm1, cm2)
-    up <- uniquePathways(cma)
+    up <- pathways(cma, type = "unique")
     expect_true(is.list(up))
     expect_true("query" %in% names(up))
     expect_true("reference" %in% names(up))
@@ -97,6 +96,10 @@ test_that("pathways() returns data.frame for CMA", {
     cma <- align(cm1, cm2)
     e <- pathways(cma)
     expect_true(is.data.frame(e))
+    expect_named(e, c("consumed", "produced"))
+    ev <- pathways(cma, verbose = TRUE)
+    expect_true(is.data.frame(ev))
+    expect_true(ncol(ev) >= ncol(e))
 })
 
 test_that("consortia() errors for CMA", {
@@ -108,7 +111,7 @@ test_that("consortia() errors for CMA", {
 
 ## ---- CMA accessors: type guards ------------------------------------------
 
-test_that("sharedPathways() errors for multiple CMA", {
+test_that("pathways(type='shared') errors for multiple CMA", {
     cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cms <- ConsortiumMetabolismSet(
@@ -116,10 +119,12 @@ test_that("sharedPathways() errors for multiple CMA", {
         name = "test"
     )
     cma <- align(cms)
-    expect_error(sharedPathways(cma), "pairwise")
+    expect_error(
+        pathways(cma, type = "shared"), "pairwise"
+    )
 })
 
-test_that("uniquePathways() errors for multiple CMA", {
+test_that("pathways(type='unique') errors for multiple CMA", {
     cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cms <- ConsortiumMetabolismSet(
@@ -127,7 +132,9 @@ test_that("uniquePathways() errors for multiple CMA", {
         name = "test"
     )
     cma <- align(cms)
-    expect_error(uniquePathways(cma), "pairwise")
+    expect_error(
+        pathways(cma, type = "unique"), "pairwise"
+    )
 })
 
 test_that("similarityMatrix() errors for pairwise CMA", {
@@ -185,7 +192,7 @@ test_that("prevalence() returns data.frame for multiple", {
     expect_true("nConsortia" %in% names(p))
 })
 
-test_that("consensusPathways() returns data.frame for multiple", {
+test_that("pathways(type='consensus') returns data.frame for multiple", {
     cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cms <- ConsortiumMetabolismSet(
@@ -193,7 +200,30 @@ test_that("consensusPathways() returns data.frame for multiple", {
         name = "test"
     )
     cma <- align(cms)
-    cp <- consensusPathways(cma)
+    cp <- pathways(cma, type = "consensus")
     expect_true(is.data.frame(cp))
-    expect_identical(cp, prevalence(cma))
+    expect_true("nConsortia" %in% names(cp))
+    expect_true("proportion" %in% names(cp))
+})
+
+test_that("pathways(type='consensus') errors for pairwise CMA", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
+    cma <- align(cm1, cm2)
+    expect_error(
+        pathways(cma, type = "consensus"), "multiple"
+    )
+})
+
+test_that("pathways(type='shared', verbose=TRUE) returns full data", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
+    cma <- align(cm1, cm2)
+    sp_concise <- pathways(cma, type = "shared")
+    sp_verbose <- pathways(
+        cma, type = "shared", verbose = TRUE
+    )
+    expect_true(is.data.frame(sp_verbose))
+    expect_true(ncol(sp_verbose) >= ncol(sp_concise))
+    expect_true("querySpecies" %in% names(sp_verbose))
 })

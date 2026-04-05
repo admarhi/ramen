@@ -18,7 +18,11 @@ pathways(object, ...)
   verbose = FALSE
 )
 
-\S4method{pathways}{ConsortiumMetabolismAlignment}(object)
+\S4method{pathways}{ConsortiumMetabolismAlignment}(
+  object,
+  type = c("all", "shared", "unique", "consensus"),
+  verbose = FALSE
+)
 }
 \arguments{
 \item{object}{A \code{ConsortiumMetabolism},
@@ -53,7 +57,11 @@ A data.frame of pathway information. With
 \code{produced}, \code{n_species} (and
 \code{n_cons} for CMS objects). With
 \code{verbose = TRUE}: all available columns
-including flux statistics and indices.
+including flux statistics and indices. For CMA
+objects, the return depends on \code{type}: a
+data.frame for \code{"all"}, \code{"shared"}, and
+\code{"consensus"}; a list of data.frames for
+\code{"unique"}.
 }
 \description{
 Retrieves the pathways representing metabolic
@@ -81,6 +89,18 @@ shared across most species
 \item \code{"aux"} returns auxiliary pathways found
 in few species
 }
+
+For \code{ConsortiumMetabolismAlignment} objects,
+\code{type} selects the pathway subset:
+\itemize{
+\item \code{"all"} returns the union of all pathways
+\item \code{"shared"} (pairwise only) returns
+pathways shared between query and reference
+\item \code{"unique"} (pairwise only) returns
+pathways unique to query and reference as a list
+\item \code{"consensus"} (multiple only) returns
+consensus network pathways with prevalence
+}
 }
 \section{Methods (by class)}{
 \itemize{
@@ -98,5 +118,12 @@ in few species
 cm <- synCM("test", n_species = 3, max_met = 5)
 pathways(cm)
 pathways(cm, verbose = TRUE)
+
+cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
+cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
+cma <- align(cm1, cm2)
+pathways(cma)
+pathways(cma, type = "shared")
+pathways(cma, type = "unique")
 
 }

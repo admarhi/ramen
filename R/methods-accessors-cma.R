@@ -12,42 +12,6 @@ setMethod(
     function(object) object@Scores
 )
 
-#' @describeIn sharedPathways Shared pathways from a
-#'   pairwise [ConsortiumMetabolismAlignment]
-#' @export
-setMethod(
-    "sharedPathways",
-    "ConsortiumMetabolismAlignment",
-    function(object) {
-        if (object@Type != "pairwise") {
-            cli::cli_abort(
-                "{.fun sharedPathways} is only available \\
-                 for pairwise alignments."
-            )
-        }
-        object@SharedPathways
-    }
-)
-
-#' @describeIn uniquePathways Unique pathways from a
-#'   pairwise [ConsortiumMetabolismAlignment]
-#' @export
-setMethod(
-    "uniquePathways",
-    "ConsortiumMetabolismAlignment",
-    function(object) {
-        if (object@Type != "pairwise") {
-            cli::cli_abort(
-                "{.fun uniquePathways} is only available \\
-                 for pairwise alignments."
-            )
-        }
-        list(
-            query = object@UniqueQuery,
-            reference = object@UniqueReference
-        )
-    }
-)
 
 #' @describeIn similarityMatrix Similarity matrix from a
 #'   multiple [ConsortiumMetabolismAlignment]
@@ -83,19 +47,3 @@ setMethod(
     }
 )
 
-#' @describeIn consensusPathways Consensus pathways from
-#'   a multiple [ConsortiumMetabolismAlignment]
-#' @export
-setMethod(
-    "consensusPathways",
-    "ConsortiumMetabolismAlignment",
-    function(object) {
-        if (object@Type != "multiple") {
-            cli::cli_abort(
-                "{.fun consensusPathways} is only \\
-                 available for multiple alignments."
-            )
-        }
-        object@ConsensusPathways
-    }
-)

@@ -74,6 +74,18 @@ setGeneric(
 #'     in few species
 #' }
 #'
+#' For \code{ConsortiumMetabolismAlignment} objects,
+#' \code{type} selects the pathway subset:
+#' \itemize{
+#'   \item \code{"all"} returns the union of all pathways
+#'   \item \code{"shared"} (pairwise only) returns
+#'     pathways shared between query and reference
+#'   \item \code{"unique"} (pairwise only) returns
+#'     pathways unique to query and reference as a list
+#'   \item \code{"consensus"} (multiple only) returns
+#'     consensus network pathways with prevalence
+#' }
+#'
 #' @param object A \code{ConsortiumMetabolism},
 #'   \code{ConsortiumMetabolismSet}, or
 #'   \code{ConsortiumMetabolismAlignment} object.
@@ -85,12 +97,23 @@ setGeneric(
 #'   \code{produced}, \code{n_species} (and
 #'   \code{n_cons} for CMS objects). With
 #'   \code{verbose = TRUE}: all available columns
-#'   including flux statistics and indices.
+#'   including flux statistics and indices. For CMA
+#'   objects, the return depends on \code{type}: a
+#'   data.frame for \code{"all"}, \code{"shared"}, and
+#'   \code{"consensus"}; a list of data.frames for
+#'   \code{"unique"}.
 #'
 #' @examples
 #' cm <- synCM("test", n_species = 3, max_met = 5)
 #' pathways(cm)
 #' pathways(cm, verbose = TRUE)
+#'
+#' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
+#' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
+#' cma <- align(cm1, cm2)
+#' pathways(cma)
+#' pathways(cma, type = "shared")
+#' pathways(cma, type = "unique")
 #'
 #' @export
 setGeneric(
@@ -339,51 +362,6 @@ setGeneric(
     function(object) standardGeneric("scores")
 )
 
-#' @title Get Shared Pathways
-#'
-#' @description
-#' Returns pathways shared between query and reference
-#' in a pairwise alignment.
-#'
-#' @param object A [ConsortiumMetabolismAlignment] object
-#'   of type `"pairwise"`.
-#'
-#' @return A data.frame of shared pathways.
-#'
-#' @examples
-#' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
-#' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
-#' cma <- align(cm1, cm2)
-#' sharedPathways(cma)
-#'
-#' @export
-setGeneric(
-    "sharedPathways",
-    function(object) standardGeneric("sharedPathways")
-)
-
-#' @title Get Unique Pathways
-#'
-#' @description
-#' Returns pathways unique to query and reference in a
-#' pairwise alignment.
-#'
-#' @param object A [ConsortiumMetabolismAlignment] object
-#'   of type `"pairwise"`.
-#'
-#' @return A list with `query` and `reference` data.frames.
-#'
-#' @examples
-#' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
-#' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
-#' cma <- align(cm1, cm2)
-#' uniquePathways(cma)
-#'
-#' @export
-setGeneric(
-    "uniquePathways",
-    function(object) standardGeneric("uniquePathways")
-)
 
 #' @title Get Similarity Matrix
 #'
@@ -438,32 +416,6 @@ setGeneric(
     function(object) standardGeneric("prevalence")
 )
 
-#' @title Get Consensus Pathways
-#'
-#' @description
-#' Returns the consensus network pathways from a multiple
-#' alignment.
-#'
-#' @param object A [ConsortiumMetabolismAlignment] object
-#'   of type `"multiple"`.
-#'
-#' @return A data.frame of consensus pathways with
-#'   prevalence.
-#'
-#' @examples
-#' \donttest{
-#' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
-#' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
-#' cms <- ConsortiumMetabolismSet(cm1, cm2, name = "test")
-#' cma <- align(cms)
-#' consensusPathways(cma)
-#' }
-#'
-#' @export
-setGeneric(
-    "consensusPathways",
-    function(object) standardGeneric("consensusPathways")
-)
 
 ## ---- Read accessors --------------------------------------------------------
 

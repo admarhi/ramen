@@ -104,10 +104,10 @@ The alignment classifies every metabolite-metabolite pathway as shared, unique
 to the query, or unique to the reference.
 
 ```{r pairwise-pathways}
-sp <- sharedPathways(cma)
-head(sp[, c("consumed", "produced")])
+sp <- pathways(cma, type = "shared")
+head(sp)
 
-up <- uniquePathways(cma)
+up <- pathways(cma, type = "unique")
 nrow(sp) # shared
 nrow(up$query) # unique to Alpha
 nrow(up$reference) # unique to Beta
@@ -213,19 +213,19 @@ plot(cma_mult, type = "scores")
 # Programmatic access
 
 All CMA results are accessible via noun-style accessors with type guards
-that prevent misuse (e.g., calling `sharedPathways()` on a multiple
-alignment raises an informative error).
+that prevent misuse (e.g., calling `pathways(type = "shared")` on a
+multiple alignment raises an informative error).
 
 | Accessor | Type | Returns |
 |----------|------|---------|
 | `scores()` | both | Named list of scores |
-| `sharedPathways()` | pairwise | data.frame of shared pathways |
-| `uniquePathways()` | pairwise | list(query, reference) |
+| `pathways()` | both | data.frame of all pathways |
+| `pathways(type = "shared")` | pairwise | data.frame of shared pathways |
+| `pathways(type = "unique")` | pairwise | list(query, reference) |
+| `pathways(type = "consensus")` | multiple | data.frame with prevalence |
 | `similarityMatrix()` | multiple | n x n numeric matrix |
 | `prevalence()` | multiple | data.frame with nConsortia |
-| `consensusPathways()` | multiple | data.frame (same as prevalence) |
 | `metabolites()` | both | Character vector of metabolites |
-| `pathways()` | both | data.frame of pathways |
 
 # Session info
 

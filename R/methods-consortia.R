@@ -21,7 +21,7 @@ setMethod(
             "{.fun consortia} is not applicable for \\
              {.cls ConsortiumMetabolismAlignment} \\
              objects. Use {.fun scores}, \\
-             {.fun sharedPathways}, or \\
+             {.fun pathways}, or \\
              {.fun similarityMatrix} instead."
         )
     }

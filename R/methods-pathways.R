@@ -152,7 +152,80 @@ setMethod(
 setMethod(
     "pathways",
     "ConsortiumMetabolismAlignment",
-    function(object) {
-        object@Pathways
+    function(
+        object,
+        type = c(
+            "all", "shared", "unique", "consensus"
+        ),
+        verbose = FALSE
+    ) {
+        type <- match.arg(type)
+        alnType <- object@Type
+
+        if (type == "shared") {
+            if (alnType != "pairwise") {
+                cli::cli_abort(
+                    "{.arg type} = {.val shared} is \\
+                     only available for pairwise \\
+                     alignments, not \\
+                     {.val {alnType}}."
+                )
+            }
+            pw <- object@SharedPathways
+            if (verbose) return(pw)
+            pw[, c("consumed", "produced")]
+        } else if (type == "unique") {
+            if (alnType != "pairwise") {
+                cli::cli_abort(
+                    "{.arg type} = {.val unique} is \\
+                     only available for pairwise \\
+                     alignments, not \\
+                     {.val {alnType}}."
+                )
+            }
+            if (verbose) {
+                list(
+                    query = object@UniqueQuery,
+                    reference =
+                        object@UniqueReference
+                )
+            } else {
+                list(
+                    query = object@UniqueQuery[
+                        , c("consumed", "produced")
+                    ],
+                    reference =
+                        object@UniqueReference[
+                            , c(
+                                "consumed",
+                                "produced"
+                            )
+                        ]
+                )
+            }
+        } else if (type == "consensus") {
+            if (alnType != "multiple") {
+                cli::cli_abort(
+                    "{.arg type} = {.val consensus} \\
+                     is only available for multiple \\
+                     alignments, not \\
+                     {.val {alnType}}."
+                )
+            }
+            pw <- object@ConsensusPathways
+            if (verbose) return(pw)
+            pw[
+                , c(
+                    "consumed", "produced",
+                    "nConsortia", "proportion"
+                )
+            ]
+        } else {
+            # type == "all"
+            if (verbose) return(object@Pathways)
+            object@Pathways[
+                , c("consumed", "produced")
+            ]
+        }
     }
 )
