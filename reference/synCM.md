@@ -80,22 +80,15 @@ synCM("Ex. Community", n_species = 5, max_met = 10)
 
 # Return raw edge list instead
 synCM("Test", n_species = 3, max_met = 8, cm = FALSE)
-#> # A tibble: 15 × 3
-#>    species  metabolites fluxes
-#>    <chr>    <chr>        <dbl>
-#>  1 SCE6853Y met3         1.03 
-#>  2 SCE6853Y met1        -1.91 
-#>  3 PVO1450E met6         5.15 
-#>  4 PVO1450E met3         2.32 
-#>  5 PVO1450E met7         3.67 
-#>  6 PVO1450E met8         0.309
-#>  7 PVO1450E met4         2.33 
-#>  8 PVO1450E met1         0.338
-#>  9 PVO1450E met5        -4.77 
-#> 10 ZRK8603K met4        -1.38 
-#> 11 ZRK8603K met7         5.40 
-#> 12 ZRK8603K met8         4.35 
-#> 13 ZRK8603K met6        -0.899
-#> 14 ZRK8603K met5        -0.685
-#> 15 ZRK8603K met2        -0.965
+#> # A tibble: 8 × 3
+#>   species  metabolites fluxes
+#>   <chr>    <chr>        <dbl>
+#> 1 JJK1290J met6         4.03 
+#> 2 JJK1290J met2        -7.52 
+#> 3 JJK1290J met8        -1.30 
+#> 4 TDT3997J met2         0.748
+#> 5 TDT3997J met5        -2.38 
+#> 6 TDT3997J met8        -0.408
+#> 7 QOY141U  met8         3.62 
+#> 8 QOY141U  met1        -0.642
 ```

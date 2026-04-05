@@ -21,6 +21,20 @@ pathways from a `ConsortiumMetabolismSet` object:
 
 - `"aux"` returns auxiliary pathways found in few species
 
+For `ConsortiumMetabolismAlignment` objects, `type` selects the pathway
+subset:
+
+- `"all"` returns the union of all pathways
+
+- `"shared"` (pairwise only) returns pathways shared between query and
+  reference
+
+- `"unique"` (pairwise only) returns pathways unique to query and
+  reference as a list
+
+- `"consensus"` (multiple only) returns consensus network pathways with
+  prevalence
+
 ## Usage
 
 ``` r
@@ -38,7 +52,11 @@ pathways(
 )
 
 # S4 method for class 'ConsortiumMetabolismAlignment'
-pathways(object)
+pathways(
+  object,
+  type = c("all", "shared", "unique", "consensus"),
+  verbose = FALSE
+)
 ```
 
 ## Arguments
@@ -76,7 +94,9 @@ pathways(object)
 A data.frame of pathway information. With `verbose = FALSE` (default):
 `consumed`, `produced`, `n_species` (and `n_cons` for CMS objects). With
 `verbose = TRUE`: all available columns including flux statistics and
-indices.
+indices. For CMA objects, the return depends on `type`: a data.frame for
+`"all"`, `"shared"`, and `"consensus"`; a list of data.frames for
+`"unique"`.
 
 ## Methods (by class)
 
@@ -94,22 +114,62 @@ indices.
 ``` r
 cm <- synCM("test", n_species = 3, max_met = 5)
 pathways(cm)
-#> # A tibble: 5 × 3
+#> # A tibble: 4 × 3
 #>   consumed produced n_species
 #>   <chr>    <chr>        <dbl>
-#> 1 met5     met2             2
-#> 2 met4     met3             1
-#> 3 met5     met3             1
-#> 4 met2     met3             1
-#> 5 met4     met2             1
+#> 1 met4     met2             1
+#> 2 met5     met3             1
+#> 3 met5     met4             1
+#> 4 met1     met5             1
 pathways(cm, verbose = TRUE)
-#> # A tibble: 5 × 12
-#>   consumed produced data     n_species  c_sum p_sum c_prob    p_prob c_eff p_eff
-#>   <chr>    <chr>    <list>       <dbl>  <dbl> <dbl> <list>    <list> <dbl> <dbl>
-#> 1 met5     met2     <tibble>         2 11.8    5.01 <dbl [2]> <dbl>   1.92  1.86
-#> 2 met4     met3     <tibble>         1  0.762  1.76 <dbl [1]> <dbl>   1     1   
-#> 3 met5     met3     <tibble>         1  1.09   1.76 <dbl [1]> <dbl>   1     1   
-#> 4 met2     met3     <tibble>         1  5.25   1.76 <dbl [1]> <dbl>   1     1   
-#> 5 met4     met2     <tibble>         1  4.65   3.45 <dbl [1]> <dbl>   1     1   
+#> # A tibble: 4 × 12
+#>   consumed produced data     n_species c_sum p_sum c_prob    p_prob c_eff p_eff
+#>   <chr>    <chr>    <list>       <dbl> <dbl> <dbl> <list>    <list> <dbl> <dbl>
+#> 1 met4     met2     <tibble>         1 2.68   1.71 <dbl [1]> <dbl>      1     1
+#> 2 met5     met3     <tibble>         1 0.133  2.37 <dbl [1]> <dbl>      1     1
+#> 3 met5     met4     <tibble>         1 0.133  2.11 <dbl [1]> <dbl>      1     1
+#> 4 met1     met5     <tibble>         1 4.07   3.34 <dbl [1]> <dbl>      1     1
 #> # ℹ 2 more variables: c_ind <int>, p_ind <int>
+
+cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
+cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
+cma <- align(cm1, cm2)
+pathways(cma)
+#> # A tibble: 7 × 2
+#>   consumed produced
+#>   <chr>    <chr>   
+#> 1 met2     met1    
+#> 2 met4     met1    
+#> 3 met5     met1    
+#> 4 met2     met3    
+#> 5 met4     met3    
+#> 6 met2     met5    
+#> 7 met4     met5    
+pathways(cma, type = "shared")
+#> # A tibble: 7 × 2
+#>   consumed produced
+#>   <chr>    <chr>   
+#> 1 met2     met1    
+#> 2 met4     met1    
+#> 3 met5     met1    
+#> 4 met2     met3    
+#> 5 met4     met3    
+#> 6 met2     met5    
+#> 7 met4     met5    
+pathways(cma, type = "unique")
+#> $query
+#> # A tibble: 1 × 2
+#>   consumed produced
+#>   <chr>    <chr>   
+#> 1 met3     met2    
+#> 
+#> $reference
+#> # A tibble: 4 × 2
+#>   consumed produced
+#>   <chr>    <chr>   
+#> 1 met6     met1    
+#> 2 met1     met3    
+#> 3 met2     met6    
+#> 4 met4     met6    
+#> 
 ```

@@ -213,8 +213,8 @@ unweighted networks).</p>
 <p>The alignment classifies every metabolite-metabolite pathway as
 shared, unique to the query, or unique to the reference.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sharedPathways.html">sharedPathways</a></span><span class="op">(</span><span class="va">cma</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sp</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"consumed"</span>, <span class="st">"produced"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">sp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pathways.html">pathways</a></span><span class="op">(</span><span class="va">cma</span>, type <span class="op">=</span> <span class="st">"shared"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sp</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 2</span></span></span>
 <span><span class="co">#&gt;   consumed produced</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span></span>
@@ -225,7 +225,7 @@ shared, unique to the query, or unique to the reference.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> met8     met10   </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> met9     met10</span></span>
 <span></span>
-<span><span class="va">up</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/uniquePathways.html">uniquePathways</a></span><span class="op">(</span><span class="va">cma</span><span class="op">)</span></span>
+<span><span class="va">up</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pathways.html">pathways</a></span><span class="op">(</span><span class="va">cma</span>, type <span class="op">=</span> <span class="st">"unique"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">sp</span><span class="op">)</span> <span class="co"># shared</span></span>
 <span><span class="co">#&gt; [1] 17</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">up</span><span class="op">$</span><span class="va">query</span><span class="op">)</span> <span class="co"># unique to Alpha</span></span>
@@ -391,9 +391,15 @@ Multiple alignment summary scores.
 <h2 id="programmatic-access">Programmatic access<a class="anchor" aria-label="anchor" href="#programmatic-access"></a>
 </h2>
 <p>All CMA results are accessible via noun-style accessors with type
-guards that prevent misuse (e.g., calling <code><a href="../reference/sharedPathways.html">sharedPathways()</a></code>
-on a multiple alignment raises an informative error).</p>
+guards that prevent misuse (e.g., calling
+<code>pathways(type = "shared")</code> on a multiple alignment raises an
+informative error).</p>
 <table class="table">
+<colgroup>
+<col width="40%">
+<col width="24%">
+<col width="36%">
+</colgroup>
 <thead><tr class="header">
 <th>Accessor</th>
 <th>Type</th>
@@ -406,14 +412,24 @@ on a multiple alignment raises an informative error).</p>
 <td>Named list of scores</td>
 </tr>
 <tr class="even">
-<td><code><a href="../reference/sharedPathways.html">sharedPathways()</a></code></td>
+<td><code><a href="../reference/pathways.html">pathways()</a></code></td>
+<td>both</td>
+<td>data.frame of all pathways</td>
+</tr>
+<tr class="odd">
+<td><code>pathways(type = "shared")</code></td>
 <td>pairwise</td>
 <td>data.frame of shared pathways</td>
 </tr>
-<tr class="odd">
-<td><code><a href="../reference/uniquePathways.html">uniquePathways()</a></code></td>
+<tr class="even">
+<td><code>pathways(type = "unique")</code></td>
 <td>pairwise</td>
 <td>list(query, reference)</td>
+</tr>
+<tr class="odd">
+<td><code>pathways(type = "consensus")</code></td>
+<td>multiple</td>
+<td>data.frame with prevalence</td>
 </tr>
 <tr class="even">
 <td><code><a href="../reference/similarityMatrix.html">similarityMatrix()</a></code></td>
@@ -426,19 +442,9 @@ on a multiple alignment raises an informative error).</p>
 <td>data.frame with nConsortia</td>
 </tr>
 <tr class="even">
-<td><code><a href="../reference/consensusPathways.html">consensusPathways()</a></code></td>
-<td>multiple</td>
-<td>data.frame (same as prevalence)</td>
-</tr>
-<tr class="odd">
 <td><code><a href="../reference/metabolites.html">metabolites()</a></code></td>
 <td>both</td>
 <td>Character vector of metabolites</td>
-</tr>
-<tr class="even">
-<td><code><a href="../reference/pathways.html">pathways()</a></code></td>
-<td>both</td>
-<td>data.frame of pathways</td>
 </tr>
 </tbody>
 </table>
@@ -491,11 +497,11 @@ on a multiple alignment raises an informative error).</p>
 <span><span class="co">#&gt; [33] pkgdown_2.2.0                   pillar_1.11.1                  </span></span>
 <span><span class="co">#&gt; [35] crayon_1.5.3                    jquerylib_0.1.4                </span></span>
 <span><span class="co">#&gt; [37] tidyr_1.3.2                     BiocParallel_1.44.0            </span></span>
-<span><span class="co">#&gt; [39] SingleCellExperiment_1.32.0     DelayedArray_0.36.0            </span></span>
+<span><span class="co">#&gt; [39] SingleCellExperiment_1.32.0     DelayedArray_0.36.1            </span></span>
 <span><span class="co">#&gt; [41] cachem_1.1.0                    viridis_0.6.5                  </span></span>
 <span><span class="co">#&gt; [43] abind_1.4-8                     nlme_3.1-168                   </span></span>
 <span><span class="co">#&gt; [45] tidyselect_1.2.1                digest_0.6.39                  </span></span>
-<span><span class="co">#&gt; [47] dplyr_1.2.0                     purrr_1.2.1                    </span></span>
+<span><span class="co">#&gt; [47] dplyr_1.2.1                     purrr_1.2.1                    </span></span>
 <span><span class="co">#&gt; [49] bookdown_0.46                   labeling_0.4.3                 </span></span>
 <span><span class="co">#&gt; [51] TreeSummarizedExperiment_2.18.0 fastmap_1.2.0                  </span></span>
 <span><span class="co">#&gt; [53] grid_4.5.3                      cli_3.6.5                      </span></span>

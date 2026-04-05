@@ -369,10 +369,10 @@ sessionInfo()
 #> [31] pillar_1.11.1                   crayon_1.5.3                   
 #> [33] jquerylib_0.1.4                 tidyr_1.3.2                    
 #> [35] BiocParallel_1.44.0             SingleCellExperiment_1.32.0    
-#> [37] DelayedArray_0.36.0             cachem_1.1.0                   
+#> [37] DelayedArray_0.36.1             cachem_1.1.0                   
 #> [39] abind_1.4-8                     nlme_3.1-168                   
 #> [41] tidyselect_1.2.1                digest_0.6.39                  
-#> [43] dplyr_1.2.0                     purrr_1.2.1                    
+#> [43] dplyr_1.2.1                     purrr_1.2.1                    
 #> [45] bookdown_0.46                   TreeSummarizedExperiment_2.18.0
 #> [47] fastmap_1.2.0                   grid_4.5.3                     
 #> [49] cli_3.6.5                       SparseArray_1.10.10            

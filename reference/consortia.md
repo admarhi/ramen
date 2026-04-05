@@ -40,15 +40,16 @@ A list with the community data.
 ``` r
 cm <- synCM("test", n_species = 3, max_met = 5)
 consortia(cm)
-#>     met  species      flux
-#> 1  met1 DUT1312V -1.178753
-#> 2  met2 DUT1312V  1.231698
-#> 3  met5 DUT1312V -1.686556
-#> 4  met4 DUT1312V  3.573680
-#> 5  met3 BSX9691E  3.006446
-#> 6  met2 BSX9691E -0.970617
-#> 7  met3 MSZ3715I -5.336016
-#> 8  met5 MSZ3715I  2.592752
-#> 9  met2 MSZ3715I -1.037214
-#> 10 met1 MSZ3715I  5.514784
+#>     met  species        flux
+#> 1  met1 DRQ2970J -2.01564102
+#> 2  met4 DRQ2970J -0.09895164
+#> 3  met2 DRQ2970J -3.54985640
+#> 4  met5 DRQ2970J  3.27273818
+#> 5  met3 DRQ2970J -0.08681708
+#> 6  met5 GNO3319G -3.46695470
+#> 7  met1 GNO3319G  1.26745490
+#> 8  met3 GNO3319G -5.29857257
+#> 9  met2 GNO3319G -1.42685091
+#> 10 met4 RVV5814P -7.76167419
+#> 11 met1 RVV5814P  3.36388087
 ```

@@ -21,9 +21,6 @@
 - [`compareAlignments()`](https://admarhi.github.io/ramen/reference/compareAlignments.md)
   : Compare Alignments (Deprecated)
 
-- [`consensusPathways()`](https://admarhi.github.io/ramen/reference/consensusPathways.md)
-  : Get Consensus Pathways
-
 - [`consortia()`](https://admarhi.github.io/ramen/reference/consortia.md)
   : Get the Consortia
 
@@ -84,9 +81,6 @@
 - [`scores()`](https://admarhi.github.io/ramen/reference/scores.md) :
   Get Alignment Scores
 
-- [`sharedPathways()`](https://admarhi.github.io/ramen/reference/sharedPathways.md)
-  : Get Shared Pathways
-
 - [`show(`*`<ConsortiumMetabolism>`*`)`](https://admarhi.github.io/ramen/reference/show-ConsortiumMetabolism-method.md)
   :
 
@@ -110,6 +104,3 @@
 
 - [`synCM()`](https://admarhi.github.io/ramen/reference/synCM.md) :
   Generate Synthetic Consortium Metabolism
-
-- [`uniquePathways()`](https://admarhi.github.io/ramen/reference/uniquePathways.md)
-  : Get Unique Pathways

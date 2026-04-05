@@ -111,8 +111,8 @@ The alignment classifies every metabolite-metabolite pathway as shared,
 unique to the query, or unique to the reference.
 
 ``` r
-sp <- sharedPathways(cma)
-head(sp[, c("consumed", "produced")])
+sp <- pathways(cma, type = "shared")
+head(sp)
 #> # A tibble: 6 × 2
 #>   consumed produced
 #>   <chr>    <chr>   
@@ -123,7 +123,7 @@ head(sp[, c("consumed", "produced")])
 #> 5 met8     met10   
 #> 6 met9     met10
 
-up <- uniquePathways(cma)
+up <- pathways(cma, type = "unique")
 nrow(sp) # shared
 #> [1] 17
 nrow(up$query) # unique to Alpha
@@ -290,20 +290,19 @@ Multiple alignment summary scores.
 ## Programmatic access
 
 All CMA results are accessible via noun-style accessors with type guards
-that prevent misuse (e.g., calling
-[`sharedPathways()`](https://admarhi.github.io/ramen/reference/sharedPathways.md)
-on a multiple alignment raises an informative error).
+that prevent misuse (e.g., calling `pathways(type = "shared")` on a
+multiple alignment raises an informative error).
 
-| Accessor                                                                                | Type     | Returns                         |
-|-----------------------------------------------------------------------------------------|----------|---------------------------------|
-| [`scores()`](https://admarhi.github.io/ramen/reference/scores.md)                       | both     | Named list of scores            |
-| [`sharedPathways()`](https://admarhi.github.io/ramen/reference/sharedPathways.md)       | pairwise | data.frame of shared pathways   |
-| [`uniquePathways()`](https://admarhi.github.io/ramen/reference/uniquePathways.md)       | pairwise | list(query, reference)          |
-| [`similarityMatrix()`](https://admarhi.github.io/ramen/reference/similarityMatrix.md)   | multiple | n x n numeric matrix            |
-| [`prevalence()`](https://admarhi.github.io/ramen/reference/prevalence.md)               | multiple | data.frame with nConsortia      |
-| [`consensusPathways()`](https://admarhi.github.io/ramen/reference/consensusPathways.md) | multiple | data.frame (same as prevalence) |
-| [`metabolites()`](https://admarhi.github.io/ramen/reference/metabolites.md)             | both     | Character vector of metabolites |
-| [`pathways()`](https://admarhi.github.io/ramen/reference/pathways.md)                   | both     | data.frame of pathways          |
+| Accessor                                                                              | Type     | Returns                         |
+|---------------------------------------------------------------------------------------|----------|---------------------------------|
+| [`scores()`](https://admarhi.github.io/ramen/reference/scores.md)                     | both     | Named list of scores            |
+| [`pathways()`](https://admarhi.github.io/ramen/reference/pathways.md)                 | both     | data.frame of all pathways      |
+| `pathways(type = "shared")`                                                           | pairwise | data.frame of shared pathways   |
+| `pathways(type = "unique")`                                                           | pairwise | list(query, reference)          |
+| `pathways(type = "consensus")`                                                        | multiple | data.frame with prevalence      |
+| [`similarityMatrix()`](https://admarhi.github.io/ramen/reference/similarityMatrix.md) | multiple | n x n numeric matrix            |
+| [`prevalence()`](https://admarhi.github.io/ramen/reference/prevalence.md)             | multiple | data.frame with nConsortia      |
+| [`metabolites()`](https://admarhi.github.io/ramen/reference/metabolites.md)           | both     | Character vector of metabolites |
 
 ## Session info
 
@@ -352,11 +351,11 @@ sessionInfo()
 #> [33] pkgdown_2.2.0                   pillar_1.11.1                  
 #> [35] crayon_1.5.3                    jquerylib_0.1.4                
 #> [37] tidyr_1.3.2                     BiocParallel_1.44.0            
-#> [39] SingleCellExperiment_1.32.0     DelayedArray_0.36.0            
+#> [39] SingleCellExperiment_1.32.0     DelayedArray_0.36.1            
 #> [41] cachem_1.1.0                    viridis_0.6.5                  
 #> [43] abind_1.4-8                     nlme_3.1-168                   
 #> [45] tidyselect_1.2.1                digest_0.6.39                  
-#> [47] dplyr_1.2.0                     purrr_1.2.1                    
+#> [47] dplyr_1.2.1                     purrr_1.2.1                    
 #> [49] bookdown_0.46                   labeling_0.4.3                 
 #> [51] TreeSummarizedExperiment_2.18.0 fastmap_1.2.0                  
 #> [53] grid_4.5.3                      cli_3.6.5                      
