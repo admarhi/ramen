@@ -217,7 +217,7 @@ test_that("pathways(type='consensus') errors for pairwise CMA", {
 
 test_that("pathways(type='shared', verbose=TRUE) returns full data", {
     cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
-    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
+    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 4)
     cma <- align(cm1, cm2)
     sp_concise <- pathways(cma, type = "shared")
     sp_verbose <- pathways(
