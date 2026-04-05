@@ -25,7 +25,7 @@ test_that("align() dispatches CMS,missing and returns CMA", {
 
 test_that("deprecated functions raise errors", {
     expect_error(compareAlignments(), "deprecated")
-    expect_error(plotAlignmentHeatmap(NULL), "deprecated")
+    expect_warning(plotAlignmentHeatmap(NULL), "deprecated")
     expect_error(plotAlignmentNetwork(NULL, 0.5), "deprecated")
 })
 

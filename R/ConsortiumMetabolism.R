@@ -152,10 +152,6 @@ ConsortiumMetabolism <- function(
 #' Create metabolite index mapping
 #' @noRd
 .createMetaboliteIndex <- function(data) {
-    # tibble(met = sort(unique(data$met))) |>
-    #   tibble::rowid_to_column(var = "index")
-
-    # Testing whether this works
     tibble(met = c(sort(unique(data$met)), "media")) |>
         tibble::rowid_to_column(var = "index")
 }

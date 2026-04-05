@@ -106,7 +106,7 @@ test_that("plot errors on invalid type", {
 ## ---- Deprecated functions ------------------------------------------------
 
 test_that("plotAlignmentHeatmap mentions plot()", {
-    expect_error(
+    expect_warning(
         plotAlignmentHeatmap(NULL),
         "deprecated"
     )

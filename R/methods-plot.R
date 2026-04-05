@@ -118,7 +118,6 @@ setMethod(
                 plot.background = ggplot2::element_blank(),
                 panel.grid = ggplot2::element_blank()
             ) +
-            # ggplot2::ggtitle(x@Name) +
             ggplot2::geom_text(
                 # manually draw the axis labels (i.e., leaf labels)
                 data = label_tb,

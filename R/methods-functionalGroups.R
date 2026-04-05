@@ -18,7 +18,9 @@ setMethod(
 
         # Create a tibble with all unique reactions per species
         rxns_per_species <- tb |>
-            dplyr::select(1:3) |>
+            dplyr::select(
+                "consumed", "produced", "species"
+            ) |>
             unique() |>
             dplyr::mutate(
                 pathway = paste0(

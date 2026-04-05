@@ -7,7 +7,7 @@
 #' @param top Numeric; top fraction filter.
 #' @param bottom Numeric; bottom fraction filter.
 #'
-#' @return None. Raises an error.
+#' @return \code{invisible(NULL)} with a deprecation warning.
 #' @export
 #'
 #' @examples
@@ -16,11 +16,12 @@
 #' # plot(cma, type = "heatmap")
 #' }
 plotAlignmentHeatmap <- function(object, top = NULL, bottom = NULL) {
-    cli::cli_abort(
+    cli::cli_warn(
         paste0(
             "{.fn plotAlignmentHeatmap} is deprecated. ",
             "Use {.code plot(object, type = \"heatmap\")} ",
             "instead."
         )
     )
+    invisible(NULL)
 }
