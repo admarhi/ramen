@@ -368,7 +368,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] ramen_0.0.0.9001 BiocStyle_2.38.0
+#> [1] ramen_0.0.0.9002 BiocStyle_2.38.0
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] SummarizedExperiment_1.40.0     gtable_0.3.6                   
@@ -386,7 +386,7 @@ sessionInfo()
 #> [25] textshaping_1.0.5               Biostrings_2.78.0              
 #> [27] Seqinfo_1.0.0                   codetools_0.2-20               
 #> [29] htmltools_0.5.9                 sass_0.4.10                    
-#> [31] yaml_2.3.12                     lazyeval_0.2.2                 
+#> [31] yaml_2.3.12                     lazyeval_0.2.3                 
 #> [33] pkgdown_2.2.0                   pillar_1.11.1                  
 #> [35] crayon_1.5.3                    jquerylib_0.1.4                
 #> [37] tidyr_1.3.2                     BiocParallel_1.44.0            
@@ -398,7 +398,7 @@ sessionInfo()
 #> [49] bookdown_0.46                   labeling_0.4.3                 
 #> [51] TreeSummarizedExperiment_2.18.0 fastmap_1.2.0                  
 #> [53] grid_4.5.3                      cli_3.6.5                      
-#> [55] SparseArray_1.10.10             magrittr_2.0.4                 
+#> [55] SparseArray_1.10.10             magrittr_2.0.5                 
 #> [57] S4Arrays_1.10.1                 utf8_1.2.6                     
 #> [59] ape_5.8-1                       withr_3.0.2                    
 #> [61] scales_1.4.0                    rappdirs_0.3.4                 
