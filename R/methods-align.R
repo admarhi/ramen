@@ -125,7 +125,25 @@ setMethod(
                     method,
                     FOS = .functionalOverlap,
                     jaccard = .jaccardIndex,
-                    MAAS = .functionalOverlap
+                    MAAS = {
+                        w <- list(...)$weights
+                        function(xBinPerm, yBin) {
+                            scores <- .computeAllScores(
+                                xBinPerm,
+                                yBin,
+                                xWeighted,
+                                yWeighted
+                            )
+                            if (is.null(w)) {
+                                .computeMAAS(scores)
+                            } else {
+                                .computeMAAS(
+                                    scores,
+                                    weights = w
+                                )
+                            }
+                        }
+                    }
                 )
                 pval <- .computePvalue(
                     xGraph = x@Graphs[[1L]],

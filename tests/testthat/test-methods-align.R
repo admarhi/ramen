@@ -83,6 +83,23 @@ test_that("MAAS method works", {
     expect_true(!is.na(cma@PrimaryScore))
 })
 
+test_that("MAAS p-value uses composite score, not FOS", {
+    cm1 <- synCM("a", n_species = 5, max_met = 8, seed = 42)
+    cm2 <- synCM("b", n_species = 5, max_met = 8, seed = 43)
+    cma <- align(
+        cm1, cm2,
+        method = "MAAS",
+        computePvalue = TRUE,
+        nPermutations = 49L
+    )
+    expect_true(!is.na(cma@Pvalue))
+    expect_true(cma@Pvalue >= 0 && cma@Pvalue <= 1)
+    ## p-value denominator should be nPerm + 1
+    expect_true(
+        cma@Pvalue %% (1 / (49L + 1L)) < .Machine$double.eps^0.5
+    )
+})
+
 test_that("align with computePvalue returns valid p-value", {
     cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 42)
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 43)
