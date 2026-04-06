@@ -2,10 +2,7 @@
 ^\.Rproj\.user$
 ^LICENSE\.md$
 ^dev$
-^figures$
-^dev_data$
-vignettes/func_sim.Rmd
-^data-raw$
+^figure$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
@@ -14,6 +11,6 @@ vignettes/func_sim.Rmd
 ^CLAUDE\.md$
 ^doc$
 ^Meta$
-.lintr*
+^\.lintr
 ^air\.toml$
 ^\.claude$
