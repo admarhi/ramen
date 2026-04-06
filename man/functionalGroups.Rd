@@ -7,7 +7,13 @@
 \usage{
 functionalGroups(object, k = 4, ...)
 
-\S4method{functionalGroups}{ConsortiumMetabolismSet}(object, k = 4, label_size = 6, label_colours = NULL)
+\S4method{functionalGroups}{ConsortiumMetabolismSet}(
+  object,
+  k = 4,
+  label_size = 6,
+  label_colours = NULL,
+  linkage = "complete"
+)
 }
 \arguments{
 \item{object}{A \code{ConsortiumMetabolismSet} object.}
@@ -23,6 +29,15 @@ in the output plot.}
 
 \item{label_colours}{If not \code{NULL}, a tibble with
 columns \code{label} and \code{colour}.}
+
+\item{linkage}{Character scalar specifying the
+agglomeration method for hierarchical clustering.
+Passed to \code{\link[stats]{hclust}} as the
+\code{method} argument. One of \code{"complete"}
+(default), \code{"average"}, \code{"single"}, or
+\code{"ward.D2"}. Complete linkage produces compact
+clusters where every pair within a cluster has
+dissimilarity below the merge threshold.}
 }
 \value{
 A list (returned invisibly) containing:

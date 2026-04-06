@@ -11,7 +11,14 @@ align(x, y, method = "FOS", ...)
 
 \S4method{align}{ConsortiumMetabolism,ConsortiumMetabolism}(x, y, method = "FOS", computePvalue = FALSE, nPermutations = 999L, ...)
 
-\S4method{align}{ConsortiumMetabolismSet,missing}(x, y, method = "FOS", BPPARAM = BiocParallel::SerialParam(), ...)
+\S4method{align}{ConsortiumMetabolismSet,missing}(
+  x,
+  y,
+  method = "FOS",
+  linkage = "complete",
+  BPPARAM = BiocParallel::SerialParam(),
+  ...
+)
 
 \S4method{align}{ConsortiumMetabolism,ConsortiumMetabolismSet}(x, y, method = "FOS", BPPARAM = BiocParallel::SerialParam(), ...)
 }
@@ -29,6 +36,11 @@ Default \code{FALSE}.}
 
 \item{nPermutations}{Integer; number of permutations.
 Default \code{999L}.}
+
+\item{linkage}{Character scalar specifying the agglomeration
+method for hierarchical clustering. Passed to
+\code{\link[stats]{hclust}}. One of \code{"complete"} (default),
+\code{"average"}, \code{"single"}, or \code{"ward.D2"}.}
 
 \item{BPPARAM}{A \link[BiocParallel:BiocParallelParam-class]{BiocParallel::BiocParallelParam} object.
 Default \code{BiocParallel::SerialParam()}.}

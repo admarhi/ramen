@@ -187,6 +187,10 @@ setMethod(
 #' @param x A [ConsortiumMetabolismSet] object.
 #' @param y Must be `missing`.
 #' @param method Character scalar specifying the metric.
+#' @param linkage Character scalar specifying the agglomeration
+#'   method for hierarchical clustering. Passed to
+#'   \code{\link[stats]{hclust}}. One of `"complete"` (default),
+#'   `"average"`, `"single"`, or `"ward.D2"`.
 #' @param BPPARAM A [BiocParallel::BiocParallelParam] object.
 #'   Default `BiocParallel::SerialParam()`.
 #' @param ... Additional arguments (currently unused).
@@ -202,11 +206,20 @@ setMethod(
         x = "ConsortiumMetabolismSet",
         y = "missing"
     ),
-    function(x, y, method = "FOS", BPPARAM = BiocParallel::SerialParam(), ...) {
+    function(
+        x, y, method = "FOS",
+        linkage = "complete",
+        BPPARAM = BiocParallel::SerialParam(), ...
+    ) {
         ## 1. Validate
         method <- match.arg(
             method,
-            c("FOS", "jaccard", "brayCurtis", "redundancyOverlap", "MAAS")
+            c("FOS", "jaccard", "brayCurtis",
+              "redundancyOverlap", "MAAS")
+        )
+        linkage <- match.arg(
+            linkage,
+            c("complete", "average", "single", "ward.D2")
         )
         n <- length(x@Consortia)
         if (n < 2L) {
@@ -246,7 +259,7 @@ setMethod(
 
         ## 5. Dendrogram
         dist_mat <- stats::as.dist(1 - sim_mat)
-        dend <- stats::hclust(dist_mat) |>
+        dend <- stats::hclust(dist_mat, method = linkage) |>
             stats::as.dendrogram()
 
         ## 6. Build and return CMA

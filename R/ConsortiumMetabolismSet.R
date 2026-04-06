@@ -27,6 +27,12 @@
 #'   objects.
 #' @param name Character scalar giving the name of the set.
 #' @param desc Optional short description of the set.
+#' @param linkage Character scalar specifying the agglomeration
+#'   method for hierarchical clustering of the overlap matrix.
+#'   Passed to \code{\link[stats]{hclust}} as the \code{method}
+#'   argument. Defaults to \code{"complete"}, which produces
+#'   compact clusters where every pair of consortia within a
+#'   cluster has dissimilarity below the merge threshold.
 #'
 #' @return A \code{ConsortiumMetabolismSet} object.
 #'
@@ -44,12 +50,17 @@
 ConsortiumMetabolismSet <- function(
     ...,
     name = NA_character_,
-    desc = NA_character_
+    desc = NA_character_,
+    linkage = "complete"
 ) {
     t_start <- proc.time()[["elapsed"]]
     cli::cli_h1("Creating CMS {.val {name}}")
 
     ## ---- 1. Validate arguments --------------------------------
+    linkage <- match.arg(
+        linkage,
+        c("complete", "average", "single", "ward.D2")
+    )
     args <- list(...)
     cons <- unlist(args, recursive = FALSE, use.names = FALSE)
     n_cons <- length(cons)
@@ -171,7 +182,7 @@ ConsortiumMetabolismSet <- function(
         )
         dend <-
             stats::dist(overlap_matrix) |>
-            stats::hclust() |>
+            stats::hclust(method = linkage) |>
             stats::as.dendrogram()
 
         cli::cli_progress_step(
@@ -189,9 +200,12 @@ ConsortiumMetabolismSet <- function(
             dplyr::mutate(node_id = dplyr::row_number())
     } else {
         dend <- stats::as.dendrogram(
-            stats::hclust(stats::dist(
-                rbind(overlap_matrix, overlap_matrix)
-            ))
+            stats::hclust(
+                stats::dist(
+                    rbind(overlap_matrix, overlap_matrix)
+                ),
+                method = linkage
+            )
         )
         dend <- dend[[1L]]
         node_data <- data.frame(

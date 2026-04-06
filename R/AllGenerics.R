@@ -169,6 +169,11 @@ setGeneric(
 #' @param ... Additional arguments passed to methods. Common
 #'   arguments include:
 #'   \describe{
+#'     \item{`linkage`}{Character; agglomeration method for
+#'       hierarchical clustering (multiple alignment only).
+#'       One of `"complete"` (default), `"average"`,
+#'       `"single"`, or `"ward.D2"`. Passed to
+#'       \code{\link[stats]{hclust}}.}
 #'     \item{`computePvalue`}{Logical; compute permutation
 #'       p-value? Default `FALSE`.}
 #'     \item{`nPermutations`}{Integer; number of permutations
@@ -260,6 +265,14 @@ setGeneric(
 #'   in the output plot.
 #' @param label_colours If not \code{NULL}, a tibble with
 #'   columns \code{label} and \code{colour}.
+#' @param linkage Character scalar specifying the
+#'   agglomeration method for hierarchical clustering.
+#'   Passed to \code{\link[stats]{hclust}} as the
+#'   \code{method} argument. One of \code{"complete"}
+#'   (default), \code{"average"}, \code{"single"}, or
+#'   \code{"ward.D2"}. Complete linkage produces compact
+#'   clusters where every pair within a cluster has
+#'   dissimilarity below the merge threshold.
 #' @param ... Additional arguments to be passed to
 #'   specific methods.
 #'

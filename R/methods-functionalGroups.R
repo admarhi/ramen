@@ -11,8 +11,13 @@ setMethod(
         object,
         k = 4,
         label_size = 6,
-        label_colours = NULL
+        label_colours = NULL,
+        linkage = "complete"
     ) {
+        linkage <- match.arg(
+            linkage,
+            c("complete", "average", "single", "ward.D2")
+        )
         # Extract pathways from the ConsortiumMetabolismSet
         tb <- object@Pathways
 
@@ -98,7 +103,7 @@ setMethod(
         # Hierarchical clustering on distance matrix
         dend <- similarity_matrix |>
             stats::dist() |>
-            stats::hclust(method = "complete") |>
+            stats::hclust(method = linkage) |>
             stats::as.dendrogram()
 
         # Color branches of the dendrogram

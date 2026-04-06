@@ -7,7 +7,12 @@
 \alias{ConsortiumMetabolismSet}
 \title{Set of \code{ConsortiumMetabolism} Objects}
 \usage{
-ConsortiumMetabolismSet(..., name = NA_character_, desc = NA_character_)
+ConsortiumMetabolismSet(
+  ...,
+  name = NA_character_,
+  desc = NA_character_,
+  linkage = "complete"
+)
 }
 \arguments{
 \item{...}{Lists or individual \code{ConsortiumMetabolism}
@@ -16,6 +21,13 @@ objects.}
 \item{name}{Character scalar giving the name of the set.}
 
 \item{desc}{Optional short description of the set.}
+
+\item{linkage}{Character scalar specifying the agglomeration
+method for hierarchical clustering of the overlap matrix.
+Passed to \code{\link[stats]{hclust}} as the \code{method}
+argument. Defaults to \code{"complete"}, which produces
+compact clusters where every pair of consortia within a
+cluster has dissimilarity below the merge threshold.}
 }
 \value{
 A \code{ConsortiumMetabolismSet} object.
