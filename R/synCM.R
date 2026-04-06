@@ -313,12 +313,10 @@ synCM <- function(
     }
 
     ## ---- seed handling ----
-    if (!isFALSE(seed)) {
-        set.seed(seed)
-    } else {
+    if (isFALSE(seed)) {
         seed <- sample(seq_len(1000L), 1L)
-        set.seed(seed)
     }
+    withr::local_seed(seed)
 
     ## ---- generate names ----
     species_names <- .rNames(n_species)

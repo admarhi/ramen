@@ -30,7 +30,8 @@ Imports:
     SummarizedExperiment,
     tibble,
     tidyr,
-    TreeSummarizedExperiment
+    TreeSummarizedExperiment,
+    withr
 Suggests:
     BiocStyle,
     knitr,
