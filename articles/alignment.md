@@ -383,7 +383,7 @@ sessionInfo()
 #> [13] parallel_4.5.3                  tibble_3.3.1                   
 #> [15] pkgconfig_2.0.3                 Matrix_1.7-4                   
 #> [17] RColorBrewer_1.1-3              S7_0.2.1                       
-#> [19] desc_1.4.3                      S4Vectors_0.48.0               
+#> [19] desc_1.4.3                      S4Vectors_0.48.1               
 #> [21] lifecycle_1.0.5                 farver_2.1.2                   
 #> [23] compiler_4.5.3                  treeio_1.34.0                  
 #> [25] textshaping_1.0.5               Biostrings_2.78.0              
