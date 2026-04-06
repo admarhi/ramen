@@ -2,7 +2,6 @@
 "_PACKAGE"
 
 ## usethis namespace: start
-#' @importFrom dplyr filter
 #' @importFrom dplyr inner_join
 #' @importFrom dplyr left_join
 #' @importFrom dplyr mutate
