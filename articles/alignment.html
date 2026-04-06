@@ -225,7 +225,10 @@ shared, unique to the query, or unique to the reference.</p>
 <p>Statistical significance is assessed by degree-preserving network
 rewiring. The query network’s pathways are shuffled while preserving
 each metabolite’s degree, and the metric is recomputed under the null
-distribution.</p>
+distribution. For MAAS, only the binary network topology is permuted;
+the weighted assays (Consumption, Production, nSpecies) remain fixed, so
+the null distribution reflects topological variation in the composite
+score.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cma_p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/align.html">align</a></span><span class="op">(</span></span>
 <span>    <span class="va">cm_list</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>,</span>

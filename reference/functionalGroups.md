@@ -78,30 +78,29 @@ cms <- ConsortiumMetabolismSet(
 #> ✔ Collecting metabolites from 2 consortia [29ms]
 #> 
 #> ℹ Re-indexing 6 unique metabolites
-#> ✔ Re-indexing 6 unique metabolites [33ms]
+#> ✔ Re-indexing 6 unique metabolites [26ms]
 #> 
 #> ℹ Expanding 2 binary matrices to 6-dimensional space
 #> ✔ Expanding 2 binary matrices to 6-dimensional space [23ms]
 #> 
 #> ℹ Computing 6 x 6 levels matrix
-#> ✔ Computing 6 x 6 levels matrix [23ms]
+#> ✔ Computing 6 x 6 levels matrix [25ms]
 #> 
 #> ℹ Computing pairwise overlap (1 pairs via crossprod)
-#> ✔ Computing pairwise overlap (1 pairs via crossprod) [22ms]
+#> ✔ Computing pairwise overlap (1 pairs via crossprod) [31ms]
 #> 
 #> ℹ Assembling pathway data from 2 consortia
 #> ✔ Assembling pathway data from 2 consortia [29ms]
 #> 
 #> ℹ Building dendrogram from 2 x 2 dissimilarity matrix
-#> ✔ Building dendrogram from 2 x 2 dissimilarity matrix [20ms]
+#> ✔ Building dendrogram from 2 x 2 dissimilarity matrix [21ms]
 #> 
 #> ℹ Extracting dendrogram node positions
 #> ✔ Extracting dendrogram node positions [22ms]
 #> 
 #> ℹ Collecting 2 consortium graphs
-#> ✔ CMS "test" created: 2 consortia, 6 metabolites (0.2s)
-#> ℹ Collecting 2 consortium graphs
-#> ✔ Collecting 2 consortium graphs [77ms]
+#> CMS "test" created: 2 consortia, 6 metabolites (0.2s)
+#> ✔ Collecting 2 consortium graphs [81ms]
 #> 
 functionalGroups(cms, k = 2)
 #> Loading required namespace: colorspace
@@ -109,6 +108,5 @@ functionalGroups(cms, k = 2)
 #> ℹ Please use `linewidth` instead.
 #> ℹ The deprecated feature was likely used in the dendextend package.
 #>   Please report the issue at <https://github.com/talgalili/dendextend/issues>.
-
 # }
 ```

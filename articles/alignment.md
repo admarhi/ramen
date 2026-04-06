@@ -143,7 +143,10 @@ nrow(unique_pw$reference)
 Statistical significance is assessed by degree-preserving network
 rewiring. The query network’s pathways are shuffled while preserving
 each metabolite’s degree, and the metric is recomputed under the null
-distribution.
+distribution. For MAAS, only the binary network topology is permuted;
+the weighted assays (Consumption, Production, nSpecies) remain fixed, so
+the null distribution reflects topological variation in the composite
+score.
 
 ``` r
 cma_p <- align(

@@ -33,6 +33,24 @@ pivotCM(tb, species, from, to, flux)
 
   Column name of the flux column
 
+## Value
+
+A [`tibble`](https://tibble.tidyverse.org/reference/tibble.html) with
+three columns:
+
+- species:
+
+  Character, the species identifier.
+
+- met:
+
+  Character, the metabolite name.
+
+- flux:
+
+  Numeric, the metabolic flux (negative for consumption, positive for
+  production).
+
 ## Examples
 
 ``` r

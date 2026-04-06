@@ -34,7 +34,7 @@ cms <- ConsortiumMetabolismSet(cm1, cm2, name = "test")
 #> ✔ Collecting metabolites from 2 consortia [29ms]
 #> 
 #> ℹ Re-indexing 6 unique metabolites
-#> ✔ Re-indexing 6 unique metabolites [26ms]
+#> ✔ Re-indexing 6 unique metabolites [25ms]
 #> 
 #> ℹ Expanding 2 binary matrices to 6-dimensional space
 #> ✔ Expanding 2 binary matrices to 6-dimensional space [23ms]
@@ -46,18 +46,17 @@ cms <- ConsortiumMetabolismSet(cm1, cm2, name = "test")
 #> ✔ Computing pairwise overlap (1 pairs via crossprod) [22ms]
 #> 
 #> ℹ Assembling pathway data from 2 consortia
-#> ✔ Assembling pathway data from 2 consortia [30ms]
+#> ✔ Assembling pathway data from 2 consortia [29ms]
 #> 
 #> ℹ Building dendrogram from 2 x 2 dissimilarity matrix
 #> ✔ Building dendrogram from 2 x 2 dissimilarity matrix [21ms]
 #> 
 #> ℹ Extracting dendrogram node positions
-#> ✔ Extracting dendrogram node positions [23ms]
+#> ✔ Extracting dendrogram node positions [22ms]
 #> 
 #> ℹ Collecting 2 consortium graphs
-#> ✔ CMS "test" created: 2 consortia, 6 metabolites (0.2s)
-#> ℹ Collecting 2 consortium graphs
-#> ✔ Collecting 2 consortium graphs [86ms]
+#> CMS "test" created: 2 consortia, 6 metabolites (0.2s)
+#> ✔ Collecting 2 consortium graphs [91ms]
 #> 
 show(cms)
 #> 

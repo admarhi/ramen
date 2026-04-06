@@ -360,11 +360,6 @@ fg <- functionalGroups(cms, k = 3)
 #> generated.
 ```
 
-![Functional groups
-dendrogram.](ramen_files/figure-html/cms-func-groups-1.png)
-
-Functional groups dendrogram.
-
 ### Dendrogram and cluster extraction
 
 ``` r

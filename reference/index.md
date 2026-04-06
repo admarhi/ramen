@@ -18,9 +18,6 @@
 - [`align()`](https://admarhi.github.io/ramen/reference/align.md) :
   Align Consortium Metabolisms
 
-- [`compareAlignments()`](https://admarhi.github.io/ramen/reference/compareAlignments.md)
-  : Compare Alignments (Deprecated)
-
 - [`consortia()`](https://admarhi.github.io/ramen/reference/consortia.md)
   : Get the Consortia
 
@@ -65,12 +62,6 @@
 
 - [`plot(`*`<ConsortiumMetabolismSet>`*`,`*`<ANY>`*`)`](https://admarhi.github.io/ramen/reference/plot-ConsortiumMetabolismSet-ANY-method.md)
   : Plot a ConsortiumMetabolismSet object
-
-- [`plotAlignmentHeatmap()`](https://admarhi.github.io/ramen/reference/plotAlignmentHeatmap.md)
-  : Plot Alignment Heatmap (Deprecated)
-
-- [`plotAlignmentNetwork()`](https://admarhi.github.io/ramen/reference/plotAlignmentNetwork.md)
-  : Plot Alignment Network (Deprecated)
 
 - [`plotDirectedFlow()`](https://admarhi.github.io/ramen/reference/plotDirectedFlow.md)
   : Plot a Directed Graph Emphasizing Flow

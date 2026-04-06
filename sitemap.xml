@@ -12,7 +12,6 @@
 <url><loc>https://admarhi.github.io/ramen/reference/ConsortiumMetabolismAlignment.html</loc></url>
 <url><loc>https://admarhi.github.io/ramen/reference/ConsortiumMetabolismSet.html</loc></url>
 <url><loc>https://admarhi.github.io/ramen/reference/align.html</loc></url>
-<url><loc>https://admarhi.github.io/ramen/reference/compareAlignments.html</loc></url>
 <url><loc>https://admarhi.github.io/ramen/reference/consortia.html</loc></url>
 <url><loc>https://admarhi.github.io/ramen/reference/description.html</loc></url>
 <url><loc>https://admarhi.github.io/ramen/reference/extractCluster.html</loc></url>
@@ -28,8 +27,6 @@
 <url><loc>https://admarhi.github.io/ramen/reference/plot-ConsortiumMetabolism-ANY-method.html</loc></url>
 <url><loc>https://admarhi.github.io/ramen/reference/plot-ConsortiumMetabolismAlignment-ANY-method.html</loc></url>
 <url><loc>https://admarhi.github.io/ramen/reference/plot-ConsortiumMetabolismSet-ANY-method.html</loc></url>
-<url><loc>https://admarhi.github.io/ramen/reference/plotAlignmentHeatmap.html</loc></url>
-<url><loc>https://admarhi.github.io/ramen/reference/plotAlignmentNetwork.html</loc></url>
 <url><loc>https://admarhi.github.io/ramen/reference/plotDirectedFlow.html</loc></url>
 <url><loc>https://admarhi.github.io/ramen/reference/prevalence.html</loc></url>
 <url><loc>https://admarhi.github.io/ramen/reference/ramen-package.html</loc></url>
