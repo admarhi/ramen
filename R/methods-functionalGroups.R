@@ -60,8 +60,11 @@ setMethod(
             dplyr::mutate(similarity = 0)
 
         # Calculate Jaccard similarity for each pair
-        species_combinations$similarity <- mapply(
-            function(sp_x, sp_y) {
+        species_combinations$similarity <- vapply(
+            seq_len(nrow(species_combinations)),
+            function(i) {
+                sp_x <- species_combinations$species_x[i]
+                sp_y <- species_combinations$species_y[i]
                 rxns_set_x <- rxns_per_species$pathway[
                     rxns_per_species$species == sp_x
                 ]
@@ -76,8 +79,7 @@ setMethod(
                 )
                 intersection / union
             },
-            species_combinations$species_x,
-            species_combinations$species_y
+            numeric(1)
         )
 
         # Construct a sparse matrix from combinations

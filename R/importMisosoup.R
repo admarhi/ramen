@@ -137,10 +137,14 @@ overviewMisosoup <- function(data) {
         ) |>
         tidyr::unnest_longer(col = "focal_strain") |>
         dplyr::mutate(
-            n_cons = mapply(
-                \(x, y) length(data[[x]][[y]]),
-                .data$substrate,
-                .data$focal_strain
+            n_cons = vapply(
+                seq_len(dplyr::n()),
+                \(i) {
+                    x <- .data$substrate[[i]]
+                    y <- .data$focal_strain[[i]]
+                    length(data[[x]][[y]])
+                },
+                integer(1)
             ),
             n_zero_growth = vapply(
                 seq_len(dplyr::n()),
