@@ -9,7 +9,7 @@ Description: Reconstructs metabolic exchange networks from microbial community
     similarity and dissimilarity of consortium-level metabolic function.
     Provides tools for visualization and comparison of microbial consortia
     from a network perspective.
-License: MIT + file LICENSE
+License: GPL (>= 3)
 biocViews: Software, Metagenomics, Microbiome, Network, GraphAndNetwork
 BugReports: https://github.com/admarhi/ramen/issues
 Encoding: UTF-8
