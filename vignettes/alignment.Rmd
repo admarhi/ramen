@@ -98,6 +98,29 @@ cma_maas <- align(cm_list[[1]], cm_list[[2]], method = "MAAS")
 scores(cma_maas)
 ```
 
+## The FOS subset property
+
+FOS uses the Szymkiewicz-Simpson coefficient, which divides by the
+**smaller** network. This means FOS = 1 whenever a small consortium
+is a strict functional subset of a larger one -- even if the larger
+consortium has many additional pathways.
+
+To detect this, `ramen` reports **coverage ratios** alongside the
+similarity metrics:
+
+```{r coverage-ratios}
+scores(cma_fos)[c("FOS", "coverageQuery", "coverageReference")]
+```
+
+- `coverageQuery`: fraction of the query's pathways found in the
+  reference
+- `coverageReference`: fraction of the reference's pathways found
+  in the query
+
+When FOS is high but one coverage ratio is low, the alignment
+represents a subset relationship rather than true functional
+equivalence. For symmetric similarity, use Jaccard instead.
+
 ## Pathway correspondences
 
 The alignment classifies every metabolite-to-metabolite pathway as

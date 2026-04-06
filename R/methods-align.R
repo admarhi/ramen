@@ -101,6 +101,13 @@ setMethod(
             primary <- all_scores[[method]]
         }
 
+        ## 5b. Coverage ratios (subset detection)
+        coverage <- .computeCoverage(xBin, yBin)
+        all_scores$coverageQuery <-
+            coverage$coverageQuery
+        all_scores$coverageReference <-
+            coverage$coverageReference
+
         ## 6. Identify pathway correspondences
         correspondences <- .identifyPathwayCorrespondences(
             xBin,

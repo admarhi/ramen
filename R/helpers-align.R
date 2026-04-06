@@ -235,6 +235,33 @@
     scores
 }
 
+#' Compute pathway coverage ratios
+#'
+#' Returns the fraction of each network's pathways that are
+#' shared. Complements FOS by revealing size asymmetry: FOS = 1
+#' with low reference coverage means the query is a strict
+#' subset of the reference.
+#'
+#' @param xBin Sparse binary matrix (query, union space).
+#' @param yBin Sparse binary matrix (reference, union space).
+#'
+#' @return Named list with `coverageQuery` and
+#'   `coverageReference`, each a numeric scalar in
+#'   \[0, 1\].
+#'
+#' @noRd
+.computeCoverage <- function(xBin, yBin) {
+    nShared <- sum(xBin * yBin)
+    nQuery <- sum(xBin)
+    nRef <- sum(yBin)
+    list(
+        coverageQuery = if (nQuery == 0) 0 else
+            nShared / nQuery,
+        coverageReference = if (nRef == 0) 0 else
+            nShared / nRef
+    )
+}
+
 #' Compute MAAS composite score
 #'
 #' Metabolic Alignment Aggregate Score. Weighted combination of

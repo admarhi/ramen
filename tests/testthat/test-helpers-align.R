@@ -158,6 +158,54 @@ test_that("Jaccard known value", {
     expect_equal(.jaccardIndex(m1, m2), 1 / 3)
 })
 
+## ---- Unit tests: .computeCoverage() -----------------------------------------
+
+test_that("coverage of identical matrices is both 1", {
+    m <- Matrix::sparseMatrix(
+        i = c(1, 2), j = c(2, 3),
+        x = 1, dims = c(3, 3)
+    )
+    cov <- .computeCoverage(m, m)
+    expect_equal(cov$coverageQuery, 1)
+    expect_equal(cov$coverageReference, 1)
+})
+
+test_that("coverage detects strict subset", {
+    ## query is a subset of reference
+    query <- Matrix::sparseMatrix(
+        i = 1, j = 2, x = 1, dims = c(3, 3)
+    )
+    ref <- Matrix::sparseMatrix(
+        i = c(1, 2), j = c(2, 3),
+        x = 1, dims = c(3, 3)
+    )
+    cov <- .computeCoverage(query, ref)
+    expect_equal(cov$coverageQuery, 1)
+    expect_equal(cov$coverageReference, 0.5)
+})
+
+test_that("coverage of disjoint matrices is both 0", {
+    m1 <- Matrix::sparseMatrix(
+        i = 1, j = 2, x = 1, dims = c(3, 3)
+    )
+    m2 <- Matrix::sparseMatrix(
+        i = 2, j = 3, x = 1, dims = c(3, 3)
+    )
+    cov <- .computeCoverage(m1, m2)
+    expect_equal(cov$coverageQuery, 0)
+    expect_equal(cov$coverageReference, 0)
+})
+
+test_that("coverage of empty matrices is both 0", {
+    m <- Matrix::sparseMatrix(
+        i = integer(0), j = integer(0),
+        x = numeric(0), dims = c(3, 3)
+    )
+    cov <- .computeCoverage(m, m)
+    expect_equal(cov$coverageQuery, 0)
+    expect_equal(cov$coverageReference, 0)
+})
+
 ## ---- Unit tests: .redundancyOverlap() --------------------------------------
 
 test_that("redundancyOverlap of identical is 1", {

@@ -86,6 +86,16 @@ setMethod("show", "ConsortiumMetabolismAlignment", function(object) {
             "Query: {.val {object@QueryName}}, ",
             "Reference: {.val {object@ReferenceName}}"
         )
+        cq <- object@Scores$coverageQuery
+        cr <- object@Scores$coverageReference
+        if (!is.null(cq) && !is.null(cr)) {
+            cli::cli_text(
+                "Coverage: query ",
+                "{.val {round(cq, 3)}}, ",
+                "reference ",
+                "{.val {round(cr, 3)}}"
+            )
+        }
     }
     if (.hasValue(object@Type) && object@Type == "multiple") {
         n <- nrow(object@SimilarityMatrix)
