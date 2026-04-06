@@ -194,19 +194,6 @@ setGeneric(
     }
 )
 
-#' @title Modify a \code{ConsortiaMetabolismSet} Object
-#'
-#' @description
-#' Modifies a \code{ConsortiumMetabolismSet} by adding or removing
-#' \code{ConsortiumMetabolism} objects. This allows for dynamic updating of
-#' consortium sets for comparative analyses.
-#'
-#' @param object A \code{ConsortiumMetabolismSet} object to modify
-#' @return A modified \code{ConsortiumMetabolismSet} object
-#' @noRd
-setGeneric("modify", function(object) standardGeneric("modify"))
-
-
 #' @title Extract a Cluster
 #'
 #' @description
@@ -305,37 +292,6 @@ setGeneric(
     function(object, k = 4, ...) {
         standardGeneric("functionalGroups")
     }
-)
-
-
-#' @title Compare Species
-#'
-#' @description
-#' Compares the metabolisms of two species and outputs a list of tibbles,
-#' containing the tibbles intersection, unique, and consistency.
-#' As the name suggests, intersection, unique contain the intersection and
-#' unique pathways per species compared, while the consistency tibble contains
-#' information on whether or not a specie's set of pathways is consistent in
-#' all of the consortia in which it is present or not. If all species contain
-#' the same pathways in all consortia in which they appear, this tibble will be
-#' returned with 0 rows.
-#' For \code{ConsortiumMetabolismSet} objects.
-#'
-#' @details
-#' This method is currently implemented for \code{ConsortiumMetabolismSet}
-#' objects. Future versions will extend functionality to
-#' \code{ConsortiumMetabolism} objects to allow for the analysis of species
-#' within a single consortium different alignments.
-#'
-#' @param object A \code{ConsortiumMetabolismSet} object.
-#' @param species A character vector of species names to compare
-#'
-#' @return A list of tibbles.
-#'
-#' @noRd
-setGeneric(
-    "compareSpecies",
-    function(object, species) standardGeneric("compareSpecies")
 )
 
 ## ---- CMA accessors -------------------------------------------------------
