@@ -21,7 +21,7 @@ setMethod(
         # Extract pathways from the ConsortiumMetabolismSet
         tb <- object@Pathways
 
-        # Create a tibble with all unique reactions per species
+        # Build unique species-pathway pairs
         rxns_per_species <- tb |>
             dplyr::select(
                 "consumed",
@@ -38,67 +38,43 @@ setMethod(
             ) |>
             dplyr::select("species", "pathway")
 
-        # Create a tibble of unique species with a row ID
-        unique_species <- rxns_per_species |>
-            dplyr::distinct(.data$species) |>
-            tibble::rowid_to_column("ind")
-
-        # Generate all unique combinations of species pairs
-        species_combinations <- tidyr::expand_grid(
-            x = unique_species$ind,
-            y = unique_species$ind
-        ) |>
-            # Keep only unique pairs (x <= y)
-            dplyr::filter(.data$x <= .data$y) |>
-            dplyr::left_join(
-                unique_species,
-                by = c("x" = "ind")
-            ) |>
-            dplyr::left_join(
-                unique_species,
-                by = c("y" = "ind")
-            ) |>
-            dplyr::rename(
-                species_x = "species.x",
-                species_y = "species.y"
-            ) |>
-            dplyr::mutate(similarity = 0)
-
-        # Calculate Jaccard similarity for each pair
-        species_combinations$similarity <- vapply(
-            seq_len(nrow(species_combinations)),
-            function(i) {
-                sp_x <- species_combinations$species_x[i]
-                sp_y <- species_combinations$species_y[i]
-                rxns_set_x <- rxns_per_species$pathway[
-                    rxns_per_species$species == sp_x
-                ]
-                rxns_set_y <- rxns_per_species$pathway[
-                    rxns_per_species$species == sp_y
-                ]
-                intersection <- length(
-                    intersect(rxns_set_x, rxns_set_y)
-                )
-                union <- length(
-                    union(rxns_set_x, rxns_set_y)
-                )
-                intersection / union
-            },
-            numeric(1)
+        # Build binary species-by-pathway incidence matrix
+        sp_levels <- sort(unique(rxns_per_species$species))
+        pw_levels <- unique(rxns_per_species$pathway)
+        sp_idx <- match(
+            rxns_per_species$species,
+            sp_levels
+        )
+        pw_idx <- match(
+            rxns_per_species$pathway,
+            pw_levels
+        )
+        incidence <- Matrix::sparseMatrix(
+            i = sp_idx,
+            j = pw_idx,
+            x = 1,
+            dims = c(
+                length(sp_levels),
+                length(pw_levels)
+            ),
+            dimnames = list(sp_levels, pw_levels)
         )
 
-        # Construct a sparse matrix from combinations
-        similarity_matrix <- Matrix::sparseMatrix(
-            species_combinations$x,
-            species_combinations$y,
-            x = species_combinations$similarity,
-            dimnames = list(
-                unique_species$species,
-                unique_species$species
-            ),
-            symmetric = TRUE
-        ) |>
-            as.matrix()
+        # Jaccard via crossprod:
+        #   intersection = A %*% t(A)
+        #   union = |A_i| + |A_j| - intersection
+        intersection <- Matrix::tcrossprod(incidence)
+        pathway_counts <- Matrix::rowSums(incidence)
+        union_mat <- outer(
+            pathway_counts,
+            pathway_counts,
+            "+"
+        ) - as.matrix(intersection)
+        similarity_matrix <- as.matrix(intersection) /
+            union_mat
+        # Fix 0/0 = NaN on diagonal or empty species
+        similarity_matrix[is.nan(similarity_matrix)] <- 0
+        diag(similarity_matrix) <- 1
 
         # Hierarchical clustering on distance matrix
         dend <- similarity_matrix |>
@@ -163,7 +139,7 @@ setMethod(
             plot = plot_obj,
             dendrogram = dend,
             similarity_matrix = similarity_matrix,
-            species_combinations = species_combinations,
+            incidence_matrix = incidence,
             reactions_per_species = rxns_per_species
         )
 
