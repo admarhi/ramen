@@ -35,7 +35,7 @@
 #' Log-normal species degree sequence
 #'
 #' Draws how many metabolites each species interacts with from a
-#' discretised log-normal distribution, clamped to [2, max_met].
+#' discretised log-normal distribution, clamped to \[2, max_met\].
 #'
 #' @param n_species Integer.
 #' @param max_met Integer.

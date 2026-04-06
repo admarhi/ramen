@@ -14,7 +14,7 @@ plotAlignmentHeatmap(object, top = NULL, bottom = NULL)
 \item{bottom}{Numeric; bottom fraction filter.}
 }
 \value{
-None. Raises an error.
+\code{invisible(NULL)} with a deprecation warning.
 }
 \description{
 This function is deprecated and will be reimplemented in

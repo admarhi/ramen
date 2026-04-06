@@ -4,55 +4,42 @@
 \alias{synCM}
 \title{Generate Synthetic Consortium Metabolism}
 \usage{
-synCM(
-  name,
-  n_species,
-  max_met,
-  scale_fac = 2,
-  seed = FALSE,
-  dead_ends = FALSE,
-  cm = TRUE
-)
+synCM(name, n_species, max_met, seed = FALSE, dead_ends = FALSE, cm = TRUE)
 }
 \arguments{
 \item{name}{Character string. Name for the consortium.}
 
-\item{n_species}{Integer. Number of species in the consortium.}
+\item{n_species}{Integer. Number of species in the
+consortium.}
 
-\item{max_met}{Integer. Size of the metabolite pool to sample
-from.}
-
-\item{scale_fac}{Integer. Multiplier for the initial species name
-pool from which \code{n_species} are sampled. Defaults to 2.}
+\item{max_met}{Integer. Size of the metabolite pool to
+sample from.}
 
 \item{seed}{Integer or \code{FALSE}. Random seed for
-reproducibility. If \code{FALSE} (default), a random seed is
-chosen.}
+reproducibility. If \code{FALSE} (default), a random
+seed is chosen.}
 
-\item{dead_ends}{Logical. If \code{FALSE} (default), ensures each
-species has both consumed and produced metabolites by flipping
-one flux value when all fluxes share the same sign.}
+\item{dead_ends}{Logical. If \code{FALSE} (default), ensures
+each species has both consumed and produced metabolites
+by flipping one flux value when all fluxes share the
+same sign.}
 
 \item{cm}{Logical. If \code{TRUE} (default), returns a
 \code{\linkS4class{ConsortiumMetabolism}} object. If
 \code{FALSE}, returns the raw edge list as a tibble.}
 }
 \value{
-A \code{\linkS4class{ConsortiumMetabolism}} object when
-\code{cm = TRUE}, or a \code{\link[tibble]{tibble}} with
-columns \code{species}, \code{metabolites}, and \code{fluxes}
-when \code{cm = FALSE}.
+A \code{\linkS4class{ConsortiumMetabolism}} object
+when \code{cm = TRUE}, or a \code{\link[tibble]{tibble}}
+with columns \code{species}, \code{metabolites}, and
+\code{fluxes} when \code{cm = FALSE}.
 }
 \description{
-Creates a synthetic metabolic network with random species-metabolite
-interactions and flux values. Useful for testing and demonstrating
-\code{ramen} package functionality.
-}
-\details{
-Each species is assigned a random subset of metabolites (between 2
-and \code{max_met}) with normally distributed flux values. By
-default, species are guaranteed to have both positive and negative
-fluxes (i.e., no dead ends).
+Creates a synthetic metabolic network with biologically
+realistic structure: hub metabolites (Zipf-distributed
+degree), log-normal species degrees, cyclic cross-feeding
+backbone for connectivity, approximate mass balance, and
+no dead-end species by default.
 }
 \examples{
 synCM("Ex. Community", n_species = 5, max_met = 10)
