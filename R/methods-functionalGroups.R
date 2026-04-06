@@ -159,9 +159,6 @@ setMethod(
             reactions_per_species = rxns_per_species
         )
 
-        # Print the plot
-        print(plot_obj)
-
         # Return the result invisibly
         invisible(result)
     }
