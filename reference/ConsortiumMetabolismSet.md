@@ -7,7 +7,12 @@ pairwise overlap scores and builds a dendrogram for clustering.
 ## Usage
 
 ``` r
-ConsortiumMetabolismSet(..., name = NA_character_, desc = NA_character_)
+ConsortiumMetabolismSet(
+  ...,
+  name = NA_character_,
+  desc = NA_character_,
+  linkage = "complete"
+)
 ```
 
 ## Arguments
@@ -23,6 +28,15 @@ ConsortiumMetabolismSet(..., name = NA_character_, desc = NA_character_)
 - desc:
 
   Optional short description of the set.
+
+- linkage:
+
+  Character scalar specifying the agglomeration method for hierarchical
+  clustering of the overlap matrix. Passed to
+  [`hclust`](https://rdrr.io/r/stats/hclust.html) as the `method`
+  argument. Defaults to `"complete"`, which produces compact clusters
+  where every pair of consortia within a cluster has dissimilarity below
+  the merge threshold.
 
 ## Value
 
@@ -90,13 +104,13 @@ cms <- ConsortiumMetabolismSet(cm1, cm2, name = "example")
 #> ✔ Validating 2 <ConsortiumMetabolism> objects [14ms]
 #> 
 #> ℹ Collecting metabolites from 2 consortia
-#> ✔ Collecting metabolites from 2 consortia [42ms]
+#> ✔ Collecting metabolites from 2 consortia [43ms]
 #> 
 #> ℹ Re-indexing 6 unique metabolites
-#> ✔ Re-indexing 6 unique metabolites [34ms]
+#> ✔ Re-indexing 6 unique metabolites [37ms]
 #> 
 #> ℹ Expanding 2 binary matrices to 6-dimensional space
-#> ✔ Expanding 2 binary matrices to 6-dimensional space [23ms]
+#> ✔ Expanding 2 binary matrices to 6-dimensional space [24ms]
 #> 
 #> ℹ Computing 6 x 6 levels matrix
 #> ✔ Computing 6 x 6 levels matrix [26ms]
@@ -105,17 +119,17 @@ cms <- ConsortiumMetabolismSet(cm1, cm2, name = "example")
 #> ✔ Computing pairwise overlap (1 pairs via crossprod) [26ms]
 #> 
 #> ℹ Assembling pathway data from 2 consortia
-#> ✔ Assembling pathway data from 2 consortia [33ms]
+#> ✔ Assembling pathway data from 2 consortia [32ms]
 #> 
 #> ℹ Building dendrogram from 2 x 2 dissimilarity matrix
-#> ✔ Building dendrogram from 2 x 2 dissimilarity matrix [23ms]
+#> ✔ Building dendrogram from 2 x 2 dissimilarity matrix [22ms]
 #> 
 #> ℹ Extracting dendrogram node positions
-#> ✔ Extracting dendrogram node positions [182ms]
+#> ✔ Extracting dendrogram node positions [187ms]
 #> 
 #> ℹ Collecting 2 consortium graphs
 #> CMS "example" created: 2 consortia, 6 metabolites (0.4s)
-#> ✔ Collecting 2 consortium graphs [89ms]
+#> ✔ Collecting 2 consortium graphs [87ms]
 #> 
 cms
 #> 

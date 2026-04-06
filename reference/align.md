@@ -19,7 +19,14 @@ align(x, y, method = "FOS", ...)
 align(x, y, method = "FOS", computePvalue = FALSE, nPermutations = 999L, ...)
 
 # S4 method for class 'ConsortiumMetabolismSet,missing'
-align(x, y, method = "FOS", BPPARAM = BiocParallel::SerialParam(), ...)
+align(
+  x,
+  y,
+  method = "FOS",
+  linkage = "complete",
+  BPPARAM = BiocParallel::SerialParam(),
+  ...
+)
 
 # S4 method for class 'ConsortiumMetabolism,ConsortiumMetabolismSet'
 align(x, y, method = "FOS", BPPARAM = BiocParallel::SerialParam(), ...)
@@ -54,6 +61,13 @@ align(x, y, method = "FOS", BPPARAM = BiocParallel::SerialParam(), ...)
 - nPermutations:
 
   Integer; number of permutations. Default `999L`.
+
+- linkage:
+
+  Character scalar specifying the agglomeration method for hierarchical
+  clustering. Passed to [`hclust`](https://rdrr.io/r/stats/hclust.html).
+  One of `"complete"` (default), `"average"`, `"single"`, or
+  `"ward.D2"`.
 
 - BPPARAM:
 

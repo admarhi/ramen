@@ -11,7 +11,13 @@ metabolic capabilities.
 functionalGroups(object, k = 4, ...)
 
 # S4 method for class 'ConsortiumMetabolismSet'
-functionalGroups(object, k = 4, label_size = 6, label_colours = NULL)
+functionalGroups(
+  object,
+  k = 4,
+  label_size = 6,
+  label_colours = NULL,
+  linkage = "complete"
+)
 ```
 
 ## Arguments
@@ -36,6 +42,15 @@ functionalGroups(object, k = 4, label_size = 6, label_colours = NULL)
 - label_colours:
 
   If not `NULL`, a tibble with columns `label` and `colour`.
+
+- linkage:
+
+  Character scalar specifying the agglomeration method for hierarchical
+  clustering. Passed to [`hclust`](https://rdrr.io/r/stats/hclust.html)
+  as the `method` argument. One of `"complete"` (default), `"average"`,
+  `"single"`, or `"ward.D2"`. Complete linkage produces compact clusters
+  where every pair within a cluster has dissimilarity below the merge
+  threshold.
 
 ## Value
 
@@ -72,7 +87,7 @@ cms <- ConsortiumMetabolismSet(
 #> 
 #> ── Creating CMS "test" ─────────────────────────────────────────────────────────
 #> ℹ Validating 2 <ConsortiumMetabolism> objects
-#> ✔ Validating 2 <ConsortiumMetabolism> objects [11ms]
+#> ✔ Validating 2 <ConsortiumMetabolism> objects [12ms]
 #> 
 #> ℹ Collecting metabolites from 2 consortia
 #> ✔ Collecting metabolites from 2 consortia [30ms]
@@ -81,26 +96,26 @@ cms <- ConsortiumMetabolismSet(
 #> ✔ Re-indexing 6 unique metabolites [26ms]
 #> 
 #> ℹ Expanding 2 binary matrices to 6-dimensional space
-#> ✔ Expanding 2 binary matrices to 6-dimensional space [24ms]
+#> ✔ Expanding 2 binary matrices to 6-dimensional space [23ms]
 #> 
 #> ℹ Computing 6 x 6 levels matrix
 #> ✔ Computing 6 x 6 levels matrix [25ms]
 #> 
 #> ℹ Computing pairwise overlap (1 pairs via crossprod)
-#> ✔ Computing pairwise overlap (1 pairs via crossprod) [32ms]
+#> ✔ Computing pairwise overlap (1 pairs via crossprod) [23ms]
 #> 
 #> ℹ Assembling pathway data from 2 consortia
-#> ✔ Assembling pathway data from 2 consortia [30ms]
+#> ✔ Assembling pathway data from 2 consortia [31ms]
 #> 
 #> ℹ Building dendrogram from 2 x 2 dissimilarity matrix
-#> ✔ Building dendrogram from 2 x 2 dissimilarity matrix [21ms]
+#> ✔ Building dendrogram from 2 x 2 dissimilarity matrix [29ms]
 #> 
 #> ℹ Extracting dendrogram node positions
 #> ✔ Extracting dendrogram node positions [23ms]
 #> 
 #> ℹ Collecting 2 consortium graphs
 #> CMS "test" created: 2 consortia, 6 metabolites (0.2s)
-#> ✔ Collecting 2 consortium graphs [84ms]
+#> ✔ Collecting 2 consortium graphs [82ms]
 #> 
 functionalGroups(cms, k = 2)
 #> Loading required namespace: colorspace
