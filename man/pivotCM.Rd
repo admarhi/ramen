@@ -18,6 +18,15 @@ long or short format to be}
 
 \item{flux}{Column name of the flux column}
 }
+\value{
+A \code{\link[tibble]{tibble}} with three columns:
+\describe{
+\item{species}{Character, the species identifier.}
+\item{met}{Character, the metabolite name.}
+\item{flux}{Numeric, the metabolic flux (negative for
+consumption, positive for production).}
+}
+}
 \description{
 Wrapper function around tidyr's \code{pivot_longer()} function to facilitate
 the easy transformation into the correct data format for MiCo construction.

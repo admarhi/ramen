@@ -11,6 +11,14 @@
 #' @param to the name of the column specifying the met excreted
 #' @param flux Column name of the flux column
 #'
+#' @return A \code{\link[tibble]{tibble}} with three columns:
+#'   \describe{
+#'     \item{species}{Character, the species identifier.}
+#'     \item{met}{Character, the metabolite name.}
+#'     \item{flux}{Numeric, the metabolic flux (negative for
+#'       consumption, positive for production).}
+#'   }
+#'
 #' @export
 #'
 #' @examples
