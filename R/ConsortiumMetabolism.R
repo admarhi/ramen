@@ -66,7 +66,7 @@ ConsortiumMetabolism <- function(
         mets <- dplyr::filter(mets, .data$met != "media")
     } else {
         if (length(only_cons) > 0) {
-            cli::cli_alert_info(
+            cli::cli_inform(
                 "{.val {name}} {.code {only_cons}} only consume,
         production set to 'media'."
             )
@@ -81,7 +81,7 @@ ConsortiumMetabolism <- function(
         }
 
         if (length(only_prod) > 0) {
-            cli::cli_alert_info(
+            cli::cli_inform(
                 "{.val {name}} {.code {only_prod}} only produce,
         consumption set to 'media'."
             )

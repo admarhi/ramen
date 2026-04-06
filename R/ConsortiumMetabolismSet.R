@@ -215,7 +215,7 @@ ConsortiumMetabolismSet <- function(
     elapsed <- round(
         proc.time()[["elapsed"]] - t_start, 1L
     )
-    cli::cli_alert_success(
+    cli::cli_inform(
         "CMS {.val {name}} created: \\
         {.val {n_cons}} consortia, \\
         {.val {n_mets}} metabolites ({elapsed}s)"
