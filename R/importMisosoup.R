@@ -28,7 +28,7 @@ importMisosoup <- function(data) {
         dplyr::filter(.data$n_cons != .data$n_zero_growth)
 
     if (any(tb_import$n_zero_growth > 0)) {
-        stop("Zero growth solution detected")
+        cli::cli_abort("Zero-growth solution detected in input data.")
     }
 
     tb <- Map(

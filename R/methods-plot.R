@@ -63,7 +63,9 @@ setMethod(
     "ConsortiumMetabolismSet",
     function(x, label_colours = NULL, max_nodes = 20, label_size = 4) {
         if (length(x@Dendrogram) == 0) {
-            stop("Not yet clustered!")
+            cli::cli_abort(
+                "The {.cls ConsortiumMetabolismSet} has not been clustered yet."
+            )
         }
         dend <- x@Dendrogram[[1]]
         node_data <- x@NodeData |>

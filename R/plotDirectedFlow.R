@@ -71,7 +71,7 @@ plotDirectedFlow <- function(
     ...
 ) {
     if (!igraph::is_directed(g)) {
-        stop("Graph must be directed.")
+        cli::cli_abort("{.arg g} must be a directed graph.")
     }
 
     # Compute degrees
