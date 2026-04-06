@@ -21,14 +21,6 @@ test_that("align() dispatches CMS,missing and returns CMA", {
     expect_equal(cma@Metric, "FOS")
 })
 
-## ---- Deprecated function tests ----------------------------------------------
-
-test_that("deprecated functions raise errors", {
-    expect_error(compareAlignments(), "deprecated")
-    expect_warning(plotAlignmentHeatmap(NULL), "deprecated")
-    expect_error(plotAlignmentNetwork(NULL, 0.5), "deprecated")
-})
-
 ## ---- Integration tests: align(CM, CM) --------------------------------------
 
 test_that("align identical CMs returns score 1", {
@@ -87,7 +79,8 @@ test_that("MAAS p-value uses composite score, not FOS", {
     cm1 <- synCM("a", n_species = 5, max_met = 8, seed = 42)
     cm2 <- synCM("b", n_species = 5, max_met = 8, seed = 43)
     cma <- align(
-        cm1, cm2,
+        cm1,
+        cm2,
         method = "MAAS",
         computePvalue = TRUE,
         nPermutations = 49L

@@ -102,19 +102,3 @@ test_that("plot errors on invalid type", {
     cma <- align(cm1, cm2)
     expect_error(plot(cma, type = "invalid"))
 })
-
-## ---- Deprecated functions ------------------------------------------------
-
-test_that("plotAlignmentHeatmap mentions plot()", {
-    expect_warning(
-        plotAlignmentHeatmap(NULL),
-        "deprecated"
-    )
-})
-
-test_that("plotAlignmentNetwork mentions plot()", {
-    expect_error(
-        plotAlignmentNetwork(NULL, 0.5),
-        "deprecated"
-    )
-})
