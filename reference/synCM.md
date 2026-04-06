@@ -1,21 +1,14 @@
 # Generate Synthetic Consortium Metabolism
 
-Creates a synthetic metabolic network with random species-metabolite
-interactions and flux values. Useful for testing and demonstrating
-`ramen` package functionality.
+Creates a synthetic metabolic network with biologically realistic
+structure: hub metabolites (Zipf-distributed degree), log-normal species
+degrees, cyclic cross-feeding backbone for connectivity, approximate
+mass balance, and no dead-end species by default.
 
 ## Usage
 
 ``` r
-synCM(
-  name,
-  n_species,
-  max_met,
-  scale_fac = 2,
-  seed = FALSE,
-  dead_ends = FALSE,
-  cm = TRUE
-)
+synCM(name, n_species, max_met, seed = FALSE, dead_ends = FALSE, cm = TRUE)
 ```
 
 ## Arguments
@@ -31,11 +24,6 @@ synCM(
 - max_met:
 
   Integer. Size of the metabolite pool to sample from.
-
-- scale_fac:
-
-  Integer. Multiplier for the initial species name pool from which
-  `n_species` are sampled. Defaults to 2.
 
 - seed:
 
@@ -61,13 +49,6 @@ A
 object when `cm = TRUE`, or a
 [`tibble`](https://tibble.tidyverse.org/reference/tibble.html) with
 columns `species`, `metabolites`, and `fluxes` when `cm = FALSE`.
-
-## Details
-
-Each species is assigned a random subset of metabolites (between 2 and
-`max_met`) with normally distributed flux values. By default, species
-are guaranteed to have both positive and negative fluxes (i.e., no dead
-ends).
 
 ## Examples
 

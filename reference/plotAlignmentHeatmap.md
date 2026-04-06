@@ -24,7 +24,7 @@ plotAlignmentHeatmap(object, top = NULL, bottom = NULL)
 
 ## Value
 
-None. Raises an error.
+`invisible(NULL)` with a deprecation warning.
 
 ## Examples
 

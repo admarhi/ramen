@@ -72,16 +72,16 @@ cms <- ConsortiumMetabolismSet(
 #> 
 #> ── Creating CMS "test" ─────────────────────────────────────────────────────────
 #> ℹ Validating 2 <ConsortiumMetabolism> objects
-#> ✔ Validating 2 <ConsortiumMetabolism> objects [11ms]
+#> ✔ Validating 2 <ConsortiumMetabolism> objects [12ms]
 #> 
 #> ℹ Collecting metabolites from 2 consortia
-#> ✔ Collecting metabolites from 2 consortia [30ms]
+#> ✔ Collecting metabolites from 2 consortia [31ms]
 #> 
 #> ℹ Re-indexing 6 unique metabolites
-#> ✔ Re-indexing 6 unique metabolites [34ms]
+#> ✔ Re-indexing 6 unique metabolites [35ms]
 #> 
 #> ℹ Expanding 2 binary matrices to 6-dimensional space
-#> ✔ Expanding 2 binary matrices to 6-dimensional space [23ms]
+#> ✔ Expanding 2 binary matrices to 6-dimensional space [24ms]
 #> 
 #> ℹ Computing 6 x 6 levels matrix
 #> ✔ Computing 6 x 6 levels matrix [24ms]
@@ -101,7 +101,7 @@ cms <- ConsortiumMetabolismSet(
 #> ℹ Collecting 2 consortium graphs
 #> ✔ CMS "test" created: 2 consortia, 6 metabolites (0.2s)
 #> ℹ Collecting 2 consortium graphs
-#> ✔ Collecting 2 consortium graphs [79ms]
+#> ✔ Collecting 2 consortium graphs [78ms]
 #> 
 functionalGroups(cms, k = 2)
 #> Loading required namespace: colorspace
