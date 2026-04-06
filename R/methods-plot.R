@@ -117,7 +117,6 @@ setMethod(
                 axis.ticks = ggplot2::element_blank(),
                 axis.title = ggplot2::element_blank(),
                 panel.background = ggplot2::element_blank(),
-                plot.background = ggplot2::element_blank(),
                 panel.grid = ggplot2::element_blank()
             ) +
             ggplot2::geom_text(

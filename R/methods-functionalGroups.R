@@ -19,7 +19,9 @@ setMethod(
         # Create a tibble with all unique reactions per species
         rxns_per_species <- tb |>
             dplyr::select(
-                "consumed", "produced", "species"
+                "consumed",
+                "produced",
+                "species"
             ) |>
             unique() |>
             dplyr::mutate(
@@ -128,7 +130,6 @@ setMethod(
                 axis.ticks = ggplot2::element_blank(),
                 axis.line = ggplot2::element_blank(),
                 panel.background = ggplot2::element_blank(),
-                plot.background = ggplot2::element_blank(),
                 panel.grid = ggplot2::element_blank()
             ) +
             ggplot2::scale_y_continuous(
