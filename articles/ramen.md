@@ -395,6 +395,7 @@ cma_pair
 #> Metric: "FOS"
 #> Score: 0.7634
 #> Query: "ac_A1R12_1", Reference: "ac_A1R12_10"
+#> Coverage: query 0.763, reference 0.38
 ```
 
 All similarity metrics are computed automatically:
@@ -412,6 +413,12 @@ scores(cma_pair)
 #> 
 #> $redundancyOverlap
 #> [1] 0.3397129
+#> 
+#> $coverageQuery
+#> [1] 0.7634409
+#> 
+#> $coverageReference
+#> [1] 0.3796791
 ```
 
 Pathway correspondences show shared and unique pathways:

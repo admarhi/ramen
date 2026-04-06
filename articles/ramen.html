@@ -454,7 +454,8 @@ CMS dendrogram with numbered nodes.
 <span><span class="co">#&gt; Type: <span style="color: #0000BB;">"pairwise"</span></span></span>
 <span><span class="co">#&gt; Metric: <span style="color: #0000BB;">"FOS"</span></span></span>
 <span><span class="co">#&gt; Score: <span style="color: #0000BB;">0.7634</span></span></span>
-<span><span class="co">#&gt; Query: <span style="color: #0000BB;">"ac_A1R12_1"</span>, Reference: <span style="color: #0000BB;">"ac_A1R12_10"</span></span></span></code></pre></div>
+<span><span class="co">#&gt; Query: <span style="color: #0000BB;">"ac_A1R12_1"</span>, Reference: <span style="color: #0000BB;">"ac_A1R12_10"</span></span></span>
+<span><span class="co">#&gt; Coverage: query <span style="color: #0000BB;">0.763</span>, reference <span style="color: #0000BB;">0.38</span></span></span></code></pre></div>
 <p>All similarity metrics are computed automatically:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/scores.html">scores</a></span><span class="op">(</span><span class="va">cma_pair</span><span class="op">)</span></span>
@@ -468,7 +469,13 @@ CMS dendrogram with numbered nodes.
 <span><span class="co">#&gt; [1] 0.3115158</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $redundancyOverlap</span></span>
-<span><span class="co">#&gt; [1] 0.3397129</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.3397129</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $coverageQuery</span></span>
+<span><span class="co">#&gt; [1] 0.7634409</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $coverageReference</span></span>
+<span><span class="co">#&gt; [1] 0.3796791</span></span></code></pre></div>
 <p>Pathway correspondences show shared and unique pathways:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">shared</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pathways.html">pathways</a></span><span class="op">(</span><span class="va">cma_pair</span>, type <span class="op">=</span> <span class="st">"shared"</span><span class="op">)</span></span>

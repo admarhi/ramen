@@ -125,4 +125,5 @@ cma
 #> Metric: "FOS"
 #> Score: 0
 #> Query: "comm_1", Reference: "comm_2"
+#> Coverage: query 0, reference 0
 ```

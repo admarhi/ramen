@@ -33,4 +33,5 @@ show(cma)
 #> Metric: "FOS"
 #> Score: 0.1667
 #> Query: "comm_1", Reference: "comm_2"
+#> Coverage: query 0.111, reference 0.167
 ```

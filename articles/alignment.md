@@ -54,6 +54,7 @@ cma
 #> Metric: "FOS"
 #> Score: 0.7634
 #> Query: "ac_A1R12_1", Reference: "ac_A1R12_10"
+#> Coverage: query 0.763, reference 0.38
 ```
 
 ### Similarity metrics
@@ -77,6 +78,12 @@ scores(cma_fos)
 #> 
 #> $redundancyOverlap
 #> [1] 0.3397129
+#> 
+#> $coverageQuery
+#> [1] 0.7634409
+#> 
+#> $coverageReference
+#> [1] 0.3796791
 ```
 
 | Metric             | Description                            |
@@ -105,7 +112,44 @@ scores(cma_maas)
 #> 
 #> $redundancyOverlap
 #> [1] 0.3397129
+#> 
+#> $coverageQuery
+#> [1] 0.7634409
+#> 
+#> $coverageReference
+#> [1] 0.3796791
 ```
+
+### The FOS subset property
+
+FOS uses the Szymkiewicz-Simpson coefficient, which divides by the
+**smaller** network. This means FOS = 1 whenever a small consortium is a
+strict functional subset of a larger one – even if the larger consortium
+has many additional pathways.
+
+To detect this, `ramen` reports **coverage ratios** alongside the
+similarity metrics:
+
+``` r
+scores(cma_fos)[c("FOS", "coverageQuery", "coverageReference")]
+#> $FOS
+#> [1] 0.7634409
+#> 
+#> $coverageQuery
+#> [1] 0.7634409
+#> 
+#> $coverageReference
+#> [1] 0.3796791
+```
+
+- `coverageQuery`: fraction of the query’s pathways found in the
+  reference
+- `coverageReference`: fraction of the reference’s pathways found in the
+  query
+
+When FOS is high but one coverage ratio is low, the alignment represents
+a subset relationship rather than true functional equivalence. For
+symmetric similarity, use Jaccard instead.
 
 ### Pathway correspondences
 
@@ -168,6 +212,12 @@ scores(cma_p)
 #> 
 #> $redundancyOverlap
 #> [1] 0.3397129
+#> 
+#> $coverageQuery
+#> [1] 0.7634409
+#> 
+#> $coverageReference
+#> [1] 0.3796791
 ```
 
 ### Visualization

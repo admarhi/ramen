@@ -49,4 +49,10 @@ scores(cma)
 #> $redundancyOverlap
 #> [1] 0.2272727
 #> 
+#> $coverageQuery
+#> [1] 0.3076923
+#> 
+#> $coverageReference
+#> [1] 0.5714286
+#> 
 ```

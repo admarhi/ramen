@@ -120,7 +120,8 @@ dataset to use throughout this vignette.</p>
 <span><span class="co">#&gt; Type: <span style="color: #0000BB;">"pairwise"</span></span></span>
 <span><span class="co">#&gt; Metric: <span style="color: #0000BB;">"FOS"</span></span></span>
 <span><span class="co">#&gt; Score: <span style="color: #0000BB;">0.7634</span></span></span>
-<span><span class="co">#&gt; Query: <span style="color: #0000BB;">"ac_A1R12_1"</span>, Reference: <span style="color: #0000BB;">"ac_A1R12_10"</span></span></span></code></pre></div>
+<span><span class="co">#&gt; Query: <span style="color: #0000BB;">"ac_A1R12_1"</span>, Reference: <span style="color: #0000BB;">"ac_A1R12_10"</span></span></span>
+<span><span class="co">#&gt; Coverage: query <span style="color: #0000BB;">0.763</span>, reference <span style="color: #0000BB;">0.38</span></span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="similarity-metrics">Similarity metrics<a class="anchor" aria-label="anchor" href="#similarity-metrics"></a>
@@ -142,7 +143,13 @@ metrics are always computed and stored.</p>
 <span><span class="co">#&gt; [1] 0.3115158</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $redundancyOverlap</span></span>
-<span><span class="co">#&gt; [1] 0.3397129</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.3397129</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $coverageQuery</span></span>
+<span><span class="co">#&gt; [1] 0.7634409</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $coverageReference</span></span>
+<span><span class="co">#&gt; [1] 0.3796791</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th>Metric</th>
@@ -187,14 +194,51 @@ are unavailable (e.g., unweighted networks lack Bray-Curtis):</p>
 <span><span class="co">#&gt; [1] 0.3115158</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $redundancyOverlap</span></span>
-<span><span class="co">#&gt; [1] 0.3397129</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.3397129</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $coverageQuery</span></span>
+<span><span class="co">#&gt; [1] 0.7634409</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $coverageReference</span></span>
+<span><span class="co">#&gt; [1] 0.3796791</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="the-fos-subset-property">The FOS subset property<a class="anchor" aria-label="anchor" href="#the-fos-subset-property"></a>
+</h3>
+<p>FOS uses the Szymkiewicz-Simpson coefficient, which divides by the
+<strong>smaller</strong> network. This means FOS = 1 whenever a small
+consortium is a strict functional subset of a larger one – even if the
+larger consortium has many additional pathways.</p>
+<p>To detect this, <code>ramen</code> reports <strong>coverage
+ratios</strong> alongside the similarity metrics:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/scores.html">scores</a></span><span class="op">(</span><span class="va">cma_fos</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FOS"</span>, <span class="st">"coverageQuery"</span>, <span class="st">"coverageReference"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt; $FOS</span></span>
+<span><span class="co">#&gt; [1] 0.7634409</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $coverageQuery</span></span>
+<span><span class="co">#&gt; [1] 0.7634409</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $coverageReference</span></span>
+<span><span class="co">#&gt; [1] 0.3796791</span></span></code></pre></div>
+<ul>
+<li>
+<code>coverageQuery</code>: fraction of the query’s pathways found
+in the reference</li>
+<li>
+<code>coverageReference</code>: fraction of the reference’s pathways
+found in the query</li>
+</ul>
+<p>When FOS is high but one coverage ratio is low, the alignment
+represents a subset relationship rather than true functional
+equivalence. For symmetric similarity, use Jaccard instead.</p>
 </div>
 <div class="section level3">
 <h3 id="pathway-correspondences">Pathway correspondences<a class="anchor" aria-label="anchor" href="#pathway-correspondences"></a>
 </h3>
 <p>The alignment classifies every metabolite-to-metabolite pathway as
 shared, unique to the query, or unique to the reference.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## All pathways in the alignment</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/pathways.html">pathways</a></span><span class="op">(</span><span class="va">cma</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 2</span></span></span>
@@ -229,7 +273,7 @@ distribution. For MAAS, only the binary network topology is permuted;
 the weighted assays (Consumption, Production, nSpecies) remain fixed, so
 the null distribution reflects topological variation in the composite
 score.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cma_p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/align.html">align</a></span><span class="op">(</span></span>
 <span>    <span class="va">cm_list</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>,</span>
 <span>    <span class="va">cm_list</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>,</span>
@@ -248,7 +292,13 @@ score.</p>
 <span><span class="co">#&gt; [1] 0.3115158</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $redundancyOverlap</span></span>
-<span><span class="co">#&gt; [1] 0.3397129</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.3397129</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $coverageQuery</span></span>
+<span><span class="co">#&gt; [1] 0.7634409</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $coverageReference</span></span>
+<span><span class="co">#&gt; [1] 0.3796791</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="visualization">Visualization<a class="anchor" aria-label="anchor" href="#visualization"></a>
@@ -258,7 +308,7 @@ score.</p>
 </h4>
 <p>The network view shows shared (green), query-unique (blue), and
 reference-unique (red) pathways as a directed metabolite flow graph.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cma</span>, type <span class="op">=</span> <span class="st">"network"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="alignment_files/figure-html/plot-network-1.png" class="r-plt" alt="Pairwise alignment network." width="576"><p class="caption">
@@ -269,7 +319,7 @@ Pairwise alignment network.
 <div class="section level4">
 <h4 id="score-bar-chart">Score bar chart<a class="anchor" aria-label="anchor" href="#score-bar-chart"></a>
 </h4>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cma</span>, type <span class="op">=</span> <span class="st">"scores"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="alignment_files/figure-html/plot-scores-pair-1.png" class="r-plt" alt="Pairwise metric scores." width="576"><p class="caption">
@@ -288,7 +338,7 @@ Pairwise metric scores.
 <p><code>align(CMS)</code> computes pairwise similarities across all
 consortia in a <code>ConsortiumMetabolismSet</code> and returns a CMA
 with <code>Type = "multiple"</code>.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cma_mult</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/align.html">align</a></span><span class="op">(</span><span class="va">cms</span><span class="op">)</span></span>
 <span><span class="va">cma_mult</span></span></code></pre></div>
 </div>
@@ -298,7 +348,7 @@ with <code>Type = "multiple"</code>.</p>
 <p>The similarity matrix is an n x n symmetric matrix with 1s on the
 diagonal. For FOS, this is derived from the pre-computed CMS overlap
 matrix:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="../reference/similarityMatrix.html">similarityMatrix</a></span><span class="op">(</span><span class="va">cma_mult</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="co">#&gt;             ac_A1R12_1 ac_A1R12_10 ac_A1R12_11 ac_A1R12_12 ac_A1R12_13</span></span>
 <span><span class="co">#&gt; ac_A1R12_1       1.000       0.763       0.538       0.785       0.538</span></span>
@@ -321,7 +371,7 @@ matrix:</p>
 <p>For a multiple alignment, the primary score is the
 <strong>median</strong> of all pairwise scores. <code><a href="../reference/scores.html">scores()</a></code>
 returns full summary statistics:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/scores.html">scores</a></span><span class="op">(</span><span class="va">cma_mult</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $mean</span></span>
 <span><span class="co">#&gt; [1] 0.6215862</span></span>
@@ -348,7 +398,7 @@ returns full summary statistics:</p>
 metabolite-to-metabolite pathway. This enables classification of
 pathways as core (present in most consortia) or niche (present in
 few).</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">prev</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prevalence.html">prevalence</a></span><span class="op">(</span><span class="va">cma_mult</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">prev</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">prev</span><span class="op">$</span><span class="va">nConsortia</span><span class="op">)</span>, <span class="op">]</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    consumed produced nConsortia proportion</span></span>
@@ -366,7 +416,7 @@ few).</p>
 <span><span class="co">#&gt; 100  75  55  51  14  30</span></span></code></pre></div>
 <p>The <code><a href="../reference/pathways.html">pathways()</a></code> method with
 <code>type = "consensus"</code> returns the same information:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/pathways.html">pathways</a></span><span class="op">(</span><span class="va">cma_mult</span>, type <span class="op">=</span> <span class="st">"consensus"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   consumed produced nConsortia proportion</span></span>
 <span><span class="co">#&gt; 1    acald    4abut          1  0.1666667</span></span>
@@ -384,7 +434,7 @@ few).</p>
 </h4>
 <p>The heatmap shows pairwise similarities with dendrogram-based
 ordering:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cma_mult</span>, type <span class="op">=</span> <span class="st">"heatmap"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="alignment_files/figure-html/plot-heatmap-1.png" class="r-plt" alt="Similarity heatmap." width="576"><p class="caption">
@@ -395,7 +445,7 @@ Similarity heatmap.
 <div class="section level4">
 <h4 id="score-summary">Score summary<a class="anchor" aria-label="anchor" href="#score-summary"></a>
 </h4>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cma_mult</span>, type <span class="op">=</span> <span class="st">"scores"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Removed 1 row containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_col()`).</span></span>
@@ -473,7 +523,7 @@ informative error.</p>
 <div class="section level2">
 <h2 id="session-info">Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.5.3 (2026-03-11)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
