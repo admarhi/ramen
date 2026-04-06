@@ -213,7 +213,7 @@ setMethod(
         stringsAsFactors = FALSE
     )
 
-    ggplot2::ggplot(
+    p <- ggplot2::ggplot(
         plot_df,
         ggplot2::aes(
             x = .data$consortium1,
@@ -221,18 +221,22 @@ setMethod(
             fill = .data$similarity
         )
     ) +
-        ggplot2::geom_tile(color = "white") +
-        ggplot2::geom_text(
-            ggplot2::aes(
-                label = round(.data$similarity, 2)
-            ),
-            size = 3
-        ) +
-        ggplot2::scale_fill_gradient2(
-            low = "#2166AC",
-            mid = "white",
+        ggplot2::geom_tile(color = "white")
+
+    if (n <= 30L) {
+        p <- p +
+            ggplot2::geom_text(
+                ggplot2::aes(
+                    label = round(.data$similarity, 2)
+                ),
+                size = 3
+            )
+    }
+
+    p +
+        ggplot2::scale_fill_gradient(
+            low = "white",
             high = "#B2182B",
-            midpoint = 0.5,
             limits = c(0, 1),
             name = cma@Metric
         ) +
