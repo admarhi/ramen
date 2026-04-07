@@ -119,7 +119,7 @@ Supply a data.frame mapping leaf labels to colours.
 
 ```{r plot-cms-colours, fig.cap = "CMS dendrogram with coloured labels."}
 colour_map <- data.frame(
-    label = names(misosoup24)[1:6],
+    label = names(misosoup24)[seq_len(6)],
     colour = c(
         "steelblue", "firebrick", "forestgreen",
         "darkorange", "purple", "darkred"

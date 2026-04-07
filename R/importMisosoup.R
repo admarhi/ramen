@@ -18,10 +18,11 @@
 #' @export
 #'
 #' @examples
-#' \donttest{
-#' # Requires MiSoSoup YAML data parsed as a nested list
-#' # data <- yaml::read_yaml("path/to/misosoup_output.yaml")
-#' # result <- importMisosoup(data)
+#' \dontrun{
+#' # Requires raw MiSoSoup YAML data
+#' raw <- yaml::read_yaml("misosoup_output.yaml")
+#' result <- importMisosoup(raw)
+#' str(result, max.level = 1)
 #' }
 importMisosoup <- function(data) {
     tb_import <- overviewMisosoup(data) |>
@@ -96,7 +97,10 @@ importMisosoup <- function(data) {
     # Compute the media tibble
     media <- tb |>
         dplyr::filter(is.na(.data$species)) |>
-        dplyr::select(1:5, "flux")
+        dplyr::select(
+            "cons_id", "substrate", "focal_strain",
+            "solution", "met", "flux"
+        )
 
     list(
         consortia = consortia,
@@ -124,10 +128,10 @@ importMisosoup <- function(data) {
 #' @export
 #'
 #' @examples
-#' \donttest{
-#' # Requires MiSoSoup YAML data parsed as a nested list
-#' # data <- yaml::read_yaml("path/to/misosoup_output.yaml")
-#' # overviewMisosoup(data)
+#' \dontrun{
+#' # Requires raw MiSoSoup YAML data
+#' raw <- yaml::read_yaml("misosoup_output.yaml")
+#' overviewMisosoup(raw)
 #' }
 overviewMisosoup <- function(data) {
     lapply(data, \(x) names(x)) |>

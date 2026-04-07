@@ -51,7 +51,8 @@
 #' @return A validated
 #'   \code{\linkS4class{ConsortiumMetabolismAlignment}} object.
 #'
-#' @seealso \link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{TreeSummarizedExperiment},
+#' @seealso
+#'   \link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{TreeSummarizedExperiment},
 #'   \code{\link{align}}
 #'
 #' @examples

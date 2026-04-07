@@ -5,18 +5,18 @@
 \alias{misosoup24}
 \title{Example Data from MiSoSoup 2024}
 \format{
-A tibble with the columns:
+A list of 56 tibbles, each with columns:
 \describe{
-\item{species}{Microorganisms},
+\item{species}{Microorganisms}
 \item{metabolites}{Metabolites}
 \item{fluxes}{Fluxes of the metabolite}
 }
 }
-\usage{
-misosoup24
-}
 \description{
-List of 56 solutions from MiSoSoup for different focal strains in different
-media.
+List of 56 solutions from MiSoSoup for different focal
+strains in different media.
 }
-\keyword{datasets}
+\examples{
+data("misosoup24")
+head(misosoup24[[1]])
+}

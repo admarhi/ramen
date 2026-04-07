@@ -24,10 +24,10 @@ consortia and zero-growth solutions for each substrate and focal strain
 combination.
 }
 \examples{
-\donttest{
-# Requires MiSoSoup YAML data parsed as a nested list
-# data <- yaml::read_yaml("path/to/misosoup_output.yaml")
-# overviewMisosoup(data)
+\dontrun{
+# Requires raw MiSoSoup YAML data
+raw <- yaml::read_yaml("misosoup_output.yaml")
+overviewMisosoup(raw)
 }
 }
 \seealso{

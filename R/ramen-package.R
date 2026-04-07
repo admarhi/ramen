@@ -1,3 +1,8 @@
+#' @examples
+#' # Create a synthetic consortium
+#' cm <- synCM("example", n_species = 3, max_met = 5)
+#' cm
+#'
 #' @keywords internal
 "_PACKAGE"
 

@@ -31,7 +31,8 @@
 #'
 #' @return A \code{ConsortiumMetabolism} object.
 #'
-#' @seealso \link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{TreeSummarizedExperiment}
+#' @seealso
+#'   \link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{TreeSummarizedExperiment}
 #'
 #' @examples
 #' cm <- synCM("example", n_species = 3, max_met = 5)
@@ -198,14 +199,18 @@ ConsortiumMetabolism <- function(
         nest(data = c("species", "flux_cons", "flux_prod")) |>
         mutate(
             n_species = vapply(
-                .data$data, \(x) nrow(x), numeric(1)
+                .data$data,
+                \(x) nrow(x),
+                numeric(1)
             ),
             c_sum = vapply(
-                .data$data, \(x) sum(x$flux_cons),
+                .data$data,
+                \(x) sum(x$flux_cons),
                 numeric(1)
             ),
             p_sum = vapply(
-                .data$data, \(x) sum(x$flux_prod),
+                .data$data,
+                \(x) sum(x$flux_prod),
                 numeric(1)
             ),
             c_prob = lapply(
@@ -216,14 +221,21 @@ ConsortiumMetabolism <- function(
                 .data$data,
                 \(x) x$flux_prod / sum(x$flux_prod)
             ),
-            c_eff = vapply(.data$c_prob, \(x) {
-                round(2**(-sum(x * log2(x))), 2)
-            }, numeric(1)),
+            c_eff = vapply(
+                .data$c_prob,
+                \(x) {
+                    round(2**(-sum(x * log2(x))), 2)
+                },
+                numeric(1)
+            ),
             p_eff = vapply(
                 .data$p_prob,
-                \(x) round(
-                    2**(-sum(x * log2(x))), 2
-                ),
+                \(x) {
+                    round(
+                        2**(-sum(x * log2(x))),
+                        2
+                    )
+                },
                 numeric(1)
             )
         ) |>

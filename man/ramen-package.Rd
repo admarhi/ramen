@@ -8,6 +8,12 @@
 \description{
 Reconstructs metabolic exchange networks from microbial community data and aligns them using functional overlap scores to quantify the similarity and dissimilarity of consortium-level metabolic function. Provides tools for visualization and comparison of microbial consortia from a network perspective.
 }
+\examples{
+# Create a synthetic consortium
+cm <- synCM("example", n_species = 3, max_met = 5)
+cm
+
+}
 \seealso{
 Useful links:
 \itemize{

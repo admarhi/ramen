@@ -22,7 +22,11 @@ setMethod(
     function(
         object,
         type = c(
-            "all", "pan-cons", "niche", "core", "aux"
+            "all",
+            "pan-cons",
+            "niche",
+            "core",
+            "aux"
         ),
         quantileCutoff = 0.1,
         verbose = FALSE
@@ -32,9 +36,9 @@ setMethod(
         # Validate quantileCutoff parameter
         if (quantileCutoff <= 0 || quantileCutoff >= 1) {
             cli::cli_abort(
-                "{.arg quantileCutoff} must be between \\
-                 0 and 1 (exclusive), not \\
-                 {.val {quantileCutoff}}."
+                "{.arg quantileCutoff} must be \\
+                between 0 and 1 (exclusive), \\
+                not {.val {quantileCutoff}}."
             )
         }
 
@@ -105,8 +109,8 @@ setMethod(
 
         if (verbose) {
             # Join n_cons back onto full slot data
-            n_cons_lookup <- pathway_summary[
-                , c("consumed", "produced", "n_cons")
+            n_cons_lookup <- pathway_summary[,
+                c("consumed", "produced", "n_cons")
             ]
             dplyr::left_join(
                 object@Pathways,
@@ -118,10 +122,12 @@ setMethod(
                     by = c("consumed", "produced")
                 )
         } else {
-            result[
-                , c(
-                    "consumed", "produced",
-                    "n_species", "n_cons"
+            result[,
+                c(
+                    "consumed",
+                    "produced",
+                    "n_species",
+                    "n_cons"
                 )
             ]
         }
@@ -129,26 +135,25 @@ setMethod(
 )
 
 #' @rdname metabolites
-setMethod("metabolites", "ConsortiumMetabolismSet",
-    function(object) {
-        Map(
-            \(x, y) dplyr::mutate(x, consortium = y),
-            lapply(object@Consortia, \(x) {
-                tibble::as_tibble(
-                    SummarizedExperiment::colData(x)
-                )
-            }),
-            vapply(
-                object@Consortia,
-                \(x) x@Name, character(1)
+setMethod("metabolites", "ConsortiumMetabolismSet", function(object) {
+    Map(
+        \(x, y) dplyr::mutate(x, consortium = y),
+        lapply(object@Consortia, \(x) {
+            tibble::as_tibble(
+                SummarizedExperiment::colData(x)
             )
-        ) |>
-            dplyr::bind_rows() |>
-            dplyr::pull("met") |>
-            unique() |>
-            sort()
-    }
-)
+        }),
+        vapply(
+            object@Consortia,
+            \(x) x@Name,
+            character(1)
+        )
+    ) |>
+        dplyr::bind_rows() |>
+        dplyr::pull("met") |>
+        unique() |>
+        sort()
+})
 
 #' @describeIn species Return Species in a Microbiome
 #' @param object a \code{ConsortiumMetabolismSet} Object
@@ -177,15 +182,18 @@ setMethod(
         # Validate quantileCutoff parameter
         if (quantileCutoff <= 0 || quantileCutoff >= 1) {
             cli::cli_abort(
-                "{.arg quantileCutoff} must be between 0 and 1 \\
-                 (exclusive), not {.val {quantileCutoff}}."
+                "{.arg quantileCutoff} must be between \\
+                0 and 1 (exclusive), not \\
+                {.val {quantileCutoff}}."
             )
         }
 
         tb <- object@Pathways |>
             dplyr::mutate(
                 pathway_name = paste0(
-                    .data$consumed, "-", .data$produced
+                    .data$consumed,
+                    "-",
+                    .data$produced
                 )
             ) |>
             dplyr::reframe(

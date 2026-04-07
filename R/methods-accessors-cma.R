@@ -22,8 +22,8 @@ setMethod(
     function(object) {
         if (object@Type != "multiple") {
             cli::cli_abort(
-                "{.fun similarityMatrix} is only available \\
-                 for multiple alignments."
+                "{.fun similarityMatrix} is only \\
+                available for multiple alignments."
             )
         }
         object@SimilarityMatrix
@@ -39,8 +39,8 @@ setMethod(
     function(object) {
         if (object@Type != "multiple") {
             cli::cli_abort(
-                "{.fun prevalence} is only available \\
-                 for multiple alignments."
+                "{.fun prevalence} is only \\
+                available for multiple alignments."
             )
         }
         object@Prevalence
@@ -58,7 +58,10 @@ setMethod(
     function(
         object,
         type = c(
-            "all", "shared", "unique", "consensus"
+            "all",
+            "shared",
+            "unique",
+            "consensus"
         ),
         verbose = FALSE
     ) {
@@ -69,65 +72,71 @@ setMethod(
             if (alnType != "pairwise") {
                 cli::cli_abort(
                     "{.arg type} = {.val shared} is \\
-                     only available for pairwise \\
-                     alignments, not \\
-                     {.val {alnType}}."
+                    only available for pairwise \\
+                    alignments, not \\
+                    {.val {alnType}}."
                 )
             }
             pw <- object@SharedPathways
-            if (verbose) return(pw)
+            if (verbose) {
+                return(pw)
+            }
             pw[, c("consumed", "produced")]
         } else if (type == "unique") {
             if (alnType != "pairwise") {
                 cli::cli_abort(
                     "{.arg type} = {.val unique} is \\
-                     only available for pairwise \\
-                     alignments, not \\
-                     {.val {alnType}}."
+                    only available for pairwise \\
+                    alignments, not \\
+                    {.val {alnType}}."
                 )
             }
             if (verbose) {
                 list(
                     query = object@UniqueQuery,
-                    reference =
-                        object@UniqueReference
+                    reference = object@UniqueReference
                 )
             } else {
                 list(
-                    query = object@UniqueQuery[
-                        , c("consumed", "produced")
+                    query = object@UniqueQuery[,
+                        c("consumed", "produced")
                     ],
-                    reference =
-                        object@UniqueReference[
-                            , c(
-                                "consumed",
-                                "produced"
-                            )
-                        ]
+                    reference = object@UniqueReference[,
+                        c(
+                            "consumed",
+                            "produced"
+                        )
+                    ]
                 )
             }
         } else if (type == "consensus") {
             if (alnType != "multiple") {
                 cli::cli_abort(
                     "{.arg type} = {.val consensus} \\
-                     is only available for multiple \\
-                     alignments, not \\
-                     {.val {alnType}}."
+                    is only available for multiple \\
+                    alignments, not \\
+                    {.val {alnType}}."
                 )
             }
             pw <- object@ConsensusPathways
-            if (verbose) return(pw)
-            pw[
-                , c(
-                    "consumed", "produced",
-                    "nConsortia", "proportion"
+            if (verbose) {
+                return(pw)
+            }
+            pw[,
+                c(
+                    "consumed",
+                    "produced",
+                    "nConsortia",
+                    "proportion"
                 )
             ]
         } else {
             # type == "all"
-            if (verbose) return(object@Pathways)
-            object@Pathways[
-                , c("consumed", "produced")
+            if (verbose) {
+                return(object@Pathways)
+            }
+            object@Pathways[,
+                c("consumed", "produced")
             ]
         }
     }
@@ -163,8 +172,8 @@ setMethod(
         }
         cli::cli_abort(
             "{.fun species} is not available for \\
-             multiple alignments. Use the original \\
-             {.cls ConsortiumMetabolismSet} instead."
+            multiple alignments. Use the original \\
+            {.cls ConsortiumMetabolismSet} instead."
         )
     }
 )
@@ -178,10 +187,10 @@ setMethod(
     function(object) {
         cli::cli_abort(
             "{.fun consortia} is not applicable for \\
-             {.cls ConsortiumMetabolismAlignment} \\
-             objects. Use {.fun scores}, \\
-             {.fun pathways}, or \\
-             {.fun similarityMatrix} instead."
+            {.cls ConsortiumMetabolismAlignment} \\
+            objects. Use {.fun scores}, \\
+            {.fun pathways}, or \\
+            {.fun similarityMatrix} instead."
         )
     }
 )

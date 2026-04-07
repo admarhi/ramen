@@ -22,8 +22,6 @@ A \code{ggplot} object (returned invisibly).
 Plot a ConsortiumMetabolism object
 }
 \examples{
-\donttest{
 cm <- synCM("test", n_species = 3, max_met = 5)
 plot(cm)
-}
 }

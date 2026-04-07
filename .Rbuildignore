@@ -14,3 +14,6 @@
 ^\.lintr
 ^air\.toml$
 ^\.claude$
+^data-raw$
+^Rplots\.pdf$
+^ramen\.BiocCheck$

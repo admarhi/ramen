@@ -217,14 +217,12 @@ setGeneric(
 #'   containing the extracted cluster.
 #'
 #' @examples
-#' \donttest{
 #' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
 #' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
 #' cms <- ConsortiumMetabolismSet(
 #'     cm1, cm2, name = "test"
 #' )
 #' extractCluster(cms, node_id = 1)
-#' }
 #'
 #' @export
 setGeneric(
@@ -283,7 +281,6 @@ setGeneric(
 #' }
 #'
 #' @examples
-#' \donttest{
 #' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
 #' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
 #' cms <- ConsortiumMetabolismSet(
@@ -291,7 +288,6 @@ setGeneric(
 #' )
 #' fg <- functionalGroups(cms)
 #' plotFunctionalGroups(fg, k = 2)
-#' }
 #'
 #' @seealso \code{\link{plotFunctionalGroups}} for
 #'   visualizing the dendrogram.
@@ -341,13 +337,11 @@ setGeneric(
 #' @return A numeric n x n matrix.
 #'
 #' @examples
-#' \donttest{
 #' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
 #' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
 #' cms <- ConsortiumMetabolismSet(cm1, cm2, name = "test")
 #' cma <- align(cms)
 #' similarityMatrix(cma)
-#' }
 #'
 #' @export
 setGeneric(
@@ -368,13 +362,11 @@ setGeneric(
 #'   `nConsortia`, and `proportion`.
 #'
 #' @examples
-#' \donttest{
 #' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
 #' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
 #' cms <- ConsortiumMetabolismSet(cm1, cm2, name = "test")
 #' cma <- align(cms)
 #' prevalence(cma)
-#' }
 #'
 #' @export
 setGeneric(

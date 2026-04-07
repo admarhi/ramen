@@ -68,16 +68,23 @@ ConsortiumMetabolismSet <- function(
         "Validating {.val {n_cons}} \\
         {.cls ConsortiumMetabolism} object{?s}"
     )
-    if (!all(vapply(
-        cons, is, logical(1L), "ConsortiumMetabolism"
-    ))) {
+    if (
+        !all(vapply(
+            cons,
+            is,
+            logical(1L),
+            "ConsortiumMetabolism"
+        ))
+    ) {
         cli::cli_abort(
             "All elements in {.arg ...} must be
             {.cls ConsortiumMetabolism} objects."
         )
     }
     cm_names <- vapply(
-        cons, \(x) x@Name, character(1L)
+        cons,
+        \(x) x@Name,
+        character(1L)
     )
 
     ## ---- 2. Collect metabolites -------------------------------
@@ -145,7 +152,8 @@ ConsortiumMetabolismSet <- function(
         ({.val {n_pairs}} pairs via crossprod)"
     )
     overlap_matrix <- .computeFOSMatrix(
-        expanded_bm, cm_names
+        expanded_bm,
+        cm_names
     )
 
     ## ---- 7. Assemble pathways ---------------------------------
@@ -156,17 +164,18 @@ ConsortiumMetabolismSet <- function(
     all_pathways <-
         lapply(seq_len(n_cons), \(i) {
             dplyr::mutate(
-                cons[[i]]@Pathways, cm_name = cm_names[[i]]
+                cons[[i]]@Pathways,
+                cm_name = cm_names[[i]]
             )
         }) |>
         dplyr::bind_rows() |>
         dplyr::left_join(
-            dplyr::select(all_met, 1:2),
+            dplyr::select(all_met, "met_ind", "met"),
             by = c(consumed = "met")
         ) |>
         dplyr::rename(c_ind_alig = "met_ind") |>
         dplyr::left_join(
-            dplyr::select(all_met, 1:2),
+            dplyr::select(all_met, "met_ind", "met"),
             by = c(produced = "met")
         ) |>
         dplyr::rename(p_ind_alig = "met_ind") |>
@@ -227,7 +236,8 @@ ConsortiumMetabolismSet <- function(
 
     ## ---- Done -------------------------------------------------
     elapsed <- round(
-        proc.time()[["elapsed"]] - t_start, 1L
+        proc.time()[["elapsed"]] - t_start,
+        1L
     )
     cli::cli_inform(
         "CMS {.val {name}} created: \\
@@ -309,7 +319,9 @@ cms <- ConsortiumMetabolismSet
     ## FOS = intersection / min(sum_i, sum_j)
     denom <- outer(col_sums, col_sums, pmin)
     fos_mat <- matrix(
-        0, n, n,
+        0,
+        n,
+        n,
         dimnames = list(cm_names, cm_names)
     )
     nonzero <- denom > 0
@@ -319,5 +331,3 @@ cms <- ConsortiumMetabolismSet
     ## Return full symmetric dissimilarity matrix
     1 - fos_mat
 }
-
-

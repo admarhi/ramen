@@ -214,15 +214,17 @@ setMethod(
         y = "missing"
     ),
     function(
-        x, y, method = "FOS",
+        x,
+        y,
+        method = "FOS",
         linkage = "complete",
-        BPPARAM = BiocParallel::SerialParam(), ...
+        BPPARAM = BiocParallel::SerialParam(),
+        ...
     ) {
         ## 1. Validate
         method <- match.arg(
             method,
-            c("FOS", "jaccard", "brayCurtis",
-              "redundancyOverlap", "MAAS")
+            c("FOS", "jaccard", "brayCurtis", "redundancyOverlap", "MAAS")
         )
         linkage <- match.arg(
             linkage,
@@ -231,15 +233,15 @@ setMethod(
         n <- length(x@Consortia)
         if (n < 2L) {
             cli::cli_abort(
-                "Multiple alignment requires at least 2 \\
-                 consortia."
+                "Multiple alignment requires at \\
+                least 2 consortia."
             )
         }
 
         cm_names <- names(x@BinaryMatrices)
         cli::cli_inform(
-            "Computing multiple alignment for {n} \\
-             consortia using {.val {method}}."
+            "Computing multiple alignment for \\
+            {n} consortia using {.val {method}}."
         )
 
         ## 2. Pairwise similarity matrix

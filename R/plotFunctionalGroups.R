@@ -24,7 +24,6 @@
 #' @export
 #'
 #' @examples
-#' \donttest{
 #' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
 #' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
 #' cms <- ConsortiumMetabolismSet(
@@ -32,7 +31,6 @@
 #' )
 #' fg <- functionalGroups(cms)
 #' plotFunctionalGroups(fg, k = 2)
-#' }
 #'
 #' @seealso \code{\link{functionalGroups}} for computing
 #'   the functional groups data.
@@ -88,8 +86,7 @@ plotFunctionalGroups <- function(
             axis.text = ggplot2::element_blank(),
             axis.ticks = ggplot2::element_blank(),
             axis.line = ggplot2::element_blank(),
-            panel.background =
-                ggplot2::element_blank(),
+            panel.background = ggplot2::element_blank(),
             panel.grid = ggplot2::element_blank()
         ) +
         ggplot2::scale_y_continuous(
