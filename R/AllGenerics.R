@@ -251,43 +251,36 @@ setGeneric(
 #' capabilities.
 #'
 #' @details
-#' This method is currently implemented for
-#' \code{ConsortiumMetabolismSet} objects. Future versions
-#' will extend functionality to
-#' \code{ConsortiumMetabolismAlignment} objects to allow
-#' for comparative functional group analysis across
-#' different alignments.
+#' This method computes a Jaccard similarity matrix
+#' between species based on shared pathways, then
+#' performs hierarchical clustering. To visualize the
+#' resulting dendrogram, pass the output to
+#' \code{\link{plotFunctionalGroups}}.
 #'
 #' @param object A \code{ConsortiumMetabolismSet} object.
-#' @param k An integer scalar specifying the number of
-#'   clusters to color in the dendrogram.
-#' @param label_size Numeric scalar specifying label size
-#'   in the output plot.
-#' @param label_colours If not \code{NULL}, a tibble with
-#'   columns \code{label} and \code{colour}.
-#' @param linkage Character scalar specifying the
-#'   agglomeration method for hierarchical clustering.
-#'   Passed to \code{\link[stats]{hclust}} as the
-#'   \code{method} argument. One of \code{"complete"}
-#'   (default), \code{"average"}, \code{"single"}, or
-#'   \code{"ward.D2"}. Complete linkage produces compact
-#'   clusters where every pair within a cluster has
-#'   dissimilarity below the merge threshold.
-#' @param ... Additional arguments to be passed to
-#'   specific methods.
+#' @param ... Additional arguments passed to methods.
+#'   Supported arguments include:
+#'   \describe{
+#'     \item{\code{linkage}}{Character scalar specifying
+#'       the agglomeration method for hierarchical
+#'       clustering. Passed to
+#'       \code{\link[stats]{hclust}} as the
+#'       \code{method} argument. One of
+#'       \code{"complete"} (default),
+#'       \code{"average"}, \code{"single"}, or
+#'       \code{"ward.D2"}.}
+#'   }
 #'
 #' @return A list (returned invisibly) containing:
 #' \itemize{
-#'   \item plot: The ggplot2 dendrogram visualization
-#'   \item dendrogram: The dendrogram object
-#'   \item similarity_matrix: Matrix of Jaccard
+#'   \item \code{dendrogram}: The dendrogram object
+#'   \item \code{similarity_matrix}: Matrix of Jaccard
 #'     similarities between species
-#'   \item species_combinations: Tibble with pairwise
-#'     species comparisons
-#'   \item reactions_per_species: Tibble mapping species
-#'     to their reactions
+#'   \item \code{incidence_matrix}: Sparse binary
+#'     species-by-pathway incidence matrix
+#'   \item \code{reactions_per_species}: Data frame
+#'     mapping species to their pathways
 #' }
-#' The plot is automatically displayed.
 #'
 #' @examples
 #' \donttest{
@@ -296,13 +289,17 @@ setGeneric(
 #' cms <- ConsortiumMetabolismSet(
 #'     cm1, cm2, name = "test"
 #' )
-#' functionalGroups(cms, k = 2)
+#' fg <- functionalGroups(cms)
+#' plotFunctionalGroups(fg, k = 2)
 #' }
+#'
+#' @seealso \code{\link{plotFunctionalGroups}} for
+#'   visualizing the dendrogram.
 #'
 #' @export
 setGeneric(
     "functionalGroups",
-    function(object, k = 4, ...) {
+    function(object, ...) {
         standardGeneric("functionalGroups")
     }
 )

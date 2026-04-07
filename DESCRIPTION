@@ -63,6 +63,7 @@ Collate:
     'methods-show.R'
     'pivotCM.R'
     'plotDirectedFlow.R'
+    'plotFunctionalGroups.R'
     'ramen-data.R'
     'ramen-package.R'
     'synCM.R'

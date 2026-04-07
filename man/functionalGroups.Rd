@@ -5,53 +5,37 @@
 \alias{functionalGroups,ConsortiumMetabolismSet-method}
 \title{Get Functional Groups}
 \usage{
-functionalGroups(object, k = 4, ...)
+functionalGroups(object, ...)
 
-\S4method{functionalGroups}{ConsortiumMetabolismSet}(
-  object,
-  k = 4,
-  label_size = 6,
-  label_colours = NULL,
-  linkage = "complete"
-)
+\S4method{functionalGroups}{ConsortiumMetabolismSet}(object, ...)
 }
 \arguments{
 \item{object}{A \code{ConsortiumMetabolismSet} object.}
 
-\item{k}{An integer scalar specifying the number of
-clusters to color in the dendrogram.}
-
-\item{...}{Additional arguments to be passed to
-specific methods.}
-
-\item{label_size}{Numeric scalar specifying label size
-in the output plot.}
-
-\item{label_colours}{If not \code{NULL}, a tibble with
-columns \code{label} and \code{colour}.}
-
-\item{linkage}{Character scalar specifying the
-agglomeration method for hierarchical clustering.
-Passed to \code{\link[stats]{hclust}} as the
-\code{method} argument. One of \code{"complete"}
-(default), \code{"average"}, \code{"single"}, or
-\code{"ward.D2"}. Complete linkage produces compact
-clusters where every pair within a cluster has
-dissimilarity below the merge threshold.}
+\item{...}{Additional arguments passed to methods.
+Supported arguments include:
+\describe{
+\item{\code{linkage}}{Character scalar specifying
+the agglomeration method for hierarchical
+clustering. Passed to
+\code{\link[stats]{hclust}} as the
+\code{method} argument. One of
+\code{"complete"} (default),
+\code{"average"}, \code{"single"}, or
+\code{"ward.D2"}.}
+}}
 }
 \value{
 A list (returned invisibly) containing:
 \itemize{
-\item plot: The ggplot2 dendrogram visualization
-\item dendrogram: The dendrogram object
-\item similarity_matrix: Matrix of Jaccard
+\item \code{dendrogram}: The dendrogram object
+\item \code{similarity_matrix}: Matrix of Jaccard
 similarities between species
-\item species_combinations: Tibble with pairwise
-species comparisons
-\item reactions_per_species: Tibble mapping species
-to their reactions
+\item \code{incidence_matrix}: Sparse binary
+species-by-pathway incidence matrix
+\item \code{reactions_per_species}: Data frame
+mapping species to their pathways
 }
-The plot is automatically displayed.
 }
 \description{
 Calculates and returns functional groups based on
@@ -62,12 +46,11 @@ clusters of species with similar metabolic
 capabilities.
 }
 \details{
-This method is currently implemented for
-\code{ConsortiumMetabolismSet} objects. Future versions
-will extend functionality to
-\code{ConsortiumMetabolismAlignment} objects to allow
-for comparative functional group analysis across
-different alignments.
+This method computes a Jaccard similarity matrix
+between species based on shared pathways, then
+performs hierarchical clustering. To visualize the
+resulting dendrogram, pass the output to
+\code{\link{plotFunctionalGroups}}.
 }
 \examples{
 \donttest{
@@ -76,7 +59,12 @@ cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
 cms <- ConsortiumMetabolismSet(
     cm1, cm2, name = "test"
 )
-functionalGroups(cms, k = 2)
+fg <- functionalGroups(cms)
+plotFunctionalGroups(fg, k = 2)
 }
 
+}
+\seealso{
+\code{\link{plotFunctionalGroups}} for
+visualizing the dendrogram.
 }

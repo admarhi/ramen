@@ -255,10 +255,12 @@ The `quantileCutoff` parameter controls the threshold (default
 ## Functional groups
 
 `functionalGroups()` clusters species by the Jaccard similarity of
-their pathway sets:
+their pathway sets. `plotFunctionalGroups()` visualizes the
+resulting dendrogram:
 
 ```{r cms-func-groups, fig.cap = "Functional groups dendrogram."}
-fg <- functionalGroups(cms, k = 3)
+fg <- functionalGroups(cms)
+plotFunctionalGroups(fg, k = 3)
 ```
 
 ## Dendrogram and cluster extraction
