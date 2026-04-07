@@ -16,9 +16,11 @@ setMethod(
     "pathways",
     "ConsortiumMetabolism",
     function(object, verbose = FALSE) {
-        if (verbose) return(object@Pathways)
-        object@Pathways[
-            , c("consumed", "produced", "n_species")
+        if (verbose) {
+            return(object@Pathways)
+        }
+        object@Pathways[,
+            c("consumed", "produced", "n_species")
         ]
     }
 )

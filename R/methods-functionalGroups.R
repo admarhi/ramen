@@ -39,8 +39,7 @@ setMethod(
 
         linkage <- match.arg(
             linkage,
-            c("complete", "average", "single",
-              "ward.D2")
+            c("complete", "average", "single", "ward.D2")
         )
         # Extract pathways from the CMS
         tb <- object@Pathways
@@ -98,7 +97,8 @@ setMethod(
             pathway_counts,
             pathway_counts,
             "+"
-        ) - as.matrix(intersection)
+        ) -
+            as.matrix(intersection)
         similarity_matrix <-
             as.matrix(intersection) / union_mat
         # Fix 0/0 = NaN on diagonal or empty species

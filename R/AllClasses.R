@@ -168,8 +168,7 @@ setValidity("ConsortiumMetabolismSet", function(object) {
         )
     } else if (
         length(object@OverlapMatrix) > 0L &&
-            nrow(object@OverlapMatrix) !=
-                ncol(object@OverlapMatrix)
+            nrow(object@OverlapMatrix) != ncol(object@OverlapMatrix)
     ) {
         errors <- c(
             errors,

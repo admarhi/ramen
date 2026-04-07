@@ -255,10 +255,16 @@
     nQuery <- sum(xBin)
     nRef <- sum(yBin)
     list(
-        coverageQuery = if (nQuery == 0) 0 else
-            nShared / nQuery,
-        coverageReference = if (nRef == 0) 0 else
+        coverageQuery = if (nQuery == 0) {
+            0
+        } else {
+            nShared / nQuery
+        },
+        coverageReference = if (nRef == 0) {
+            0
+        } else {
             nShared / nRef
+        }
     )
 }
 

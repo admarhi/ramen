@@ -30,20 +30,25 @@ setMethod(
             object@Consortia,
             vapply(
                 object@Consortia,
-                \(x) x@Name, character(1)
+                \(x) x@Name,
+                character(1)
             )
         )[cons_names]
 
         # In case no name was specified, create from selection
         if (is.na(name)) {
             name <- paste0(
-                "Cluster ", node_id, " from ", object@Name
+                "Cluster ",
+                node_id,
+                " from ",
+                object@Name
             )
         }
 
         # Create a new set with the selected CM
         ConsortiumMetabolismSet(
-            selected_consortia, name = name
+            selected_consortia,
+            name = name
         )
     }
 )

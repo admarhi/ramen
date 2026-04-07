@@ -44,8 +44,7 @@
 #' @return Integer vector of length \code{n_species}.
 #' @noRd
 #' @keywords internal
-.speciesDegrees <- function(n_species, max_met,
-                            meanlog = 1.0, sdlog = 0.8) {
+.speciesDegrees <- function(n_species, max_met, meanlog = 1.0, sdlog = 0.8) {
     raw <- stats::rlnorm(n_species, meanlog, sdlog)
     deg <- as.integer(round(raw))
     deg <- pmax(deg, 2L)
@@ -67,8 +66,7 @@
 #'   \code{metabolites}, \code{fluxes}.
 #' @noRd
 #' @keywords internal
-.wireCrossFeeding <- function(species_names, met_vec,
-                              met_weights) {
+.wireCrossFeeding <- function(species_names, met_vec, met_weights) {
     n <- length(species_names)
     if (n < 2L) {
         return(tibble::tibble(
@@ -78,9 +76,15 @@
         ))
     }
 
-    n_chain <- min(n, max(2L, as.integer(
-        floor(length(met_vec) * 0.3)
-    )))
+    n_chain <- min(
+        n,
+        max(
+            2L,
+            as.integer(
+                floor(length(met_vec) * 0.3)
+            )
+        )
+    )
     chain_mets <- sample(
         met_vec,
         size = n_chain,
@@ -130,9 +134,13 @@
 #'   \code{metabolites}, \code{fluxes}.
 #' @noRd
 #' @keywords internal
-.fillRandomEdges <- function(species_names, met_vec,
-                             met_weights, degrees,
-                             chain_edges) {
+.fillRandomEdges <- function(
+    species_names,
+    met_vec,
+    met_weights,
+    degrees,
+    chain_edges
+) {
     sp_out <- character(0L)
     met_out <- character(0L)
     flux_out <- numeric(0L)
@@ -145,10 +153,14 @@
         n_have <- length(existing)
         n_need <- max(0L, degrees[idx] - n_have)
 
-        if (n_need == 0L) next
+        if (n_need == 0L) {
+            next
+        }
 
         available <- setdiff(met_vec, existing)
-        if (length(available) == 0L) next
+        if (length(available) == 0L) {
+            next
+        }
 
         n_add <- min(n_need, length(available))
         w <- met_weights[available]
@@ -160,7 +172,9 @@
         )
 
         mags <- stats::rlnorm(
-            n_add, meanlog = 0.5, sdlog = 0.8
+            n_add,
+            meanlog = 0.5,
+            sdlog = 0.8
         )
         r <- stats::rbeta(1L, 2, 2)
         n_cons <- max(
@@ -199,7 +213,9 @@
 #' @noRd
 #' @keywords internal
 .balanceFluxes <- function(community, slack = 0.2) {
-    if (nrow(community) == 0L) return(community)
+    if (nrow(community) == 0L) {
+        return(community)
+    }
 
     mets <- unique(community$metabolites)
 
@@ -297,15 +313,13 @@ synCM <- function(
             "{.arg name} must be a single character string."
         )
     }
-    if (!is.numeric(n_species) || length(n_species) != 1L ||
-        n_species < 1L) {
+    if (!is.numeric(n_species) || length(n_species) != 1L || n_species < 1L) {
         cli::cli_abort(
             "{.arg n_species} must be a positive integer,
             not {.val {n_species}}."
         )
     }
-    if (!is.numeric(max_met) || length(max_met) != 1L ||
-        max_met < 2L) {
+    if (!is.numeric(max_met) || length(max_met) != 1L || max_met < 2L) {
         cli::cli_abort(
             "{.arg max_met} must be an integer >= 2,
             not {.val {max_met}}."
@@ -330,13 +344,18 @@ synCM <- function(
 
     ## ---- stage 3: cross-feeding backbone ----
     chain_edges <- .wireCrossFeeding(
-        species_names, met_vec, met_weights
+        species_names,
+        met_vec,
+        met_weights
     )
 
     ## ---- stage 4: fill random edges ----
     random_edges <- .fillRandomEdges(
-        species_names, met_vec, met_weights,
-        degrees, chain_edges
+        species_names,
+        met_vec,
+        met_weights,
+        degrees,
+        chain_edges
     )
 
     ## ---- stage 5: approximate mass balance ----
