@@ -18,7 +18,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Requires raw MiSoSoup YAML data
 #' raw <- yaml::read_yaml("misosoup_output.yaml")
 #' result <- importMisosoup(raw)
@@ -128,7 +128,7 @@ importMisosoup <- function(data) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Requires raw MiSoSoup YAML data
 #' raw <- yaml::read_yaml("misosoup_output.yaml")
 #' overviewMisosoup(raw)
