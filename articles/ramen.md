@@ -346,10 +346,13 @@ The `quantileCutoff` parameter controls the threshold (default 0.1).
 ### Functional groups
 
 [`functionalGroups()`](https://admarhi.github.io/ramen/reference/functionalGroups.md)
-clusters species by the Jaccard similarity of their pathway sets:
+clusters species by the Jaccard similarity of their pathway sets.
+[`plotFunctionalGroups()`](https://admarhi.github.io/ramen/reference/plotFunctionalGroups.md)
+visualizes the resulting dendrogram:
 
 ``` r
-fg <- functionalGroups(cms, k = 3)
+fg <- functionalGroups(cms)
+plotFunctionalGroups(fg, k = 3)
 #> Loading required namespace: colorspace
 #> Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
 #> ℹ Please use `linewidth` instead.
@@ -359,6 +362,11 @@ fg <- functionalGroups(cms, k = 3)
 #> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
 #> generated.
 ```
+
+![Functional groups
+dendrogram.](ramen_files/figure-html/cms-func-groups-1.png)
+
+Functional groups dendrogram.
 
 ### Dendrogram and cluster extraction
 
@@ -588,7 +596,7 @@ sessionInfo()
 #> [67] gridExtra_2.3                   ragg_1.5.2                     
 #> [69] evaluate_1.0.5                  knitr_1.51                     
 #> [71] GenomicRanges_1.62.1            IRanges_2.44.0                 
-#> [73] viridisLite_0.4.3               rlang_1.1.7                    
+#> [73] viridisLite_0.4.3               rlang_1.2.0                    
 #> [75] dendextend_1.19.1               Rcpp_1.1.1                     
 #> [77] glue_1.8.0                      tidytree_0.4.7                 
 #> [79] BiocManager_1.30.27             BiocGenerics_0.56.0            

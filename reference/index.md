@@ -66,6 +66,9 @@
 - [`plotDirectedFlow()`](https://admarhi.github.io/ramen/reference/plotDirectedFlow.md)
   : Plot a Directed Graph Emphasizing Flow
 
+- [`plotFunctionalGroups()`](https://admarhi.github.io/ramen/reference/plotFunctionalGroups.md)
+  : Plot Functional Groups Dendrogram
+
 - [`prevalence()`](https://admarhi.github.io/ramen/reference/prevalence.md)
   : Get Pathway Prevalence
 

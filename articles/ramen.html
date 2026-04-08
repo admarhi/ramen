@@ -409,9 +409,11 @@ pathways by prevalence:</p>
 <h3 id="functional-groups">Functional groups<a class="anchor" aria-label="anchor" href="#functional-groups"></a>
 </h3>
 <p><code><a href="../reference/functionalGroups.html">functionalGroups()</a></code> clusters species by the Jaccard
-similarity of their pathway sets:</p>
+similarity of their pathway sets. <code><a href="../reference/plotFunctionalGroups.html">plotFunctionalGroups()</a></code>
+visualizes the resulting dendrogram:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/functionalGroups.html">functionalGroups</a></span><span class="op">(</span><span class="va">cms</span>, k <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">fg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/functionalGroups.html">functionalGroups</a></span><span class="op">(</span><span class="va">cms</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/plotFunctionalGroups.html">plotFunctionalGroups</a></span><span class="op">(</span><span class="va">fg</span>, k <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Loading required namespace: colorspace</span></span>
 <span><span class="co">#&gt; Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use `linewidth` instead.</span></span>
@@ -420,6 +422,11 @@ similarity of their pathway sets:</p>
 <span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once per session.</span></span></span>
 <span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
 <span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span></code></pre></div>
+<div class="figure">
+<img src="ramen_files/figure-html/cms-func-groups-1.png" class="r-plt" alt="Functional groups dendrogram." width="576"><p class="caption">
+Functional groups dendrogram.
+</p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="dendrogram-and-cluster-extraction">Dendrogram and cluster extraction<a class="anchor" aria-label="anchor" href="#dendrogram-and-cluster-extraction"></a>
@@ -630,7 +637,7 @@ Pairwise similarity heatmap.
 <span><span class="co">#&gt; [67] gridExtra_2.3                   ragg_1.5.2                     </span></span>
 <span><span class="co">#&gt; [69] evaluate_1.0.5                  knitr_1.51                     </span></span>
 <span><span class="co">#&gt; [71] GenomicRanges_1.62.1            IRanges_2.44.0                 </span></span>
-<span><span class="co">#&gt; [73] viridisLite_0.4.3               rlang_1.1.7                    </span></span>
+<span><span class="co">#&gt; [73] viridisLite_0.4.3               rlang_1.2.0                    </span></span>
 <span><span class="co">#&gt; [75] dendextend_1.19.1               Rcpp_1.1.1                     </span></span>
 <span><span class="co">#&gt; [77] glue_1.8.0                      tidytree_0.4.7                 </span></span>
 <span><span class="co">#&gt; [79] BiocManager_1.30.27             BiocGenerics_0.56.0            </span></span>

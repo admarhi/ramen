@@ -46,9 +46,9 @@ for processing the full data
 ## Examples
 
 ``` r
-# \donttest{
-# Requires MiSoSoup YAML data parsed as a nested list
-# data <- yaml::read_yaml("path/to/misosoup_output.yaml")
-# overviewMisosoup(data)
-# }
+if (FALSE) { # \dontrun{
+# Requires raw MiSoSoup YAML data
+raw <- yaml::read_yaml("misosoup_output.yaml")
+overviewMisosoup(raw)
+} # }
 ```

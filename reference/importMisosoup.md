@@ -42,9 +42,10 @@ for a summary of the input data
 ## Examples
 
 ``` r
-# \donttest{
-# Requires MiSoSoup YAML data parsed as a nested list
-# data <- yaml::read_yaml("path/to/misosoup_output.yaml")
-# result <- importMisosoup(data)
-# }
+if (FALSE) { # \dontrun{
+# Requires raw MiSoSoup YAML data
+raw <- yaml::read_yaml("misosoup_output.yaml")
+result <- importMisosoup(raw)
+str(result, max.level = 1)
+} # }
 ```

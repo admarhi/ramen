@@ -99,7 +99,6 @@ generating a plot.
 ## Examples
 
 ``` r
-# \donttest{
 cm <- synCM("test", n_species = 3, max_met = 5)
 g <- igraph::graph_from_adjacency_matrix(
     SummarizedExperiment::assays(cm)[["Binary"]],
@@ -108,5 +107,4 @@ g <- igraph::graph_from_adjacency_matrix(
 )
 plotDirectedFlow(g)
 
-# }
 ```

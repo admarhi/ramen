@@ -137,7 +137,7 @@ Supply a data.frame mapping leaf labels to colours.
 
 ``` r
 colour_map <- data.frame(
-    label = names(misosoup24)[1:6],
+    label = names(misosoup24)[seq_len(6)],
     colour = c(
         "steelblue", "firebrick", "forestgreen",
         "darkorange", "purple", "darkred"
@@ -321,7 +321,7 @@ sessionInfo()
 #> [67] ragg_1.5.2                      evaluate_1.0.5                 
 #> [69] knitr_1.51                      GenomicRanges_1.62.1           
 #> [71] IRanges_2.44.0                  viridisLite_0.4.3              
-#> [73] rlang_1.1.7                     dendextend_1.19.1              
+#> [73] rlang_1.2.0                     dendextend_1.19.1              
 #> [75] Rcpp_1.1.1                      glue_1.8.0                     
 #> [77] tidytree_0.4.7                  BiocManager_1.30.27            
 #> [79] BiocGenerics_0.56.0             jsonlite_2.0.0                 

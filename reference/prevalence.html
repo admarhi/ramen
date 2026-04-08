@@ -77,55 +77,62 @@ multiple <a href="ConsortiumMetabolismAlignment.html">ConsortiumMetabolismAlignm
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
-<span class="r-in"><span><span class="va">cm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="synCM.html">synCM</a></span><span class="op">(</span><span class="st">"comm_1"</span>, n_species <span class="op">=</span> <span class="fl">3</span>, max_met <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">cm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="synCM.html">synCM</a></span><span class="op">(</span><span class="st">"comm_1"</span>, n_species <span class="op">=</span> <span class="fl">3</span>, max_met <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">cm2</span> <span class="op">&lt;-</span> <span class="fu"><a href="synCM.html">synCM</a></span><span class="op">(</span><span class="st">"comm_2"</span>, n_species <span class="op">=</span> <span class="fl">4</span>, max_met <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">cms</span> <span class="op">&lt;-</span> <span class="fu"><a href="ConsortiumMetabolismSet.html">ConsortiumMetabolismSet</a></span><span class="op">(</span><span class="va">cm1</span>, <span class="va">cm2</span>, name <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Creating CMS </span><span style="color: #0000BB; font-weight: bold;">"test"</span> <span style="color: #00BBBB;">─────────────────────────────────────────────────────────</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Validating <span style="color: #0000BB;">2</span> <span style="color: #0000BB;">&lt;ConsortiumMetabolism&gt;</span> objects</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Validating <span style="color: #0000BB;">2</span> <span style="color: #0000BB;">&lt;ConsortiumMetabolism&gt;</span> objects <span style="color: #B2B2B2;">[11ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Validating <span style="color: #0000BB;">2</span> <span style="color: #0000BB;">&lt;ConsortiumMetabolism&gt;</span> objects <span style="color: #B2B2B2;">[10ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Collecting metabolites from <span style="color: #0000BB;">2</span> consortia</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Collecting metabolites from <span style="color: #0000BB;">2</span> consortia <span style="color: #B2B2B2;">[29ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Collecting metabolites from <span style="color: #0000BB;">2</span> consortia <span style="color: #B2B2B2;">[28ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Re-indexing <span style="color: #0000BB;">6</span> unique metabolites</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Re-indexing <span style="color: #0000BB;">6</span> unique metabolites <span style="color: #B2B2B2;">[26ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Re-indexing <span style="color: #0000BB;">6</span> unique metabolites <span style="color: #B2B2B2;">[25ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Expanding <span style="color: #0000BB;">2</span> binary matrices to <span style="color: #0000BB;">6</span>-dimensional space</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Expanding <span style="color: #0000BB;">2</span> binary matrices to <span style="color: #0000BB;">6</span>-dimensional space <span style="color: #B2B2B2;">[23ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Expanding <span style="color: #0000BB;">2</span> binary matrices to <span style="color: #0000BB;">6</span>-dimensional space <span style="color: #B2B2B2;">[22ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Computing <span style="color: #0000BB;">6</span> x <span style="color: #0000BB;">6</span> levels matrix</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Computing <span style="color: #0000BB;">6</span> x <span style="color: #0000BB;">6</span> levels matrix <span style="color: #B2B2B2;">[24ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Computing <span style="color: #0000BB;">6</span> x <span style="color: #0000BB;">6</span> levels matrix <span style="color: #B2B2B2;">[23ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Computing pairwise overlap (<span style="color: #0000BB;">1</span> pairs via crossprod)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Computing pairwise overlap (<span style="color: #0000BB;">1</span> pairs via crossprod) <span style="color: #B2B2B2;">[23ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Computing pairwise overlap (<span style="color: #0000BB;">1</span> pairs via crossprod) <span style="color: #B2B2B2;">[21ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Assembling pathway data from <span style="color: #0000BB;">2</span> consortia</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Assembling pathway data from <span style="color: #0000BB;">2</span> consortia <span style="color: #B2B2B2;">[30ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Assembling pathway data from <span style="color: #0000BB;">2</span> consortia <span style="color: #B2B2B2;">[29ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Building dendrogram from <span style="color: #0000BB;">2</span> x <span style="color: #0000BB;">2</span> dissimilarity matrix</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Building dendrogram from <span style="color: #0000BB;">2</span> x <span style="color: #0000BB;">2</span> dissimilarity matrix <span style="color: #B2B2B2;">[21ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Building dendrogram from <span style="color: #0000BB;">2</span> x <span style="color: #0000BB;">2</span> dissimilarity matrix <span style="color: #B2B2B2;">[20ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Extracting dendrogram node positions</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Extracting dendrogram node positions <span style="color: #B2B2B2;">[31ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Extracting dendrogram node positions <span style="color: #B2B2B2;">[22ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Collecting <span style="color: #0000BB;">2</span> consortium graphs</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> CMS <span style="color: #0000BB;">"test"</span> created: <span style="color: #0000BB;">2</span> consortia, <span style="color: #0000BB;">6</span> metabolites (0.2s)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Collecting <span style="color: #0000BB;">2</span> consortium graphs <span style="color: #B2B2B2;">[83ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Collecting <span style="color: #0000BB;">2</span> consortium graphs <span style="color: #B2B2B2;">[79ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="va">cma</span> <span class="op">&lt;-</span> <span class="fu"><a href="align.html">align</a></span><span class="op">(</span><span class="va">cms</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Computing multiple alignment for 2 consortia using <span style="color: #0000BB;">"FOS"</span>.</span>
 <span class="r-in"><span><span class="fu">prevalence</span><span class="op">(</span><span class="va">cma</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   consumed produced nConsortia proportion</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1     met2     met1          1        0.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2     met1     met2          1        0.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3     met2     met2          1        0.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4     met2     met3          1        0.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5     met6     met4          1        0.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6     met1     met5          1        0.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7     met4     met6          1        0.5</span>
-<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    consumed produced nConsortia proportion</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1      met3     met1          2        1.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      met4     met1          1        0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3      met1     met2          1        0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4      met3     met2          1        0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5      met4     met2          1        0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6      met1     met3          1        0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7      met4     met3          2        1.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8      met6     met3          1        0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9      met1     met4          1        0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10     met3     met4          2        1.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11     met4     met4          1        0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12     met6     met4          1        0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13     met1     met5          1        0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14     met3     met5          2        1.0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15     met4     met5          1        0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16     met6     met5          1        0.5</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

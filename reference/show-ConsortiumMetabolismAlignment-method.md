@@ -31,7 +31,7 @@ show(cma)
 #> Name: NA
 #> Type: "pairwise"
 #> Metric: "FOS"
-#> Score: 0.1667
+#> Score: 0.8
 #> Query: "comm_1", Reference: "comm_2"
-#> Coverage: query 0.111, reference 0.167
+#> Coverage: query 0.8, reference 0.25
 ```

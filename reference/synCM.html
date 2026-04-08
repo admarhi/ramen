@@ -111,23 +111,24 @@ with columns <code>species</code>, <code>metabolites</code>, and
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── ConsortiumMetabolism </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Name: <span style="color: #0000BB;">"Ex. Community"</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Weighted metabolic network with <span style="color: #0000BB;">7</span> metabolites.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Weighted metabolic network with <span style="color: #0000BB;">10</span> metabolites.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Return raw edge list instead</span></span></span>
 <span class="r-in"><span><span class="fu">synCM</span><span class="op">(</span><span class="st">"Test"</span>, n_species <span class="op">=</span> <span class="fl">3</span>, max_met <span class="op">=</span> <span class="fl">8</span>, cm <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 11 × 3</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    species  metabolites fluxes</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> KYS3742B met5         3.77 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> PCI233C  met5        -<span style="color: #BB0000;">3.77</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> PCI233C  met4         0.875</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> MKI7263L met4        -<span style="color: #BB0000;">0.875</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> MKI7263L met5         1.48 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> KYS3742B met5        -<span style="color: #BB0000;">1.48</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> KYS3742B met6        -<span style="color: #BB0000;">0.894</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> MKI7263L met7         0.904</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> MKI7263L met8         2.87 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> MKI7263L met6        -<span style="color: #BB0000;">4.32</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> WQN4027C met7         1.20 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> ADI9989E met7        -<span style="color: #BB0000;">1.20</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> ADI9989E met2         2.29 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> LMR532J  met2        -<span style="color: #BB0000;">2.29</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> LMR532J  met7         2.91 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> WQN4027C met7        -<span style="color: #BB0000;">2.91</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> ADI9989E met5        -<span style="color: #BB0000;">7.50</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> ADI9989E met4        -<span style="color: #BB0000;">1.88</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> ADI9989E met3         0.679</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> LMR532J  met5        -<span style="color: #BB0000;">3.28</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> LMR532J  met6         1.66 </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -18,3 +18,15 @@ Useful links:
 
 **Maintainer**: Adrian Hirt <am.hirt@pm.me>
 ([ORCID](https://orcid.org/0009-0008-1929-6629))
+
+## Examples
+
+``` r
+# Create a synthetic consortium
+cm <- synCM("example", n_species = 3, max_met = 5)
+cm
+#> 
+#> ── ConsortiumMetabolism 
+#> Name: "example"
+#> Weighted metabolic network with 4 metabolites.
+```

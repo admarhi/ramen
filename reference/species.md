@@ -70,5 +70,5 @@ A character vector representing the microorganisms.
 ``` r
 cm <- synCM("test", n_species = 3, max_met = 5)
 species(cm)
-#> [1] "RRS7261B" "VZM5367U" "LAC5007J"
+#> [1] "XEW6572A" "SHJ4890C" "MQL2872Q"
 ```

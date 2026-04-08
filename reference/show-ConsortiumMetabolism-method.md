@@ -27,5 +27,5 @@ show(cm)
 #> 
 #> ── ConsortiumMetabolism 
 #> Name: "test"
-#> Weighted metabolic network with 4 metabolites.
+#> Weighted metabolic network with 5 metabolites.
 ```

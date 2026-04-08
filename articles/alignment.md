@@ -460,7 +460,7 @@ sessionInfo()
 #> [67] gridExtra_2.3                   ragg_1.5.2                     
 #> [69] evaluate_1.0.5                  knitr_1.51                     
 #> [71] GenomicRanges_1.62.1            IRanges_2.44.0                 
-#> [73] viridisLite_0.4.3               rlang_1.1.7                    
+#> [73] viridisLite_0.4.3               rlang_1.2.0                    
 #> [75] dendextend_1.19.1               Rcpp_1.1.1                     
 #> [77] glue_1.8.0                      tidytree_0.4.7                 
 #> [79] BiocManager_1.30.27             BiocGenerics_0.56.0            

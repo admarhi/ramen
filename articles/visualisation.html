@@ -197,7 +197,7 @@ CMS dendrogram with numbered nodes.
 <p>Supply a data.frame mapping leaf labels to colours.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">colour_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>    label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">misosoup24</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span>,</span>
+<span>    label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">misosoup24</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fl">6</span><span class="op">)</span><span class="op">]</span>,</span>
 <span>    colour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>        <span class="st">"steelblue"</span>, <span class="st">"firebrick"</span>, <span class="st">"forestgreen"</span>,</span>
 <span>        <span class="st">"darkorange"</span>, <span class="st">"purple"</span>, <span class="st">"darkred"</span></span>
@@ -426,7 +426,7 @@ Custom directed flow plot.
 <span><span class="co">#&gt; [67] ragg_1.5.2                      evaluate_1.0.5                 </span></span>
 <span><span class="co">#&gt; [69] knitr_1.51                      GenomicRanges_1.62.1           </span></span>
 <span><span class="co">#&gt; [71] IRanges_2.44.0                  viridisLite_0.4.3              </span></span>
-<span><span class="co">#&gt; [73] rlang_1.1.7                     dendextend_1.19.1              </span></span>
+<span><span class="co">#&gt; [73] rlang_1.2.0                     dendextend_1.19.1              </span></span>
 <span><span class="co">#&gt; [75] Rcpp_1.1.1                      glue_1.8.0                     </span></span>
 <span><span class="co">#&gt; [77] tidytree_0.4.7                  BiocManager_1.30.27            </span></span>
 <span><span class="co">#&gt; [79] BiocGenerics_0.56.0             jsonlite_2.0.0                 </span></span>

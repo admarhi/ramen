@@ -38,21 +38,21 @@ cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
 cma <- align(cm1, cm2)
 scores(cma)
 #> $FOS
-#> [1] 0.5714286
+#> [1] 0.1666667
 #> 
 #> $jaccard
-#> [1] 0.25
+#> [1] 0.07142857
 #> 
 #> $brayCurtis
-#> [1] 0.3327621
+#> [1] 0.09336728
 #> 
 #> $redundancyOverlap
-#> [1] 0.2272727
+#> [1] 0.05882353
 #> 
 #> $coverageQuery
-#> [1] 0.3076923
+#> [1] 0.1111111
 #> 
 #> $coverageReference
-#> [1] 0.5714286
+#> [1] 0.1666667
 #> 
 ```
