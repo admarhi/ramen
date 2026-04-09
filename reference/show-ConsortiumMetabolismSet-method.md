@@ -31,13 +31,13 @@ cms <- ConsortiumMetabolismSet(cm1, cm2, name = "test")
 #> ✔ Validating 2 <ConsortiumMetabolism> objects [11ms]
 #> 
 #> ℹ Collecting metabolites from 2 consortia
-#> ✔ Collecting metabolites from 2 consortia [30ms]
+#> ✔ Collecting metabolites from 2 consortia [40ms]
 #> 
 #> ℹ Re-indexing 6 unique metabolites
-#> ✔ Re-indexing 6 unique metabolites [34ms]
+#> ✔ Re-indexing 6 unique metabolites [26ms]
 #> 
 #> ℹ Expanding 2 binary matrices to 6-dimensional space
-#> ✔ Expanding 2 binary matrices to 6-dimensional space [24ms]
+#> ✔ Expanding 2 binary matrices to 6-dimensional space [23ms]
 #> 
 #> ℹ Computing 6 x 6 levels matrix
 #> ✔ Computing 6 x 6 levels matrix [24ms]
@@ -62,6 +62,5 @@ show(cms)
 #> 
 #> ── ConsortiumMetabolismSet 
 #> Name: "test"
-#> Containing 2 consortia.
-#> Description: NA
+#> 2 consortia, 7 species, 6 metabolites.
 ```

@@ -27,5 +27,5 @@ show(cm)
 #> 
 #> ── ConsortiumMetabolism 
 #> Name: "test"
-#> Weighted metabolic network with 5 metabolites.
+#> Weighted metabolic network: 3 species, 5 metabolites, 8 pathways.
 ```

@@ -154,7 +154,7 @@ cm1
 #> 
 #> ── ConsortiumMetabolism
 #> Name: "ac_A1R12_1"
-#> Weighted metabolic network with 14 metabolites.
+#> Weighted metabolic network: 2 species, 14 metabolites, 93 pathways.
 ```
 
 ### Synthetic data with `synCM()`
@@ -169,7 +169,7 @@ cm_syn
 #> 
 #> ── ConsortiumMetabolism
 #> Name: "Synthetic"
-#> Weighted metabolic network with 8 metabolites.
+#> Weighted metabolic network: 4 species, 8 metabolites, 13 pathways.
 ```
 
 ### Inspecting a CM

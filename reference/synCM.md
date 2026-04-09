@@ -57,7 +57,7 @@ synCM("Ex. Community", n_species = 5, max_met = 10)
 #> 
 #> ── ConsortiumMetabolism 
 #> Name: "Ex. Community"
-#> Weighted metabolic network with 10 metabolites.
+#> Weighted metabolic network: 5 species, 10 metabolites, 28 pathways.
 
 # Return raw edge list instead
 synCM("Test", n_species = 3, max_met = 8, cm = FALSE)
