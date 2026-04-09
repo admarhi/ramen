@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ramen</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,7 +35,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Get the Consortia</h1>
-      <small class="dont-index">Source: <a href="https://github.com/admarhi/ramen/blob/main/R/AllGenerics.R" class="external-link"><code>R/AllGenerics.R</code></a>, <a href="https://github.com/admarhi/ramen/blob/main/R/methods-accessors-cm.R" class="external-link"><code>R/methods-accessors-cm.R</code></a>, <a href="https://github.com/admarhi/ramen/blob/main/R/methods-accessors-cma.R" class="external-link"><code>R/methods-accessors-cma.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/admarhi/ramen/blob/main/R/AllGenerics.R" class="external-link"><code>R/AllGenerics.R</code></a>, <a href="https://github.com/admarhi/ramen/blob/main/R/methods-accessors-cm.R" class="external-link"><code>R/methods-accessors-cm.R</code></a>, <a href="https://github.com/admarhi/ramen/blob/main/R/methods-accessors-cma.R" class="external-link"><code>R/methods-accessors-cma.R</code></a>, and 1 more</small>
       <div class="d-none name"><code>consortia.Rd</code></div>
     </div>
 
@@ -51,6 +51,9 @@
 <span><span class="fu">consortia</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'ConsortiumMetabolismAlignment'</span></span>
+<span><span class="fu">consortia</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for class 'ConsortiumMetabolismSet'</span></span>
 <span><span class="fu">consortia</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -59,7 +62,7 @@
 
 
 <dl><dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
-<dd><p>A <code>ConsortiumMetabolismAlignment</code> object.</p></dd>
+<dd><p>A <code>ConsortiumMetabolismSet</code> object.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -70,12 +73,16 @@ information. For <code>ConsortiumMetabolismSet</code> and
 <code>ConsortiumMetabolismAlignment</code> objects, returns
 a list of such tibbles.</p>
 <p>A list with the community data.</p>
+<p>A named list of <code>ConsortiumMetabolism</code> objects.</p>
     </div>
     <div class="section level2">
     <h2 id="methods-by-class-">Methods (by class)<a class="anchor" aria-label="anchor" href="#methods-by-class-"></a></h2>
 
 <ul><li><p><code>consortia(ConsortiumMetabolism)</code>: Get the Community</p></li>
 <li><p><code>consortia(ConsortiumMetabolismAlignment)</code>: Not applicable for alignments</p></li>
+<li><p><code>consortia(ConsortiumMetabolismSet)</code>: Get the list of
+<code>ConsortiumMetabolism</code> objects from a
+<code>ConsortiumMetabolismSet</code></p></li>
 </ul></div>
 
     <div class="section level2">

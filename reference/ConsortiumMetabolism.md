@@ -12,7 +12,7 @@ ConsortiumMetabolism(
   data,
   name = NA_character_,
   species_col = "species",
-  metabolite_col = "met",
+  metabolite_col = "metabolite",
   flux_col = "flux",
   ...
 )
@@ -35,7 +35,8 @@ ConsortiumMetabolism(
 
 - metabolite_col:
 
-  Character scalar for the metabolite column name, defaults to `"met"`.
+  Character scalar for the metabolite column name, defaults to
+  `"metabolite"`.
 
 - flux_col:
 

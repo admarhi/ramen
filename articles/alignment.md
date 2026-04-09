@@ -27,10 +27,7 @@ data("misosoup24")
 cm_list <- lapply(seq_len(6), function(i) {
     ConsortiumMetabolism(
         misosoup24[[i]],
-        name = names(misosoup24)[i],
-        species_col = "species",
-        metabolite_col = "metabolites",
-        flux_col = "fluxes"
+        name = names(misosoup24)[i]
     )
 })
 
@@ -118,6 +115,9 @@ scores(cma_maas)
 #> 
 #> $coverageReference
 #> [1] 0.3796791
+#> 
+#> $MAAS
+#> [1] 0.5035647
 ```
 
 ### The FOS subset property
@@ -218,6 +218,9 @@ scores(cma_p)
 #> 
 #> $coverageReference
 #> [1] 0.3796791
+#> 
+#> $pvalue
+#> [1] 0.01
 ```
 
 ### Visualization
@@ -368,10 +371,6 @@ Similarity heatmap.
 
 ``` r
 plot(cma_mult, type = "scores")
-#> Warning: Removed 1 row containing missing values or values outside the scale range
-#> (`geom_col()`).
-#> Warning: Removed 1 row containing missing values or values outside the scale range
-#> (`geom_text()`).
 ```
 
 ![Multiple alignment summary
@@ -421,7 +420,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] ramen_0.0.0.9002 BiocStyle_2.38.0
+#> [1] ramen_0.99.0     BiocStyle_2.38.0
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] SummarizedExperiment_1.40.0     gtable_0.3.6                   
@@ -456,7 +455,7 @@ sessionInfo()
 #> [59] ape_5.8-1                       withr_3.0.2                    
 #> [61] scales_1.4.0                    rappdirs_0.3.4                 
 #> [63] rmarkdown_2.31                  XVector_0.50.0                 
-#> [65] matrixStats_1.5.0               igraph_2.2.2                   
+#> [65] matrixStats_1.5.0               igraph_2.2.3                   
 #> [67] gridExtra_2.3                   ragg_1.5.2                     
 #> [69] evaluate_1.0.5                  knitr_1.51                     
 #> [71] GenomicRanges_1.62.1            IRanges_2.44.0                 

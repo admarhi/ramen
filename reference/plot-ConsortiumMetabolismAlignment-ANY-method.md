@@ -22,7 +22,8 @@ plot(x, type = NULL)
 
 ## Value
 
-A `ggplot` object (returned invisibly).
+For `"heatmap"` and `"scores"`, a `ggplot` object. For `"network"`,
+invisibly returns `NULL` (base igraph plot).
 
 ## Examples
 

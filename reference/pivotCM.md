@@ -1,8 +1,9 @@
-# Pivot `ConsortiaMetabolism` Input Data
+# Pivot `ConsortiumMetabolism` Input Data
 
-Wrapper function around tidyr's `pivot_longer()` function to facilitate
-the easy transformation into the correct data format for MiCo
-construction.
+Wrapper function around tidyr's `pivot_longer()` function to transform
+wide-format community data (one column per direction) into the long
+format required by
+[`ConsortiumMetabolism`](https://admarhi.github.io/ramen/reference/ConsortiumMetabolism.md).
 
 ## Usage
 
@@ -14,24 +15,24 @@ pivotCM(tb, species, from, to, flux)
 
 - tb:
 
-  Tibble with data on a microbial community in long or short format to
-  be
+  A data.frame or tibble with one row per species-metabolite pair in
+  wide format (separate columns for consumed and produced metabolites).
 
 - species:
 
-  Column name of the species column
+  Column name of the species column.
 
 - from:
 
-  the name of the column specifying the met consumed
+  Column name specifying the metabolite consumed.
 
 - to:
 
-  the name of the column specifying the met excreted
+  Column name specifying the metabolite produced.
 
 - flux:
 
-  Column name of the flux column
+  Column name of the flux column.
 
 ## Value
 

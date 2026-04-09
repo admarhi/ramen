@@ -46,15 +46,13 @@ species(
 
 ## Value
 
-A character vector of species names, or a tibble with species and
-pathway counts (for
-[ConsortiumMetabolismSet](https://admarhi.github.io/ramen/reference/ConsortiumMetabolismSet.md)).
-
-A character vector representing the microorganisms.
-
-A character vector of species names.
-
-A character vector representing the microorganisms.
+For
+[ConsortiumMetabolism](https://admarhi.github.io/ramen/reference/ConsortiumMetabolism.md)
+and
+[ConsortiumMetabolismAlignment](https://admarhi.github.io/ramen/reference/ConsortiumMetabolismAlignment.md),
+a character vector of species names. For
+[ConsortiumMetabolismSet](https://admarhi.github.io/ramen/reference/ConsortiumMetabolismSet.md),
+a tibble with columns `species` and `n_pathways`.
 
 ## Methods (by class)
 

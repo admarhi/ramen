@@ -24,8 +24,19 @@ comparing communities by species composition, `ramen` asks: *which
 metabolite-to-metabolite pathways does each community catalyse, and how
 similar are the resulting networks?*
 
+### Key concept: pathways
+
+Throughout `ramen`, a **pathway** is a directed edge from one metabolite
+to another: “metabolite A is consumed and metabolite B is produced by at
+least one species.” This is *not* a biochemical pathway in the KEGG or
+MetaCyc sense (e.g. glycolysis). Rather, it captures a single metabolic
+exchange coupling within the community. A consortium’s full set of
+pathways forms a square metabolite-by-metabolite network that encodes
+its collective metabolic capability.
+
+### Package classes
+
 The package provides three S4 classes that build on Bioconductor’s
-`TreeSummarizedExperiment`:
 *[TreeSummarizedExperiment](https://bioconductor.org/packages/3.22/TreeSummarizedExperiment)*:
 
 - **`ConsortiumMetabolism`** (CM) – a single community’s metabolic
@@ -61,14 +72,14 @@ names(misosoup24)[1:8]
 #> [6] "ac_A1R12_14" "ac_A1R12_15" "ac_A1R12_16"
 head(misosoup24[[1]])
 #> # A tibble: 6 × 3
-#>   metabolites species  fluxes
-#>   <chr>       <chr>     <dbl>
-#> 1 ac          A1R12     0.773
-#> 2 ac          I2R16   -10.8  
-#> 3 acald       A1R12    -1.12 
-#> 4 acald       I2R16     1.12 
-#> 5 ala__D      A1R12     0.760
-#> 6 ala__D      I2R16    -0.760
+#>   metabolite species    flux
+#>   <chr>      <chr>     <dbl>
+#> 1 ac         A1R12     0.773
+#> 2 ac         I2R16   -10.8  
+#> 3 acald      A1R12    -1.12 
+#> 4 acald      I2R16     1.12 
+#> 5 ala__D     A1R12     0.760
+#> 6 ala__D     I2R16    -0.760
 ```
 
 ### Importing raw MiSoSoup YAML
@@ -92,8 +103,8 @@ names(result) # "consortia", "media", "growth"
 
 The
 [`ConsortiumMetabolism()`](https://admarhi.github.io/ramen/reference/ConsortiumMetabolism.md)
-constructor accepts any data.frame with columns for species, metabolite,
-and flux. Custom column names are specified via `species_col`,
+constructor accepts any data.frame with columns `species`, `metabolite`,
+and `flux`. Custom column names can be specified via `species_col`,
 `metabolite_col`, and `flux_col`.
 
 If your data is in wide format with separate columns for consumed and
@@ -137,10 +148,7 @@ head(long_data)
 ``` r
 cm1 <- ConsortiumMetabolism(
     misosoup24[[1]],
-    name = names(misosoup24)[1],
-    species_col = "species",
-    metabolite_col = "metabolites",
-    flux_col = "fluxes"
+    name = names(misosoup24)[1]
 )
 cm1
 #> 
@@ -254,10 +262,7 @@ hierarchical clustering dendrogram.
 cm_list <- lapply(seq_len(20), function(i) {
     ConsortiumMetabolism(
         misosoup24[[i]],
-        name = names(misosoup24)[i],
-        species_col = "species",
-        metabolite_col = "metabolites",
-        flux_col = "fluxes"
+        name = names(misosoup24)[i]
     )
 })
 
@@ -557,7 +562,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] ramen_0.0.0.9002 BiocStyle_2.38.0
+#> [1] ramen_0.99.0     BiocStyle_2.38.0
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] SummarizedExperiment_1.40.0     gtable_0.3.6                   
@@ -592,7 +597,7 @@ sessionInfo()
 #> [59] ape_5.8-1                       withr_3.0.2                    
 #> [61] scales_1.4.0                    rappdirs_0.3.4                 
 #> [63] rmarkdown_2.31                  XVector_0.50.0                 
-#> [65] matrixStats_1.5.0               igraph_2.2.2                   
+#> [65] matrixStats_1.5.0               igraph_2.2.3                   
 #> [67] gridExtra_2.3                   ragg_1.5.2                     
 #> [69] evaluate_1.0.5                  knitr_1.51                     
 #> [71] GenomicRanges_1.62.1            IRanges_2.44.0                 

@@ -9,7 +9,7 @@ consortia."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ramen</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,29 +77,29 @@ consortia.</p>
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
-<dd><p>Character scalar giving the type of species to output.</p></dd>
+<dd><p>Character scalar giving the type of species
+to output.</p></dd>
 
 
 <dt id="arg-quantilecutoff">quantileCutoff<a class="anchor" aria-label="anchor" href="#arg-quantilecutoff"></a></dt>
-<dd><p>Numeric scalar between 0 and 1 specifying
-the fraction of species to return when <code>type</code> is
-"generalists" or "specialists".
-For "generalists", the top <code>quantileCutoff</code> fraction of
-species with the most pathways is returned. For
-"specialists", the bottom <code>quantileCutoff</code> fraction
-with the fewest pathways is returned.
-Defaults to 0.15 (i.e., 15 percent). Ignored when
-<code>type = "all"</code>.</p></dd>
+<dd><p>Numeric scalar between 0 and 1
+specifying the fraction of species to return when
+<code>type</code> is "generalists" or "specialists".
+For "generalists", the top <code>quantileCutoff</code>
+fraction of species with the most pathways is
+returned. For "specialists", the bottom
+<code>quantileCutoff</code> fraction with the fewest
+pathways is returned. Defaults to 0.15 (i.e., 15
+percent). Ignored when <code>type = "all"</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A character vector of species names, or a
-tibble with species and pathway counts (for
-<a href="ConsortiumMetabolismSet.html">ConsortiumMetabolismSet</a>).</p>
-<p>A character vector representing the microorganisms.</p>
-<p>A character vector of species names.</p>
-<p>A character vector representing the microorganisms.</p>
+    <p>For <a href="ConsortiumMetabolism.html">ConsortiumMetabolism</a> and
+<a href="ConsortiumMetabolismAlignment.html">ConsortiumMetabolismAlignment</a>, a character vector
+of species names. For <a href="ConsortiumMetabolismSet.html">ConsortiumMetabolismSet</a>, a
+tibble with columns <code>species</code> and
+<code>n_pathways</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="methods-by-class-">Methods (by class)<a class="anchor" aria-label="anchor" href="#methods-by-class-"></a></h2>

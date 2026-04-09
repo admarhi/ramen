@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ramen</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -93,10 +93,7 @@ dataset to use throughout this vignette.</p>
 <span><span class="va">cm_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fl">6</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu"><a href="../reference/ConsortiumMetabolism.html">ConsortiumMetabolism</a></span><span class="op">(</span></span>
 <span>        <span class="va">misosoup24</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span>,</span>
-<span>        name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">misosoup24</span><span class="op">)</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>,</span>
-<span>        species_col <span class="op">=</span> <span class="st">"species"</span>,</span>
-<span>        metabolite_col <span class="op">=</span> <span class="st">"metabolites"</span>,</span>
-<span>        flux_col <span class="op">=</span> <span class="st">"fluxes"</span></span>
+<span>        name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">misosoup24</span><span class="op">)</span><span class="op">[</span><span class="va">i</span><span class="op">]</span></span>
 <span>    <span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span>
 <span></span>
@@ -200,7 +197,10 @@ are unavailable (e.g., unweighted networks lack Bray-Curtis):</p>
 <span><span class="co">#&gt; [1] 0.7634409</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $coverageReference</span></span>
-<span><span class="co">#&gt; [1] 0.3796791</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.3796791</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $MAAS</span></span>
+<span><span class="co">#&gt; [1] 0.5035647</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="the-fos-subset-property">The FOS subset property<a class="anchor" aria-label="anchor" href="#the-fos-subset-property"></a>
@@ -298,7 +298,10 @@ score.</p>
 <span><span class="co">#&gt; [1] 0.7634409</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $coverageReference</span></span>
-<span><span class="co">#&gt; [1] 0.3796791</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.3796791</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $pvalue</span></span>
+<span><span class="co">#&gt; [1] 0.01</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="visualization">Visualization<a class="anchor" aria-label="anchor" href="#visualization"></a>
@@ -446,11 +449,7 @@ Similarity heatmap.
 <h4 id="score-summary">Score summary<a class="anchor" aria-label="anchor" href="#score-summary"></a>
 </h4>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cma_mult</span>, type <span class="op">=</span> <span class="st">"scores"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 1 row containing missing values or values outside the scale range</span></span>
-<span><span class="co">#&gt; (`geom_col()`).</span></span>
-<span><span class="co">#&gt; Warning: Removed 1 row containing missing values or values outside the scale range</span></span>
-<span><span class="co">#&gt; (`geom_text()`).</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">cma_mult</span>, type <span class="op">=</span> <span class="st">"scores"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="alignment_files/figure-html/plot-scores-mult-1.png" class="r-plt" alt="Multiple alignment summary scores." width="576"><p class="caption">
 Multiple alignment summary scores.
@@ -546,7 +545,7 @@ informative error.</p>
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] ramen_0.0.0.9002 BiocStyle_2.38.0</span></span>
+<span><span class="co">#&gt; [1] ramen_0.99.0     BiocStyle_2.38.0</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;  [1] SummarizedExperiment_1.40.0     gtable_0.3.6                   </span></span>
@@ -581,7 +580,7 @@ informative error.</p>
 <span><span class="co">#&gt; [59] ape_5.8-1                       withr_3.0.2                    </span></span>
 <span><span class="co">#&gt; [61] scales_1.4.0                    rappdirs_0.3.4                 </span></span>
 <span><span class="co">#&gt; [63] rmarkdown_2.31                  XVector_0.50.0                 </span></span>
-<span><span class="co">#&gt; [65] matrixStats_1.5.0               igraph_2.2.2                   </span></span>
+<span><span class="co">#&gt; [65] matrixStats_1.5.0               igraph_2.2.3                   </span></span>
 <span><span class="co">#&gt; [67] gridExtra_2.3                   ragg_1.5.2                     </span></span>
 <span><span class="co">#&gt; [69] evaluate_1.0.5                  knitr_1.51                     </span></span>
 <span><span class="co">#&gt; [71] GenomicRanges_1.62.1            IRanges_2.44.0                 </span></span>

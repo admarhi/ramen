@@ -52,7 +52,7 @@
 
 - [`pivotCM()`](https://admarhi.github.io/ramen/reference/pivotCM.md) :
 
-  Pivot `ConsortiaMetabolism` Input Data
+  Pivot `ConsortiumMetabolism` Input Data
 
 - [`plot(`*`<ConsortiumMetabolism>`*`,`*`<ANY>`*`)`](https://admarhi.github.io/ramen/reference/plot-ConsortiumMetabolism-ANY-method.md)
   : Plot a ConsortiumMetabolism object

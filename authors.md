@@ -11,13 +11,13 @@ Source:
 [`DESCRIPTION`](https://github.com/admarhi/ramen/blob/main/DESCRIPTION)
 
 Hirt A (2026). *ramen: Reconstruction and Alignment of Microbial
-Exchange Networks*. R package version 0.0.0.9002,
+Exchange Networks*. R package version 0.99.0,
 <https://admarhi.github.io/ramen/>.
 
     @Manual{,
       title = {ramen: Reconstruction and Alignment of Microbial Exchange Networks},
       author = {Adrian Hirt},
       year = {2026},
-      note = {R package version 0.0.0.9002},
+      note = {R package version 0.99.0},
       url = {https://admarhi.github.io/ramen/},
     }

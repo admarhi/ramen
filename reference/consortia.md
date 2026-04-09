@@ -12,13 +12,16 @@ consortia(object)
 
 # S4 method for class 'ConsortiumMetabolismAlignment'
 consortia(object)
+
+# S4 method for class 'ConsortiumMetabolismSet'
+consortia(object)
 ```
 
 ## Arguments
 
 - object:
 
-  A `ConsortiumMetabolismAlignment` object.
+  A `ConsortiumMetabolismSet` object.
 
 ## Value
 
@@ -28,12 +31,17 @@ metabolite and flux information. For `ConsortiumMetabolismSet` and
 
 A list with the community data.
 
+A named list of `ConsortiumMetabolism` objects.
+
 ## Methods (by class)
 
 - `consortia(ConsortiumMetabolism)`: Get the Community
 
 - `consortia(ConsortiumMetabolismAlignment)`: Not applicable for
   alignments
+
+- `consortia(ConsortiumMetabolismSet)`: Get the list of
+  `ConsortiumMetabolism` objects from a `ConsortiumMetabolismSet`
 
 ## Examples
 

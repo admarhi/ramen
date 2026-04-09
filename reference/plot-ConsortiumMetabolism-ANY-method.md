@@ -25,7 +25,8 @@ plot(
 
 ## Value
 
-A `ggplot` object (returned invisibly).
+Invisibly returns `NULL`. Called for its side effect of producing an
+igraph network plot.
 
 ## Examples
 

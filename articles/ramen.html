@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ramen</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -90,8 +90,23 @@ perspective. Rather than comparing communities by species composition,
 <code>ramen</code> asks: <em>which metabolite-to-metabolite pathways
 does each community catalyse, and how similar are the resulting
 networks?</em></p>
+<div class="section level3">
+<h3 id="key-concept-pathways">Key concept: pathways<a class="anchor" aria-label="anchor" href="#key-concept-pathways"></a>
+</h3>
+<p>Throughout <code>ramen</code>, a <strong>pathway</strong> is a
+directed edge from one metabolite to another: “metabolite A is consumed
+and metabolite B is produced by at least one species.” This is
+<em>not</em> a biochemical pathway in the KEGG or MetaCyc sense
+(e.g. glycolysis). Rather, it captures a single metabolic exchange
+coupling within the community. A consortium’s full set of pathways forms
+a square metabolite-by-metabolite network that encodes its collective
+metabolic capability.</p>
+</div>
+<div class="section level3">
+<h3 id="package-classes">Package classes<a class="anchor" aria-label="anchor" href="#package-classes"></a>
+</h3>
 <p>The package provides three S4 classes that build on Bioconductor’s
-<code>TreeSummarizedExperiment</code>: <em><a href="https://bioconductor.org/packages/3.22/TreeSummarizedExperiment" class="external-link">TreeSummarizedExperiment</a></em>:</p>
+<em><a href="https://bioconductor.org/packages/3.22/TreeSummarizedExperiment" class="external-link">TreeSummarizedExperiment</a></em>:</p>
 <ul>
 <li>
 <strong><code>ConsortiumMetabolism</code></strong> (CM) – a single
@@ -110,6 +125,7 @@ alignment metrics, see
 <code><a href="../articles/alignment.html">vignette("alignment", package = "ramen")</a></code>; for a gallery of
 all plot types, see
 <code><a href="../articles/visualisation.html">vignette("visualisation", package = "ramen")</a></code>.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="data-import">Data import<a class="anchor" aria-label="anchor" href="#data-import"></a>
@@ -131,14 +147,14 @@ production.</p>
 <span><span class="co">#&gt; [6] "ac_A1R12_14" "ac_A1R12_15" "ac_A1R12_16"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">misosoup24</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 3</span></span></span>
-<span><span class="co">#&gt;   metabolites species  fluxes</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> ac          A1R12     0.773</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> ac          I2R16   -<span style="color: #BB0000;">10.8</span>  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> acald       A1R12    -<span style="color: #BB0000;">1.12</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> acald       I2R16     1.12 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> ala__D      A1R12     0.760</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> ala__D      I2R16    -<span style="color: #BB0000;">0.760</span></span></span></code></pre></div>
+<span><span class="co">#&gt;   metabolite species    flux</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> ac         A1R12     0.773</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> ac         I2R16   -<span style="color: #BB0000;">10.8</span>  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> acald      A1R12    -<span style="color: #BB0000;">1.12</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> acald      I2R16     1.12 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> ala__D     A1R12     0.760</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> ala__D     I2R16    -<span style="color: #BB0000;">0.760</span></span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="importing-raw-misosoup-yaml">Importing raw MiSoSoup YAML<a class="anchor" aria-label="anchor" href="#importing-raw-misosoup-yaml"></a>
@@ -158,9 +174,10 @@ the data structure before full import.</p>
 <h3 id="alternative-input-formats">Alternative input formats<a class="anchor" aria-label="anchor" href="#alternative-input-formats"></a>
 </h3>
 <p>The <code><a href="../reference/ConsortiumMetabolism.html">ConsortiumMetabolism()</a></code> constructor accepts any
-data.frame with columns for species, metabolite, and flux. Custom column
-names are specified via <code>species_col</code>,
-<code>metabolite_col</code>, and <code>flux_col</code>.</p>
+data.frame with columns <code>species</code>, <code>metabolite</code>,
+and <code>flux</code>. Custom column names can be specified via
+<code>species_col</code>, <code>metabolite_col</code>, and
+<code>flux_col</code>.</p>
 <p>If your data is in wide format with separate columns for consumed and
 produced metabolites, <code><a href="../reference/pivotCM.html">pivotCM()</a></code> converts it to the long
 format that <code><a href="../reference/ConsortiumMetabolism.html">ConsortiumMetabolism()</a></code> expects:</p>
@@ -200,10 +217,7 @@ format that <code><a href="../reference/ConsortiumMetabolism.html">ConsortiumMet
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ConsortiumMetabolism.html">ConsortiumMetabolism</a></span><span class="op">(</span></span>
 <span>    <span class="va">misosoup24</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>,</span>
-<span>    name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">misosoup24</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
-<span>    species_col <span class="op">=</span> <span class="st">"species"</span>,</span>
-<span>    metabolite_col <span class="op">=</span> <span class="st">"metabolites"</span>,</span>
-<span>    flux_col <span class="op">=</span> <span class="st">"fluxes"</span></span>
+<span>    name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">misosoup24</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">cm1</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -323,10 +337,7 @@ overlap scores, and builds a hierarchical clustering dendrogram.</p>
 <span><span class="va">cm_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu"><a href="../reference/ConsortiumMetabolism.html">ConsortiumMetabolism</a></span><span class="op">(</span></span>
 <span>        <span class="va">misosoup24</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span>,</span>
-<span>        name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">misosoup24</span><span class="op">)</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>,</span>
-<span>        species_col <span class="op">=</span> <span class="st">"species"</span>,</span>
-<span>        metabolite_col <span class="op">=</span> <span class="st">"metabolites"</span>,</span>
-<span>        flux_col <span class="op">=</span> <span class="st">"fluxes"</span></span>
+<span>        name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">misosoup24</span><span class="op">)</span><span class="op">[</span><span class="va">i</span><span class="op">]</span></span>
 <span>    <span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span>
 <span></span>
@@ -598,7 +609,7 @@ Pairwise similarity heatmap.
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] ramen_0.0.0.9002 BiocStyle_2.38.0</span></span>
+<span><span class="co">#&gt; [1] ramen_0.99.0     BiocStyle_2.38.0</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;  [1] SummarizedExperiment_1.40.0     gtable_0.3.6                   </span></span>
@@ -633,7 +644,7 @@ Pairwise similarity heatmap.
 <span><span class="co">#&gt; [59] ape_5.8-1                       withr_3.0.2                    </span></span>
 <span><span class="co">#&gt; [61] scales_1.4.0                    rappdirs_0.3.4                 </span></span>
 <span><span class="co">#&gt; [63] rmarkdown_2.31                  XVector_0.50.0                 </span></span>
-<span><span class="co">#&gt; [65] matrixStats_1.5.0               igraph_2.2.2                   </span></span>
+<span><span class="co">#&gt; [65] matrixStats_1.5.0               igraph_2.2.3                   </span></span>
 <span><span class="co">#&gt; [67] gridExtra_2.3                   ragg_1.5.2                     </span></span>
 <span><span class="co">#&gt; [69] evaluate_1.0.5                  knitr_1.51                     </span></span>
 <span><span class="co">#&gt; [71] GenomicRanges_1.62.1            IRanges_2.44.0                 </span></span>
