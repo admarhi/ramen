@@ -23,7 +23,7 @@ media, and growth information. The function handles data cleaning,
 transformation, and organization of metabolic flux data.
 }
 \examples{
-\dontrun{
+\donttest{
 # Requires raw MiSoSoup YAML data
 raw <- yaml::read_yaml("misosoup_output.yaml")
 result <- importMisosoup(raw)

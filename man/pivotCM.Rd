@@ -2,21 +2,24 @@
 % Please edit documentation in R/pivotCM.R
 \name{pivotCM}
 \alias{pivotCM}
-\title{Pivot \code{ConsortiaMetabolism} Input Data}
+\title{Pivot \code{ConsortiumMetabolism} Input Data}
 \usage{
 pivotCM(tb, species, from, to, flux)
 }
 \arguments{
-\item{tb}{Tibble with data on a microbial community in
-long or short format to be}
+\item{tb}{A data.frame or tibble with one row per
+species-metabolite pair in wide format (separate
+columns for consumed and produced metabolites).}
 
-\item{species}{Column name of the species column}
+\item{species}{Column name of the species column.}
 
-\item{from}{the name of the column specifying the met consumed}
+\item{from}{Column name specifying the metabolite
+consumed.}
 
-\item{to}{the name of the column specifying the met excreted}
+\item{to}{Column name specifying the metabolite
+produced.}
 
-\item{flux}{Column name of the flux column}
+\item{flux}{Column name of the flux column.}
 }
 \value{
 A \code{\link[tibble]{tibble}} with three columns:
@@ -28,8 +31,10 @@ consumption, positive for production).}
 }
 }
 \description{
-Wrapper function around tidyr's \code{pivot_longer()} function to facilitate
-the easy transformation into the correct data format for MiCo construction.
+Wrapper function around tidyr's \code{pivot_longer()} function to
+transform wide-format community data (one column per
+direction) into the long format required by
+\code{\link{ConsortiumMetabolism}}.
 }
 \examples{
 tb <- tibble::tribble(

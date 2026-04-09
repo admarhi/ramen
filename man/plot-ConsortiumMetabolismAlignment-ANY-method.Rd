@@ -14,7 +14,9 @@
 \code{"scores"}.}
 }
 \value{
-A \code{ggplot} object (returned invisibly).
+For \code{"heatmap"} and \code{"scores"}, a
+\code{ggplot} object. For \code{"network"}, invisibly
+returns \code{NULL} (base igraph plot).
 }
 \description{
 Plot a ConsortiumMetabolismAlignment object

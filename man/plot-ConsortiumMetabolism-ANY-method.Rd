@@ -16,7 +16,8 @@
 \item{type}{Character specifying the assay to plot.}
 }
 \value{
-A \code{ggplot} object (returned invisibly).
+Invisibly returns \code{NULL}. Called for its
+side effect of producing an igraph network plot.
 }
 \description{
 Plot a ConsortiumMetabolism object

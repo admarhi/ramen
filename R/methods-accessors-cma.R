@@ -167,7 +167,6 @@ setMethod(
 #' @describeIn species Return species from a
 #'   \code{ConsortiumMetabolismAlignment}
 #' @param object A \code{ConsortiumMetabolismAlignment} object.
-#' @return A character vector of species names.
 setMethod(
     "species",
     "ConsortiumMetabolismAlignment",

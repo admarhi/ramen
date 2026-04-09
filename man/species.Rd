@@ -25,28 +25,25 @@ species(object, ...)
 
 \item{...}{Additional arguments passed to methods.}
 
-\item{type}{Character scalar giving the type of species to output.}
+\item{type}{Character scalar giving the type of species
+to output.}
 
-\item{quantileCutoff}{Numeric scalar between 0 and 1 specifying
-the fraction of species to return when \code{type} is
-"generalists" or "specialists".
-For "generalists", the top \code{quantileCutoff} fraction of
-species with the most pathways is returned. For
-"specialists", the bottom \code{quantileCutoff} fraction
-with the fewest pathways is returned.
-Defaults to 0.15 (i.e., 15 percent). Ignored when
-\code{type = "all"}.}
+\item{quantileCutoff}{Numeric scalar between 0 and 1
+specifying the fraction of species to return when
+\code{type} is "generalists" or "specialists".
+For "generalists", the top \code{quantileCutoff}
+fraction of species with the most pathways is
+returned. For "specialists", the bottom
+\code{quantileCutoff} fraction with the fewest
+pathways is returned. Defaults to 0.15 (i.e., 15
+percent). Ignored when \code{type = "all"}.}
 }
 \value{
-A character vector of species names, or a
-tibble with species and pathway counts (for
-\link{ConsortiumMetabolismSet}).
-
-A character vector representing the microorganisms.
-
-A character vector of species names.
-
-A character vector representing the microorganisms.
+For \link{ConsortiumMetabolism} and
+\link{ConsortiumMetabolismAlignment}, a character vector
+of species names. For \link{ConsortiumMetabolismSet}, a
+tibble with columns \code{species} and
+\code{n_pathways}.
 }
 \description{
 Returns the species present in a consortium or set of

@@ -169,18 +169,18 @@ setMethod(
 
 #' @describeIn species Return Species in a Microbiome
 #' @param object a \code{ConsortiumMetabolismSet} Object
-#' @param type Character scalar giving the type of species to output.
-#' @param quantileCutoff Numeric scalar between 0 and 1 specifying
-#'   the fraction of species to return when \code{type} is
-#'   "generalists" or "specialists".
-#'   For "generalists", the top \code{quantileCutoff} fraction of
-#'   species with the most pathways is returned. For
-#'   "specialists", the bottom \code{quantileCutoff} fraction
-#'   with the fewest pathways is returned.
-#'   Defaults to 0.15 (i.e., 15 percent). Ignored when
-#'   \code{type = "all"}.
+#' @param type Character scalar giving the type of species
+#'   to output.
+#' @param quantileCutoff Numeric scalar between 0 and 1
+#'   specifying the fraction of species to return when
+#'   \code{type} is "generalists" or "specialists".
+#'   For "generalists", the top \code{quantileCutoff}
+#'   fraction of species with the most pathways is
+#'   returned. For "specialists", the bottom
+#'   \code{quantileCutoff} fraction with the fewest
+#'   pathways is returned. Defaults to 0.15 (i.e., 15
+#'   percent). Ignored when \code{type = "all"}.
 #'
-#' @return A character vector representing the microorganisms.
 setMethod(
     "species",
     "ConsortiumMetabolismSet",

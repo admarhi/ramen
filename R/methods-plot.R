@@ -5,7 +5,8 @@ NULL
 #'
 #' @param x A \code{ConsortiumMetabolism} object.
 #' @param type Character specifying the assay to plot.
-#' @return A \code{ggplot} object (returned invisibly).
+#' @return Invisibly returns \code{NULL}. Called for its
+#'   side effect of producing an igraph network plot.
 #' @examples
 #' cm <- synCM("test", n_species = 3, max_met = 5)
 #' plot(cm)
@@ -138,7 +139,9 @@ setMethod(
 #' @param type Character specifying the plot type:
 #'   \code{"heatmap"}, \code{"network"}, or
 #'   \code{"scores"}.
-#' @return A \code{ggplot} object (returned invisibly).
+#' @return For \code{"heatmap"} and \code{"scores"}, a
+#'   \code{ggplot} object. For \code{"network"}, invisibly
+#'   returns \code{NULL} (base igraph plot).
 #' @examples
 #' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
 #' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)

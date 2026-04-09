@@ -24,7 +24,7 @@ consortia and zero-growth solutions for each substrate and focal strain
 combination.
 }
 \examples{
-\dontrun{
+\donttest{
 # Requires raw MiSoSoup YAML data
 raw <- yaml::read_yaml("misosoup_output.yaml")
 overviewMisosoup(raw)

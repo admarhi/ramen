@@ -1,15 +1,20 @@
-#' @title Pivot \code{ConsortiaMetabolism} Input Data
+#' @title Pivot \code{ConsortiumMetabolism} Input Data
 #'
 #' @description
-#' Wrapper function around tidyr's `pivot_longer()` function to facilitate
-#' the easy transformation into the correct data format for MiCo construction.
+#' Wrapper function around tidyr's `pivot_longer()` function to
+#' transform wide-format community data (one column per
+#' direction) into the long format required by
+#' \code{\link{ConsortiumMetabolism}}.
 #'
-#' @param tb Tibble with data on a microbial community in
-#' long or short format to be
-#' @param species Column name of the species column
-#' @param from the name of the column specifying the met consumed
-#' @param to the name of the column specifying the met excreted
-#' @param flux Column name of the flux column
+#' @param tb A data.frame or tibble with one row per
+#'   species-metabolite pair in wide format (separate
+#'   columns for consumed and produced metabolites).
+#' @param species Column name of the species column.
+#' @param from Column name specifying the metabolite
+#'   consumed.
+#' @param to Column name specifying the metabolite
+#'   produced.
+#' @param flux Column name of the flux column.
 #'
 #' @return A \code{\link[tibble]{tibble}} with three columns:
 #'   \describe{

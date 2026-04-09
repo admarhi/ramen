@@ -9,9 +9,11 @@
 #'   [ConsortiumMetabolismAlignment] object.
 #' @param ... Additional arguments passed to methods.
 #'
-#' @return A character vector of species names, or a
-#'   tibble with species and pathway counts (for
-#'   [ConsortiumMetabolismSet]).
+#' @return For [ConsortiumMetabolism] and
+#'   [ConsortiumMetabolismAlignment], a character vector
+#'   of species names. For [ConsortiumMetabolismSet], a
+#'   tibble with columns \code{species} and
+#'   \code{n_pathways}.
 #'
 #' @examples
 #' cm <- synCM("test", n_species = 3, max_met = 5)

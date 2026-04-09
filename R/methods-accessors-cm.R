@@ -32,7 +32,6 @@ setMethod("metabolites", "ConsortiumMetabolism", function(object) {
 
 #' @describeIn species Return Species in a Microbiome
 #' @param object a \code{ConsortiumMetabolism} object
-#' @return A character vector representing the microorganisms.
 setMethod("species", "ConsortiumMetabolism", function(object) {
     unique(object@InputData$species)
 })
