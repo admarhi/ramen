@@ -43,8 +43,20 @@ than comparing communities by species composition, `ramen` asks:
 *which metabolite-to-metabolite pathways does each community
 catalyse, and how similar are the resulting networks?*
 
+## Key concept: pathways
+
+Throughout `ramen`, a **pathway** is a directed edge from one
+metabolite to another: "metabolite A is consumed and metabolite B
+is produced by at least one species." This is *not* a biochemical
+pathway in the KEGG or MetaCyc sense (e.g. glycolysis). Rather, it
+captures a single metabolic exchange coupling within the community.
+A consortium's full set of pathways forms a square
+metabolite-by-metabolite network that encodes its collective
+metabolic capability.
+
+## Package classes
+
 The package provides three S4 classes that build on Bioconductor's
-`TreeSummarizedExperiment`:
 `r BiocStyle::Biocpkg("TreeSummarizedExperiment")`:
 
 - **`ConsortiumMetabolism`** (CM) -- a single community's metabolic

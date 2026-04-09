@@ -20,21 +20,73 @@ knitr::opts_chunk$set(
 [![Codecov test coverage](https://codecov.io/gh/admarhi/ramen/branch/main/graph/badge.svg)](https://codecov.io/gh/admarhi/ramen?branch=main)
 <!-- badges: end -->
 
+**ramen** (**R**econstruction and **A**lignment of **M**icrobial
+**E**xchange **N**etworks) compares microbial communities by their
+metabolic exchange networks rather than by species composition. Given
+species-metabolite-flux data (e.g. from community flux balance
+analysis), ramen reconstructs directed metabolite-to-metabolite
+networks and quantifies how functionally similar different communities
+are -- even when they share no species at all.
+
+## Quick start
+
+```{r quick-start, message = FALSE}
+library(ramen)
+data("misosoup24")
+
+## Build two consortium objects
+cm1 <- ConsortiumMetabolism(
+    misosoup24[[1]], name = names(misosoup24)[1],
+    species_col = "species",
+    metabolite_col = "metabolites",
+    flux_col = "fluxes"
+)
+cm2 <- ConsortiumMetabolism(
+    misosoup24[[2]], name = names(misosoup24)[2],
+    species_col = "species",
+    metabolite_col = "metabolites",
+    flux_col = "fluxes"
+)
+
+## Align them
+cma <- align(cm1, cm2)
+scores(cma)
+```
+
+For the full workflow -- from data import through alignment,
+functional groups, and visualization -- see
+`vignette("ramen", package = "ramen")`.
 
 ## Installation
 
-You can install the development version of `ramen` from github using the `pak` or the `devtools` package.
+Install the development version from GitHub:
 
-```{r, eval = FALSE}
+```{r install, eval = FALSE}
 pak::pkg_install("admarhi/ramen")
 # or
 devtools::install_github("admarhi/ramen")
 ```
 
+## Core workflow
 
-## Conventions
-*ramen* development was conducted using the [Bioconductor style guide](https://contributions.bioconductor.org/r-code.html#r-code).
+1. **Import** species-metabolite-flux data (from MiSoSoup YAML,
+   CSV, or any data.frame)
+2. **Build** `ConsortiumMetabolism` objects (one per community)
+3. **Group** them into a `ConsortiumMetabolismSet` (computes
+   pairwise overlap and clustering)
+4. **Align** communities pairwise or across the full set using
+   five complementary metrics (FOS, Jaccard, Bray-Curtis,
+   Redundancy Overlap, MAAS)
+5. **Visualise** with heatmaps, network plots, dendrograms, and
+   functional group analyses
 
+All three classes inherit from Bioconductor's
+`TreeSummarizedExperiment`, so standard accessor functions
+(`assay()`, `colData()`, `dim()`, etc.) work out of the box.
 
-## Experiments
-Three vignettes cover examplary \textit{ramen} use cases performed on publicly available datasets. Their primary purpose is to validate the functionality of the employed algorithms and it has to be considered that both datasets used are derived from emerging computational methods, whose quality is expected to improve as the field advances. Consequently, these findings should be viewed as validation of a novel computational approach that will reach its full potential with the availability of more diverse and accurate data on the metabolisms of microbial consortia.
+## Vignettes
+
+- `vignette("ramen")` -- full introduction and analysis pipeline
+- `vignette("alignment")` -- alignment metrics, coverage ratios,
+  and permutation p-values
+- `vignette("visualisation")` -- gallery of all plot types
