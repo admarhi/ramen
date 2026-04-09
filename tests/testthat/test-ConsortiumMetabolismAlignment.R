@@ -227,3 +227,77 @@ test_that("pathways(type='shared', verbose=TRUE) returns full data", {
     expect_true(ncol(sp_verbose) >= ncol(sp_concise))
     expect_true("querySpecies" %in% names(sp_verbose))
 })
+
+## ---- B1: species(CMA) returns only species, not flux values ----------------
+
+test_that("species(CMA) returns only species names, not flux values", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 10)
+    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 20)
+    cma <- align(cm1, cm2)
+    sp <- species(cma)
+    expect_type(sp, "character")
+    all_sp <- union(species(cm1), species(cm2))
+    expect_true(all(sp %in% all_sp))
+    expect_false(any(grepl("^[0-9]", sp)))
+})
+
+test_that("species(CMA) returns sorted unique character vector", {
+    cm1 <- synCM("a", n_species = 4, max_met = 6, seed = 42)
+    cm2 <- synCM("b", n_species = 4, max_met = 6, seed = 43)
+    cma <- align(cm1, cm2)
+    sp <- species(cma)
+    expect_type(sp, "character")
+    expect_equal(sp, sort(unique(sp)))
+})
+
+## ---- B3: similarityMatrix/prevalence on empty CMA --------------------------
+
+test_that("similarityMatrix errors cleanly on empty CMA", {
+    cma <- ConsortiumMetabolismAlignment()
+    expect_error(similarityMatrix(cma), "multiple")
+})
+
+test_that("prevalence errors cleanly on empty CMA", {
+    cma <- ConsortiumMetabolismAlignment()
+    expect_error(prevalence(cma), "multiple")
+})
+
+## ---- B4: scores() includes MAAS composite and p-value ----------------------
+
+test_that("scores() includes MAAS when method is MAAS", {
+    cm1 <- synCM("a", n_species = 5, max_met = 8, seed = 42)
+    cm2 <- synCM("b", n_species = 5, max_met = 8, seed = 43)
+    cma <- align(cm1, cm2, method = "MAAS")
+    s <- scores(cma)
+    expect_true("MAAS" %in% names(s))
+    expect_equal(s$MAAS, cma@PrimaryScore)
+})
+
+test_that("scores() does not include MAAS for FOS method", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
+    cma <- align(cm1, cm2, method = "FOS")
+    s <- scores(cma)
+    expect_false("MAAS" %in% names(s))
+})
+
+test_that("scores() includes pvalue when computed", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 42)
+    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 43)
+    cma <- align(
+        cm1, cm2,
+        computePvalue = TRUE,
+        nPermutations = 49L
+    )
+    s <- scores(cma)
+    expect_true("pvalue" %in% names(s))
+    expect_true(s$pvalue >= 0 && s$pvalue <= 1)
+})
+
+test_that("scores() omits pvalue when not computed", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
+    cma <- align(cm1, cm2)
+    s <- scores(cma)
+    expect_false("pvalue" %in% names(s))
+})

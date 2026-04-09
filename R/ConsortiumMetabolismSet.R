@@ -86,6 +86,13 @@ ConsortiumMetabolismSet <- function(
         \(x) x@Name,
         character(1L)
     )
+    dupes <- cm_names[duplicated(cm_names)]
+    if (length(dupes) > 0L) {
+        cli::cli_abort(
+            "Consortium names must be unique. \\
+            Duplicate{?s}: {.val {unique(dupes)}}."
+        )
+    }
 
     ## ---- 2. Collect metabolites -------------------------------
     cli::cli_progress_step(

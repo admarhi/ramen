@@ -347,6 +347,7 @@ setMethod(
         numeric(1L)
     )
     vals <- vals[!is.na(vals)]
+    vals <- vals[!names(vals) %in% c("nPairs", "sd")]
 
     if (length(vals) == 0L) {
         cli::cli_abort("No scores available to plot.")

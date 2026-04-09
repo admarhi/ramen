@@ -186,3 +186,73 @@ test_that("single-consortium CMS can be created", {
     expect_s4_class(cms, "ConsortiumMetabolismSet")
     expect_equal(length(cms@Consortia), 1L)
 })
+
+## ---- B5: Duplicate consortium names error ----------------------------------
+
+test_that("CMS constructor errors on duplicate consortium names", {
+    cm1 <- synCM("same_name", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("same_name", n_species = 3, max_met = 5, seed = 2)
+    expect_error(
+        ConsortiumMetabolismSet(cm1, cm2, name = "test"),
+        "unique"
+    )
+})
+
+test_that("CMS constructor accepts unique consortium names", {
+    cm1 <- synCM("name_a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("name_b", n_species = 3, max_met = 5, seed = 2)
+    expect_no_error(
+        ConsortiumMetabolismSet(cm1, cm2, name = "test")
+    )
+})
+
+## ---- B6: core pathway quantile uses actual distribution --------------------
+
+test_that("pathways(cms, type='core') uses actual species distribution", {
+    cm1 <- synCM("a", n_species = 4, max_met = 5, seed = 10)
+    cm2 <- synCM("b", n_species = 4, max_met = 5, seed = 20)
+    cm3 <- synCM("c", n_species = 4, max_met = 5, seed = 30)
+    cms <- ConsortiumMetabolismSet(
+        list(cm1, cm2, cm3),
+        name = "test"
+    )
+    all_pw <- pathways(cms, type = "all")
+    core_pw <- pathways(cms, type = "core")
+    if (nrow(core_pw) > 0L) {
+        quant <- stats::quantile(
+            all_pw$n_species,
+            p = 0.9
+        )
+        expect_true(all(core_pw$n_species > quant))
+    }
+})
+
+## ---- consortia() method for CMS -------------------------------------------
+
+test_that("consortia(cms) returns list of CM objects", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
+    cms <- ConsortiumMetabolismSet(
+        list(cm1, cm2),
+        name = "test"
+    )
+    result <- consortia(cms)
+    expect_type(result, "list")
+    expect_length(result, 2L)
+    expect_s4_class(result[[1L]], "ConsortiumMetabolism")
+    expect_s4_class(result[[2L]], "ConsortiumMetabolism")
+})
+
+test_that("consortia(cms) names match consortium names", {
+    cm1 <- synCM("alpha", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("beta", n_species = 3, max_met = 5, seed = 2)
+    cms <- ConsortiumMetabolismSet(
+        list(cm1, cm2),
+        name = "test"
+    )
+    result <- consortia(cms)
+    expect_equal(
+        vapply(result, name, character(1L)),
+        c("alpha", "beta")
+    )
+})

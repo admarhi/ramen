@@ -85,7 +85,7 @@ setMethod(
                 dplyr::arrange(.data$n_cons)
         } else if (type == "core") {
             quant <- stats::quantile(
-                2:total_species,
+                pathway_summary$n_species,
                 p = 1 - quantileCutoff
             )
             dplyr::filter(
@@ -97,7 +97,7 @@ setMethod(
                 )
         } else if (type == "aux") {
             quant <- stats::quantile(
-                seq_len(total_species),
+                pathway_summary$n_species,
                 p = quantileCutoff
             )
             dplyr::filter(
@@ -154,6 +154,18 @@ setMethod("metabolites", "ConsortiumMetabolismSet", function(object) {
         unique() |>
         sort()
 })
+
+#' @describeIn consortia Get the list of
+#'   \code{ConsortiumMetabolism} objects from a
+#'   \code{ConsortiumMetabolismSet}
+#' @param object A \code{ConsortiumMetabolismSet} object.
+#' @return A named list of \code{ConsortiumMetabolism} objects.
+#' @export
+setMethod(
+    "consortia",
+    "ConsortiumMetabolismSet",
+    function(object) object@Consortia
+)
 
 #' @describeIn species Return Species in a Microbiome
 #' @param object a \code{ConsortiumMetabolismSet} Object

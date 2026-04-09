@@ -155,7 +155,7 @@
     if (total == 0) {
         return(0)
     }
-    1 - (numerator / total)
+    max(0, 1 - (numerator / total))
 }
 
 #' Redundancy Overlap

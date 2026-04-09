@@ -304,6 +304,30 @@ test_that("brayCurtis of disjoint is 0", {
     expect_equal(result, 0)
 })
 
+## ---- B7: Bray-Curtis non-negative for disjoint CMs ------------------------
+
+test_that("brayCurtis is exactly 0, not negative, for disjoint matrices", {
+    xW <- list(
+        Consumption = Matrix::sparseMatrix(
+            i = 1, j = 1, x = 2.5, dims = c(3, 3)
+        ),
+        Production = Matrix::sparseMatrix(
+            i = 1, j = 2, x = 1.5, dims = c(3, 3)
+        )
+    )
+    yW <- list(
+        Consumption = Matrix::sparseMatrix(
+            i = 3, j = 3, x = 3.0, dims = c(3, 3)
+        ),
+        Production = Matrix::sparseMatrix(
+            i = 3, j = 2, x = 2.0, dims = c(3, 3)
+        )
+    )
+    result <- .brayCurtisSimilarity(xW, yW)
+    expect_equal(result, 0)
+    expect_true(result >= 0)
+})
+
 ## ---- Unit tests: .computeMAAS() --------------------------------------------
 
 test_that("MAAS with default weights", {

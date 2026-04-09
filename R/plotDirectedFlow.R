@@ -144,6 +144,8 @@ plotDirectedFlow <- function(
         ))(
             edge_color_scaled
         )
+    } else if (!is.null(igraph::E(g)$color)) {
+        edge_colors <- igraph::E(g)$color
     } else {
         edge_colors <- rep("gray50", igraph::ecount(g))
     }

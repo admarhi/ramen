@@ -9,7 +9,20 @@ NULL
 setMethod(
     "scores",
     "ConsortiumMetabolismAlignment",
-    function(object) object@Scores
+    function(object) {
+        s <- object@Scores
+        if (
+            !is.na(object@Metric) &&
+            object@Metric == "MAAS" &&
+            !is.na(object@PrimaryScore)
+        ) {
+            s$MAAS <- object@PrimaryScore
+        }
+        if (!is.na(object@Pvalue)) {
+            s$pvalue <- object@Pvalue
+        }
+        s
+    }
 )
 
 
@@ -20,7 +33,7 @@ setMethod(
     "similarityMatrix",
     "ConsortiumMetabolismAlignment",
     function(object) {
-        if (object@Type != "multiple") {
+        if (is.na(object@Type) || object@Type != "multiple") {
             cli::cli_abort(
                 "{.fun similarityMatrix} is only \\
                 available for multiple alignments."
@@ -37,7 +50,7 @@ setMethod(
     "prevalence",
     "ConsortiumMetabolismAlignment",
     function(object) {
-        if (object@Type != "multiple") {
+        if (is.na(object@Type) || object@Type != "multiple") {
             cli::cli_abort(
                 "{.fun prevalence} is only \\
                 available for multiple alignments."
@@ -161,12 +174,14 @@ setMethod(
     function(object) {
         if (object@Type == "pairwise") {
             sp <- unique(c(
-                unlist(
-                    object@SharedPathways$querySpecies
-                ),
-                unlist(
-                    object@SharedPathways$referenceSpecies
-                )
+                unlist(lapply(
+                    object@SharedPathways$querySpecies,
+                    `[[`, "species"
+                )),
+                unlist(lapply(
+                    object@SharedPathways$referenceSpecies,
+                    `[[`, "species"
+                ))
             ))
             return(sort(sp[!is.na(sp)]))
         }
