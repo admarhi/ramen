@@ -1,4 +1,4 @@
-metabolites,species,fluxes
+metabolite,species,flux
 LalaDgluMdap,A1R12,-0.0130011197960634
 LalaDgluMdap,C2R02,0.0130011197960634
 ac,A1R12,10.2790207826765

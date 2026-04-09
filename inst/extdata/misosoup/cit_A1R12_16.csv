@@ -1,4 +1,4 @@
-metabolites,species,fluxes
+metabolite,species,flux
 LalaDgluMdapDala,A1R12,0.0625215281932543
 LalaDgluMdapDala,D2M19,-0.0625215281932543
 ac,A1R12,6.46812904342073

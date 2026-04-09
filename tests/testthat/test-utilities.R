@@ -139,7 +139,7 @@ test_that("synCM cm=FALSE returns tibble", {
 test_that("name<- works for ConsortiumMetabolism", {
     test_data <- tibble::tibble(
         species = c("s1", "s1"),
-        met = c("m1", "m2"),
+        metabolite = c("m1", "m2"),
         flux = c(-1, 1)
     )
 
@@ -152,7 +152,7 @@ test_that("name<- works for ConsortiumMetabolism", {
 test_that("description<- works for ConsortiumMetabolism", {
     test_data <- tibble::tibble(
         species = c("s1", "s1"),
-        met = c("m1", "m2"),
+        metabolite = c("m1", "m2"),
         flux = c(-1, 1)
     )
 
@@ -166,7 +166,7 @@ test_that("description<- works for ConsortiumMetabolism", {
 test_that("consortia returns consortium data", {
     test_data <- tibble::tibble(
         species = c("s1", "s1", "s2", "s2"),
-        met = c("m1", "m2", "m1", "m3"),
+        metabolite = c("m1", "m2", "m1", "m3"),
         flux = c(-1, 1, -1, 1)
     )
 

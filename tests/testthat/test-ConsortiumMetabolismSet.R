@@ -2,13 +2,13 @@ test_that("ConsortiumMetabolismSet constructor works", {
     # Create two test consortia
     data1 <- tibble::tibble(
         species = c("s1", "s1", "s2", "s2"),
-        met = c("m1", "m2", "m1", "m3"),
+        metabolite = c("m1", "m2", "m1", "m3"),
         flux = c(-1, 1, -1, 1)
     )
 
     data2 <- tibble::tibble(
         species = c("s3", "s3", "s4", "s4"),
-        met = c("m1", "m2", "m1", "m4"),
+        metabolite = c("m1", "m2", "m1", "m4"),
         flux = c(-1, 1, -1, 1)
     )
 
@@ -29,13 +29,13 @@ test_that("ConsortiumMetabolismSet species works", {
     # Create test consortia with overlapping species
     data1 <- tibble::tibble(
         species = c("s1", "s1", "s2", "s2"),
-        met = c("m1", "m2", "m1", "m3"),
+        metabolite = c("m1", "m2", "m1", "m3"),
         flux = c(-1, 1, -1, 1)
     )
 
     data2 <- tibble::tibble(
         species = c("s2", "s2", "s3", "s3"),
-        met = c("m1", "m2", "m1", "m4"),
+        metabolite = c("m1", "m2", "m1", "m4"),
         flux = c(-1, 1, -1, 1)
     )
 
@@ -54,13 +54,13 @@ test_that("ConsortiumMetabolismSet species works", {
 test_that("CMS pathways returns concise output by default", {
     data1 <- tibble::tibble(
         species = c("s1", "s1", "s2", "s2"),
-        met = c("m1", "m2", "m1", "m3"),
+        metabolite = c("m1", "m2", "m1", "m3"),
         flux = c(-1, 1, -1, 1)
     )
 
     data2 <- tibble::tibble(
         species = c("s1", "s1", "s3", "s3"),
-        met = c("m1", "m2", "m2", "m4"),
+        metabolite = c("m1", "m2", "m2", "m4"),
         flux = c(-1, 1, -1, 1)
     )
 
@@ -80,13 +80,13 @@ test_that("CMS pathways returns concise output by default", {
 test_that("CMS pathways verbose returns full detail", {
     data1 <- tibble::tibble(
         species = c("s1", "s1", "s2", "s2"),
-        met = c("m1", "m2", "m1", "m3"),
+        metabolite = c("m1", "m2", "m1", "m3"),
         flux = c(-1, 1, -1, 1)
     )
 
     data2 <- tibble::tibble(
         species = c("s1", "s1", "s3", "s3"),
-        met = c("m1", "m2", "m2", "m4"),
+        metabolite = c("m1", "m2", "m2", "m4"),
         flux = c(-1, 1, -1, 1)
     )
 
@@ -105,13 +105,13 @@ test_that("CMS pathways verbose returns full detail", {
 test_that("CMS pathways type filtering works", {
     data1 <- tibble::tibble(
         species = c("s1", "s1", "s2", "s2"),
-        met = c("m1", "m2", "m1", "m3"),
+        metabolite = c("m1", "m2", "m1", "m3"),
         flux = c(-1, 1, -1, 1)
     )
 
     data2 <- tibble::tibble(
         species = c("s1", "s1", "s3", "s3"),
-        met = c("m1", "m2", "m2", "m4"),
+        metabolite = c("m1", "m2", "m2", "m4"),
         flux = c(-1, 1, -1, 1)
     )
 
@@ -130,7 +130,7 @@ test_that("CMS pathways type filtering works", {
 test_that("name<- and description<- work for ConsortiumMetabolismSet", {
     data1 <- tibble::tibble(
         species = c("s1", "s1"),
-        met = c("m1", "m2"),
+        metabolite = c("m1", "m2"),
         flux = c(-1, 1)
     )
 

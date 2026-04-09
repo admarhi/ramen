@@ -24,7 +24,7 @@
 #' @param species_col Character scalar for the species column
 #'   name, defaults to \code{"species"}.
 #' @param metabolite_col Character scalar for the metabolite
-#'   column name, defaults to \code{"met"}.
+#'   column name, defaults to \code{"metabolite"}.
 #' @param flux_col Character scalar for the flux column name,
 #'   defaults to \code{"flux"}.
 #' @param ... Additional arguments passed to the constructor.
@@ -46,7 +46,7 @@ ConsortiumMetabolism <- function(
     data,
     name = NA_character_,
     species_col = "species",
-    metabolite_col = "met",
+    metabolite_col = "metabolite",
     flux_col = "flux",
     ...
 ) {

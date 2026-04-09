@@ -2,7 +2,7 @@ test_that("ConsortiumMetabolism constructor works with basic data", {
     # Create simple test data
     test_data <- tibble::tibble(
         species = c("s1", "s1", "s2", "s2"),
-        met = c("m1", "m2", "m1", "m3"),
+        metabolite = c("m1", "m2", "m1", "m3"),
         flux = c(-1, 1, -1, 1)
     )
 
@@ -20,7 +20,7 @@ test_that("ConsortiumMetabolism handles weighted vs unweighted networks", {
     # Unweighted data (all fluxes = 1)
     unweighted_data <- tibble::tibble(
         species = c("s1", "s1", "s2", "s2"),
-        met = c("m1", "m2", "m1", "m3"),
+        metabolite = c("m1", "m2", "m1", "m3"),
         flux = c(-1, 1, -1, 1)
     )
 
@@ -30,7 +30,7 @@ test_that("ConsortiumMetabolism handles weighted vs unweighted networks", {
     # Weighted data (varying fluxes)
     weighted_data <- tibble::tibble(
         species = c("s1", "s1", "s2", "s2"),
-        met = c("m1", "m2", "m1", "m3"),
+        metabolite = c("m1", "m2", "m1", "m3"),
         flux = c(-2, 3, -1.5, 2.5)
     )
 
@@ -41,7 +41,7 @@ test_that("ConsortiumMetabolism handles weighted vs unweighted networks", {
 test_that("species returns correct species", {
     test_data <- tibble::tibble(
         species = c("s1", "s1", "s2", "s2", "s3", "s3"),
-        met = c("m1", "m2", "m1", "m3", "m2", "m4"),
+        metabolite = c("m1", "m2", "m1", "m3", "m2", "m4"),
         flux = c(-1, 1, -1, 1, -1, 1)
     )
 
@@ -56,7 +56,7 @@ test_that("species returns correct species", {
 test_that("metabolites returns metabolites", {
     test_data <- tibble::tibble(
         species = c("s1", "s1", "s2", "s2"),
-        met = c("m1", "m2", "m1", "m3"),
+        metabolite = c("m1", "m2", "m1", "m3"),
         flux = c(-1, 1, -1, 1)
     )
 
@@ -70,7 +70,7 @@ test_that("metabolites returns metabolites", {
 test_that("pathways returns concise output by default", {
     test_data <- tibble::tibble(
         species = c("s1", "s1", "s2", "s2"),
-        met = c("m1", "m2", "m1", "m3"),
+        metabolite = c("m1", "m2", "m1", "m3"),
         flux = c(-1, 1, -1, 1)
     )
 
@@ -85,7 +85,7 @@ test_that("pathways returns concise output by default", {
 test_that("pathways verbose returns full detail", {
     test_data <- tibble::tibble(
         species = c("s1", "s1", "s2", "s2"),
-        met = c("m1", "m2", "m1", "m3"),
+        metabolite = c("m1", "m2", "m1", "m3"),
         flux = c(-1, 1, -1, 1)
     )
 

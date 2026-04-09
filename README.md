@@ -26,16 +26,10 @@ data("misosoup24")
 
 ## Build two consortium objects
 cm1 <- ConsortiumMetabolism(
-    misosoup24[[1]], name = names(misosoup24)[1],
-    species_col = "species",
-    metabolite_col = "metabolites",
-    flux_col = "fluxes"
+    misosoup24[[1]], name = names(misosoup24)[1]
 )
 cm2 <- ConsortiumMetabolism(
-    misosoup24[[2]], name = names(misosoup24)[2],
-    species_col = "species",
-    metabolite_col = "metabolites",
-    flux_col = "fluxes"
+    misosoup24[[2]], name = names(misosoup24)[2]
 )
 
 ## Align them

@@ -11,7 +11,7 @@ ConsortiumMetabolism(
   data,
   name = NA_character_,
   species_col = "species",
-  metabolite_col = "met",
+  metabolite_col = "metabolite",
   flux_col = "flux",
   ...
 )
@@ -27,7 +27,7 @@ and fluxes. Fluxes can be weighted or unweighted (magnitude
 name, defaults to \code{"species"}.}
 
 \item{metabolite_col}{Character scalar for the metabolite
-column name, defaults to \code{"met"}.}
+column name, defaults to \code{"metabolite"}.}
 
 \item{flux_col}{Character scalar for the flux column name,
 defaults to \code{"flux"}.}

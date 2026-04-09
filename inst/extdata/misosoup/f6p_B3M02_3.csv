@@ -1,4 +1,4 @@
-metabolites,species,fluxes
+metabolite,species,flux
 ac,B3M02,-0.0226290077710019
 ac,G2R10,0.0226290077710019
 acald,B3M02,-0.512334227332047

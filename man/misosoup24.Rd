@@ -7,10 +7,15 @@
 \format{
 A list of 56 tibbles, each with columns:
 \describe{
-\item{species}{Microorganisms}
-\item{metabolites}{Metabolites}
-\item{fluxes}{Fluxes of the metabolite}
+\item{species}{Character, species identifier.}
+\item{metabolite}{Character, metabolite name (BiGG
+identifiers).}
+\item{flux}{Numeric, metabolic flux (negative for
+consumption, positive for production).}
 }
+}
+\value{
+A list of 56 tibbles.
 }
 \description{
 List of 56 solutions from MiSoSoup for different focal

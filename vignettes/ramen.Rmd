@@ -107,8 +107,8 @@ names(result) # "consortia", "media", "growth"
 ## Alternative input formats
 
 The `ConsortiumMetabolism()` constructor accepts any data.frame with
-columns for species, metabolite, and flux. Custom column names are
-specified via `species_col`, `metabolite_col`, and `flux_col`.
+columns `species`, `metabolite`, and `flux`. Custom column names can
+be specified via `species_col`, `metabolite_col`, and `flux_col`.
 
 If your data is in wide format with separate columns for consumed
 and produced metabolites, `pivotCM()` converts it to the long
@@ -139,10 +139,7 @@ head(long_data)
 ```{r build-cm}
 cm1 <- ConsortiumMetabolism(
     misosoup24[[1]],
-    name = names(misosoup24)[1],
-    species_col = "species",
-    metabolite_col = "metabolites",
-    flux_col = "fluxes"
+    name = names(misosoup24)[1]
 )
 cm1
 ```
@@ -220,10 +217,7 @@ and builds a hierarchical clustering dendrogram.
 cm_list <- lapply(seq_len(20), function(i) {
     ConsortiumMetabolism(
         misosoup24[[i]],
-        name = names(misosoup24)[i],
-        species_col = "species",
-        metabolite_col = "metabolites",
-        flux_col = "fluxes"
+        name = names(misosoup24)[i]
     )
 })
 

@@ -142,7 +142,7 @@ test_that("align handles single-edge CMs", {
     cm1 <- ConsortiumMetabolism(
         data = tibble::tibble(
             species = c("sp1", "sp1"),
-            met = c("A", "B"),
+            metabolite = c("A", "B"),
             flux = c(-1, 1)
         ),
         name = "single1"
@@ -150,7 +150,7 @@ test_that("align handles single-edge CMs", {
     cm2 <- ConsortiumMetabolism(
         data = tibble::tibble(
             species = c("sp2", "sp2"),
-            met = c("A", "B"),
+            metabolite = c("A", "B"),
             flux = c(-1, 1)
         ),
         name = "single2"

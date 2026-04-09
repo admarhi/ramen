@@ -384,7 +384,7 @@ synCM <- function(
     ConsortiumMetabolism(
         data = tibble::tibble(
             species = community$species,
-            met = community$metabolites,
+            metabolite = community$metabolites,
             flux = community$fluxes
         ),
         name = name

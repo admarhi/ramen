@@ -8,11 +8,15 @@
 #' @aliases misosoup24
 #' @docType data
 #'
+#' @return A list of 56 tibbles.
+#'
 #' @format A list of 56 tibbles, each with columns:
 #' \describe{
-#'  \item{species}{Microorganisms}
-#'  \item{metabolites}{Metabolites}
-#'  \item{fluxes}{Fluxes of the metabolite}
+#'  \item{species}{Character, species identifier.}
+#'  \item{metabolite}{Character, metabolite name (BiGG
+#'    identifiers).}
+#'  \item{flux}{Numeric, metabolic flux (negative for
+#'    consumption, positive for production).}
 #' }
 #'
 #' @examples

@@ -1,4 +1,4 @@
-metabolites,species,fluxes
+metabolite,species,flux
 ac,A1R12,0.77292503294143
 ac,I2R16,-0.77292503294143
 acald,A1R12,1.19331886634245

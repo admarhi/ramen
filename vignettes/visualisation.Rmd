@@ -39,10 +39,7 @@ data("misosoup24")
 cm_list <- lapply(seq_len(6), function(i) {
     ConsortiumMetabolism(
         misosoup24[[i]],
-        name = names(misosoup24)[i],
-        species_col = "species",
-        metabolite_col = "metabolites",
-        flux_col = "fluxes"
+        name = names(misosoup24)[i]
     )
 })
 
