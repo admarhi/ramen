@@ -16,11 +16,15 @@ setMethod("show", "ConsortiumMetabolism", function(object) {
         "Unweighted"
     }
     n_met <- length(object@Metabolites)
+    n_sp <- length(unique(object@InputData$species))
+    n_pw <- nrow(object@Pathways)
     cli::cli_h3("ConsortiumMetabolism")
     cli::cli_text("Name: {.val {object@Name}}")
     cli::cli_text(
-        "{weight_label} metabolic network with ",
-        "{.val {n_met}} metabolites."
+        "{weight_label} metabolic network: ",
+        "{.val {n_sp}} species, ",
+        "{.val {n_met}} metabolites, ",
+        "{.val {n_pw}} pathways."
     )
     invisible(object)
 })
@@ -37,14 +41,22 @@ setMethod("show", "ConsortiumMetabolism", function(object) {
 #' @export
 setMethod("show", "ConsortiumMetabolismSet", function(object) {
     n_cons <- length(object@Consortia)
+    n_sp <- dplyr::n_distinct(object@Pathways$species)
+    n_met <- length(unique(
+        c(object@Pathways$consumed, object@Pathways$produced)
+    ))
     cli::cli_h3("ConsortiumMetabolismSet")
     cli::cli_text("Name: {.val {object@Name}}")
     cli::cli_text(
-        "Containing {.val {n_cons}} consortia."
+        "{.val {n_cons}} consortia, ",
+        "{.val {n_sp}} species, ",
+        "{.val {n_met}} metabolites."
     )
-    cli::cli_text(
-        "Description: {.val {object@Description}}"
-    )
+    if (!is.na(object@Description)) {
+        cli::cli_text(
+            "Description: {.val {object@Description}}"
+        )
+    }
     invisible(object)
 })
 

@@ -99,6 +99,17 @@ test_that("pathways verbose returns full detail", {
     expect_true("data" %in% names(pw))
 })
 
+test_that("CM constructor errors on non-data.frame input", {
+    expect_error(
+        ConsortiumMetabolism("not a df", name = "x"),
+        "must be a data.frame"
+    )
+    expect_error(
+        ConsortiumMetabolism(list(a = 1), name = "x"),
+        "must be a data.frame"
+    )
+})
+
 test_that("synCM generates synthetic communities", {
     # Test synthetic community generation
     syn <- synCM(name = "synthetic", n_species = 5, max_met = 10)

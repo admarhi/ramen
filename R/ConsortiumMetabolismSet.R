@@ -33,6 +33,8 @@
 #'   argument. Defaults to \code{"complete"}, which produces
 #'   compact clusters where every pair of consortia within a
 #'   cluster has dissimilarity below the merge threshold.
+#' @param verbose Logical scalar. If \code{TRUE} (default),
+#'   prints progress messages during construction.
 #'
 #' @return A \code{ConsortiumMetabolismSet} object.
 #'
@@ -51,10 +53,11 @@ ConsortiumMetabolismSet <- function(
     ...,
     name = NA_character_,
     desc = NA_character_,
-    linkage = "complete"
+    linkage = "complete",
+    verbose = TRUE
 ) {
     t_start <- proc.time()[["elapsed"]]
-    cli::cli_h1("Creating CMS {.val {name}}")
+    if (verbose) cli::cli_h1("Creating CMS {.val {name}}")
 
     ## ---- 1. Validate arguments --------------------------------
     linkage <- match.arg(
@@ -64,7 +67,7 @@ ConsortiumMetabolismSet <- function(
     args <- list(...)
     cons <- unlist(args, recursive = FALSE, use.names = FALSE)
     n_cons <- length(cons)
-    cli::cli_progress_step(
+    if (verbose) cli::cli_progress_step(
         "Validating {.val {n_cons}} \\
         {.cls ConsortiumMetabolism} object{?s}"
     )
@@ -95,7 +98,7 @@ ConsortiumMetabolismSet <- function(
     }
 
     ## ---- 2. Collect metabolites -------------------------------
-    cli::cli_progress_step(
+    if (verbose) cli::cli_progress_step(
         "Collecting metabolites from \\
         {.val {n_cons}} consortia"
     )
@@ -118,7 +121,7 @@ ConsortiumMetabolismSet <- function(
     universal_mets <- new_met_ind$met
     n_mets <- length(universal_mets)
 
-    cli::cli_progress_step(
+    if (verbose) cli::cli_progress_step(
         "Re-indexing {.val {n_mets}} unique metabolites"
     )
     all_met <- all_met |>
@@ -131,7 +134,7 @@ ConsortiumMetabolismSet <- function(
         dplyr::arrange(.data$met_ind)
 
     ## ---- 4. Expand binary matrices to universal space ---------
-    cli::cli_progress_step(
+    if (verbose) cli::cli_progress_step(
         "Expanding {.val {n_cons}} binary matrices \\
         to {.val {n_mets}}-dimensional space"
     )
@@ -146,7 +149,7 @@ ConsortiumMetabolismSet <- function(
     )
 
     ## ---- 5. Levels matrix from binary matrices ----------------
-    cli::cli_progress_step(
+    if (verbose) cli::cli_progress_step(
         "Computing {.val {n_mets}} x {.val {n_mets}} \\
         levels matrix"
     )
@@ -154,7 +157,7 @@ ConsortiumMetabolismSet <- function(
 
     ## ---- 6. Pairwise overlap via crossprod --------------------
     n_pairs <- n_cons * (n_cons - 1L) / 2L
-    cli::cli_progress_step(
+    if (verbose) cli::cli_progress_step(
         "Computing pairwise overlap \\
         ({.val {n_pairs}} pairs via crossprod)"
     )
@@ -164,7 +167,7 @@ ConsortiumMetabolismSet <- function(
     )
 
     ## ---- 7. Assemble pathways ---------------------------------
-    cli::cli_progress_step(
+    if (verbose) cli::cli_progress_step(
         "Assembling pathway data from \\
         {.val {n_cons}} consortia"
     )
@@ -191,7 +194,7 @@ ConsortiumMetabolismSet <- function(
 
     ## ---- 8. Dendrogram ----------------------------------------
     if (n_cons >= 2L) {
-        cli::cli_progress_step(
+        if (verbose) cli::cli_progress_step(
             "Building dendrogram from \\
             {.val {n_cons}} x {.val {n_cons}} \\
             dissimilarity matrix"
@@ -201,7 +204,7 @@ ConsortiumMetabolismSet <- function(
             stats::hclust(method = linkage) |>
             stats::as.dendrogram()
 
-        cli::cli_progress_step(
+        if (verbose) cli::cli_progress_step(
             "Extracting dendrogram node positions"
         )
         node_data <- dendextend::get_nodes_xy(dend) |>
@@ -233,7 +236,7 @@ ConsortiumMetabolismSet <- function(
     }
 
     ## ---- 9. Graphs --------------------------------------------
-    cli::cli_progress_step(
+    if (verbose) cli::cli_progress_step(
         "Collecting {.val {n_cons}} consortium graphs"
     )
     graph_list <- stats::setNames(
@@ -246,7 +249,7 @@ ConsortiumMetabolismSet <- function(
         proc.time()[["elapsed"]] - t_start,
         1L
     )
-    cli::cli_inform(
+    if (verbose) cli::cli_inform(
         "CMS {.val {name}} created: \\
         {.val {n_cons}} consortia, \\
         {.val {n_mets}} metabolites ({elapsed}s)"

@@ -133,6 +133,12 @@ ConsortiumMetabolism <- function(
 #' Prepare and validate input data
 #' @noRd
 .prepareInputData <- function(data, species_col, metabolite_col, flux_col) {
+    if (!is.data.frame(data)) {
+        cli::cli_abort(
+            "{.arg data} must be a data.frame, \\
+            not {.cls {class(data)}}."
+        )
+    }
     required <- c(species_col, metabolite_col, flux_col)
     missing_cols <- setdiff(required, names(data))
     if (length(missing_cols) > 0) {
