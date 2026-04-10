@@ -120,7 +120,8 @@ test_that("pathways(type='shared') errors for multiple CMA", {
     )
     cma <- align(cms)
     expect_error(
-        pathways(cma, type = "shared"), "pairwise"
+        pathways(cma, type = "shared"),
+        "pairwise"
     )
 })
 
@@ -133,7 +134,8 @@ test_that("pathways(type='unique') errors for multiple CMA", {
     )
     cma <- align(cms)
     expect_error(
-        pathways(cma, type = "unique"), "pairwise"
+        pathways(cma, type = "unique"),
+        "pairwise"
     )
 })
 
@@ -211,7 +213,8 @@ test_that("pathways(type='consensus') errors for pairwise CMA", {
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cma <- align(cm1, cm2)
     expect_error(
-        pathways(cma, type = "consensus"), "multiple"
+        pathways(cma, type = "consensus"),
+        "multiple"
     )
 })
 
@@ -221,7 +224,9 @@ test_that("pathways(type='shared', verbose=TRUE) returns full data", {
     cma <- align(cm1, cm2)
     sp_concise <- pathways(cma, type = "shared")
     sp_verbose <- pathways(
-        cma, type = "shared", verbose = TRUE
+        cma,
+        type = "shared",
+        verbose = TRUE
     )
     expect_true(is.data.frame(sp_verbose))
     expect_true(ncol(sp_verbose) >= ncol(sp_concise))
@@ -285,7 +290,8 @@ test_that("scores() includes pvalue when computed", {
     cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 42)
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 43)
     cma <- align(
-        cm1, cm2,
+        cm1,
+        cm2,
         computePvalue = TRUE,
         nPermutations = 49L
     )

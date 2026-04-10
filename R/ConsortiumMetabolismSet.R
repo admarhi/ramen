@@ -57,7 +57,9 @@ ConsortiumMetabolismSet <- function(
     verbose = TRUE
 ) {
     t_start <- proc.time()[["elapsed"]]
-    if (verbose) cli::cli_h1("Creating CMS {.val {name}}")
+    if (verbose) {
+        cli::cli_h1("Creating CMS {.val {name}}")
+    }
 
     ## ---- 1. Validate arguments --------------------------------
     linkage <- match.arg(
@@ -67,10 +69,12 @@ ConsortiumMetabolismSet <- function(
     args <- list(...)
     cons <- unlist(args, recursive = FALSE, use.names = FALSE)
     n_cons <- length(cons)
-    if (verbose) cli::cli_progress_step(
-        "Validating {.val {n_cons}} \\
+    if (verbose) {
+        cli::cli_progress_step(
+            "Validating {.val {n_cons}} \\
         {.cls ConsortiumMetabolism} object{?s}"
-    )
+        )
+    }
     if (
         !all(vapply(
             cons,
@@ -98,10 +102,12 @@ ConsortiumMetabolismSet <- function(
     }
 
     ## ---- 2. Collect metabolites -------------------------------
-    if (verbose) cli::cli_progress_step(
-        "Collecting metabolites from \\
+    if (verbose) {
+        cli::cli_progress_step(
+            "Collecting metabolites from \\
         {.val {n_cons}} consortia"
-    )
+        )
+    }
     all_met <- Map(
         \(x, y) dplyr::mutate(x, consortium = y),
         lapply(cons, \(x) {
@@ -121,9 +127,11 @@ ConsortiumMetabolismSet <- function(
     universal_mets <- new_met_ind$met
     n_mets <- length(universal_mets)
 
-    if (verbose) cli::cli_progress_step(
-        "Re-indexing {.val {n_mets}} unique metabolites"
-    )
+    if (verbose) {
+        cli::cli_progress_step(
+            "Re-indexing {.val {n_mets}} unique metabolites"
+        )
+    }
     all_met <- all_met |>
         dplyr::left_join(new_met_ind, by = "met") |>
         dplyr::relocate("met_ind", "met", "consortium") |>
@@ -134,10 +142,12 @@ ConsortiumMetabolismSet <- function(
         dplyr::arrange(.data$met_ind)
 
     ## ---- 4. Expand binary matrices to universal space ---------
-    if (verbose) cli::cli_progress_step(
-        "Expanding {.val {n_cons}} binary matrices \\
+    if (verbose) {
+        cli::cli_progress_step(
+            "Expanding {.val {n_cons}} binary matrices \\
         to {.val {n_mets}}-dimensional space"
-    )
+        )
+    }
     expanded_bm <- stats::setNames(
         lapply(seq_len(n_cons), \(i) {
             .expandMatrix(
@@ -149,28 +159,34 @@ ConsortiumMetabolismSet <- function(
     )
 
     ## ---- 5. Levels matrix from binary matrices ----------------
-    if (verbose) cli::cli_progress_step(
-        "Computing {.val {n_mets}} x {.val {n_mets}} \\
+    if (verbose) {
+        cli::cli_progress_step(
+            "Computing {.val {n_mets}} x {.val {n_mets}} \\
         levels matrix"
-    )
+        )
+    }
     levels_mat <- as.matrix(Reduce(`+`, expanded_bm))
 
     ## ---- 6. Pairwise overlap via crossprod --------------------
     n_pairs <- n_cons * (n_cons - 1L) / 2L
-    if (verbose) cli::cli_progress_step(
-        "Computing pairwise overlap \\
+    if (verbose) {
+        cli::cli_progress_step(
+            "Computing pairwise overlap \\
         ({.val {n_pairs}} pairs via crossprod)"
-    )
+        )
+    }
     overlap_matrix <- .computeFOSMatrix(
         expanded_bm,
         cm_names
     )
 
     ## ---- 7. Assemble pathways ---------------------------------
-    if (verbose) cli::cli_progress_step(
-        "Assembling pathway data from \\
+    if (verbose) {
+        cli::cli_progress_step(
+            "Assembling pathway data from \\
         {.val {n_cons}} consortia"
-    )
+        )
+    }
     all_pathways <-
         lapply(seq_len(n_cons), \(i) {
             dplyr::mutate(
@@ -194,19 +210,23 @@ ConsortiumMetabolismSet <- function(
 
     ## ---- 8. Dendrogram ----------------------------------------
     if (n_cons >= 2L) {
-        if (verbose) cli::cli_progress_step(
-            "Building dendrogram from \\
+        if (verbose) {
+            cli::cli_progress_step(
+                "Building dendrogram from \\
             {.val {n_cons}} x {.val {n_cons}} \\
             dissimilarity matrix"
-        )
+            )
+        }
         dend <-
             stats::dist(overlap_matrix) |>
             stats::hclust(method = linkage) |>
             stats::as.dendrogram()
 
-        if (verbose) cli::cli_progress_step(
-            "Extracting dendrogram node positions"
-        )
+        if (verbose) {
+            cli::cli_progress_step(
+                "Extracting dendrogram node positions"
+            )
+        }
         node_data <- dendextend::get_nodes_xy(dend) |>
             as.data.frame() |>
             tibble::as_tibble() |>
@@ -236,9 +256,11 @@ ConsortiumMetabolismSet <- function(
     }
 
     ## ---- 9. Graphs --------------------------------------------
-    if (verbose) cli::cli_progress_step(
-        "Collecting {.val {n_cons}} consortium graphs"
-    )
+    if (verbose) {
+        cli::cli_progress_step(
+            "Collecting {.val {n_cons}} consortium graphs"
+        )
+    }
     graph_list <- stats::setNames(
         lapply(cons, \(x) x@Graphs[[1L]]),
         cm_names
@@ -249,11 +271,13 @@ ConsortiumMetabolismSet <- function(
         proc.time()[["elapsed"]] - t_start,
         1L
     )
-    if (verbose) cli::cli_inform(
-        "CMS {.val {name}} created: \\
+    if (verbose) {
+        cli::cli_inform(
+            "CMS {.val {name}} created: \\
         {.val {n_cons}} consortia, \\
         {.val {n_mets}} metabolites ({elapsed}s)"
-    )
+        )
+    }
 
     newConsortiumMetabolismSet(
         TreeSummarizedExperiment(

@@ -11,7 +11,8 @@ ConsortiumMetabolismSet(
   ...,
   name = NA_character_,
   desc = NA_character_,
-  linkage = "complete"
+  linkage = "complete",
+  verbose = TRUE
 )
 }
 \arguments{
@@ -28,6 +29,9 @@ Passed to \code{\link[stats]{hclust}} as the \code{method}
 argument. Defaults to \code{"complete"}, which produces
 compact clusters where every pair of consortia within a
 cluster has dissimilarity below the merge threshold.}
+
+\item{verbose}{Logical scalar. If \code{TRUE} (default),
+prints progress messages during construction.}
 }
 \value{
 A \code{ConsortiumMetabolismSet} object.

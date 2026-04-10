@@ -10,6 +10,7 @@
 ConsortiumMetabolism(
   data,
   name = NA_character_,
+  growth = NULL,
   species_col = "species",
   metabolite_col = "metabolite",
   flux_col = "flux",
@@ -22,6 +23,12 @@ and fluxes. Fluxes can be weighted or unweighted (magnitude
 1).}
 
 \item{name}{Character scalar giving the consortium name.}
+
+\item{growth}{Optional named numeric vector of per-species
+growth rates (e.g. FBA objective values). Names must match
+species in \code{data}. Stored in
+\code{metadata(cm)$growth} and retrievable via the
+\code{\link{growth}} accessor.}
 
 \item{species_col}{Character scalar for the species column
 name, defaults to \code{"species"}.}

@@ -162,8 +162,10 @@ test_that("Jaccard known value", {
 
 test_that("coverage of identical matrices is both 1", {
     m <- Matrix::sparseMatrix(
-        i = c(1, 2), j = c(2, 3),
-        x = 1, dims = c(3, 3)
+        i = c(1, 2),
+        j = c(2, 3),
+        x = 1,
+        dims = c(3, 3)
     )
     cov <- .computeCoverage(m, m)
     expect_equal(cov$coverageQuery, 1)
@@ -173,11 +175,16 @@ test_that("coverage of identical matrices is both 1", {
 test_that("coverage detects strict subset", {
     ## query is a subset of reference
     query <- Matrix::sparseMatrix(
-        i = 1, j = 2, x = 1, dims = c(3, 3)
+        i = 1,
+        j = 2,
+        x = 1,
+        dims = c(3, 3)
     )
     ref <- Matrix::sparseMatrix(
-        i = c(1, 2), j = c(2, 3),
-        x = 1, dims = c(3, 3)
+        i = c(1, 2),
+        j = c(2, 3),
+        x = 1,
+        dims = c(3, 3)
     )
     cov <- .computeCoverage(query, ref)
     expect_equal(cov$coverageQuery, 1)
@@ -186,10 +193,16 @@ test_that("coverage detects strict subset", {
 
 test_that("coverage of disjoint matrices is both 0", {
     m1 <- Matrix::sparseMatrix(
-        i = 1, j = 2, x = 1, dims = c(3, 3)
+        i = 1,
+        j = 2,
+        x = 1,
+        dims = c(3, 3)
     )
     m2 <- Matrix::sparseMatrix(
-        i = 2, j = 3, x = 1, dims = c(3, 3)
+        i = 2,
+        j = 3,
+        x = 1,
+        dims = c(3, 3)
     )
     cov <- .computeCoverage(m1, m2)
     expect_equal(cov$coverageQuery, 0)
@@ -198,8 +211,10 @@ test_that("coverage of disjoint matrices is both 0", {
 
 test_that("coverage of empty matrices is both 0", {
     m <- Matrix::sparseMatrix(
-        i = integer(0), j = integer(0),
-        x = numeric(0), dims = c(3, 3)
+        i = integer(0),
+        j = integer(0),
+        x = numeric(0),
+        dims = c(3, 3)
     )
     cov <- .computeCoverage(m, m)
     expect_equal(cov$coverageQuery, 0)
@@ -309,18 +324,30 @@ test_that("brayCurtis of disjoint is 0", {
 test_that("brayCurtis is exactly 0, not negative, for disjoint matrices", {
     xW <- list(
         Consumption = Matrix::sparseMatrix(
-            i = 1, j = 1, x = 2.5, dims = c(3, 3)
+            i = 1,
+            j = 1,
+            x = 2.5,
+            dims = c(3, 3)
         ),
         Production = Matrix::sparseMatrix(
-            i = 1, j = 2, x = 1.5, dims = c(3, 3)
+            i = 1,
+            j = 2,
+            x = 1.5,
+            dims = c(3, 3)
         )
     )
     yW <- list(
         Consumption = Matrix::sparseMatrix(
-            i = 3, j = 3, x = 3.0, dims = c(3, 3)
+            i = 3,
+            j = 3,
+            x = 3.0,
+            dims = c(3, 3)
         ),
         Production = Matrix::sparseMatrix(
-            i = 3, j = 2, x = 2.0, dims = c(3, 3)
+            i = 3,
+            j = 2,
+            x = 2.0,
+            dims = c(3, 3)
         )
     )
     result <- .brayCurtisSimilarity(xW, yW)

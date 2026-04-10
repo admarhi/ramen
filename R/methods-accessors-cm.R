@@ -44,3 +44,10 @@ setMethod("consortia", "ConsortiumMetabolism", function(object) {
     object@InputData |>
         dplyr::select("met", "species", "flux")
 })
+
+#' @rdname growth
+#' @importFrom S4Vectors metadata
+#' @export
+setMethod("growth", "ConsortiumMetabolism", function(object) {
+    metadata(object)$growth
+})

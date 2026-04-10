@@ -116,10 +116,12 @@ test_that("linkage argument changes dendrogram", {
     )
 
     fg_complete <- functionalGroups(
-        cms, linkage = "complete"
+        cms,
+        linkage = "complete"
     )
     fg_average <- functionalGroups(
-        cms, linkage = "average"
+        cms,
+        linkage = "average"
     )
 
     ## Cophenetic distances should differ between methods
@@ -234,7 +236,10 @@ test_that("plotFunctionalGroups errors on list without dendrogram", {
     bad_input <- list(
         similarity_matrix = matrix(1, 2, 2),
         incidence_matrix = Matrix::sparseMatrix(
-            i = 1, j = 1, x = 1, dims = c(2, 2)
+            i = 1,
+            j = 1,
+            x = 1,
+            dims = c(2, 2)
         )
     )
     expect_error(

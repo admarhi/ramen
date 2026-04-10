@@ -13,8 +13,8 @@ setMethod(
         s <- object@Scores
         if (
             !is.na(object@Metric) &&
-            object@Metric == "MAAS" &&
-            !is.na(object@PrimaryScore)
+                object@Metric == "MAAS" &&
+                !is.na(object@PrimaryScore)
         ) {
             s$MAAS <- object@PrimaryScore
         }
@@ -175,11 +175,13 @@ setMethod(
             sp <- unique(c(
                 unlist(lapply(
                     object@SharedPathways$querySpecies,
-                    `[[`, "species"
+                    `[[`,
+                    "species"
                 )),
                 unlist(lapply(
                     object@SharedPathways$referenceSpecies,
-                    `[[`, "species"
+                    `[[`,
+                    "species"
                 ))
             ))
             return(sort(sp[!is.na(sp)]))

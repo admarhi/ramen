@@ -26,6 +26,7 @@ Imports:
     Matrix,
     methods,
     rlang,
+    S4Vectors,
     scales,
     stats,
     SummarizedExperiment,

@@ -110,6 +110,129 @@ test_that("CM constructor errors on non-data.frame input", {
     )
 })
 
+## ---- growth parameter -------------------------------------------------------
+
+test_that("CM constructor accepts growth parameter", {
+    test_data <- tibble::tibble(
+        species = c("s1", "s1", "s2", "s2"),
+        metabolite = c("m1", "m2", "m1", "m3"),
+        flux = c(-1, 1, -1, 1)
+    )
+    gr <- c(s1 = 0.5, s2 = 0.3)
+    cm <- ConsortiumMetabolism(
+        test_data,
+        name = "test",
+        growth = gr
+    )
+    expect_equal(growth(cm), gr)
+})
+
+test_that("growth() returns NULL when no growth supplied", {
+    test_data <- tibble::tibble(
+        species = c("s1", "s1", "s2", "s2"),
+        metabolite = c("m1", "m2", "m1", "m3"),
+        flux = c(-1, 1, -1, 1)
+    )
+    cm <- ConsortiumMetabolism(test_data, name = "test")
+    expect_null(growth(cm))
+})
+
+test_that("growth validation: must be numeric", {
+    test_data <- tibble::tibble(
+        species = c("s1", "s1", "s2", "s2"),
+        metabolite = c("m1", "m2", "m1", "m3"),
+        flux = c(-1, 1, -1, 1)
+    )
+    expect_error(
+        ConsortiumMetabolism(
+            test_data,
+            name = "test",
+            growth = c(s1 = "high", s2 = "low")
+        ),
+        "must be a numeric"
+    )
+})
+
+test_that("growth validation: must be named", {
+    test_data <- tibble::tibble(
+        species = c("s1", "s1", "s2", "s2"),
+        metabolite = c("m1", "m2", "m1", "m3"),
+        flux = c(-1, 1, -1, 1)
+    )
+    expect_error(
+        ConsortiumMetabolism(
+            test_data,
+            name = "test",
+            growth = c(0.5, 0.3)
+        ),
+        "named numeric"
+    )
+})
+
+test_that("growth validation: names must match species", {
+    test_data <- tibble::tibble(
+        species = c("s1", "s1", "s2", "s2"),
+        metabolite = c("m1", "m2", "m1", "m3"),
+        flux = c(-1, 1, -1, 1)
+    )
+    expect_error(
+        ConsortiumMetabolism(
+            test_data,
+            name = "test",
+            growth = c(s1 = 0.5, s99 = 0.3)
+        ),
+        "not found"
+    )
+})
+
+test_that("growth validation: no duplicate names", {
+    test_data <- tibble::tibble(
+        species = c("s1", "s1", "s2", "s2"),
+        metabolite = c("m1", "m2", "m1", "m3"),
+        flux = c(-1, 1, -1, 1)
+    )
+    gr <- c(s1 = 0.5, s1 = 0.3)
+    expect_error(
+        ConsortiumMetabolism(
+            test_data,
+            name = "test",
+            growth = gr
+        ),
+        "duplicate"
+    )
+})
+
+test_that("growth validation: non-negative values", {
+    test_data <- tibble::tibble(
+        species = c("s1", "s1", "s2", "s2"),
+        metabolite = c("m1", "m2", "m1", "m3"),
+        flux = c(-1, 1, -1, 1)
+    )
+    expect_error(
+        ConsortiumMetabolism(
+            test_data,
+            name = "test",
+            growth = c(s1 = 0.5, s2 = -0.1)
+        ),
+        "non-negative"
+    )
+})
+
+test_that("growth accepts subset of species", {
+    test_data <- tibble::tibble(
+        species = c("s1", "s1", "s2", "s2"),
+        metabolite = c("m1", "m2", "m1", "m3"),
+        flux = c(-1, 1, -1, 1)
+    )
+    gr <- c(s1 = 0.5)
+    cm <- ConsortiumMetabolism(
+        test_data,
+        name = "test",
+        growth = gr
+    )
+    expect_equal(growth(cm), gr)
+})
+
 test_that("synCM generates synthetic communities", {
     # Test synthetic community generation
     syn <- synCM(name = "synthetic", n_species = 5, max_met = 10)

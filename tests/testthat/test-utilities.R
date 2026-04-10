@@ -89,8 +89,7 @@ test_that("synCM seed reproducibility", {
 })
 
 test_that("synCM cross-feeding connectivity", {
-    tbl <- synCM("c", n_species = 5, max_met = 10,
-                 seed = 7L, cm = FALSE)
+    tbl <- synCM("c", n_species = 5, max_met = 10, seed = 7L, cm = FALSE)
     spp <- unique(tbl$species)
     # every species shares at least one metabolite with another
     for (sp in spp) {
@@ -104,36 +103,39 @@ test_that("synCM cross-feeding connectivity", {
 })
 
 test_that("synCM species have both consumed and produced", {
-    tbl <- synCM("d", n_species = 5, max_met = 10,
-                 seed = 11L, dead_ends = FALSE, cm = FALSE)
+    tbl <- synCM(
+        "d",
+        n_species = 5,
+        max_met = 10,
+        seed = 11L,
+        dead_ends = FALSE,
+        cm = FALSE
+    )
     spp <- unique(tbl$species)
     for (sp in spp) {
         fl <- tbl$fluxes[tbl$species == sp]
-        expect_true(any(fl > 0),
-            info = paste0(sp, " has no production"))
-        expect_true(any(fl < 0),
-            info = paste0(sp, " has no consumption"))
+        expect_true(any(fl > 0), info = paste0(sp, " has no production"))
+        expect_true(any(fl < 0), info = paste0(sp, " has no consumption"))
     }
 })
 
 test_that("synCM flux magnitudes are strictly positive", {
-    tbl <- synCM("f", n_species = 4, max_met = 8,
-                 seed = 13L, cm = FALSE)
+    tbl <- synCM("f", n_species = 4, max_met = 8, seed = 13L, cm = FALSE)
     expect_true(all(abs(tbl$fluxes) > 0))
 })
 
 test_that("synCM handles n_species = 2 edge case", {
-    cm <- synCM("edge", n_species = 2, max_met = 4,
-                seed = 21L)
+    cm <- synCM("edge", n_species = 2, max_met = 4, seed = 21L)
     expect_s4_class(cm, "ConsortiumMetabolism")
 })
 
 test_that("synCM cm=FALSE returns tibble", {
-    tbl <- synCM("t", n_species = 3, max_met = 5,
-                 seed = 31L, cm = FALSE)
+    tbl <- synCM("t", n_species = 3, max_met = 5, seed = 31L, cm = FALSE)
     expect_s3_class(tbl, "tbl_df")
-    expect_true(all(c("species", "metabolites", "fluxes") %in%
-        colnames(tbl)))
+    expect_true(all(
+        c("species", "metabolites", "fluxes") %in%
+            colnames(tbl)
+    ))
 })
 
 test_that("name<- works for ConsortiumMetabolism", {

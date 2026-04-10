@@ -98,8 +98,12 @@ importMisosoup <- function(data) {
     media <- tb |>
         dplyr::filter(is.na(.data$species)) |>
         dplyr::select(
-            "cons_id", "substrate", "focal_strain",
-            "solution", "met", "flux"
+            "cons_id",
+            "substrate",
+            "focal_strain",
+            "solution",
+            "met",
+            "flux"
         )
 
     list(

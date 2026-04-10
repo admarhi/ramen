@@ -423,6 +423,43 @@ setGeneric(
     function(object) standardGeneric("description")
 )
 
+#' @title Get Growth Rates
+#'
+#' @description
+#' Returns per-species growth rates (e.g. FBA objective
+#' values) stored in a ramen object. For
+#' [ConsortiumMetabolism] objects, returns the named
+#' numeric vector supplied at construction. For
+#' [ConsortiumMetabolismSet] objects, returns a named
+#' list with one entry per consortium.
+#'
+#' @param object A [ConsortiumMetabolism] or
+#'   [ConsortiumMetabolismSet] object.
+#'
+#' @return For [ConsortiumMetabolism]: a named numeric
+#'   vector of growth rates (names = species), or
+#'   \code{NULL} if no growth data was supplied. For
+#'   [ConsortiumMetabolismSet]: a named list of such
+#'   vectors.
+#'
+#' @examples
+#' data <- data.frame(
+#'     species = c("s1", "s1", "s2", "s2"),
+#'     metabolite = c("m1", "m2", "m1", "m3"),
+#'     flux = c(-1, 1, -1, 1)
+#' )
+#' cm <- ConsortiumMetabolism(
+#'     data, name = "test",
+#'     growth = c(s1 = 0.5, s2 = 0.3)
+#' )
+#' growth(cm)
+#'
+#' @export
+setGeneric(
+    "growth",
+    function(object) standardGeneric("growth")
+)
+
 ## ---- Replacement methods ---------------------------------------------------
 
 #' @rdname name

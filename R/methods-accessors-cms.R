@@ -167,6 +167,20 @@ setMethod(
     function(object) object@Consortia
 )
 
+#' @describeIn growth Get Growth Rates From a
+#'   \code{ConsortiumMetabolismSet}
+#' @export
+setMethod("growth", "ConsortiumMetabolismSet", function(object) {
+    stats::setNames(
+        lapply(object@Consortia, growth),
+        vapply(
+            object@Consortia,
+            \(x) x@Name,
+            character(1L)
+        )
+    )
+})
+
 #' @describeIn species Return Species in a Microbiome
 #' @param object a \code{ConsortiumMetabolismSet} Object
 #' @param type Character scalar giving the type of species

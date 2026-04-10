@@ -243,6 +243,49 @@ test_that("consortia(cms) returns list of CM objects", {
     expect_s4_class(result[[2L]], "ConsortiumMetabolism")
 })
 
+## ---- growth() on CMS --------------------------------------------------------
+
+test_that("growth(cms) returns named list from stored CMs", {
+    test_data <- tibble::tibble(
+        species = c("s1", "s1", "s2", "s2"),
+        metabolite = c("m1", "m2", "m1", "m3"),
+        flux = c(-1, 1, -1, 1)
+    )
+    cm1 <- ConsortiumMetabolism(
+        test_data,
+        name = "cm1",
+        growth = c(s1 = 0.5, s2 = 0.3)
+    )
+    cm2 <- ConsortiumMetabolism(
+        test_data,
+        name = "cm2",
+        growth = c(s1 = 0.8, s2 = 0.1)
+    )
+    cms <- ConsortiumMetabolismSet(
+        list(cm1, cm2),
+        name = "test"
+    )
+    gr <- growth(cms)
+    expect_type(gr, "list")
+    expect_named(gr, c("cm1", "cm2"))
+    expect_equal(gr$cm1, c(s1 = 0.5, s2 = 0.3))
+    expect_equal(gr$cm2, c(s1 = 0.8, s2 = 0.1))
+})
+
+test_that("growth(cms) returns NULLs when no growth data", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
+    cms <- ConsortiumMetabolismSet(
+        list(cm1, cm2),
+        name = "test"
+    )
+    gr <- growth(cms)
+    expect_type(gr, "list")
+    expect_named(gr, c("a", "b"))
+    expect_null(gr$a)
+    expect_null(gr$b)
+})
+
 test_that("consortia(cms) names match consortium names", {
     cm1 <- synCM("alpha", n_species = 3, max_met = 5, seed = 1)
     cm2 <- synCM("beta", n_species = 3, max_met = 5, seed = 2)

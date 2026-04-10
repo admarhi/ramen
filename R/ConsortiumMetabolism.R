@@ -21,6 +21,11 @@
 #'   and fluxes. Fluxes can be weighted or unweighted (magnitude
 #'   1).
 #' @param name Character scalar giving the consortium name.
+#' @param growth Optional named numeric vector of per-species
+#'   growth rates (e.g. FBA objective values). Names must match
+#'   species in \code{data}. Stored in
+#'   \code{metadata(cm)$growth} and retrievable via the
+#'   \code{\link{growth}} accessor.
 #' @param species_col Character scalar for the species column
 #'   name, defaults to \code{"species"}.
 #' @param metabolite_col Character scalar for the metabolite
@@ -40,11 +45,13 @@
 #'
 #' @export
 #'
+#' @importFrom S4Vectors metadata
 #' @importFrom SummarizedExperiment metadata<-
 #' @importFrom TreeSummarizedExperiment TreeSummarizedExperiment
 ConsortiumMetabolism <- function(
     data,
     name = NA_character_,
+    growth = NULL,
     species_col = "species",
     metabolite_col = "metabolite",
     flux_col = "flux",
@@ -52,6 +59,12 @@ ConsortiumMetabolism <- function(
 ) {
     # Validate and prepare input data
     data <- .prepareInputData(data, species_col, metabolite_col, flux_col)
+
+    # Validate growth parameter
+    if (!is.null(growth)) {
+        growth <- .validateGrowth(growth, data$species)
+    }
+
     # Create metabolite index mapping
     mets <- .createMetaboliteIndex(data)
 
@@ -119,7 +132,7 @@ ConsortiumMetabolism <- function(
     )
 
     # Return final ConsortiumMetabolism object
-    newConsortiumMetabolism(
+    cm <- newConsortiumMetabolism(
         tse,
         Name = name,
         Pathways = out,
@@ -128,6 +141,13 @@ ConsortiumMetabolism <- function(
         Metabolites = unique(data$met),
         Graphs = graphs
     )
+
+    # Store growth rates in metadata
+    if (!is.null(growth)) {
+        metadata(cm)$growth <- growth
+    }
+
+    cm
 }
 
 #' Prepare and validate input data
@@ -301,4 +321,42 @@ ConsortiumMetabolism <- function(
             dimnames = dimnames
         )
     )
+}
+
+#' Validate growth rate vector
+#' @noRd
+.validateGrowth <- function(growth, species_in_data) {
+    if (!is.numeric(growth)) {
+        cli::cli_abort(
+            "{.arg growth} must be a numeric vector, \\
+            not {.cls {class(growth)}}."
+        )
+    }
+    if (is.null(names(growth))) {
+        cli::cli_abort(
+            "{.arg growth} must be a named numeric \\
+            vector (names = species)."
+        )
+    }
+    if (anyDuplicated(names(growth))) {
+        dupes <- names(growth)[duplicated(names(growth))]
+        cli::cli_abort(
+            "{.arg growth} has duplicate name{?s}: \\
+            {.val {unique(dupes)}}."
+        )
+    }
+    if (any(growth < 0, na.rm = TRUE)) {
+        cli::cli_abort(
+            "{.arg growth} values must be non-negative."
+        )
+    }
+    known_species <- unique(species_in_data)
+    unknown <- setdiff(names(growth), known_species)
+    if (length(unknown) > 0L) {
+        cli::cli_abort(
+            "{.arg growth} name{?s} not found in \\
+            {.arg data}: {.val {unknown}}."
+        )
+    }
+    growth
 }
