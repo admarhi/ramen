@@ -50,7 +50,7 @@ importMisosoup <- function(data) {
                         )
                 },
                 entries,
-                names(entries)
+                seq_along(entries)
             ) |>
                 dplyr::bind_rows()
         },
@@ -71,15 +71,15 @@ importMisosoup <- function(data) {
 
     # Filter growth information
     growth <- tb |>
-        dplyr::filter(grepl("[G,g]rowth", .data$rxn)) |>
+        dplyr::filter(grepl("[Gg]rowth", .data$rxn)) |>
         dplyr::rename(growth = "rxn") |>
         dplyr::mutate(
-            growth = sub("^Growth_|_growth$", "", .data$growth)
+            growth = sub("^Growth_", "", .data$growth)
         )
 
     # Clean and split the rxn column
     tb <- tb |>
-        dplyr::filter(!grepl("[G,g]rowth", .data$rxn)) |>
+        dplyr::filter(!grepl("[Gg]rowth", .data$rxn)) |>
         tidyr::separate_wider_delim(
             cols = "rxn",
             delim = "_e_",
@@ -157,7 +157,7 @@ overviewMisosoup <- function(data) {
                     y <- .data$focal_strain[[i]]
                     sum(vapply(
                         data[[x]][[y]],
-                        \(z) length(z) == 1 && z[[1]] == 0,
+                        \(z) is.null(z[["solution"]]),
                         logical(1)
                     ))
                 },
