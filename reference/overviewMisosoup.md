@@ -46,14 +46,9 @@ for processing the full data
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) {
 # Requires raw MiSoSoup YAML data
 raw <- yaml::read_yaml("misosoup_output.yaml")
-#> Warning: cannot open file 'misosoup_output.yaml': No such file or directory
-#> Error in file(file, "rt", encoding = fileEncoding): cannot open the connection
 overviewMisosoup(raw)
-#> # A tibble: 0 × 4
-#> # ℹ 4 variables: substrate <chr>, focal_strain <lgl>, n_cons <int>,
-#> #   n_zero_growth <dbl>
-# }
+}
 ```

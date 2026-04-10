@@ -11,7 +11,8 @@ ConsortiumMetabolismSet(
   ...,
   name = NA_character_,
   desc = NA_character_,
-  linkage = "complete"
+  linkage = "complete",
+  verbose = TRUE
 )
 ```
 
@@ -37,6 +38,11 @@ ConsortiumMetabolismSet(
   argument. Defaults to `"complete"`, which produces compact clusters
   where every pair of consortia within a cluster has dissimilarity below
   the merge threshold.
+
+- verbose:
+
+  Logical scalar. If `TRUE` (default), prints progress messages during
+  construction.
 
 ## Value
 
@@ -101,13 +107,13 @@ cms <- ConsortiumMetabolismSet(cm1, cm2, name = "example")
 #> 
 #> ── Creating CMS "example" ──────────────────────────────────────────────────────
 #> ℹ Validating 2 <ConsortiumMetabolism> objects
-#> ✔ Validating 2 <ConsortiumMetabolism> objects [14ms]
+#> ✔ Validating 2 <ConsortiumMetabolism> objects [17ms]
 #> 
 #> ℹ Collecting metabolites from 2 consortia
-#> ✔ Collecting metabolites from 2 consortia [43ms]
+#> ✔ Collecting metabolites from 2 consortia [603ms]
 #> 
 #> ℹ Re-indexing 6 unique metabolites
-#> ✔ Re-indexing 6 unique metabolites [37ms]
+#> ✔ Re-indexing 6 unique metabolites [36ms]
 #> 
 #> ℹ Expanding 2 binary matrices to 6-dimensional space
 #> ✔ Expanding 2 binary matrices to 6-dimensional space [24ms]
@@ -116,20 +122,20 @@ cms <- ConsortiumMetabolismSet(cm1, cm2, name = "example")
 #> ✔ Computing 6 x 6 levels matrix [26ms]
 #> 
 #> ℹ Computing pairwise overlap (1 pairs via crossprod)
-#> ✔ Computing pairwise overlap (1 pairs via crossprod) [26ms]
+#> ✔ Computing pairwise overlap (1 pairs via crossprod) [25ms]
 #> 
 #> ℹ Assembling pathway data from 2 consortia
-#> ✔ Assembling pathway data from 2 consortia [33ms]
+#> ✔ Assembling pathway data from 2 consortia [32ms]
 #> 
 #> ℹ Building dendrogram from 2 x 2 dissimilarity matrix
-#> ✔ Building dendrogram from 2 x 2 dissimilarity matrix [24ms]
+#> ✔ Building dendrogram from 2 x 2 dissimilarity matrix [22ms]
 #> 
 #> ℹ Extracting dendrogram node positions
-#> ✔ Extracting dendrogram node positions [705ms]
+#> ✔ Extracting dendrogram node positions [161ms]
 #> 
 #> ℹ Collecting 2 consortium graphs
-#> CMS "example" created: 2 consortia, 6 metabolites (0.9s)
-#> ✔ Collecting 2 consortium graphs [85ms]
+#> CMS "example" created: 2 consortia, 6 metabolites (1s)
+#> ✔ Collecting 2 consortium graphs [89ms]
 #> 
 cms
 #> 

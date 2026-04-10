@@ -11,6 +11,7 @@ and effective fluxes.
 ConsortiumMetabolism(
   data,
   name = NA_character_,
+  growth = NULL,
   species_col = "species",
   metabolite_col = "metabolite",
   flux_col = "flux",
@@ -28,6 +29,14 @@ ConsortiumMetabolism(
 - name:
 
   Character scalar giving the consortium name.
+
+- growth:
+
+  Optional named numeric vector of per-species growth rates (e.g. FBA
+  objective values). Names must match species in `data`. Stored in
+  `metadata(cm)$growth` and retrievable via the
+  [`growth`](https://admarhi.github.io/ramen/reference/growth.md)
+  accessor.
 
 - species_col:
 

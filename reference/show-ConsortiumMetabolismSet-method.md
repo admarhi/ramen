@@ -28,22 +28,22 @@ cms <- ConsortiumMetabolismSet(cm1, cm2, name = "test")
 #> 
 #> ── Creating CMS "test" ─────────────────────────────────────────────────────────
 #> ℹ Validating 2 <ConsortiumMetabolism> objects
-#> ✔ Validating 2 <ConsortiumMetabolism> objects [11ms]
+#> ✔ Validating 2 <ConsortiumMetabolism> objects [12ms]
 #> 
 #> ℹ Collecting metabolites from 2 consortia
-#> ✔ Collecting metabolites from 2 consortia [40ms]
+#> ✔ Collecting metabolites from 2 consortia [30ms]
 #> 
 #> ℹ Re-indexing 6 unique metabolites
-#> ✔ Re-indexing 6 unique metabolites [26ms]
+#> ✔ Re-indexing 6 unique metabolites [34ms]
 #> 
 #> ℹ Expanding 2 binary matrices to 6-dimensional space
-#> ✔ Expanding 2 binary matrices to 6-dimensional space [23ms]
+#> ✔ Expanding 2 binary matrices to 6-dimensional space [24ms]
 #> 
 #> ℹ Computing 6 x 6 levels matrix
 #> ✔ Computing 6 x 6 levels matrix [24ms]
 #> 
 #> ℹ Computing pairwise overlap (1 pairs via crossprod)
-#> ✔ Computing pairwise overlap (1 pairs via crossprod) [22ms]
+#> ✔ Computing pairwise overlap (1 pairs via crossprod) [23ms]
 #> 
 #> ℹ Assembling pathway data from 2 consortia
 #> ✔ Assembling pathway data from 2 consortia [30ms]

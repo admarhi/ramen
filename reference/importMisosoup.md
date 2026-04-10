@@ -42,15 +42,10 @@ for a summary of the input data
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) {
 # Requires raw MiSoSoup YAML data
 raw <- yaml::read_yaml("misosoup_output.yaml")
-#> Warning: cannot open file 'misosoup_output.yaml': No such file or directory
-#> Error in file(file, "rt", encoding = fileEncoding): cannot open the connection
 result <- importMisosoup(raw)
-#> Error in dplyr::relocate(dplyr::bind_rows(Map(function(x, y) {    entries <- data[[x]][[y]]    dplyr::bind_rows(Map(function(z, idx) {        dplyr::mutate(tidyr::pivot_longer(tibble::as_tibble(z$solution),             cols = dplyr::everything(), names_to = "rxn", values_to = "flux"),             substrate = x, focal_strain = y, solution = idx)    }, entries, names(entries)))}, tb_import$substrate, tb_import$focal_strain)), "rxn", "flux",     .after = "solution"): Can't select columns that don't exist.
-#> ✖ Column `rxn` doesn't exist.
 str(result, max.level = 1)
-#> Error: object 'result' not found
-# }
+}
 ```

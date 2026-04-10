@@ -31,6 +31,9 @@
 - [`functionalGroups()`](https://admarhi.github.io/ramen/reference/functionalGroups.md)
   : Get Functional Groups
 
+- [`growth()`](https://admarhi.github.io/ramen/reference/growth.md) :
+  Get Growth Rates
+
 - [`importMisosoup()`](https://admarhi.github.io/ramen/reference/importMisosoup.md)
   : Import and Process Misosoup Data
 

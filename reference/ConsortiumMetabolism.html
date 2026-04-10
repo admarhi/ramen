@@ -57,6 +57,7 @@ different species, along with flux sums and effective fluxes.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ConsortiumMetabolism</span><span class="op">(</span></span>
 <span>  <span class="va">data</span>,</span>
 <span>  name <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
+<span>  growth <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  species_col <span class="op">=</span> <span class="st">"species"</span>,</span>
 <span>  metabolite_col <span class="op">=</span> <span class="st">"metabolite"</span>,</span>
 <span>  flux_col <span class="op">=</span> <span class="st">"flux"</span>,</span>
@@ -76,6 +77,14 @@ and fluxes. Fluxes can be weighted or unweighted (magnitude
 
 <dt id="arg-name">name<a class="anchor" aria-label="anchor" href="#arg-name"></a></dt>
 <dd><p>Character scalar giving the consortium name.</p></dd>
+
+
+<dt id="arg-growth">growth<a class="anchor" aria-label="anchor" href="#arg-growth"></a></dt>
+<dd><p>Optional named numeric vector of per-species
+growth rates (e.g. FBA objective values). Names must match
+species in <code>data</code>. Stored in
+<code>metadata(cm)$growth</code> and retrievable via the
+<code><a href="growth.html">growth</a></code> accessor.</p></dd>
 
 
 <dt id="arg-species-col">species_col<a class="anchor" aria-label="anchor" href="#arg-species-col"></a></dt>

@@ -55,22 +55,22 @@ cms <- ConsortiumMetabolismSet(
 #> 
 #> ── Creating CMS "test" ─────────────────────────────────────────────────────────
 #> ℹ Validating 2 <ConsortiumMetabolism> objects
-#> ✔ Validating 2 <ConsortiumMetabolism> objects [11ms]
+#> ✔ Validating 2 <ConsortiumMetabolism> objects [12ms]
 #> 
 #> ℹ Collecting metabolites from 2 consortia
-#> ✔ Collecting metabolites from 2 consortia [30ms]
+#> ✔ Collecting metabolites from 2 consortia [32ms]
 #> 
 #> ℹ Re-indexing 6 unique metabolites
-#> ✔ Re-indexing 6 unique metabolites [27ms]
+#> ✔ Re-indexing 6 unique metabolites [30ms]
 #> 
 #> ℹ Expanding 2 binary matrices to 6-dimensional space
-#> ✔ Expanding 2 binary matrices to 6-dimensional space [24ms]
+#> ✔ Expanding 2 binary matrices to 6-dimensional space [26ms]
 #> 
 #> ℹ Computing 6 x 6 levels matrix
-#> ✔ Computing 6 x 6 levels matrix [25ms]
+#> ✔ Computing 6 x 6 levels matrix [28ms]
 #> 
 #> ℹ Computing pairwise overlap (1 pairs via crossprod)
-#> ✔ Computing pairwise overlap (1 pairs via crossprod) [24ms]
+#> ✔ Computing pairwise overlap (1 pairs via crossprod) [25ms]
 #> 
 #> ℹ Assembling pathway data from 2 consortia
 #> ✔ Assembling pathway data from 2 consortia [31ms]
@@ -83,7 +83,7 @@ cms <- ConsortiumMetabolismSet(
 #> 
 #> ℹ Collecting 2 consortium graphs
 #> CMS "test" created: 2 consortia, 6 metabolites (0.2s)
-#> ✔ Collecting 2 consortium graphs [93ms]
+#> ✔ Collecting 2 consortium graphs [84ms]
 #> 
 fg <- functionalGroups(cms)
 plotFunctionalGroups(fg, k = 2)

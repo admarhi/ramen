@@ -304,7 +304,7 @@ sessionInfo()
 #> [47] dplyr_1.2.1                     purrr_1.2.1                    
 #> [49] bookdown_0.46                   labeling_0.4.3                 
 #> [51] TreeSummarizedExperiment_2.18.0 fastmap_1.2.0                  
-#> [53] grid_4.5.3                      cli_3.6.5                      
+#> [53] grid_4.5.3                      cli_3.6.6                      
 #> [55] SparseArray_1.10.10             magrittr_2.0.5                 
 #> [57] S4Arrays_1.10.1                 ape_5.8-1                      
 #> [59] withr_3.0.2                     scales_1.4.0                   
