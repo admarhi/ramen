@@ -54,6 +54,7 @@ Collate:
     'ConsortiumMetabolismAlignment.R'
     'helpers-align.R'
     'ConsortiumMetabolismSet.R'
+    'helpers-import.R'
     'importMisosoup.R'
     'methods-accessors-cm.R'
     'methods-accessors-cma.R'

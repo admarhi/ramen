@@ -87,7 +87,7 @@ importMisosoup <- function(data) {
             too_few = "align_start"
         ) |>
         dplyr::mutate(
-            met = gsub("^R_EX_|_e$", "", .data$met),
+            met = .normalizeBiggIds(.data$met),
             species = sub("_i$", "", .data$species)
         )
 
