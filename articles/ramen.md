@@ -569,7 +569,7 @@ sessionInfo()
 #>  [3] ggplot2_4.0.2                   xfun_0.57                      
 #>  [5] bslib_0.10.0                    Biobase_2.70.0                 
 #>  [7] lattice_0.22-9                  yulab.utils_0.2.4              
-#>  [9] vctrs_0.7.2                     tools_4.5.3                    
+#>  [9] vctrs_0.7.3                     tools_4.5.3                    
 #> [11] generics_0.1.4                  stats4_4.5.3                   
 #> [13] parallel_4.5.3                  tibble_3.3.1                   
 #> [15] pkgconfig_2.0.3                 Matrix_1.7-4                   
@@ -588,7 +588,7 @@ sessionInfo()
 #> [41] cachem_1.1.0                    viridis_0.6.5                  
 #> [43] abind_1.4-8                     nlme_3.1-168                   
 #> [45] tidyselect_1.2.1                digest_0.6.39                  
-#> [47] dplyr_1.2.1                     purrr_1.2.1                    
+#> [47] dplyr_1.2.1                     purrr_1.2.2                    
 #> [49] bookdown_0.46                   labeling_0.4.3                 
 #> [51] TreeSummarizedExperiment_2.18.0 fastmap_1.2.0                  
 #> [53] grid_4.5.3                      cli_3.6.6                      

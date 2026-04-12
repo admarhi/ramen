@@ -37,6 +37,9 @@
 - [`importMisosoup()`](https://admarhi.github.io/ramen/reference/importMisosoup.md)
   : Import and Process Misosoup Data
 
+- [`importSmetana()`](https://admarhi.github.io/ramen/reference/importSmetana.md)
+  : Import SMETANA Detailed Output
+
 - [`metabolites()`](https://admarhi.github.io/ramen/reference/metabolites.md)
   : Get Metabolites
 
