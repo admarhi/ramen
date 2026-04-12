@@ -1,7 +1,7 @@
 #' Normalize Bigg exchange reaction IDs to bare metabolite names
 #' @param ids Character vector of reaction/metabolite identifiers.
 #' @return Character vector of cleaned metabolite names.
-#' @noRd
+#' @keywords internal
 .normalizeBiggIds <- function(ids) {
     ids |>
         # Misosoup

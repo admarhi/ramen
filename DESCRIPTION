@@ -56,6 +56,7 @@ Collate:
     'ConsortiumMetabolismSet.R'
     'helpers-import.R'
     'importMisosoup.R'
+    'importSmetana.R'
     'methods-accessors-cm.R'
     'methods-accessors-cma.R'
     'methods-accessors-cms.R'
