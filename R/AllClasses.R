@@ -78,11 +78,11 @@ newConsortiumMetabolismAlignment <- setClass(
 setValidity("ConsortiumMetabolism", function(object) {
     errors <- character()
 
-    ## Name must be length-1 non-NA character
-    if (length(object@Name) != 1L || is.na(object@Name)) {
+    ## Name must be a length-1 character (NA is allowed for unnamed objects)
+    if (length(object@Name) != 1L) {
         errors <- c(
             errors,
-            "'Name' must be a length-1 non-NA character"
+            "'Name' must be a length-1 character (NA allowed)"
         )
     }
 
@@ -128,11 +128,11 @@ setValidity("ConsortiumMetabolism", function(object) {
 setValidity("ConsortiumMetabolismSet", function(object) {
     errors <- character()
 
-    ## Name must be length-1 non-NA character
-    if (length(object@Name) != 1L || is.na(object@Name)) {
+    ## Name must be a length-1 character (NA is allowed for unnamed objects)
+    if (length(object@Name) != 1L) {
         errors <- c(
             errors,
-            "'Name' must be a length-1 non-NA character"
+            "'Name' must be a length-1 character (NA allowed)"
         )
     }
 
