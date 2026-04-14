@@ -91,17 +91,28 @@ head(misosoup24[[1]])
 
 ## Importing raw MiSoSoup YAML
 
-For raw MiSoSoup output (nested YAML), `importMisosoup()` parses
-the data into structured tibbles of consortia, media, and growth
-information. `overviewMisosoup()` provides a quick summary of the
-data structure before full import.
+For raw MiSoSoup output (nested YAML), `importMisosoup()` parses the
+data directly into a `ConsortiumMetabolismSet` containing one
+`ConsortiumMetabolism` per viable solution. The function accepts a
+single YAML file, a directory of YAML files, or a pre-loaded nested
+list from `yaml::read_yaml()`. Media-level exchange bounds are stashed
+in each CM's `metadata()` slot under `$media` so they remain
+accessible if needed.
 
 ```{r import-misosoup, eval = FALSE}
-## Parse raw MiSoSoup YAML (not run -- requires external data)
+## Single file -> CMS (not run -- requires external data)
+cms <- importMisosoup("path/to/misosoup_output.yaml")
+
+## Directory of YAML files -> CMS merging all consortia
+cms <- importMisosoup("path/to/misosoup_dir/", name = "experiment1")
+
+## Pre-loaded list -> CMS (name required)
 raw <- yaml::read_yaml("path/to/misosoup_output.yaml")
-overviewMisosoup(raw)
-result <- importMisosoup(raw)
-names(result) # "consortia", "media", "growth"
+overviewMisosoup(raw) # quick summary before full import
+cms <- importMisosoup(raw, name = "experiment1")
+
+## Access stashed media bounds for a specific CM
+## S4Vectors::metadata(cms@Consortia[[1]])$media
 ```
 
 ## Alternative input formats

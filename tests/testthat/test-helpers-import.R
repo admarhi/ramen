@@ -17,3 +17,14 @@ test_that("import helper extracts BiGG metabolite IDs correctly", {
         c("ac", "glc__D", "ac", "lac_D", "ac", "ac")
     )
 })
+
+test_that(".decodeBiggEscapes decodes __NN__ sequences", {
+    # (40) = '(', (41) = ')'
+    expect_equal(.decodeBiggEscapes("acisnzd__40__e__41__"), "acisnzd(e)")
+    expect_equal(.decodeBiggEscapes("foo__40__bar__41__"), "foo(bar)")
+    expect_equal(.decodeBiggEscapes("no_escapes_here"), "no_escapes_here")
+    expect_equal(
+        .decodeBiggEscapes(c("a__40__b", "plain", "x__41__y")),
+        c("a(b", "plain", "x)y")
+    )
+})

@@ -2,34 +2,31 @@
 % Please edit documentation in R/importMisosoup.R
 \name{overviewMisosoup}
 \alias{overviewMisosoup}
-\title{Overview of Misosoup Data Structure}
+\title{Overview of MiSoSoup Data Structure}
 \usage{
 overviewMisosoup(data)
 }
 \arguments{
-\item{data}{A nested list containing misosoup simulation results.
-The structure should be data[[substrate]][[focal_strain]] where each
-element contains solution data.}
+\item{data}{A nested list from \code{yaml::read_yaml()}. The structure
+should be \code{data[[substrate]][[sec_level]][[solution]]} where
+\code{sec_level} is typically either a focal strain name or \code{"min"}.}
 }
 \value{
-A tibble with columns:
-\item{substrate}{Substrate identifier}
-\item{focal_strain}{Focal strain identifier}
-\item{n_cons}{Number of consortia solutions}
-\item{n_zero_growth}{Number of zero-growth solutions}
+A tibble with columns \code{substrate}, \code{sec_level}, \code{n_sol}, and
+\code{n_zero_growth}.
 }
 \description{
-Provides a summary of the misosoup data structure, including the number of
-consortia and zero-growth solutions for each substrate and focal strain
-combination.
+Provides a summary of a MiSoSoup nested list, including the number of
+solutions and zero-growth solutions for each substrate /
+second-level-key combination. Useful for inspecting a data structure
+before importing with \code{\link[=importMisosoup]{importMisosoup()}}.
 }
 \examples{
-if (FALSE) {
-# Requires raw MiSoSoup YAML data
-raw <- yaml::read_yaml("misosoup_output.yaml")
-overviewMisosoup(raw)
+\donttest{
+# raw <- yaml::read_yaml("path/to/misosoup.yaml")
+# overviewMisosoup(raw)
 }
 }
 \seealso{
-\code{\link{importMisosoup}} for processing the full data
+\code{\link[=importMisosoup]{importMisosoup()}} for the full import.
 }

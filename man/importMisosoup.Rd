@@ -2,34 +2,67 @@
 % Please edit documentation in R/importMisosoup.R
 \name{importMisosoup}
 \alias{importMisosoup}
-\title{Import and Process Misosoup Data}
+\title{Import MiSoSoup YAML Output}
 \usage{
-importMisosoup(data)
+importMisosoup(data, name = NULL, normalize_ids = TRUE, verbose = TRUE)
 }
 \arguments{
-\item{data}{A nested list containing misosoup simulation results.
-The structure should be data[[substrate]][[focal_strain]] where each
-element contains solution data.}
+\item{data}{Either a file path to a single MiSoSoup YAML, a
+directory path containing multiple YAML files, or a pre-loaded
+nested list from \code{yaml::read_yaml()}.}
+
+\item{name}{Name for the returned \code{ConsortiumMetabolismSet}. If
+\code{NULL} (default), the name is derived from the input filename (for
+a file) or directory basename (for a directory). \strong{Required} when
+\code{data} is a pre-loaded list.}
+
+\item{normalize_ids}{If \code{TRUE} (default), normalize metabolite IDs
+via \code{.normalizeBiggIds()} (strip \code{R_EX_} prefix, \verb{_e} suffix) and
+decode COBRApy \verb{__NN__} escape sequences via \code{.decodeBiggEscapes()}.
+If \code{FALSE}, keep metabolite IDs in their raw form.}
+
+\item{verbose}{If \code{TRUE} (default), emit progress messages via
+\code{\link[cli:cli_abort]{cli::cli_inform()}} and show a progress bar when importing a
+directory.}
 }
 \value{
-A list containing three tibbles:
-\item{consortia}{Metabolic flux data for each species in the consortium}
-\item{media}{Media composition data}
-\item{growth}{Growth information for each solution}
+A \linkS4class{ConsortiumMetabolismSet} object containing one
+\linkS4class{ConsortiumMetabolism} per viable consortium found in the
+input. Zero-growth solutions are silently skipped.
 }
 \description{
-Processes raw misosoup data into a structured format containing consortia,
-media, and growth information. The function handles data cleaning,
-transformation, and organization of metabolic flux data.
+Imports raw MiSoSoup YAML output into a
+\linkS4class{ConsortiumMetabolismSet} object. MiSoSoup YAMLs describe many
+consortia per file (one per \code{substrate} / second-level-key /
+\code{solution} triple), so a single call always produces a CMS regardless
+of whether the input is a single file, a directory of files, or a
+pre-loaded nested list.
+}
+\details{
+The function auto-detects format differences between MiSoSoup runs:
+the growth-row key (\verb{Growth_<species>} in older runs,
+\verb{R_Biomass_<species>} in newer runs), COBRApy-style \verb{__NN__} escape
+sequences in reaction IDs (e.g. \verb{__40__} for \code{(}), and the presence
+or absence of a focal-strain layer below each substrate.
+
+Media-level exchange fluxes (reactions without a species suffix) are
+stashed in \code{metadata(cm)$media} for each consortium, preserving the
+original bounds information if downstream code needs it.
 }
 \examples{
-if (FALSE) {
-# Requires raw MiSoSoup YAML data
-raw <- yaml::read_yaml("misosoup_output.yaml")
-result <- importMisosoup(raw)
-str(result, max.level = 1)
+\donttest{
+# Single YAML file -> CMS
+# cms <- importMisosoup("path/to/misosoup.yaml")
+
+# Directory of YAML files -> CMS with consortia from all files
+# cms <- importMisosoup("path/to/misosoup_dir/", name = "experiment1")
+
+# Pre-loaded list -> CMS (name is required here)
+# raw <- yaml::read_yaml("path/to/misosoup.yaml")
+# cms <- importMisosoup(raw, name = "experiment1")
 }
 }
 \seealso{
-\code{\link{overviewMisosoup}} for a summary of the input data
+\code{\link[=overviewMisosoup]{overviewMisosoup()}} for a pre-import summary of a MiSoSoup
+data structure; \code{\link[=importSmetana]{importSmetana()}} for the sibling SMETANA import.
 }

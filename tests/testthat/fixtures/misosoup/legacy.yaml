@@ -1,0 +1,45 @@
+ac:
+  A3R04:
+  - community:
+      y_A3R04: 1
+    solution:
+      Growth_A3R04: 0.2258155
+      R_EX_ac_e: -10.0
+      R_EX_ac_e_A3R04_i: -10.0
+      R_EX_ca2_e: -0.0011383
+      R_EX_ca2_e_A3R04_i: -0.0011383
+      R_EX_cl_e: -0.0011383
+      R_EX_cl_e_A3R04_i: -0.0011383
+      R_EX_co2_e: 10.6694557
+      R_EX_co2_e_A3R04_i: 10.6694557
+      R_EX_cobalt2_e: -2.1868405e-05
+      R_EX_cobalt2_e_A3R04_i: -2.1868405e-05
+      R_EX_cu2_e: 991.6251451
+      R_EX_cu2_e_A3R04_i: 991.6251451
+      R_EX_cu_e: -991.6253001
+      R_EX_cu_e_A3R04_i: -991.6253001
+      R_EX_fe2_e: -0.0014685
+      R_EX_fe2_e_A3R04_i: -0.0014685
+      R_EX_fe3_e: -0.0017075
+      R_EX_fe3_e_A3R04_i: -0.0017075
+      R_EX_h2o_e: 512.8949897
+      R_EX_h2o_e_A3R04_i: 512.8949897
+      R_EX_h_e: -1000.0
+      R_EX_h_e_A3R04_i: -1000.0
+      R_EX_k_e: -0.0426856
+      R_EX_k_e_A3R04_i: -0.0426856
+      R_EX_mg2_e: -0.0018971
+      R_EX_mg2_e_A3R04_i: -0.0018971
+      R_EX_mn2_e: -0.0001511
+      R_EX_mn2_e_A3R04_i: -0.0001511
+      R_EX_nh4_e: -2.4486541
+      R_EX_nh4_e_A3R04_i: -2.4486541
+      R_EX_o2_e: -258.286102
+      R_EX_o2_e_A3R04_i: -258.286102
+      R_EX_pi_e: -0.2156428
+      R_EX_pi_e_A3R04_i: -0.2156428
+      R_EX_so4_e: -0.0548079
+      R_EX_so4_e_A3R04_i: -0.0548079
+      R_EX_zn2_e: -7.4571262e-05
+      R_EX_zn2_e_A3R04_i: -7.4571262e-05
+      community_growth: 0.2258155
