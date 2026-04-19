@@ -57,7 +57,6 @@ setMethod(
             dplyr::arrange(dplyr::desc(.data$n_cons))
 
         total_cons <- length(object@Consortia)
-        total_species <- nrow(species(object))
 
         result <- if (type == "all") {
             pathway_summary

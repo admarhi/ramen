@@ -10,14 +10,15 @@ NULL
 #' show(cm)
 #' @export
 setMethod("show", "ConsortiumMetabolism", function(object) {
-    weight_label <- if (object@Weighted) {
+    weight_label <- if (object@Weighted) { # nolint: object_usage_linter.
         "Weighted"
     } else {
         "Unweighted"
     }
-    n_met <- length(object@Metabolites)
+    n_met <- length(object@Metabolites) # nolint: object_usage_linter.
+    # nolint next: object_usage_linter.
     n_sp <- length(unique(object@InputData$species))
-    n_pw <- nrow(object@Pathways)
+    n_pw <- nrow(object@Pathways) # nolint: object_usage_linter.
     cli::cli_h3("ConsortiumMetabolism")
     cli::cli_text("Name: {.val {object@Name}}")
     cli::cli_text(
@@ -40,18 +41,19 @@ setMethod("show", "ConsortiumMetabolism", function(object) {
 #' show(cms)
 #' @export
 setMethod("show", "ConsortiumMetabolismSet", function(object) {
-    n_cons <- length(object@Consortia)
+    n_cons <- length(object@Consortia) # nolint: object_usage_linter.
+    # nolint next: object_usage_linter.
     n_sp <- dplyr::n_distinct(object@Pathways$species)
-    n_met <- length(unique(
+    n_met <- length(unique( # nolint: object_usage_linter.
         c(object@Pathways$consumed, object@Pathways$produced)
     ))
 
-    sp_counts <- vapply(
+    sp_counts <- vapply( # nolint: object_usage_linter.
         object@Consortia,
         function(cm) length(species(cm)),
         integer(1L)
     )
-    met_counts <- vapply(
+    met_counts <- vapply( # nolint: object_usage_linter.
         object@Consortia,
         function(cm) length(setdiff(metabolites(cm), "media")),
         integer(1L)
@@ -98,7 +100,7 @@ setMethod("show", "ConsortiumMetabolismAlignment", function(object) {
     ## Helper: TRUE if slot is a length-1 non-NA value
     .hasValue <- function(x) length(x) == 1L && !is.na(x)
 
-    type_label <- if (.hasValue(object@Type)) {
+    type_label <- if (.hasValue(object@Type)) { # nolint: object_usage_linter.
         object@Type
     } else {
         "uninitialized"
@@ -134,11 +136,11 @@ setMethod("show", "ConsortiumMetabolismAlignment", function(object) {
         }
     }
     if (.hasValue(object@Type) && object@Type == "multiple") {
-        n <- nrow(object@SimilarityMatrix)
+        n <- nrow(object@SimilarityMatrix) # nolint: object_usage_linter.
         cli::cli_text("Consortia: {.val {n}}")
     }
     if (.hasValue(object@Type) && object@Type == "search") {
-        nDb <- ncol(object@SimilarityMatrix)
+        nDb <- ncol(object@SimilarityMatrix) # nolint: object_usage_linter.
         cli::cli_text(
             "Query: {.val {object@QueryName}}, ",
             "Top hit: {.val {object@ReferenceName}} ",

@@ -150,7 +150,10 @@ test_that("NA in required columns errors", {
 test_that("binary mode produces an unweighted CM", {
     df <- .makeMiniSmetana()
     cm <- importSmetana(
-        df, name = "mini", use_scores = FALSE, verbose = FALSE
+        df,
+        name = "mini",
+        use_scores = FALSE,
+        verbose = FALSE
     )
     expect_false(cm@Weighted)
 })
@@ -158,7 +161,10 @@ test_that("binary mode produces an unweighted CM", {
 test_that("binary mode produces +1/-1 fluxes in InputData", {
     df <- .makeMiniSmetana()
     cm <- importSmetana(
-        df, name = "mini", use_scores = FALSE, verbose = FALSE
+        df,
+        name = "mini",
+        use_scores = FALSE,
+        verbose = FALSE
     )
     expect_setequal(unique(cm@InputData$flux), c(-1, 1))
 })
@@ -168,7 +174,10 @@ test_that("binary mode deduplicates redundant donor-compound pairs", {
     # have sA as receiver of glc — should produce ONE consumption edge for sA.
     df <- .makeMiniSmetana()
     cm <- importSmetana(
-        df, name = "mini", use_scores = FALSE, verbose = FALSE
+        df,
+        name = "mini",
+        use_scores = FALSE,
+        verbose = FALSE
     )
     sa_glc <- cm@InputData |>
         dplyr::filter(
@@ -184,7 +193,7 @@ test_that("binary mode deduplicates redundant donor-compound pairs", {
 # Bidirectional species-compound pairs (critical case)
 # ---------------------------------------------------------------------------
 
-test_that("species appearing as donor AND receiver for same compound yields two edges", {
+test_that("species as donor AND receiver for same compound yields two edges", {
     # In bq_1, Corynebacterium_simulans_PES1 both donates AND receives M_nh4_e.
     # After collapse, there should be TWO edges for that species+metabolite:
     # one with flux = +1 (production) and one with flux = -1 (consumption).

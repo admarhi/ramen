@@ -38,8 +38,7 @@
 #'
 #' @return A \code{ConsortiumMetabolism} object.
 #'
-#' @seealso
-#'   \link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{TreeSummarizedExperiment}
+#' @seealso \linkS4class{TreeSummarizedExperiment}
 #'
 #' @examples
 #' cm <- synCM("example", n_species = 3, max_met = 5)
@@ -83,11 +82,13 @@ ConsortiumMetabolism <- function(
         mets <- dplyr::filter(mets, .data$met != "media")
     } else {
         if (length(only_cons) > 0) {
-            if (verbose) cli::cli_inform(
-                "Species {.code {only_cons}} in {.val {name}} \\
+            if (verbose) {
+                cli::cli_inform(
+                    "Species {.code {only_cons}} in {.val {name}} \\
                 have no production flux; \\
                 synthetic {.val media} production added."
-            )
+                )
+            }
             prod <- prod |>
                 dplyr::bind_rows(
                     tibble::tibble(
@@ -99,11 +100,13 @@ ConsortiumMetabolism <- function(
         }
 
         if (length(only_prod) > 0) {
-            if (verbose) cli::cli_inform(
-                "Species {.code {only_prod}} in {.val {name}} \\
+            if (verbose) {
+                cli::cli_inform(
+                    "Species {.code {only_prod}} in {.val {name}} \\
                 have no consumption flux; \\
                 synthetic {.val media} consumption added."
-            )
+                )
+            }
             cons <- cons |>
                 dplyr::bind_rows(
                     tibble::tibble(
@@ -354,6 +357,7 @@ ConsortiumMetabolism <- function(
         )
     }
     if (anyDuplicated(names(growth))) {
+        # nolint next: object_usage_linter.
         dupes <- names(growth)[duplicated(names(growth))]
         cli::cli_abort(
             "{.arg growth} has duplicate name{?s}: \\

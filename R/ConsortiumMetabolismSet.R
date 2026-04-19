@@ -39,7 +39,7 @@
 #' @return A \code{ConsortiumMetabolismSet} object.
 #'
 #' @seealso \linkS4class{ConsortiumMetabolism},
-#'   \link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{TreeSummarizedExperiment}
+#'   \linkS4class{TreeSummarizedExperiment}
 #'
 #' @examples
 #' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
@@ -125,7 +125,7 @@ ConsortiumMetabolismSet <- function(
         dplyr::arrange(.data$met, .locale = "C") |>
         tibble::rowid_to_column("met_ind")
     universal_mets <- new_met_ind$met
-    n_mets <- length(universal_mets)
+    n_mets <- length(universal_mets) # nolint: object_usage_linter.
 
     if (verbose) {
         cli::cli_progress_step(
@@ -168,7 +168,7 @@ ConsortiumMetabolismSet <- function(
     levels_mat <- as.matrix(Reduce(`+`, expanded_bm))
 
     ## ---- 6. Pairwise overlap via crossprod --------------------
-    n_pairs <- n_cons * (n_cons - 1L) / 2L
+    n_pairs <- n_cons * (n_cons - 1L) / 2L # nolint: object_usage_linter.
     if (verbose) {
         cli::cli_progress_step(
             "Computing pairwise overlap \\
@@ -267,7 +267,7 @@ ConsortiumMetabolismSet <- function(
     )
 
     ## ---- Done -------------------------------------------------
-    elapsed <- round(
+    elapsed <- round( # nolint: object_usage_linter.
         proc.time()[["elapsed"]] - t_start,
         1L
     )

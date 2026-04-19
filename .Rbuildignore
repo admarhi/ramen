@@ -17,3 +17,5 @@
 ^data-raw$
 ^Rplots\.pdf$
 ^ramen\.BiocCheck$
+^[.]?air[.]toml$
+^\.vscode$

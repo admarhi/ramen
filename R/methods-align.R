@@ -417,7 +417,8 @@ setMethod(
 
         needsWeighted <- any(
             c("brayCurtis", "redundancyOverlap") %in% metrics
-        ) || method == "MAAS"
+        ) ||
+            method == "MAAS"
 
         xWeighted <- NULL
         if (needsWeighted && x@Weighted) {
@@ -579,9 +580,7 @@ setMethod(
         top_cm <- y@Consortia[[top_idx]]
 
         ## 9. Similarity matrix: 1 x (topK or n)
-        query_label <- if (
-            length(x@Name) == 1L && !is.na(x@Name)
-        ) {
+        query_label <- if (length(x@Name) == 1L && !is.na(x@Name)) {
             x@Name
         } else {
             "query"
@@ -604,9 +603,7 @@ setMethod(
         ## 11. Optional top-hit p-value
         pval <- NA_real_
         if (computePvalue) {
-            if (
-                method %in% c("brayCurtis", "redundancyOverlap")
-            ) {
+            if (method %in% c("brayCurtis", "redundancyOverlap")) {
                 cli::cli_warn(
                     paste0(
                         "P-value computation for ",
@@ -658,10 +655,8 @@ setMethod(
             Scores = list(
                 ranking = ranking,
                 top = scores_list[[top_idx]],
-                coverageQuery =
-                    scores_list[[top_idx]]$coverageQuery,
-                coverageReference =
-                    scores_list[[top_idx]]$coverageReference
+                coverageQuery = scores_list[[top_idx]]$coverageQuery,
+                coverageReference = scores_list[[top_idx]]$coverageReference
             ),
             SimilarityMatrix = sim_mat,
             SharedPathways = correspondences$shared,

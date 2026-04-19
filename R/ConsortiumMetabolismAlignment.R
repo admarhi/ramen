@@ -140,23 +140,28 @@ setMethod(
             shared <- x@SharedPathways
             uq <- x@UniqueQuery
             ur <- x@UniqueReference
-            if (nrow(shared) > 0L)
+            if (nrow(shared) > 0L) {
                 shared$pathway_type <- "shared"
-            if (nrow(uq) > 0L)
+            }
+            if (nrow(uq) > 0L) {
                 uq$pathway_type <- "unique_query"
-            if (nrow(ur) > 0L)
+            }
+            if (nrow(ur) > 0L) {
                 ur$pathway_type <- "unique_reference"
+            }
             return(as.data.frame(dplyr::bind_rows(shared, uq, ur)))
         }
         if (isTRUE(type == "multiple")) {
             cp <- x@ConsensusPathways
-            if (nrow(cp) > 0L)
+            if (nrow(cp) > 0L) {
                 return(as.data.frame(cp))
+            }
             return(as.data.frame(x@Pathways))
         }
         pways <- x@Pathways
-        if (nrow(pways) > 0L)
+        if (nrow(pways) > 0L) {
             return(as.data.frame(pways))
+        }
         data.frame()
     }
 )

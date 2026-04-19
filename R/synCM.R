@@ -372,10 +372,14 @@ synCM <- function(
                 mets_sp <- community$metabolites[rows]
                 dup_mets <- mets_sp[duplicated(mets_sp)]
                 safe <- rows[!(mets_sp %in% dup_mets)]
-                if (length(safe) == 0L)
+                if (length(safe) == 0L) {
                     safe <- rows
-                idx <- if (length(safe) == 1L) safe else
+                }
+                idx <- if (length(safe) == 1L) {
+                    safe
+                } else {
                     sample(safe, 1L)
+                }
                 community$fluxes[idx] <-
                     community$fluxes[idx] * -1
             }

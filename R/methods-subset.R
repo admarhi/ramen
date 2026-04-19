@@ -171,7 +171,8 @@ setMethod(
 
         ## Pathways
         x@Pathways <- x@Pathways[
-            x@Pathways$consumed %in% remaining_mets &
+            x@Pathways$consumed %in%
+                remaining_mets &
                 x@Pathways$produced %in% remaining_mets,
         ]
 

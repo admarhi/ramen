@@ -18,7 +18,8 @@
 #'   `data` is a directory, `name` is passed through to
 #'   [ConsortiumMetabolismSet()].
 #' @param use_scores If `FALSE`, flux is binary (+1 for production,
-#'   -1 for consumption). If `TRUE` (default), flux magnitude is the SMETANA score,
+#'   -1 for consumption). If `TRUE` (default), flux magnitude is the
+#'   SMETANA score,
 #'   aggregated by `max()` when the same (species, compound) pair appears
 #'   across multiple interaction partners.
 #' @param normalize_ids If `TRUE` (default), normalize compound IDs via

@@ -3,16 +3,14 @@
 .cms2 <- function() {
     cm1 <- synCM("a", n_species = 3, max_met = 6, seed = 1)
     cm2 <- synCM("b", n_species = 3, max_met = 6, seed = 2)
-    ConsortiumMetabolismSet(list(cm1, cm2), name = "test",
-        verbose = FALSE)
+    ConsortiumMetabolismSet(list(cm1, cm2), name = "test", verbose = FALSE)
 }
 
 .cms3 <- function() {
     cm1 <- synCM("a", n_species = 3, max_met = 6, seed = 1)
     cm2 <- synCM("b", n_species = 3, max_met = 6, seed = 2)
     cm3 <- synCM("c", n_species = 3, max_met = 6, seed = 3)
-    ConsortiumMetabolismSet(list(cm1, cm2, cm3), name = "test",
-        verbose = FALSE)
+    ConsortiumMetabolismSet(list(cm1, cm2, cm3), name = "test", verbose = FALSE)
 }
 
 ## ---- CM: [ errors -----------------------------------------------------------
@@ -92,8 +90,8 @@ test_that("CMS [ Consortia list length is unchanged", {
 test_that("CMS [i] and [i, i] produce identical results", {
     cms <- .cms2()
     keep <- seq_len(nrow(cms@Metabolites) - 1L)
-    sub_i   <- cms[keep]
-    sub_ij  <- cms[keep, keep]
+    sub_i <- cms[keep]
+    sub_ij <- cms[keep, keep]
     expect_equal(nrow(sub_i@Metabolites), nrow(sub_ij@Metabolites))
     expect_equal(sub_i@OverlapMatrix, sub_ij@OverlapMatrix)
 })
@@ -117,8 +115,7 @@ test_that("CMS [ with empty index returns valid zero-metabolite object", {
 
 test_that("CMS [ on single-consortium produces valid Dendrogram", {
     cm1 <- synCM("solo", n_species = 3, max_met = 6, seed = 1)
-    cms <- ConsortiumMetabolismSet(list(cm1), name = "solo",
-        verbose = FALSE)
+    cms <- ConsortiumMetabolismSet(list(cm1), name = "solo", verbose = FALSE)
     n <- nrow(cms@Metabolites)
     sub <- cms[seq_len(n - 1L)]
     expect_s4_class(sub, "ConsortiumMetabolismSet")
