@@ -82,6 +82,14 @@ Each element is a data.frame with columns `metabolites`, `species`,
 and `fluxes`, where negative fluxes indicate consumption and
 positive fluxes indicate production.
 
+> **Metabolite identifiers** follow the
+> [BiGG namespace](https://bigg.ucsd.edu) (King et al. 2016):
+> short lowercase codes such as `ac` (acetate), `co2` (CO~2~),
+> `etoh` (ethanol), and `pyr` (pyruvate). Double-underscores
+> encode stereochemistry: `ala__L` = L-alanine, `ala__D` =
+> D-alanine. Look up any identifier at
+> <https://bigg.ucsd.edu/metabolites>.
+
 ```{r load-data}
 data("misosoup24")
 length(misosoup24)

@@ -13,11 +13,32 @@
 #' @format A list of 56 tibbles, each with columns:
 #' \describe{
 #'  \item{species}{Character, species identifier.}
-#'  \item{metabolite}{Character, metabolite name (BiGG
-#'    identifiers).}
+#'  \item{metabolite}{Character, metabolite identifier following
+#'    the BiGG namespace (King et al. 2016). Common examples:
+#'    \code{ac} (acetate), \code{co2} (CO2), \code{etoh}
+#'    (ethanol), \code{pyr} (pyruvate), \code{ala__L}
+#'    (L-alanine), \code{ala__D} (D-alanine). The
+#'    double-underscore convention encodes stereochemistry
+#'    (e.g. \code{__L} = L-isomer, \code{__D} = D-isomer).
+#'    See \url{https://bigg.ucsd.edu} for the full namespace.}
 #'  \item{flux}{Numeric, metabolic flux (negative for
 #'    consumption, positive for production).}
 #' }
+#'
+#' @details
+#' Metabolite identifiers follow the BiGG (Biochemically,
+#' Genetically and Genomically structured) knowledge base
+#' namespace (\url{https://bigg.ucsd.edu}; King et al. 2016).
+#' Raw exchange reaction IDs from flux-balance simulators
+#' (e.g. \code{R_EX_ac_e}, \code{EX_ac_e}) are normalized to
+#' bare metabolite names by \code{importMisosoup()} via
+#' \code{normalize_ids = TRUE} (default).
+#'
+#' @references
+#' King ZA et al. (2016) BiGG Models: A platform for
+#' integrating, standardizing and sharing genome-scale models.
+#' \emph{Nucleic Acids Research}, 44(D1), D515--D522.
+#' \doi{10.1093/nar/gkv1049}
 #'
 #' @examples
 #' data("misosoup24")
