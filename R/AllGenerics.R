@@ -9,11 +9,7 @@
 #'   [ConsortiumMetabolismAlignment] object.
 #' @param ... Additional arguments passed to methods.
 #'
-#' @return For [ConsortiumMetabolism] and
-#'   [ConsortiumMetabolismAlignment], a character vector
-#'   of species names. For [ConsortiumMetabolismSet], a
-#'   tibble with columns \code{species} and
-#'   \code{n_pathways}.
+#' @return A character vector of species names.
 #'
 #' @examples
 #' cm <- synCM("test", n_species = 3, max_met = 5)
@@ -23,6 +19,125 @@
 setGeneric(
     "species",
     function(object, ...) standardGeneric("species")
+)
+
+#' @title Species Summary
+#'
+#' @description
+#' Returns an enriched per-species summary as a tibble.
+#' Provides more detail than \code{species()}, which
+#' returns only a character vector.
+#'
+#' @param object A \code{ConsortiumMetabolism},
+#'   \code{ConsortiumMetabolismSet}, or
+#'   \code{ConsortiumMetabolismAlignment} object.
+#' @param ... Additional arguments passed to methods.
+#'
+#' @return A tibble with per-species metrics. Columns
+#'   depend on the class:
+#'   \itemize{
+#'     \item \code{ConsortiumMetabolism}: \code{species},
+#'       \code{n_pathways}, \code{n_consumed},
+#'       \code{n_produced}.
+#'     \item \code{ConsortiumMetabolismSet}:
+#'       \code{species}, \code{n_consortia},
+#'       \code{n_pathways}.
+#'     \item \code{ConsortiumMetabolismAlignment}
+#'       (pairwise): \code{species}, \code{role}
+#'       (\code{"shared"}, \code{"unique_query"}, or
+#'       \code{"unique_reference"}).
+#'   }
+#'
+#' @examples
+#' cm <- synCM("test", n_species = 3, max_met = 5)
+#' speciesSummary(cm)
+#'
+#' @export
+setGeneric(
+    "speciesSummary",
+    function(object, ...) standardGeneric("speciesSummary")
+)
+
+#' @title Filter Consortia from a Set
+#'
+#' @description
+#' Selects a subset of consortia from a
+#' \code{ConsortiumMetabolismSet}, returning a fully
+#' recomputed \code{ConsortiumMetabolismSet} containing
+#' only the selected consortia.
+#'
+#' @param object A \code{ConsortiumMetabolismSet} object.
+#' @param i Integer vector of indices, character vector
+#'   of consortium names, or logical vector of length
+#'   equal to the number of consortia.
+#'
+#' @return A \code{ConsortiumMetabolismSet} containing
+#'   only the selected consortia.
+#'
+#' @examples
+#' cm1 <- synCM("a", n_species = 3, max_met = 5)
+#' cm2 <- synCM("b", n_species = 3, max_met = 5)
+#' cms <- ConsortiumMetabolismSet(cm1, cm2, name = "test")
+#' filterConsortia(cms, 1L)
+#'
+#' @export
+setGeneric(
+    "filterConsortia",
+    function(object, i) standardGeneric("filterConsortia")
+)
+
+#' @title Compare Two Species by Pathway Set
+#'
+#' @description
+#' Computes similarity metrics between the pathway sets
+#' of two species. Two dispatch modes are supported:
+#' \itemize{
+#'   \item \code{compareSpecies(cm, sp1, sp2)}: compare
+#'     two species within the same
+#'     \code{ConsortiumMetabolism} object.
+#'   \item \code{compareSpecies(cm1, cm2, sp1, sp2)}:
+#'     compare one species from each of two
+#'     \code{ConsortiumMetabolism} objects (e.g. the
+#'     same species under different growth conditions).
+#' }
+#'
+#' The pathway set for a species is the set of
+#' (consumed, produced) pairs in which that species
+#' participates.
+#'
+#' @param x A \code{ConsortiumMetabolism} object, or
+#'   the first consortium in a cross-CM comparison.
+#' @param y Character scalar naming species 1 (for
+#'   same-CM comparison), or a second
+#'   \code{ConsortiumMetabolism} object (for cross-CM).
+#' @param ... For same-CM: \code{sp2} (character scalar
+#'   naming the second species). For cross-CM:
+#'   \code{sp1} and \code{sp2} (character scalars naming
+#'   one species from each consortium).
+#'
+#' @return A named list with elements:
+#'   \describe{
+#'     \item{\code{fos}}{Szymkiewicz-Simpson overlap
+#'       score (intersection over min set size).}
+#'     \item{\code{jaccard}}{Jaccard similarity
+#'       (intersection over union).}
+#'     \item{\code{n_shared}}{Number of shared
+#'       pathways.}
+#'     \item{\code{n_unique_sp1}}{Pathways only in
+#'       sp1.}
+#'     \item{\code{n_unique_sp2}}{Pathways only in
+#'       sp2.}
+#'   }
+#'
+#' @examples
+#' cm <- synCM("test", n_species = 3, max_met = 5)
+#' sp <- species(cm)
+#' compareSpecies(cm, sp[1], sp[2])
+#'
+#' @export
+setGeneric(
+    "compareSpecies",
+    function(x, y, ...) standardGeneric("compareSpecies")
 )
 
 #' @title Get Metabolites

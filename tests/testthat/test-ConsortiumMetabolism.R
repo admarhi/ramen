@@ -241,3 +241,34 @@ test_that("synCM generates synthetic communities", {
     expect_equal(syn@Name, "synthetic")
     expect_true(nrow(syn@Pathways) > 0)
 })
+
+## ---- speciesSummary(CM) -----------------------------------------------------
+
+test_that("speciesSummary(CM) returns tibble with correct columns", {
+    test_data <- tibble::tibble(
+        species = c("s1", "s1", "s2", "s2"),
+        metabolite = c("m1", "m2", "m1", "m3"),
+        flux = c(-1, 1, -1, 1)
+    )
+    cm <- ConsortiumMetabolism(test_data, name = "test")
+    ss <- speciesSummary(cm)
+    expect_s3_class(ss, "tbl_df")
+    expect_named(
+        ss,
+        c("species", "n_pathways", "n_consumed", "n_produced")
+    )
+})
+
+test_that("speciesSummary(CM) counts are non-negative integers", {
+    cm <- synCM("test", n_species = 4, max_met = 6, seed = 1)
+    ss <- speciesSummary(cm)
+    expect_true(all(ss$n_pathways >= 1L))
+    expect_true(all(ss$n_consumed >= 1L))
+    expect_true(all(ss$n_produced >= 1L))
+})
+
+test_that("speciesSummary(CM) species match species(cm)", {
+    cm <- synCM("test", n_species = 3, max_met = 5, seed = 2)
+    ss <- speciesSummary(cm)
+    expect_setequal(ss$species, species(cm))
+})

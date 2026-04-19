@@ -190,40 +190,26 @@ setMethod("growth", "ConsortiumMetabolismSet", function(object) {
     )
 })
 
-#' @describeIn species Return Species in a Microbiome
-#' @param object a \code{ConsortiumMetabolismSet} Object
-#' @param type Character scalar giving the type of species
-#'   to output.
-#' @param quantileCutoff Numeric scalar between 0 and 1
-#'   specifying the fraction of species to return when
-#'   \code{type} is "generalists" or "specialists".
-#'   For "generalists", the top \code{quantileCutoff}
-#'   fraction of species with the most pathways is
-#'   returned. For "specialists", the bottom
-#'   \code{quantileCutoff} fraction with the fewest
-#'   pathways is returned. Defaults to 0.15 (i.e., 15
-#'   percent). Ignored when \code{type = "all"}.
-#'
+#' @describeIn species Return Species in a
+#'   \code{ConsortiumMetabolismSet}
+#' @param object A \code{ConsortiumMetabolismSet} object.
 setMethod(
     "species",
     "ConsortiumMetabolismSet",
-    function(
-        object,
-        type = c("all", "generalists", "specialists"),
-        quantileCutoff = 0.15
-    ) {
-        type <- match.arg(type)
+    function(object, ...) {
+        sort(unique(object@Pathways$species))
+    }
+)
 
-        # Validate quantileCutoff parameter
-        if (quantileCutoff <= 0 || quantileCutoff >= 1) {
-            cli::cli_abort(
-                "{.arg quantileCutoff} must be between \\
-                0 and 1 (exclusive), not \\
-                {.val {quantileCutoff}}."
-            )
-        }
-
-        tb <- object@Pathways |>
+#' @describeIn speciesSummary Species summary for a
+#'   \code{ConsortiumMetabolismSet}
+#' @param object A \code{ConsortiumMetabolismSet} object.
+#' @export
+setMethod(
+    "speciesSummary",
+    "ConsortiumMetabolismSet",
+    function(object, ...) {
+        object@Pathways |>
             dplyr::mutate(
                 pathway_name = paste0(
                     .data$consumed,
@@ -232,28 +218,81 @@ setMethod(
                 )
             ) |>
             dplyr::reframe(
+                n_consortia = dplyr::n_distinct(
+                    .data$cm_name
+                ),
                 n_pathways = dplyr::n_distinct(
                     .data$pathway_name
                 ),
                 .by = "species"
             ) |>
             dplyr::arrange(dplyr::desc(.data$n_pathways))
+    }
+)
 
-        total_species <- length(unique(tb$species))
-        if (type == "all") {
-            tb
-        } else if (type == "generalists") {
-            # Get the top quantileCutoff fraction of species
-            n_species_to_return <- ceiling(
-                total_species * quantileCutoff
+#' @describeIn filterConsortia Filter consortia from a
+#'   \code{ConsortiumMetabolismSet}
+#' @param object A \code{ConsortiumMetabolismSet} object.
+#' @param i Integer vector, character vector of consortium
+#'   names, or logical vector.
+#' @importFrom S4Vectors metadata
+#' @export
+setMethod(
+    "filterConsortia",
+    "ConsortiumMetabolismSet",
+    function(object, i) {
+        n <- length(object@Consortia)
+        cm_names <- vapply(
+            object@Consortia,
+            \(x) x@Name,
+            character(1L)
+        )
+
+        idx <- if (is.logical(i)) {
+            if (length(i) != n) {
+                cli::cli_abort(
+                    "Logical {.arg i} must have length \\
+                    {n}, not {length(i)}."
+                )
+            }
+            which(i)
+        } else if (is.character(i)) {
+            not_found <- setdiff(i, cm_names)
+            if (length(not_found) > 0L) {
+                cli::cli_abort(
+                    "Consortium name{?s} not found: \\
+                    {.val {not_found}}."
+                )
+            }
+            match(i, cm_names)
+        } else if (is.numeric(i)) {
+            idx_int <- as.integer(i)
+            oob <- idx_int[idx_int < 1L | idx_int > n]
+            if (length(oob) > 0L) {
+                cli::cli_abort(
+                    "Index {.val {oob}} out of bounds \\
+                    (1 to {n})."
+                )
+            }
+            idx_int
+        } else {
+            cli::cli_abort(
+                "{.arg i} must be integer, character, \\
+                or logical, not {.cls {class(i)}}."
             )
-            tb |> dplyr::slice_head(n = n_species_to_return)
-        } else if (type == "specialists") {
-            # Get the bottom quantileCutoff fraction of species
-            n_species_to_return <- ceiling(
-                total_species * quantileCutoff
-            )
-            tb |> dplyr::slice_tail(n = n_species_to_return)
         }
+
+        selected <- object@Consortia[idx]
+        lnk <- metadata(object)$linkage
+        if (is.null(lnk)) {
+            lnk <- "complete"
+        }
+        ConsortiumMetabolismSet(
+            selected,
+            name = object@Name,
+            desc = object@Description,
+            linkage = lnk,
+            verbose = FALSE
+        )
     }
 )

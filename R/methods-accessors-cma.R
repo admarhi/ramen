@@ -69,6 +69,66 @@ setMethod(
 
 ## ---- Additional CMA accessors ----------------------------------------------
 
+#' @describeIn speciesSummary Species summary for a
+#'   \code{ConsortiumMetabolismAlignment}. Only
+#'   available for pairwise alignments.
+#' @param object A \code{ConsortiumMetabolismAlignment}.
+#' @export
+setMethod(
+    "speciesSummary",
+    "ConsortiumMetabolismAlignment",
+    function(object, ...) {
+        if (
+            is.na(object@Type) ||
+                object@Type != "pairwise"
+        ) {
+            cli::cli_abort(
+                "{.fun speciesSummary} for \\
+                {.cls ConsortiumMetabolismAlignment} \\
+                is only available for pairwise \\
+                alignments. For multiple alignments, \\
+                use {.fun speciesSummary} on the \\
+                original \\
+                {.cls ConsortiumMetabolismSet}."
+            )
+        }
+
+        shared_pw <- object@SharedPathways
+        query_sp <- if (nrow(shared_pw) > 0L) {
+            sp <- unique(unlist(lapply(
+                shared_pw$querySpecies,
+                \(x) x$species
+            )))
+            sp[!is.na(sp)]
+        } else {
+            character(0L)
+        }
+        reference_sp <- if (nrow(shared_pw) > 0L) {
+            sp <- unique(unlist(lapply(
+                shared_pw$referenceSpecies,
+                \(x) x$species
+            )))
+            sp[!is.na(sp)]
+        } else {
+            character(0L)
+        }
+
+        shared <- intersect(query_sp, reference_sp)
+        uq <- setdiff(query_sp, reference_sp)
+        ur <- setdiff(reference_sp, query_sp)
+
+        tibble::tibble(
+            species = c(shared, uq, ur),
+            role = c(
+                rep("shared", length(shared)),
+                rep("unique_query", length(uq)),
+                rep("unique_reference", length(ur))
+            )
+        ) |>
+            dplyr::arrange(.data$role, .data$species)
+    }
+)
+
 #' @describeIn pathways Get Pathways From a
 #'   \code{ConsortiumMetabolismAlignment} Object
 #' @export

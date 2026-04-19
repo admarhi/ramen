@@ -62,6 +62,7 @@ Collate:
     'methods-accessors-cms.R'
     'methods-accessors-shared.R'
     'methods-align.R'
+    'methods-compareSpecies.R'
     'methods-extractCluster.R'
     'methods-functionalGroups.R'
     'methods-plot.R'

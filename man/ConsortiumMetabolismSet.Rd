@@ -82,5 +82,5 @@ cms
 }
 \seealso{
 \linkS4class{ConsortiumMetabolism},
-\link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{TreeSummarizedExperiment}
+\linkS4class{TreeSummarizedExperiment}
 }

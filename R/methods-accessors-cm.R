@@ -30,11 +30,42 @@ setMethod("metabolites", "ConsortiumMetabolism", function(object) {
     object@Metabolites
 })
 
-#' @describeIn species Return Species in a Microbiome
-#' @param object a \code{ConsortiumMetabolism} object
+#' @describeIn species Return Species in a
+#'   \code{ConsortiumMetabolism}
+#' @param object A \code{ConsortiumMetabolism} object.
 setMethod("species", "ConsortiumMetabolism", function(object) {
     unique(object@InputData$species)
 })
+
+#' @describeIn speciesSummary Species summary for a
+#'   \code{ConsortiumMetabolism}
+#' @param object A \code{ConsortiumMetabolism} object.
+#' @export
+setMethod(
+    "speciesSummary",
+    "ConsortiumMetabolism",
+    function(object, ...) {
+        object@Pathways |>
+            tidyr::unnest("data") |>
+            dplyr::reframe(
+                n_pathways = dplyr::n_distinct(
+                    paste0(
+                        .data$consumed,
+                        "-",
+                        .data$produced
+                    )
+                ),
+                n_consumed = dplyr::n_distinct(
+                    .data$consumed
+                ),
+                n_produced = dplyr::n_distinct(
+                    .data$produced
+                ),
+                .by = "species"
+            ) |>
+            dplyr::arrange(dplyr::desc(.data$n_pathways))
+    }
+)
 
 #' @param object An object of class \code{ConsortiumMetabolism}
 #' @describeIn consortia Get the Community

@@ -267,7 +267,8 @@ ConsortiumMetabolismSet <- function(
     )
 
     ## ---- Done -------------------------------------------------
-    elapsed <- round( # nolint: object_usage_linter.
+    elapsed <- round(
+        # nolint: object_usage_linter.
         proc.time()[["elapsed"]] - t_start,
         1L
     )

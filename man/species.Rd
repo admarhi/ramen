@@ -14,36 +14,15 @@ species(object, ...)
 
 \S4method{species}{ConsortiumMetabolismAlignment}(object)
 
-\S4method{species}{ConsortiumMetabolismSet}(
-  object,
-  type = c("all", "generalists", "specialists"),
-  quantileCutoff = 0.15
-)
+\S4method{species}{ConsortiumMetabolismSet}(object, ...)
 }
 \arguments{
-\item{object}{a \code{ConsortiumMetabolismSet} Object}
+\item{object}{A \code{ConsortiumMetabolismSet} object.}
 
 \item{...}{Additional arguments passed to methods.}
-
-\item{type}{Character scalar giving the type of species
-to output.}
-
-\item{quantileCutoff}{Numeric scalar between 0 and 1
-specifying the fraction of species to return when
-\code{type} is "generalists" or "specialists".
-For "generalists", the top \code{quantileCutoff}
-fraction of species with the most pathways is
-returned. For "specialists", the bottom
-\code{quantileCutoff} fraction with the fewest
-pathways is returned. Defaults to 0.15 (i.e., 15
-percent). Ignored when \code{type = "all"}.}
 }
 \value{
-For \link{ConsortiumMetabolism} and
-\link{ConsortiumMetabolismAlignment}, a character vector
-of species names. For \link{ConsortiumMetabolismSet}, a
-tibble with columns \code{species} and
-\code{n_pathways}.
+A character vector of species names.
 }
 \description{
 Returns the species present in a consortium or set of
@@ -51,12 +30,14 @@ consortia.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{species(ConsortiumMetabolism)}: Return Species in a Microbiome
+\item \code{species(ConsortiumMetabolism)}: Return Species in a
+\code{ConsortiumMetabolism}
 
 \item \code{species(ConsortiumMetabolismAlignment)}: Return species from a
 \code{ConsortiumMetabolismAlignment}
 
-\item \code{species(ConsortiumMetabolismSet)}: Return Species in a Microbiome
+\item \code{species(ConsortiumMetabolismSet)}: Return Species in a
+\code{ConsortiumMetabolismSet}
 
 }}
 \examples{

@@ -25,30 +25,27 @@ test_that("ConsortiumMetabolismSet constructor works", {
     expect_s3_class(cms@Pathways, "data.frame")
 })
 
-test_that("ConsortiumMetabolismSet species works", {
-    # Create test consortia with overlapping species
+test_that("species(CMS) returns character vector", {
     data1 <- tibble::tibble(
         species = c("s1", "s1", "s2", "s2"),
         metabolite = c("m1", "m2", "m1", "m3"),
         flux = c(-1, 1, -1, 1)
     )
-
     data2 <- tibble::tibble(
         species = c("s2", "s2", "s3", "s3"),
         metabolite = c("m1", "m2", "m1", "m4"),
         flux = c(-1, 1, -1, 1)
     )
-
     cm1 <- ConsortiumMetabolism(data1, name = "cm1")
     cm2 <- ConsortiumMetabolism(data2, name = "cm2")
     cms <- ConsortiumMetabolismSet(list(cm1, cm2), name = "test")
 
-    # Get all species (returns a tibble with species and n_pathways columns)
-    all_species <- species(cms, type = "all")
-    expect_s3_class(all_species, "tbl_df")
-    expect_true("s1" %in% all_species$species)
-    expect_true("s2" %in% all_species$species)
-    expect_true("s3" %in% all_species$species)
+    sp <- species(cms)
+    expect_type(sp, "character")
+    expect_true("s1" %in% sp)
+    expect_true("s2" %in% sp)
+    expect_true("s3" %in% sp)
+    expect_equal(sp, sort(unique(sp)))
 })
 
 test_that("CMS pathways returns concise output by default", {
@@ -350,4 +347,133 @@ test_that("show(cms) includes consortium count and community size stats", {
     expect_match(out, "max")
     expect_match(out, "mean")
     expect_match(out, "metabolites")
+})
+
+## ---- speciesSummary(CMS) ----------------------------------------------------
+
+test_that("speciesSummary(CMS) returns tibble with correct columns", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 4, max_met = 6, seed = 2)
+    cms <- ConsortiumMetabolismSet(
+        list(cm1, cm2),
+        name = "test"
+    )
+    ss <- speciesSummary(cms)
+    expect_s3_class(ss, "tbl_df")
+    expect_named(ss, c("species", "n_consortia", "n_pathways"))
+    expect_type(ss$species, "character")
+    expect_type(ss$n_consortia, "integer")
+    expect_type(ss$n_pathways, "integer")
+})
+
+test_that("speciesSummary(CMS) n_consortia bounded by n_consortia", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
+    cms <- ConsortiumMetabolismSet(
+        list(cm1, cm2),
+        name = "test"
+    )
+    ss <- speciesSummary(cms)
+    expect_true(all(ss$n_consortia >= 1L))
+    expect_true(all(ss$n_consortia <= 2L))
+})
+
+test_that("speciesSummary(CMS) species match species(CMS)", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 4, max_met = 6, seed = 2)
+    cms <- ConsortiumMetabolismSet(
+        list(cm1, cm2),
+        name = "test"
+    )
+    expect_setequal(speciesSummary(cms)$species, species(cms))
+})
+
+## ---- filterConsortia(CMS) ---------------------------------------------------
+
+test_that("filterConsortia integer index returns correct subset", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
+    cm3 <- synCM("c", n_species = 3, max_met = 5, seed = 3)
+    cms <- ConsortiumMetabolismSet(
+        list(cm1, cm2, cm3),
+        name = "full"
+    )
+    sub <- filterConsortia(cms, c(1L, 3L))
+    expect_s4_class(sub, "ConsortiumMetabolismSet")
+    expect_equal(length(sub@Consortia), 2L)
+    expect_equal(
+        vapply(sub@Consortia, name, character(1L)),
+        c("a", "c")
+    )
+})
+
+test_that("filterConsortia character names returns correct subset", {
+    cm1 <- synCM("alpha", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("beta", n_species = 3, max_met = 5, seed = 2)
+    cm3 <- synCM("gamma", n_species = 3, max_met = 5, seed = 3)
+    cms <- ConsortiumMetabolismSet(
+        list(cm1, cm2, cm3),
+        name = "full"
+    )
+    sub <- filterConsortia(cms, c("alpha", "gamma"))
+    expect_equal(length(sub@Consortia), 2L)
+    expect_equal(
+        vapply(sub@Consortia, name, character(1L)),
+        c("alpha", "gamma")
+    )
+})
+
+test_that("filterConsortia logical vector returns correct subset", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
+    cm3 <- synCM("c", n_species = 3, max_met = 5, seed = 3)
+    cms <- ConsortiumMetabolismSet(
+        list(cm1, cm2, cm3),
+        name = "full"
+    )
+    sub <- filterConsortia(cms, c(TRUE, FALSE, TRUE))
+    expect_equal(length(sub@Consortia), 2L)
+    expect_equal(
+        vapply(sub@Consortia, name, character(1L)),
+        c("a", "c")
+    )
+})
+
+test_that("filterConsortia preserves name and description", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
+    cms <- ConsortiumMetabolismSet(
+        list(cm1, cm2),
+        name = "myname",
+        desc = "mydesc"
+    )
+    sub <- filterConsortia(cms, 1L)
+    expect_equal(sub@Name, "myname")
+    expect_equal(sub@Description, "mydesc")
+})
+
+test_that("filterConsortia errors on out-of-bounds integer", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
+    cms <- ConsortiumMetabolismSet(
+        list(cm1, cm2),
+        name = "test"
+    )
+    expect_error(filterConsortia(cms, 5L), "out of bounds")
+})
+
+test_that("filterConsortia errors on unknown character name", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cms <- ConsortiumMetabolismSet(list(cm1), name = "test")
+    expect_error(filterConsortia(cms, "zzz"), "not found")
+})
+
+test_that("filterConsortia errors on wrong-length logical", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
+    cms <- ConsortiumMetabolismSet(
+        list(cm1, cm2),
+        name = "test"
+    )
+    expect_error(filterConsortia(cms, c(TRUE)), "length")
 })

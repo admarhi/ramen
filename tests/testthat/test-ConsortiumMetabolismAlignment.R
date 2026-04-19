@@ -307,3 +307,35 @@ test_that("scores() omits pvalue when not computed", {
     s <- scores(cma)
     expect_false("pvalue" %in% names(s))
 })
+
+## ---- speciesSummary(CMA) ----------------------------------------------------
+
+test_that("speciesSummary(CMA) pairwise returns tibble with role", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
+    cma <- align(cm1, cm2)
+    ss <- speciesSummary(cma)
+    expect_s3_class(ss, "tbl_df")
+    expect_named(ss, c("species", "role"))
+    expect_true(
+        all(
+            ss$role %in%
+                c(
+                    "shared",
+                    "unique_query",
+                    "unique_reference"
+                )
+        )
+    )
+})
+
+test_that("speciesSummary(CMA) errors for multiple alignment", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
+    cms <- ConsortiumMetabolismSet(
+        list(cm1, cm2),
+        name = "test"
+    )
+    cma <- align(cms)
+    expect_error(speciesSummary(cma), "pairwise")
+})
