@@ -294,20 +294,9 @@ returns all species with the number of distinct pathways each catalyses:
 
 ``` r
 species(cms)
-#> # A tibble: 23 × 2
-#>    species n_pathways
-#>    <chr>        <int>
-#>  1 A1R12          302
-#>  2 D2M19          132
-#>  3 E3M18          108
-#>  4 F3R08           99
-#>  5 m_3C02          96
-#>  6 C2R02           91
-#>  7 m_3D05          91
-#>  8 C3R12           88
-#>  9 I3M07           88
-#> 10 B3M02           88
-#> # ℹ 13 more rows
+#>  [1] "A1R12"  "A3R04"  "A3R12"  "B3M02"  "B3R10"  "C1M14"  "C2M11"  "C2R02" 
+#>  [9] "C3R12"  "D2M19"  "D2R05"  "D3R19"  "E3M18"  "E3R01"  "E3R11"  "F3R08" 
+#> [17] "G2R10"  "I2R16"  "I3M07"  "m_3C02" "m_3D05" "m_4B03" "m_6C06"
 ```
 
 Filter by metabolic role – generalists (top fraction by pathway count)
@@ -315,21 +304,13 @@ or specialists (bottom fraction):
 
 ``` r
 species(cms, type = "generalists")
-#> # A tibble: 4 × 2
-#>   species n_pathways
-#>   <chr>        <int>
-#> 1 A1R12          302
-#> 2 D2M19          132
-#> 3 E3M18          108
-#> 4 F3R08           99
+#>  [1] "A1R12"  "A3R04"  "A3R12"  "B3M02"  "B3R10"  "C1M14"  "C2M11"  "C2R02" 
+#>  [9] "C3R12"  "D2M19"  "D2R05"  "D3R19"  "E3M18"  "E3R01"  "E3R11"  "F3R08" 
+#> [17] "G2R10"  "I2R16"  "I3M07"  "m_3C02" "m_3D05" "m_4B03" "m_6C06"
 species(cms, type = "specialists")
-#> # A tibble: 4 × 2
-#>   species n_pathways
-#>   <chr>        <int>
-#> 1 B3R10           50
-#> 2 I2R16           45
-#> 3 A3R04           36
-#> 4 C1M14           35
+#>  [1] "A1R12"  "A3R04"  "A3R12"  "B3M02"  "B3R10"  "C1M14"  "C2M11"  "C2R02" 
+#>  [9] "C3R12"  "D2M19"  "D2R05"  "D3R19"  "E3M18"  "E3R01"  "E3R11"  "F3R08" 
+#> [17] "G2R10"  "I2R16"  "I3M07"  "m_3C02" "m_3D05" "m_4B03" "m_6C06"
 ```
 
 ### Pathway classification

@@ -1,46 +1,112 @@
-# Compare Species
+# Compare Two Species by Pathway Set
 
-Compares the metabolisms of two species and outputs a list of tibbles,
-containing the tibbles intersection, unique, and consistency. As the
-name suggests, intersection, unique contain the intersection and unique
-pathways per species compared, while the consistency tibble contains
-information on whether or not a specie's set of pathways is consistent
-in all of the consortia in which it is present or not. If all species
-contain the same edges in all consortia in which they appear, this
-tibble will be returned with 0 rows. For `ConsortiumMetabolismSet`
-objects.
+Computes similarity metrics between the pathway sets of two species. Two
+dispatch modes are supported:
+
+- `compareSpecies(cm, sp1, sp2)`: compare two species within the same
+  `ConsortiumMetabolism` object.
+
+- `compareSpecies(cm1, cm2, sp1, sp2)`: compare one species from each of
+  two `ConsortiumMetabolism` objects (e.g. the same species under
+  different growth conditions).
+
+The pathway set for a species is the set of (consumed, produced) pairs
+in which that species participates.
 
 ## Usage
 
 ``` r
-compareSpecies(object, species)
+compareSpecies(x, y, ...)
 
-# S4 method for class 'ConsortiumMetabolismSet'
-compareSpecies(object, species)
+# S4 method for class 'ConsortiumMetabolism,character'
+compareSpecies(x, y, sp2, ...)
+
+# S4 method for class 'ConsortiumMetabolism,ConsortiumMetabolism'
+compareSpecies(x, y, sp1, sp2, ...)
 ```
 
 ## Arguments
 
-- object:
+- x:
 
-  A `ConsortiumMetabolismSet` object.
+  A
+  [ConsortiumMetabolism](https://admarhi.github.io/ramen/reference/ConsortiumMetabolism.md)
+  object (first).
 
-- species:
+- y:
 
-  A character vector of species names to compare
+  A
+  [ConsortiumMetabolism](https://admarhi.github.io/ramen/reference/ConsortiumMetabolism.md)
+  object (second).
+
+- ...:
+
+  For same-CM: `sp2` (character scalar naming the second species). For
+  cross-CM: `sp1` and `sp2` (character scalars naming one species from
+  each consortium).
+
+- sp2:
+
+  Character scalar; species from `y`.
+
+- sp1:
+
+  Character scalar; species from `x`.
 
 ## Value
 
-A list of tibbles.
+A named list with elements:
 
-## Details
+- `fos`:
 
-This method is currently implemented for `ConsortiumMetabolismSet`
-objects. Future versions will extend functionality to
-`ConsortiumMetabolism` objects to allow for the analysis of species
-within a single consortium different alignments.
+  Szymkiewicz-Simpson overlap score (intersection over min set size).
+
+- `jaccard`:
+
+  Jaccard similarity (intersection over union).
+
+- `n_shared`:
+
+  Number of shared pathways.
+
+- `n_unique_sp1`:
+
+  Pathways only in sp1.
+
+- `n_unique_sp2`:
+
+  Pathways only in sp2.
 
 ## Methods (by class)
 
-- `compareSpecies(ConsortiumMetabolismSet)`: Compare Species in a
-  ConsortiumMetabolismSet
+- `compareSpecies(x = ConsortiumMetabolism, y = character)`: Compare two
+  species within the same
+  [ConsortiumMetabolism](https://admarhi.github.io/ramen/reference/ConsortiumMetabolism.md)
+
+- `compareSpecies(x = ConsortiumMetabolism, y = ConsortiumMetabolism)`:
+  Compare one species from each of two
+  [ConsortiumMetabolism](https://admarhi.github.io/ramen/reference/ConsortiumMetabolism.md)
+  objects
+
+## Examples
+
+``` r
+cm <- synCM("test", n_species = 3, max_met = 5)
+sp <- species(cm)
+compareSpecies(cm, sp[1], sp[2])
+#> $fos
+#> [1] 0.5
+#> 
+#> $jaccard
+#> [1] 0.1428571
+#> 
+#> $n_shared
+#> [1] 1
+#> 
+#> $n_unique_sp1
+#> [1] 1
+#> 
+#> $n_unique_sp2
+#> [1] 5
+#> 
+```

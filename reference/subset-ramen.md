@@ -13,11 +13,13 @@ retains its own metabolite space.
 **Note on consortium-level selection:** to extract a subset of consortia
 rather than a subset of the metabolite space, use
 [`extractCluster`](https://admarhi.github.io/ramen/reference/extractCluster.md)
-(dendrogram-based) or the planned `filterConsortia()` method. Metabolite
-subsetting is appropriate when the analysis should focus on a specific
-part of the metabolic network — for example, subsetting to the
-core-pathway metabolites (`pathways(cms, type = "core")`) to compare
-consortia on their shared metabolic backbone only.
+(dendrogram-based) or the planned
+[`filterConsortia()`](https://admarhi.github.io/ramen/reference/filterConsortia.md)
+method. Metabolite subsetting is appropriate when the analysis should
+focus on a specific part of the metabolic network — for example,
+subsetting to the core-pathway metabolites
+(`pathways(cms, type = "core")`) to compare consortia on their shared
+metabolic backbone only.
 
 `ConsortiumMetabolism` and `ConsortiumMetabolismAlignment` do not
 support `[` and return an informative error.

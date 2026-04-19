@@ -114,27 +114,29 @@ indices. For CMA objects, the return depends on `type`: a data.frame for
 ``` r
 cm <- synCM("test", n_species = 3, max_met = 5)
 pathways(cm)
-#> # A tibble: 7 × 3
+#> # A tibble: 8 × 3
 #>   consumed produced n_species
 #>   <chr>    <chr>        <dbl>
-#> 1 met5     met3             1
-#> 2 met5     met1             1
-#> 3 met3     met5             1
-#> 4 met2     met5             1
-#> 5 met2     met3             1
-#> 6 met4     met3             1
-#> 7 met4     met1             1
+#> 1 met4     met3             1
+#> 2 met4     met5             1
+#> 3 met5     met4             1
+#> 4 met5     met3             1
+#> 5 met1     met3             2
+#> 6 met2     met3             2
+#> 7 met1     met4             1
+#> 8 met2     met4             1
 pathways(cm, verbose = TRUE)
-#> # A tibble: 7 × 12
+#> # A tibble: 8 × 12
 #>   consumed produced data     n_species c_sum p_sum c_prob    p_prob c_eff p_eff
 #>   <chr>    <chr>    <list>       <dbl> <dbl> <dbl> <list>    <list> <dbl> <dbl>
-#> 1 met5     met3     <tibble>         1  2.76  2.89 <dbl [1]> <dbl>      1     1
-#> 2 met5     met1     <tibble>         1  2.76  2.45 <dbl [1]> <dbl>      1     1
-#> 3 met3     met5     <tibble>         1  6.36  1.14 <dbl [1]> <dbl>      1     1
-#> 4 met2     met5     <tibble>         1  1.20  1.62 <dbl [1]> <dbl>      1     1
-#> 5 met2     met3     <tibble>         1  1.20  3.45 <dbl [1]> <dbl>      1     1
-#> 6 met4     met3     <tibble>         1  3.08  2.89 <dbl [1]> <dbl>      1     1
-#> 7 met4     met1     <tibble>         1  3.08  2.45 <dbl [1]> <dbl>      1     1
+#> 1 met4     met3     <tibble>         1 0.121  2.04 <dbl [1]> <dbl>   1     1   
+#> 2 met4     met5     <tibble>         1 1.57   1.30 <dbl [1]> <dbl>   1     1   
+#> 3 met5     met4     <tibble>         1 1.30   1.69 <dbl [1]> <dbl>   1     1   
+#> 4 met5     met3     <tibble>         1 1.30   6.28 <dbl [1]> <dbl>   1     1   
+#> 5 met1     met3     <tibble>         2 1.90   8.32 <dbl [2]> <dbl>   2     1.74
+#> 6 met2     met3     <tibble>         2 3.47   8.32 <dbl [2]> <dbl>   1.83  1.74
+#> 7 met1     met4     <tibble>         1 1.02   1.69 <dbl [1]> <dbl>   1     1   
+#> 8 met2     met4     <tibble>         1 2.45   1.69 <dbl [1]> <dbl>   1     1   
 #> # ℹ 2 more variables: c_ind <int>, p_ind <int>
 
 cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
@@ -148,29 +150,21 @@ pathways(cma, type = "shared")
 #> # ℹ 2 variables: consumed <chr>, produced <chr>
 pathways(cma, type = "unique")
 #> $query
-#> # A tibble: 11 × 2
-#>    consumed produced
-#>    <chr>    <chr>   
-#>  1 met2     met1    
-#>  2 met3     met1    
-#>  3 met4     met1    
-#>  4 met5     met1    
-#>  5 met2     met3    
-#>  6 met4     met3    
-#>  7 met2     met4    
-#>  8 met3     met4    
-#>  9 met5     met4    
-#> 10 met2     met5    
-#> 11 met4     met5    
-#> 
-#> $reference
-#> # A tibble: 5 × 2
+#> # A tibble: 4 × 2
 #>   consumed produced
 #>   <chr>    <chr>   
-#> 1 met1     met4    
-#> 2 met6     met4    
-#> 3 met1     met5    
-#> 4 met6     met5    
-#> 5 met4     met6    
+#> 1 met1     media   
+#> 2 met5     met1    
+#> 3 met5     met2    
+#> 4 met1     met5    
+#> 
+#> $reference
+#> # A tibble: 4 × 2
+#>   consumed produced
+#>   <chr>    <chr>   
+#> 1 met5     met3    
+#> 2 met6     met3    
+#> 3 met3     met4    
+#> 4 met3     met6    
 #> 
 ```

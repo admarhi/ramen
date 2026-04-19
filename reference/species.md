@@ -14,59 +14,38 @@ species(object)
 species(object)
 
 # S4 method for class 'ConsortiumMetabolismSet'
-species(
-  object,
-  type = c("all", "generalists", "specialists"),
-  quantileCutoff = 0.15
-)
+species(object, ...)
 ```
 
 ## Arguments
 
 - object:
 
-  a `ConsortiumMetabolismSet` Object
+  A `ConsortiumMetabolismSet` object.
 
 - ...:
 
   Additional arguments passed to methods.
 
-- type:
-
-  Character scalar giving the type of species to output.
-
-- quantileCutoff:
-
-  Numeric scalar between 0 and 1 specifying the fraction of species to
-  return when `type` is "generalists" or "specialists". For
-  "generalists", the top `quantileCutoff` fraction of species with the
-  most pathways is returned. For "specialists", the bottom
-  `quantileCutoff` fraction with the fewest pathways is returned.
-  Defaults to 0.15 (i.e., 15 percent). Ignored when `type = "all"`.
-
 ## Value
 
-For
-[ConsortiumMetabolism](https://admarhi.github.io/ramen/reference/ConsortiumMetabolism.md)
-and
-[ConsortiumMetabolismAlignment](https://admarhi.github.io/ramen/reference/ConsortiumMetabolismAlignment.md),
-a character vector of species names. For
-[ConsortiumMetabolismSet](https://admarhi.github.io/ramen/reference/ConsortiumMetabolismSet.md),
-a tibble with columns `species` and `n_pathways`.
+A character vector of species names.
 
 ## Methods (by class)
 
-- `species(ConsortiumMetabolism)`: Return Species in a Microbiome
+- `species(ConsortiumMetabolism)`: Return Species in a
+  `ConsortiumMetabolism`
 
 - `species(ConsortiumMetabolismAlignment)`: Return species from a
   `ConsortiumMetabolismAlignment`
 
-- `species(ConsortiumMetabolismSet)`: Return Species in a Microbiome
+- `species(ConsortiumMetabolismSet)`: Return Species in a
+  `ConsortiumMetabolismSet`
 
 ## Examples
 
 ``` r
 cm <- synCM("test", n_species = 3, max_met = 5)
 species(cm)
-#> [1] "VRM9652S" "OCD7844Q" "XHI146D" 
+#> [1] "AJU3814B" "COK7774C" "YPS2470L"
 ```

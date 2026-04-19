@@ -12,6 +12,7 @@
 <url><loc>https://admarhi.github.io/ramen/reference/ConsortiumMetabolismAlignment.html</loc></url>
 <url><loc>https://admarhi.github.io/ramen/reference/ConsortiumMetabolismSet.html</loc></url>
 <url><loc>https://admarhi.github.io/ramen/reference/align.html</loc></url>
+<url><loc>https://admarhi.github.io/ramen/reference/compareSpecies.html</loc></url>
 <url><loc>https://admarhi.github.io/ramen/reference/consortia.html</loc></url>
 <url><loc>https://admarhi.github.io/ramen/reference/description.html</loc></url>
 <url><loc>https://admarhi.github.io/ramen/reference/dot-buildCMsFromMisosoup.html</loc></url>
@@ -19,6 +20,7 @@
 <url><loc>https://admarhi.github.io/ramen/reference/dot-normalizeBiggIds.html</loc></url>
 <url><loc>https://admarhi.github.io/ramen/reference/dot-parseMisosoupSolution.html</loc></url>
 <url><loc>https://admarhi.github.io/ramen/reference/extractCluster.html</loc></url>
+<url><loc>https://admarhi.github.io/ramen/reference/filterConsortia.html</loc></url>
 <url><loc>https://admarhi.github.io/ramen/reference/functionalGroups.html</loc></url>
 <url><loc>https://admarhi.github.io/ramen/reference/growth.html</loc></url>
 <url><loc>https://admarhi.github.io/ramen/reference/importMisosoup.html</loc></url>
@@ -43,6 +45,7 @@
 <url><loc>https://admarhi.github.io/ramen/reference/show-ConsortiumMetabolismSet-method.html</loc></url>
 <url><loc>https://admarhi.github.io/ramen/reference/similarityMatrix.html</loc></url>
 <url><loc>https://admarhi.github.io/ramen/reference/species.html</loc></url>
+<url><loc>https://admarhi.github.io/ramen/reference/speciesSummary.html</loc></url>
 <url><loc>https://admarhi.github.io/ramen/reference/subset-ramen.html</loc></url>
 <url><loc>https://admarhi.github.io/ramen/reference/synCM.html</loc></url>
 </urlset>

@@ -28,5 +28,5 @@ cm
 #> 
 #> ── ConsortiumMetabolism 
 #> Name: "example"
-#> Weighted metabolic network: 3 species, 2 metabolites, 3 pathways.
+#> Weighted metabolic network: 3 species, 5 metabolites, 9 pathways.
 ```

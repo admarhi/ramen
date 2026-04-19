@@ -368,39 +368,20 @@ overlap scores, and builds a hierarchical clustering dendrogram.</p>
 distinct pathways each catalyses:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/species.html">species</a></span><span class="op">(</span><span class="va">cms</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 23 × 2</span></span></span>
-<span><span class="co">#&gt;    species n_pathways</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> A1R12          302</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> D2M19          132</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> E3M18          108</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> F3R08           99</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> m_3C02          96</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> C2R02           91</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> m_3D05          91</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> C3R12           88</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> I3M07           88</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> B3M02           88</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 13 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "A1R12"  "A3R04"  "A3R12"  "B3M02"  "B3R10"  "C1M14"  "C2M11"  "C2R02" </span></span>
+<span><span class="co">#&gt;  [9] "C3R12"  "D2M19"  "D2R05"  "D3R19"  "E3M18"  "E3R01"  "E3R11"  "F3R08" </span></span>
+<span><span class="co">#&gt; [17] "G2R10"  "I2R16"  "I3M07"  "m_3C02" "m_3D05" "m_4B03" "m_6C06"</span></span></code></pre></div>
 <p>Filter by metabolic role – generalists (top fraction by pathway
 count) or specialists (bottom fraction):</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/species.html">species</a></span><span class="op">(</span><span class="va">cms</span>, type <span class="op">=</span> <span class="st">"generalists"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 2</span></span></span>
-<span><span class="co">#&gt;   species n_pathways</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> A1R12          302</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> D2M19          132</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> E3M18          108</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> F3R08           99</span></span>
+<span><span class="co">#&gt;  [1] "A1R12"  "A3R04"  "A3R12"  "B3M02"  "B3R10"  "C1M14"  "C2M11"  "C2R02" </span></span>
+<span><span class="co">#&gt;  [9] "C3R12"  "D2M19"  "D2R05"  "D3R19"  "E3M18"  "E3R01"  "E3R11"  "F3R08" </span></span>
+<span><span class="co">#&gt; [17] "G2R10"  "I2R16"  "I3M07"  "m_3C02" "m_3D05" "m_4B03" "m_6C06"</span></span>
 <span><span class="fu"><a href="../reference/species.html">species</a></span><span class="op">(</span><span class="va">cms</span>, type <span class="op">=</span> <span class="st">"specialists"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 2</span></span></span>
-<span><span class="co">#&gt;   species n_pathways</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> B3R10           50</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> I2R16           45</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> A3R04           36</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> C1M14           35</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "A1R12"  "A3R04"  "A3R12"  "B3M02"  "B3R10"  "C1M14"  "C2M11"  "C2R02" </span></span>
+<span><span class="co">#&gt;  [9] "C3R12"  "D2M19"  "D2R05"  "D3R19"  "E3M18"  "E3R01"  "E3R11"  "F3R08" </span></span>
+<span><span class="co">#&gt; [17] "G2R10"  "I2R16"  "I3M07"  "m_3C02" "m_3D05" "m_4B03" "m_6C06"</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="pathway-classification">Pathway classification<a class="anchor" aria-label="anchor" href="#pathway-classification"></a>

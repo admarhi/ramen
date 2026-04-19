@@ -44,52 +44,49 @@ cms <- ConsortiumMetabolismSet(cm1, cm2, name = "test")
 #> ℹ Collecting metabolites from 2 consortia
 #> ✔ Collecting metabolites from 2 consortia [27ms]
 #> 
-#> ℹ Re-indexing 7 unique metabolites
-#> ✔ Re-indexing 7 unique metabolites [24ms]
+#> ℹ Re-indexing 6 unique metabolites
+#> ✔ Re-indexing 6 unique metabolites [24ms]
 #> 
-#> ℹ Expanding 2 binary matrices to 7-dimensional space
-#> ✔ Expanding 2 binary matrices to 7-dimensional space [21ms]
+#> ℹ Expanding 2 binary matrices to 6-dimensional space
+#> ✔ Expanding 2 binary matrices to 6-dimensional space [21ms]
 #> 
-#> ℹ Computing 7 x 7 levels matrix
-#> ✔ Computing 7 x 7 levels matrix [30ms]
+#> ℹ Computing 6 x 6 levels matrix
+#> ✔ Computing 6 x 6 levels matrix [22ms]
 #> 
 #> ℹ Computing pairwise overlap (1 pairs via crossprod)
-#> ✔ Computing pairwise overlap (1 pairs via crossprod) [20ms]
+#> ✔ Computing pairwise overlap (1 pairs via crossprod) [22ms]
 #> 
 #> ℹ Assembling pathway data from 2 consortia
-#> ✔ Assembling pathway data from 2 consortia [27ms]
+#> ✔ Assembling pathway data from 2 consortia [29ms]
 #> 
 #> ℹ Building dendrogram from 2 x 2 dissimilarity matrix
-#> ✔ Building dendrogram from 2 x 2 dissimilarity matrix [19ms]
+#> ✔ Building dendrogram from 2 x 2 dissimilarity matrix [20ms]
 #> 
 #> ℹ Extracting dendrogram node positions
-#> ✔ Extracting dendrogram node positions [21ms]
+#> ✔ Extracting dendrogram node positions [22ms]
 #> 
 #> ℹ Collecting 2 consortium graphs
-#> CMS "test" created: 2 consortia, 7 metabolites (0.2s)
-#> ✔ Collecting 2 consortium graphs [73ms]
+#> CMS "test" created: 2 consortia, 6 metabolites (0.2s)
+#> ✔ Collecting 2 consortium graphs [78ms]
 #> 
 cma <- align(cms)
 #> Computing multiple alignment for 2 consortia using "FOS".
 prevalence(cma)
 #>    consumed produced nConsortia proportion
-#> 1      met5    media          1        0.5
-#> 2      met2     met1          1        0.5
-#> 3      met3     met1          1        0.5
-#> 4      met4     met1          2        1.0
-#> 5      met5     met1          1        0.5
-#> 6      met6     met1          1        0.5
-#> 7      met4     met2          1        0.5
-#> 8      met5     met2          1        0.5
-#> 9      met6     met2          1        0.5
-#> 10     met1     met3          1        0.5
-#> 11     met2     met3          1        0.5
-#> 12     met4     met3          2        1.0
-#> 13     met5     met3          2        1.0
-#> 14     met6     met3          1        0.5
-#> 15     met2     met5          1        0.5
-#> 16     met3     met5          1        0.5
-#> 17     met4     met5          1        0.5
-#> 18     met1     met6          1        0.5
-#> 19     met4     met6          1        0.5
+#> 1      met1     met2          1        0.5
+#> 2      met3     met2          1        0.5
+#> 3      met5     met2          1        0.5
+#> 4      met1     met3          1        0.5
+#> 5      met4     met3          1        0.5
+#> 6      met5     met3          1        0.5
+#> 7      met6     met3          1        0.5
+#> 8      met1     met4          1        0.5
+#> 9      met2     met4          1        0.5
+#> 10     met3     met4          1        0.5
+#> 11     met1     met5          1        0.5
+#> 12     met2     met5          1        0.5
+#> 13     met3     met5          2        1.0
+#> 14     met1     met6          1        0.5
+#> 15     met2     met6          1        0.5
+#> 16     met3     met6          1        0.5
 ```

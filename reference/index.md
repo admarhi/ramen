@@ -19,6 +19,9 @@
 - [`align()`](https://admarhi.github.io/ramen/reference/align.md) :
   Align Consortium Metabolisms
 
+- [`compareSpecies()`](https://admarhi.github.io/ramen/reference/compareSpecies.md)
+  : Compare Two Species by Pathway Set
+
 - [`consortia()`](https://admarhi.github.io/ramen/reference/consortia.md)
   : Get the Consortia
 
@@ -28,6 +31,9 @@
 
 - [`extractCluster()`](https://admarhi.github.io/ramen/reference/extractCluster.md)
   : Extract a Cluster
+
+- [`filterConsortia()`](https://admarhi.github.io/ramen/reference/filterConsortia.md)
+  : Filter Consortia from a Set
 
 - [`functionalGroups()`](https://admarhi.github.io/ramen/reference/functionalGroups.md)
   : Get Functional Groups
@@ -102,6 +108,9 @@
 
 - [`species()`](https://admarhi.github.io/ramen/reference/species.md) :
   Return Species in a Consortium
+
+- [`speciesSummary()`](https://admarhi.github.io/ramen/reference/speciesSummary.md)
+  : Species Summary
 
 - [`` `[`( ``*`<ConsortiumMetabolism>`*`,`*`<ANY>`*`,`*`<ANY>`*`,`*`<ANY>`*`)`](https://admarhi.github.io/ramen/reference/subset-ramen.md)
   [`` `[`( ``*`<ConsortiumMetabolismSet>`*`,`*`<ANY>`*`,`*`<ANY>`*`,`*`<ANY>`*`)`](https://admarhi.github.io/ramen/reference/subset-ramen.md)

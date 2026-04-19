@@ -48,17 +48,13 @@ A named list of `ConsortiumMetabolism` objects.
 ``` r
 cm <- synCM("test", n_species = 3, max_met = 5)
 consortia(cm)
-#>     met  species       flux
-#> 1  met2 DUO5910U  2.5107857
-#> 2  met2 CRP7583I -3.5003419
-#> 3  met5 CRP7583I  3.1752836
-#> 4  met5 TGH8437W -3.1752836
-#> 5  met2 TGH8437W  0.9895562
-#> 6  met1 DUO5910U  1.0452324
-#> 7  met3 DUO5910U -0.8894377
-#> 8  met1 CRP7583I  1.2633339
-#> 9  met3 CRP7583I -1.2579714
-#> 10 met4 CRP7583I  5.5036742
-#> 11 met1 TGH8437W -2.3015127
-#> 12 met3 TGH8437W  1.7197916
+#>    met  species       flux
+#> 1 met2 QWG2904R -2.3108858
+#> 2 met2  GRW821Q -1.8850686
+#> 3 met5  GRW821Q  8.7532211
+#> 4 met5 GIH4406S -2.7387147
+#> 5 met2 GIH4406S  4.1959544
+#> 6 met3 QWG2904R  0.4356225
+#> 7 met1 QWG2904R  0.9238720
+#> 8 met5 QWG2904R -5.8595975
 ```
