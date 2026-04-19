@@ -66,6 +66,7 @@ Collate:
     'methods-functionalGroups.R'
     'methods-plot.R'
     'methods-show.R'
+    'methods-subset.R'
     'pivotCM.R'
     'plotDirectedFlow.R'
     'plotFunctionalGroups.R'

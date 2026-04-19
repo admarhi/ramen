@@ -40,10 +40,8 @@ newConsortiumMetabolismSet <- setClass(
 #' @rdname ConsortiumMetabolismAlignment
 #' @exportClass ConsortiumMetabolismAlignment
 #' @import methods
-#' @importClassesFrom TreeSummarizedExperiment TreeSummarizedExperiment
 newConsortiumMetabolismAlignment <- setClass(
     Class = "ConsortiumMetabolismAlignment",
-    contains = "TreeSummarizedExperiment",
     slots = list(
         ## -- Metadata --
         Name = "character",

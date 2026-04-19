@@ -279,7 +279,7 @@ ConsortiumMetabolismSet <- function(
         )
     }
 
-    newConsortiumMetabolismSet(
+    cms_obj <- newConsortiumMetabolismSet(
         TreeSummarizedExperiment(
             assays = list(Levels = levels_mat),
             colData = new_met_ind
@@ -295,6 +295,8 @@ ConsortiumMetabolismSet <- function(
         Pathways = all_pathways,
         Metabolites = all_met
     )
+    metadata(cms_obj)[["linkage"]] <- linkage
+    cms_obj
 }
 
 #' @noRd

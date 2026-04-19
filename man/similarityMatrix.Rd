@@ -23,7 +23,10 @@ multiple alignment.
 \section{Methods (by class)}{
 \itemize{
 \item \code{similarityMatrix(ConsortiumMetabolismAlignment)}: Similarity matrix from a
-multiple \link{ConsortiumMetabolismAlignment}
+\link{ConsortiumMetabolismAlignment}. For multiple alignments
+this is the symmetric n x n pairwise matrix; for database
+search alignments it is a 1 x n row vector of the query's
+scores against each database member.
 
 }}
 \examples{

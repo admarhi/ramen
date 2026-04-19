@@ -8,15 +8,11 @@
 \title{Constructor for
 \code{ConsortiumMetabolismAlignment} Objects}
 \usage{
-ConsortiumMetabolismAlignment(..., tse = NULL)
+ConsortiumMetabolismAlignment(...)
 }
 \arguments{
 \item{...}{Named CMA slot values to set (e.g.,
 \code{Type = "pairwise"}, \code{PrimaryScore = 0.8}).}
-
-\item{tse}{An optional
-\code{\link[TreeSummarizedExperiment]{TreeSummarizedExperiment}}
-to use as the base. Default creates an empty TSE.}
 }
 \value{
 A validated
@@ -24,8 +20,8 @@ A validated
 }
 \description{
 Builds a valid
-\code{ConsortiumMetabolismAlignment} by constructing a TSE
-base and setting CMA-specific slots with sensible defaults.
+\code{ConsortiumMetabolismAlignment} by setting CMA-specific
+slots with sensible defaults.
 }
 \section{Slots}{
 
@@ -97,6 +93,5 @@ cma
 
 }
 \seealso{
-\link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{TreeSummarizedExperiment},
 \code{\link{align}}
 }

@@ -4,8 +4,8 @@
 #'   \code{ConsortiumMetabolismAlignment} Objects
 #'
 #' @description Builds a valid
-#'   \code{ConsortiumMetabolismAlignment} by constructing a TSE
-#'   base and setting CMA-specific slots with sensible defaults.
+#'   \code{ConsortiumMetabolismAlignment} by setting CMA-specific
+#'   slots with sensible defaults.
 #'
 #' @slot Name character. Display name for the alignment.
 #' @slot Description character. Optional short description.
@@ -44,16 +44,11 @@
 #'
 #' @param ... Named CMA slot values to set (e.g.,
 #'   \code{Type = "pairwise"}, \code{PrimaryScore = 0.8}).
-#' @param tse An optional
-#'   \code{\link[TreeSummarizedExperiment]{TreeSummarizedExperiment}}
-#'   to use as the base. Default creates an empty TSE.
 #'
 #' @return A validated
 #'   \code{\linkS4class{ConsortiumMetabolismAlignment}} object.
 #'
-#' @seealso
-#'   \link[TreeSummarizedExperiment:TreeSummarizedExperiment-class]{TreeSummarizedExperiment},
-#'   \code{\link{align}}
+#' @seealso \code{\link{align}}
 #'
 #' @examples
 #' # Empty alignment
@@ -66,12 +61,7 @@
 #' cma
 #'
 #' @export
-#'
-#' @importFrom TreeSummarizedExperiment TreeSummarizedExperiment
-ConsortiumMetabolismAlignment <- function(..., tse = NULL) {
-    if (is.null(tse)) {
-        tse <- TreeSummarizedExperiment::TreeSummarizedExperiment()
-    }
+ConsortiumMetabolismAlignment <- function(...) {
     args <- list(...)
 
     ## Defaults for all CMA-specific slots
@@ -104,11 +94,5 @@ ConsortiumMetabolismAlignment <- function(..., tse = NULL) {
         slot_vals[[nm]] <- args[[nm]]
     }
 
-    ## Build CMA: pass TSE + all slot values to the generator,
-    ## matching the pattern used by ConsortiumMetabolism() and
-    ## ConsortiumMetabolismSet().
-    do.call(
-        newConsortiumMetabolismAlignment,
-        c(list(tse), slot_vals)
-    )
+    do.call(newConsortiumMetabolismAlignment, slot_vals)
 }
