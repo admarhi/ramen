@@ -18,6 +18,11 @@ ConsortiumMetabolismAlignment(...)
 
 \item{x}{A
 \code{\linkS4class{ConsortiumMetabolismAlignment}} object.}
+
+\item{row.names}{\code{NULL} or a character vector of row names;
+ignored.}
+
+\item{optional}{Logical; ignored.}
 }
 \value{
 A validated

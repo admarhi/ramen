@@ -114,6 +114,9 @@ ConsortiumMetabolismAlignment <- function(...) {
 #'
 #' @param x A
 #'   \code{\linkS4class{ConsortiumMetabolismAlignment}} object.
+#' @param row.names \code{NULL} or a character vector of row names;
+#'   ignored.
+#' @param optional Logical; ignored.
 #' @param ... Additional arguments (currently unused).
 #'
 #' @return A \code{data.frame}. For pairwise alignments the
