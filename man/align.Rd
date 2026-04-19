@@ -20,22 +20,35 @@ align(x, y, method = "FOS", ...)
   ...
 )
 
-\S4method{align}{ConsortiumMetabolism,ConsortiumMetabolismSet}(x, y, method = "FOS", BPPARAM = BiocParallel::SerialParam(), ...)
+\S4method{align}{ConsortiumMetabolism,ConsortiumMetabolismSet}(
+  x,
+  y,
+  method = "FOS",
+  metrics = c("FOS", "jaccard", "brayCurtis", "redundancyOverlap"),
+  topK = NULL,
+  computePvalue = FALSE,
+  nPermutations = 999L,
+  BPPARAM = BiocParallel::SerialParam(),
+  ...
+)
 }
 \arguments{
 \item{x}{A \link{ConsortiumMetabolism} object (query).}
 
 \item{y}{A \link{ConsortiumMetabolismSet} object (database).}
 
-\item{method}{Character scalar specifying the metric.}
+\item{method}{Character scalar specifying the primary metric
+used to rank hits. One of \code{"FOS"} (default), \code{"jaccard"},
+\code{"brayCurtis"}, \code{"redundancyOverlap"}, or \code{"MAAS"}.}
 
 \item{...}{Additional arguments (currently unused).}
 
-\item{computePvalue}{Logical; compute permutation p-value?
-Default \code{FALSE}.}
+\item{computePvalue}{Logical; compute a permutation p-value
+for the top hit? Default \code{FALSE}. Not supported for
+\code{"brayCurtis"} or \code{"redundancyOverlap"}.}
 
-\item{nPermutations}{Integer; number of permutations.
-Default \code{999L}.}
+\item{nPermutations}{Integer; number of permutations used
+when \code{computePvalue = TRUE}. Default \code{999L}.}
 
 \item{linkage}{Character scalar specifying the agglomeration
 method for hierarchical clustering. Passed to
@@ -44,6 +57,19 @@ method for hierarchical clustering. Passed to
 
 \item{BPPARAM}{A \link[BiocParallel:BiocParallelParam-class]{BiocParallel::BiocParallelParam} object.
 Default \code{BiocParallel::SerialParam()}.}
+
+\item{metrics}{Character vector of metrics to compute per
+hit. Defaults to all four base metrics
+(\code{"FOS"}, \code{"jaccard"}, \code{"brayCurtis"},
+\code{"redundancyOverlap"}). Restrict to a subset (e.g.
+\code{metrics = "FOS"}) to skip weighted-assay expansion and
+speed up large-database searches. \code{"MAAS"} as the primary
+metric requires all four components.}
+
+\item{topK}{Integer; if non-\code{NULL}, truncate the ranked
+results (and \code{SimilarityMatrix}) to the top \code{topK} hits.
+The overall top hit's pathway correspondences are always
+reported regardless of \code{topK}. Default \code{NULL} (all hits).}
 }
 \value{
 A \link{ConsortiumMetabolismAlignment} object.
@@ -55,7 +81,11 @@ A \link{ConsortiumMetabolismAlignment} object of type
 \code{"multiple"}.
 
 A \link{ConsortiumMetabolismAlignment} object of type
-\code{"search"}.
+\code{"search"}. \code{PrimaryScore}/\code{ReferenceName} point to the
+top hit; the full ranked hit table is stored in
+\code{Scores$ranking} and as a 1-row \code{SimilarityMatrix}.
+Pathway correspondences (\code{SharedPathways}, \code{UniqueQuery},
+\code{UniqueReference}) are for the top hit only.
 }
 \description{
 Computes functional alignment between consortium metabolisms.

@@ -356,3 +356,208 @@ test_that("BPPARAM argument is accepted", {
         align(cms, BPPARAM = BiocParallel::SerialParam())
     )
 })
+
+## ---- Database search: align(CM, CMS) -----------------------------------
+
+test_that("align() dispatches CM,CMS and returns CMA (search)", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
+    cm3 <- synCM("c", n_species = 3, max_met = 5, seed = 3)
+    cms <- ConsortiumMetabolismSet(
+        list(cm2, cm3),
+        name = "db",
+        verbose = FALSE
+    )
+    cma <- align(cm1, cms)
+    expect_s4_class(cma, "ConsortiumMetabolismAlignment")
+    expect_equal(cma@Type, "search")
+    expect_equal(cma@Metric, "FOS")
+    expect_true(cma@PrimaryScore >= 0 && cma@PrimaryScore <= 1)
+})
+
+test_that("search: CM identical to a CMS member returns score 1", {
+    cmA <- synCM("a", n_species = 3, max_met = 5, seed = 11)
+    cmB <- synCM("b", n_species = 3, max_met = 5, seed = 22)
+    cms <- ConsortiumMetabolismSet(
+        list(cmA, cmB),
+        name = "db",
+        verbose = FALSE
+    )
+    cma <- align(cmA, cms, method = "FOS")
+    expect_equal(cma@PrimaryScore, 1)
+    expect_equal(cma@ReferenceName, "a")
+})
+
+test_that("search: ranking is sorted by score descending", {
+    cm1 <- synCM("q", n_species = 3, max_met = 5, seed = 7)
+    cm2 <- synCM("a", n_species = 3, max_met = 5, seed = 8)
+    cm3 <- synCM("b", n_species = 3, max_met = 5, seed = 9)
+    cm4 <- synCM("c", n_species = 3, max_met = 5, seed = 10)
+    cms <- ConsortiumMetabolismSet(
+        list(cm2, cm3, cm4),
+        name = "db",
+        verbose = FALSE
+    )
+    cma <- align(cm1, cms)
+    ranking <- cma@Scores$ranking
+    expect_equal(
+        ranking$score,
+        sort(ranking$score, decreasing = TRUE)
+    )
+    expect_equal(cma@ReferenceName, ranking$reference[1L])
+    expect_equal(cma@PrimaryScore, ranking$score[1L])
+})
+
+test_that("search: SimilarityMatrix is 1 x nDatabase", {
+    cmQ <- synCM("q", n_species = 3, max_met = 5, seed = 1)
+    cms <- ConsortiumMetabolismSet(
+        list(
+            synCM("a", n_species = 3, max_met = 5, seed = 2),
+            synCM("b", n_species = 3, max_met = 5, seed = 3),
+            synCM("c", n_species = 3, max_met = 5, seed = 4)
+        ),
+        name = "db",
+        verbose = FALSE
+    )
+    cma <- align(cmQ, cms)
+    expect_equal(dim(cma@SimilarityMatrix), c(1L, 3L))
+    expect_equal(rownames(cma@SimilarityMatrix), "q")
+})
+
+test_that("search: topK truncates ranking and SimilarityMatrix", {
+    cmQ <- synCM("q", n_species = 3, max_met = 5, seed = 1)
+    cms <- ConsortiumMetabolismSet(
+        list(
+            synCM("a", n_species = 3, max_met = 5, seed = 2),
+            synCM("b", n_species = 3, max_met = 5, seed = 3),
+            synCM("c", n_species = 3, max_met = 5, seed = 4),
+            synCM("d", n_species = 3, max_met = 5, seed = 5)
+        ),
+        name = "db",
+        verbose = FALSE
+    )
+    cma <- align(cmQ, cms, topK = 2L)
+    expect_equal(nrow(cma@Scores$ranking), 2L)
+    expect_equal(ncol(cma@SimilarityMatrix), 2L)
+    expect_equal(cma@Params$topK, 2L)
+})
+
+test_that("search: metrics subset skips weighted computations", {
+    cmQ <- synCM("q", n_species = 3, max_met = 5, seed = 1)
+    cms <- ConsortiumMetabolismSet(
+        list(
+            synCM("a", n_species = 3, max_met = 5, seed = 2),
+            synCM("b", n_species = 3, max_met = 5, seed = 3)
+        ),
+        name = "db",
+        verbose = FALSE
+    )
+    cma <- align(cmQ, cms, metrics = "FOS")
+    expect_true(all(is.na(cma@Scores$ranking$brayCurtis)))
+    expect_true(all(is.na(cma@Scores$ranking$redundancyOverlap)))
+    expect_false(any(is.na(cma@Scores$ranking$FOS)))
+})
+
+test_that("search: MAAS primary metric works and records params", {
+    cmQ <- synCM("q", n_species = 3, max_met = 5, seed = 1)
+    cms <- ConsortiumMetabolismSet(
+        list(
+            synCM("a", n_species = 3, max_met = 5, seed = 2),
+            synCM("b", n_species = 3, max_met = 5, seed = 3)
+        ),
+        name = "db",
+        verbose = FALSE
+    )
+    cma <- align(cmQ, cms, method = "MAAS")
+    expect_equal(cma@Metric, "MAAS")
+    expect_true(cma@PrimaryScore >= 0 && cma@PrimaryScore <= 1)
+})
+
+test_that("search: computePvalue populates Pvalue slot", {
+    cmQ <- synCM("q", n_species = 3, max_met = 5, seed = 1)
+    cms <- ConsortiumMetabolismSet(
+        list(
+            synCM("a", n_species = 3, max_met = 5, seed = 2),
+            synCM("b", n_species = 3, max_met = 5, seed = 3)
+        ),
+        name = "db",
+        verbose = FALSE
+    )
+    cma <- align(
+        cmQ,
+        cms,
+        computePvalue = TRUE,
+        nPermutations = 49L
+    )
+    expect_false(is.na(cma@Pvalue))
+    expect_true(cma@Pvalue >= 0 && cma@Pvalue <= 1)
+})
+
+test_that("search: top-hit pathway correspondences populated", {
+    cmA <- synCM("a", n_species = 3, max_met = 5, seed = 11)
+    cmB <- synCM("b", n_species = 3, max_met = 5, seed = 22)
+    cms <- ConsortiumMetabolismSet(
+        list(cmA, cmB),
+        name = "db",
+        verbose = FALSE
+    )
+    cma <- align(cmA, cms)
+    ## Self-match: top hit is cmA, so shared pathways = all pathways,
+    ## unique sets empty
+    expect_gt(nrow(cma@SharedPathways), 0L)
+    expect_equal(nrow(cma@UniqueQuery), 0L)
+    expect_equal(nrow(cma@UniqueReference), 0L)
+})
+
+test_that("search: errors on invalid method", {
+    cmQ <- synCM("q", n_species = 3, max_met = 5, seed = 1)
+    cms <- ConsortiumMetabolismSet(
+        list(
+            synCM("a", n_species = 3, max_met = 5, seed = 2),
+            synCM("b", n_species = 3, max_met = 5, seed = 3)
+        ),
+        name = "db",
+        verbose = FALSE
+    )
+    expect_error(align(cmQ, cms, method = "invalid"))
+})
+
+test_that("search: errors when method not in metrics", {
+    cmQ <- synCM("q", n_species = 3, max_met = 5, seed = 1)
+    cms <- ConsortiumMetabolismSet(
+        list(
+            synCM("a", n_species = 3, max_met = 5, seed = 2),
+            synCM("b", n_species = 3, max_met = 5, seed = 3)
+        ),
+        name = "db",
+        verbose = FALSE
+    )
+    expect_error(
+        align(
+            cmQ,
+            cms,
+            method = "jaccard",
+            metrics = "FOS"
+        )
+    )
+})
+
+test_that("search: errors when MAAS missing components", {
+    cmQ <- synCM("q", n_species = 3, max_met = 5, seed = 1)
+    cms <- ConsortiumMetabolismSet(
+        list(
+            synCM("a", n_species = 3, max_met = 5, seed = 2),
+            synCM("b", n_species = 3, max_met = 5, seed = 3)
+        ),
+        name = "db",
+        verbose = FALSE
+    )
+    expect_error(
+        align(
+            cmQ,
+            cms,
+            method = "MAAS",
+            metrics = c("FOS", "jaccard")
+        )
+    )
+})

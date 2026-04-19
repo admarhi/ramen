@@ -265,13 +265,31 @@ setValidity("ConsortiumMetabolismAlignment", function(object) {
         }
     }
 
-    ## Multiple: SimilarityMatrix must be square if non-empty
+    ## SimilarityMatrix shape depends on Type
     sm <- object@SimilarityMatrix
-    if (length(sm) > 0L && nrow(sm) != ncol(sm)) {
-        errors <- c(
-            errors,
-            "SimilarityMatrix must be square"
-        )
+    if (length(sm) > 0L) {
+        if (
+            .hasValue(object@Type) &&
+                object@Type == "multiple" &&
+                nrow(sm) != ncol(sm)
+        ) {
+            errors <- c(
+                errors,
+                "SimilarityMatrix must be square for \\
+                multiple alignment"
+            )
+        }
+        if (
+            .hasValue(object@Type) &&
+                object@Type == "search" &&
+                nrow(sm) != 1L
+        ) {
+            errors <- c(
+                errors,
+                "SimilarityMatrix must have exactly 1 row \\
+                for search (query x database)"
+            )
+        }
     }
 
     if (length(errors) == 0L) TRUE else errors

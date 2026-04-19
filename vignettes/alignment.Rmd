@@ -24,10 +24,12 @@ knitr::opts_chunk$set(
 The alignment system in `ramen` quantifies how similar two or more
 microbial communities are from a functional perspective -- not by
 which species are present, but by which metabolite-to-metabolite
-pathways they catalyse. The result is a
-`ConsortiumMetabolismAlignment` (CMA) object containing similarity
-scores, pathway correspondences, and (for multiple alignments) a
-consensus network.
+pathways they catalyse. `align()` supports three modes: **pairwise**
+(two consortia), **multiple** (all consortia in a set), and
+**search** (one query consortium against every member of a set).
+All three return a `ConsortiumMetabolismAlignment` (CMA) object
+containing similarity scores and (depending on the mode) pathway
+correspondences, a consensus network, or a ranked hit table.
 
 This vignette covers the alignment system in depth. For a general
 introduction to the package, see
@@ -247,21 +249,120 @@ plot(cma_mult, type = "heatmap")
 plot(cma_mult, type = "scores")
 ```
 
+# Database search
+
+`align(CM, CMS)` compares a single query consortium against every
+member of a set and returns a CMA with `Type = "search"`. This is
+the natural call for questions like "which consortium in my
+database is most functionally similar to this query?"
+
+## Basic search
+
+We hold out the first consortium as a query and search it against a
+database built from the remaining five:
+
+```{r search-setup, message = FALSE}
+query <- cm_list[[1]]
+db <- ConsortiumMetabolismSet(cm_list[-1], name = "db")
+```
+
+```{r search-basic}
+hits <- align(query, db)
+hits
+```
+
+The top-hit name and score sit on `ReferenceName` / `PrimaryScore`.
+The full ranked table is stored in `Scores$ranking`:
+
+```{r search-ranking}
+ranking <- scores(hits)$ranking
+head(ranking)
+```
+
+Each row holds the reference consortium's name, the primary `score`
+(under the requested `method`), all four individual metric columns,
+and the coverage ratios against the query. Rows are pre-sorted by
+`score` in descending order.
+
+## Top-K hits
+
+Use `topK` to truncate the ranked table -- useful when the database
+is large and only the best matches matter:
+
+```{r search-topk}
+hits_top3 <- align(query, db, topK = 3L)
+scores(hits_top3)$ranking
+```
+
+`similarityMatrix()` returns a 1 x n row vector (or 1 x topK if
+truncated), with the query name as the row label:
+
+```{r search-simmat}
+round(similarityMatrix(hits_top3), 3)
+```
+
+Pathway correspondences always reflect the single overall top hit,
+regardless of `topK`:
+
+```{r search-correspondences}
+head(pathways(hits_top3, type = "shared"))
+```
+
+## Choosing metrics
+
+By default all four base metrics are computed for every database
+member. For large databases, restricting `metrics` skips the
+weighted-assay expansion and can be substantially faster:
+
+```{r search-metrics}
+hits_fos <- align(query, db, metrics = "FOS")
+scores(hits_fos)$ranking[,
+    c("reference", "score", "brayCurtis")
+]
+```
+
+Columns for skipped metrics remain in the ranking table but are
+filled with `NA`, making the schema stable across calls.
+
+## Significance of the top hit
+
+As in pairwise alignment, `computePvalue = TRUE` runs a
+degree-preserving permutation test. For database search, the test
+is applied only to the top hit -- a BLAST-style convention that
+keeps the cost comparable to a single pairwise p-value:
+
+```{r search-pvalue}
+hits_p <- align(
+    query,
+    db,
+    computePvalue = TRUE,
+    nPermutations = 99L
+)
+c(
+    top = hits_p@ReferenceName,
+    score = round(hits_p@PrimaryScore, 3),
+    pvalue = round(hits_p@Pvalue, 3)
+)
+```
+
+If statistical confidence is needed for several top hits, re-run
+`align()` in pairwise mode against each candidate individually.
+
 # Accessor reference
 
 | Accessor | Alignment type | Returns |
 |----------|---------------|---------|
-| `scores()` | both | Named list of scores |
-| `pathways()` | both | data.frame of all pathways |
-| `pathways(type = "shared")` | pairwise | data.frame of shared pathways |
-| `pathways(type = "unique")` | pairwise | list(query, reference) |
+| `scores()` | all | Named list of scores (+ `$ranking` for search) |
+| `pathways()` | all | data.frame of all pathways |
+| `pathways(type = "shared")` | pairwise, search | data.frame of shared pathways (top hit for search) |
+| `pathways(type = "unique")` | pairwise, search | list(query, reference) (top hit for search) |
 | `pathways(type = "consensus")` | multiple | data.frame with prevalence |
-| `similarityMatrix()` | multiple | n x n numeric matrix |
+| `similarityMatrix()` | multiple, search | n x n (multiple) or 1 x n (search) numeric matrix |
 | `prevalence()` | multiple | data.frame with nConsortia |
-| `metabolites()` | both | Character vector of metabolites |
+| `metabolites()` | all | Character vector of metabolites |
 
 Type guards prevent misuse -- for example, calling
-`pathways(type = "shared")` on a multiple alignment raises an
+`pathways(type = "consensus")` on a pairwise alignment raises an
 informative error.
 
 # Session info

@@ -113,5 +113,13 @@ setMethod("show", "ConsortiumMetabolismAlignment", function(object) {
         n <- nrow(object@SimilarityMatrix)
         cli::cli_text("Consortia: {.val {n}}")
     }
+    if (.hasValue(object@Type) && object@Type == "search") {
+        nDb <- ncol(object@SimilarityMatrix)
+        cli::cli_text(
+            "Query: {.val {object@QueryName}}, ",
+            "Top hit: {.val {object@ReferenceName}} ",
+            "(of {.val {nDb}} consortia)"
+        )
+    }
     invisible(object)
 })

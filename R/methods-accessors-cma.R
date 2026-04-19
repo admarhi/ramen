@@ -27,16 +27,23 @@ setMethod(
 
 
 #' @describeIn similarityMatrix Similarity matrix from a
-#'   multiple [ConsortiumMetabolismAlignment]
+#'   [ConsortiumMetabolismAlignment]. For multiple alignments
+#'   this is the symmetric n x n pairwise matrix; for database
+#'   search alignments it is a 1 x n row vector of the query's
+#'   scores against each database member.
 #' @export
 setMethod(
     "similarityMatrix",
     "ConsortiumMetabolismAlignment",
     function(object) {
-        if (is.na(object@Type) || object@Type != "multiple") {
+        if (
+            is.na(object@Type) ||
+                !object@Type %in% c("multiple", "search")
+        ) {
             cli::cli_abort(
                 "{.fun similarityMatrix} is only \\
-                available for multiple alignments."
+                available for multiple or search \\
+                alignments."
             )
         }
         object@SimilarityMatrix
@@ -82,11 +89,11 @@ setMethod(
         alnType <- object@Type
 
         if (type == "shared") {
-            if (alnType != "pairwise") {
+            if (!alnType %in% c("pairwise", "search")) {
                 cli::cli_abort(
                     "{.arg type} = {.val shared} is \\
-                    only available for pairwise \\
-                    alignments, not \\
+                    only available for pairwise or \\
+                    search alignments, not \\
                     {.val {alnType}}."
                 )
             }
@@ -96,11 +103,11 @@ setMethod(
             }
             pw[, c("consumed", "produced")]
         } else if (type == "unique") {
-            if (alnType != "pairwise") {
+            if (!alnType %in% c("pairwise", "search")) {
                 cli::cli_abort(
                     "{.arg type} = {.val unique} is \\
-                    only available for pairwise \\
-                    alignments, not \\
+                    only available for pairwise or \\
+                    search alignments, not \\
                     {.val {alnType}}."
                 )
             }
