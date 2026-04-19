@@ -63,6 +63,13 @@ element is a data.frame with columns `metabolites`, `species`, and
 `fluxes`, where negative fluxes indicate consumption and positive fluxes
 indicate production.
 
+> **Metabolite identifiers** follow the [BiGG
+> namespace](https://bigg.ucsd.edu) (King et al. 2016): short lowercase
+> codes such as `ac` (acetate), `co2` (CO₂), `etoh` (ethanol), and `pyr`
+> (pyruvate). Double-underscores encode stereochemistry: `ala__L` =
+> L-alanine, `ala__D` = D-alanine. Look up any identifier at
+> <https://bigg.ucsd.edu/metabolites>.
+
 ``` r
 data("misosoup24")
 length(misosoup24)
@@ -86,17 +93,27 @@ head(misosoup24[[1]])
 
 For raw MiSoSoup output (nested YAML),
 [`importMisosoup()`](https://admarhi.github.io/ramen/reference/importMisosoup.md)
-parses the data into structured tibbles of consortia, media, and growth
-information.
-[`overviewMisosoup()`](https://admarhi.github.io/ramen/reference/overviewMisosoup.md)
-provides a quick summary of the data structure before full import.
+parses the data directly into a `ConsortiumMetabolismSet` containing one
+`ConsortiumMetabolism` per viable solution. The function accepts a
+single YAML file, a directory of YAML files, or a pre-loaded nested list
+from
+[`yaml::read_yaml()`](https://yaml.r-lib.org/reference/read_yaml.html).
+Media-level exchange bounds are stashed in each CM’s `metadata()` slot
+under `$media` so they remain accessible if needed.
 
 ``` r
-## Parse raw MiSoSoup YAML (not run -- requires external data)
+## Single file -> CMS (not run -- requires external data)
+cms <- importMisosoup("path/to/misosoup_output.yaml")
+
+## Directory of YAML files -> CMS merging all consortia
+cms <- importMisosoup("path/to/misosoup_dir/", name = "experiment1")
+
+## Pre-loaded list -> CMS (name required)
 raw <- yaml::read_yaml("path/to/misosoup_output.yaml")
-overviewMisosoup(raw)
-result <- importMisosoup(raw)
-names(result) # "consortia", "media", "growth"
+cms <- importMisosoup(raw, name = "experiment1")
+
+## Access stashed media bounds for a specific CM
+## S4Vectors::metadata(cms@Consortia[[1]])$media
 ```
 
 ### Alternative input formats
@@ -403,7 +420,7 @@ cma_pair <- align(cm_list[[1]], cm_list[[2]])
 cma_pair
 #> 
 #> ── ConsortiumMetabolismAlignment
-#> Name: NA
+#> Name: "ac_A1R12_1 vs ac_A1R12_10"
 #> Type: "pairwise"
 #> Metric: "FOS"
 #> Score: 0.7634
@@ -573,7 +590,7 @@ sessionInfo()
 #> [11] generics_0.1.4                  stats4_4.5.3                   
 #> [13] parallel_4.5.3                  tibble_3.3.1                   
 #> [15] pkgconfig_2.0.3                 Matrix_1.7-4                   
-#> [17] RColorBrewer_1.1-3              S7_0.2.1                       
+#> [17] RColorBrewer_1.1-3              S7_0.2.1-1                     
 #> [19] desc_1.4.3                      S4Vectors_0.48.1               
 #> [21] lifecycle_1.0.5                 farver_2.1.2                   
 #> [23] compiler_4.5.3                  treeio_1.34.0                  
@@ -602,10 +619,10 @@ sessionInfo()
 #> [69] evaluate_1.0.5                  knitr_1.51                     
 #> [71] GenomicRanges_1.62.1            IRanges_2.44.0                 
 #> [73] viridisLite_0.4.3               rlang_1.2.0                    
-#> [75] dendextend_1.19.1               Rcpp_1.1.1                     
-#> [77] glue_1.8.0                      tidytree_0.4.7                 
+#> [75] dendextend_1.19.1               Rcpp_1.1.1-1                   
+#> [77] glue_1.8.1                      tidytree_0.4.7                 
 #> [79] BiocManager_1.30.27             BiocGenerics_0.56.0            
 #> [81] jsonlite_2.0.0                  R6_2.6.1                       
 #> [83] MatrixGenerics_1.22.0           systemfonts_1.3.2              
-#> [85] fs_2.0.1
+#> [85] fs_2.1.0
 ```

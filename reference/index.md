@@ -6,6 +6,7 @@
   : Functional Microbiome Representation
 
 - [`ConsortiumMetabolismAlignment()`](https://admarhi.github.io/ramen/reference/ConsortiumMetabolismAlignment.md)
+  [`as.data.frame(`*`<ConsortiumMetabolismAlignment>`*`)`](https://admarhi.github.io/ramen/reference/ConsortiumMetabolismAlignment.md)
   :
 
   Constructor for `ConsortiumMetabolismAlignment` Objects
@@ -35,7 +36,7 @@
   Get Growth Rates
 
 - [`importMisosoup()`](https://admarhi.github.io/ramen/reference/importMisosoup.md)
-  : Import and Process Misosoup Data
+  : Import MiSoSoup YAML Output
 
 - [`importSmetana()`](https://admarhi.github.io/ramen/reference/importSmetana.md)
   : Import SMETANA Detailed Output
@@ -50,8 +51,8 @@
   [`` `name<-`() ``](https://admarhi.github.io/ramen/reference/name.md)
   : Get or Set Object Name
 
-- [`overviewMisosoup()`](https://admarhi.github.io/ramen/reference/overviewMisosoup.md)
-  : Overview of Misosoup Data Structure
+- [`overlapMatrix()`](https://admarhi.github.io/ramen/reference/overlapMatrix.md)
+  : Get Overlap Matrix
 
 - [`pathways()`](https://admarhi.github.io/ramen/reference/pathways.md)
   : Retrieve Metabolic Pathways
@@ -101,6 +102,11 @@
 
 - [`species()`](https://admarhi.github.io/ramen/reference/species.md) :
   Return Species in a Consortium
+
+- [`` `[`( ``*`<ConsortiumMetabolism>`*`,`*`<ANY>`*`,`*`<ANY>`*`,`*`<ANY>`*`)`](https://admarhi.github.io/ramen/reference/subset-ramen.md)
+  [`` `[`( ``*`<ConsortiumMetabolismSet>`*`,`*`<ANY>`*`,`*`<ANY>`*`,`*`<ANY>`*`)`](https://admarhi.github.io/ramen/reference/subset-ramen.md)
+  [`` `[`( ``*`<ConsortiumMetabolismAlignment>`*`,`*`<ANY>`*`,`*`<ANY>`*`,`*`<ANY>`*`)`](https://admarhi.github.io/ramen/reference/subset-ramen.md)
+  : Subset ramen Objects by Metabolite
 
 - [`synCM()`](https://admarhi.github.io/ramen/reference/synCM.md) :
   Generate Synthetic Consortium Metabolism

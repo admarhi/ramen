@@ -28,10 +28,10 @@ cma <- align(cm1, cm2)
 show(cma)
 #> 
 #> ── ConsortiumMetabolismAlignment 
-#> Name: NA
+#> Name: "comm_1 vs comm_2"
 #> Type: "pairwise"
 #> Metric: "FOS"
-#> Score: 0.8
+#> Score: 0
 #> Query: "comm_1", Reference: "comm_2"
-#> Coverage: query 0.8, reference 0.25
+#> Coverage: query 0, reference 0
 ```

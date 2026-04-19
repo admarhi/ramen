@@ -26,8 +26,11 @@ A numeric n x n matrix.
 ## Methods (by class)
 
 - `similarityMatrix(ConsortiumMetabolismAlignment)`: Similarity matrix
-  from a multiple
-  [ConsortiumMetabolismAlignment](https://admarhi.github.io/ramen/reference/ConsortiumMetabolismAlignment.md)
+  from a
+  [ConsortiumMetabolismAlignment](https://admarhi.github.io/ramen/reference/ConsortiumMetabolismAlignment.md).
+  For multiple alignments this is the symmetric n x n pairwise matrix;
+  for database search alignments it is a 1 x n row vector of the query's
+  scores against each database member.
 
 ## Examples
 
@@ -38,19 +41,19 @@ cms <- ConsortiumMetabolismSet(cm1, cm2, name = "test")
 #> 
 #> ── Creating CMS "test" ─────────────────────────────────────────────────────────
 #> ℹ Validating 2 <ConsortiumMetabolism> objects
-#> ✔ Validating 2 <ConsortiumMetabolism> objects [11ms]
+#> ✔ Validating 2 <ConsortiumMetabolism> objects [12ms]
 #> 
 #> ℹ Collecting metabolites from 2 consortia
-#> ✔ Collecting metabolites from 2 consortia [29ms]
+#> ✔ Collecting metabolites from 2 consortia [31ms]
 #> 
-#> ℹ Re-indexing 6 unique metabolites
-#> ✔ Re-indexing 6 unique metabolites [26ms]
+#> ℹ Re-indexing 7 unique metabolites
+#> ✔ Re-indexing 7 unique metabolites [28ms]
 #> 
-#> ℹ Expanding 2 binary matrices to 6-dimensional space
-#> ✔ Expanding 2 binary matrices to 6-dimensional space [23ms]
+#> ℹ Expanding 2 binary matrices to 7-dimensional space
+#> ✔ Expanding 2 binary matrices to 7-dimensional space [24ms]
 #> 
-#> ℹ Computing 6 x 6 levels matrix
-#> ✔ Computing 6 x 6 levels matrix [24ms]
+#> ℹ Computing 7 x 7 levels matrix
+#> ✔ Computing 7 x 7 levels matrix [71ms]
 #> 
 #> ℹ Computing pairwise overlap (1 pairs via crossprod)
 #> ✔ Computing pairwise overlap (1 pairs via crossprod) [23ms]
@@ -59,19 +62,19 @@ cms <- ConsortiumMetabolismSet(cm1, cm2, name = "test")
 #> ✔ Assembling pathway data from 2 consortia [30ms]
 #> 
 #> ℹ Building dendrogram from 2 x 2 dissimilarity matrix
-#> ✔ Building dendrogram from 2 x 2 dissimilarity matrix [22ms]
+#> ✔ Building dendrogram from 2 x 2 dissimilarity matrix [21ms]
 #> 
 #> ℹ Extracting dendrogram node positions
-#> ✔ Extracting dendrogram node positions [24ms]
+#> ✔ Extracting dendrogram node positions [23ms]
 #> 
 #> ℹ Collecting 2 consortium graphs
-#> CMS "test" created: 2 consortia, 6 metabolites (0.2s)
-#> ✔ Collecting 2 consortium graphs [79ms]
+#> CMS "test" created: 2 consortia, 7 metabolites (0.3s)
+#> ✔ Collecting 2 consortium graphs [83ms]
 #> 
 cma <- align(cms)
 #> Computing multiple alignment for 2 consortia using "FOS".
 similarityMatrix(cma)
-#>        comm_1 comm_2
-#> comm_1    1.0    0.3
-#> comm_2    0.3    1.0
+#>           comm_1    comm_2
+#> comm_1 1.0000000 0.3333333
+#> comm_2 0.3333333 1.0000000
 ```

@@ -110,36 +110,38 @@ cms <- ConsortiumMetabolismSet(cm1, cm2, name = "example")
 #> ✔ Validating 2 <ConsortiumMetabolism> objects [14ms]
 #> 
 #> ℹ Collecting metabolites from 2 consortia
-#> ✔ Collecting metabolites from 2 consortia [41ms]
+#> ✔ Collecting metabolites from 2 consortia [43ms]
 #> 
-#> ℹ Re-indexing 6 unique metabolites
-#> ✔ Re-indexing 6 unique metabolites [36ms]
+#> ℹ Re-indexing 7 unique metabolites
+#> ✔ Re-indexing 7 unique metabolites [37ms]
 #> 
-#> ℹ Expanding 2 binary matrices to 6-dimensional space
-#> ✔ Expanding 2 binary matrices to 6-dimensional space [23ms]
+#> ℹ Expanding 2 binary matrices to 7-dimensional space
+#> ✔ Expanding 2 binary matrices to 7-dimensional space [25ms]
 #> 
-#> ℹ Computing 6 x 6 levels matrix
-#> ✔ Computing 6 x 6 levels matrix [26ms]
+#> ℹ Computing 7 x 7 levels matrix
+#> ✔ Computing 7 x 7 levels matrix [27ms]
 #> 
 #> ℹ Computing pairwise overlap (1 pairs via crossprod)
-#> ✔ Computing pairwise overlap (1 pairs via crossprod) [25ms]
+#> ✔ Computing pairwise overlap (1 pairs via crossprod) [26ms]
 #> 
 #> ℹ Assembling pathway data from 2 consortia
-#> ✔ Assembling pathway data from 2 consortia [32ms]
+#> ✔ Assembling pathway data from 2 consortia [33ms]
 #> 
 #> ℹ Building dendrogram from 2 x 2 dissimilarity matrix
-#> ✔ Building dendrogram from 2 x 2 dissimilarity matrix [22ms]
+#> ✔ Building dendrogram from 2 x 2 dissimilarity matrix [24ms]
 #> 
 #> ℹ Extracting dendrogram node positions
-#> ✔ Extracting dendrogram node positions [172ms]
+#> ✔ Extracting dendrogram node positions [34ms]
 #> 
 #> ℹ Collecting 2 consortium graphs
-#> CMS "example" created: 2 consortia, 6 metabolites (0.4s)
-#> ✔ Collecting 2 consortium graphs [85ms]
+#> CMS "example" created: 2 consortia, 7 metabolites (0.3s)
+#> ✔ Collecting 2 consortium graphs [87ms]
 #> 
 cms
 #> 
 #> ── ConsortiumMetabolismSet 
 #> Name: "example"
-#> 2 consortia, 7 species, 6 metabolites.
+#> 2 consortia, 7 species, 7 metabolites.
+#> Community size (species): min 3, mean 3.5, max 4.
+#> Community size (metabolites): min 2, mean 4, max 6.
 ```

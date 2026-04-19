@@ -15,6 +15,7 @@ ConsortiumMetabolism(
   species_col = "species",
   metabolite_col = "metabolite",
   flux_col = "flux",
+  verbose = FALSE,
   ...
 )
 ```
@@ -50,6 +51,11 @@ ConsortiumMetabolism(
 - flux_col:
 
   Character scalar for the flux column name, defaults to `"flux"`.
+
+- verbose:
+
+  Logical scalar. If `TRUE`, prints progress messages during
+  construction. Defaults to `FALSE`.
 
 - ...:
 

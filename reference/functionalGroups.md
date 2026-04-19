@@ -67,19 +67,19 @@ cms <- ConsortiumMetabolismSet(
 #> 
 #> ── Creating CMS "test" ─────────────────────────────────────────────────────────
 #> ℹ Validating 2 <ConsortiumMetabolism> objects
-#> ✔ Validating 2 <ConsortiumMetabolism> objects [11ms]
+#> ✔ Validating 2 <ConsortiumMetabolism> objects [12ms]
 #> 
 #> ℹ Collecting metabolites from 2 consortia
-#> ✔ Collecting metabolites from 2 consortia [30ms]
+#> ✔ Collecting metabolites from 2 consortia [31ms]
 #> 
-#> ℹ Re-indexing 6 unique metabolites
-#> ✔ Re-indexing 6 unique metabolites [28ms]
+#> ℹ Re-indexing 7 unique metabolites
+#> ✔ Re-indexing 7 unique metabolites [34ms]
 #> 
-#> ℹ Expanding 2 binary matrices to 6-dimensional space
-#> ✔ Expanding 2 binary matrices to 6-dimensional space [24ms]
+#> ℹ Expanding 2 binary matrices to 7-dimensional space
+#> ✔ Expanding 2 binary matrices to 7-dimensional space [24ms]
 #> 
-#> ℹ Computing 6 x 6 levels matrix
-#> ✔ Computing 6 x 6 levels matrix [25ms]
+#> ℹ Computing 7 x 7 levels matrix
+#> ✔ Computing 7 x 7 levels matrix [25ms]
 #> 
 #> ℹ Computing pairwise overlap (1 pairs via crossprod)
 #> ✔ Computing pairwise overlap (1 pairs via crossprod) [23ms]
@@ -91,11 +91,11 @@ cms <- ConsortiumMetabolismSet(
 #> ✔ Building dendrogram from 2 x 2 dissimilarity matrix [22ms]
 #> 
 #> ℹ Extracting dendrogram node positions
-#> ✔ Extracting dendrogram node positions [24ms]
+#> ✔ Extracting dendrogram node positions [23ms]
 #> 
 #> ℹ Collecting 2 consortium graphs
-#> CMS "test" created: 2 consortia, 6 metabolites (0.2s)
-#> ✔ Collecting 2 consortium graphs [87ms]
+#> CMS "test" created: 2 consortia, 7 metabolites (0.2s)
+#> ✔ Collecting 2 consortium graphs [83ms]
 #> 
 fg <- functionalGroups(cms)
 plotFunctionalGroups(fg, k = 2)

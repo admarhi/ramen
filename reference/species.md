@@ -68,5 +68,5 @@ a tibble with columns `species` and `n_pathways`.
 ``` r
 cm <- synCM("test", n_species = 3, max_met = 5)
 species(cm)
-#> [1] "XEW6572A" "SHJ4890C" "MQL2872Q"
+#> [1] "VRM9652S" "OCD7844Q" "XHI146D" 
 ```

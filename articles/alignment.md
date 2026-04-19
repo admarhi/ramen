@@ -5,9 +5,13 @@
 The alignment system in `ramen` quantifies how similar two or more
 microbial communities are from a functional perspective – not by which
 species are present, but by which metabolite-to-metabolite pathways they
-catalyse. The result is a `ConsortiumMetabolismAlignment` (CMA) object
-containing similarity scores, pathway correspondences, and (for multiple
-alignments) a consensus network.
+catalyse.
+[`align()`](https://admarhi.github.io/ramen/reference/align.md) supports
+three modes: **pairwise** (two consortia), **multiple** (all consortia
+in a set), and **search** (one query consortium against every member of
+a set). All three return a `ConsortiumMetabolismAlignment` (CMA) object
+containing similarity scores and (depending on the mode) pathway
+correspondences, a consensus network, or a ranked hit table.
 
 This vignette covers the alignment system in depth. For a general
 introduction to the package, see
@@ -46,7 +50,7 @@ cma <- align(cm_list[[1]], cm_list[[2]])
 cma
 #> 
 #> ── ConsortiumMetabolismAlignment
-#> Name: NA
+#> Name: "ac_A1R12_1 vs ac_A1R12_10"
 #> Type: "pairwise"
 #> Metric: "FOS"
 #> Score: 0.7634
@@ -378,21 +382,170 @@ scores.](alignment_files/figure-html/plot-scores-mult-1.png)
 
 Multiple alignment summary scores.
 
+## Database search
+
+`align(CM, CMS)` compares a single query consortium against every member
+of a set and returns a CMA with `Type = "search"`. This is the natural
+call for questions like “which consortium in my database is most
+functionally similar to this query?”
+
+### Basic search
+
+We hold out the first consortium as a query and search it against a
+database built from the remaining five:
+
+``` r
+query <- cm_list[[1]]
+db <- ConsortiumMetabolismSet(cm_list[-1], name = "db")
+```
+
+``` r
+hits <- align(query, db)
+#> Searching 5 consortia using "FOS".
+hits
+#> 
+#> ── ConsortiumMetabolismAlignment 
+#> Name: "ac_A1R12_1 vs CMS (5 consortia)"
+#> Type: "search"
+#> Metric: "FOS"
+#> Score: 0.7849
+#> Query: "ac_A1R12_1", Top hit: "ac_A1R12_12" (of 5 consortia)
+```
+
+The top-hit name and score sit on `ReferenceName` / `PrimaryScore`. The
+full ranked table is stored in `Scores$ranking`:
+
+``` r
+ranking <- scores(hits)$ranking
+head(ranking)
+#> # A tibble: 5 × 8
+#>   reference   score   FOS jaccard brayCurtis redundancyOverlap coverageQuery
+#>   <chr>       <dbl> <dbl>   <dbl>      <dbl>             <dbl>         <dbl>
+#> 1 ac_A1R12_12 0.785 0.785   0.451      0.635             0.451         0.785
+#> 2 ac_A1R12_14 0.785 0.785   0.497      0.553             0.497         0.785
+#> 3 ac_A1R12_10 0.763 0.763   0.340      0.312             0.340         0.763
+#> 4 ac_A1R12_11 0.538 0.538   0.226      0.500             0.226         0.538
+#> 5 ac_A1R12_13 0.538 0.538   0.270      0.515             0.270         0.538
+#> # ℹ 1 more variable: coverageReference <dbl>
+```
+
+Each row holds the reference consortium’s name, the primary `score`
+(under the requested `method`), all four individual metric columns, and
+the coverage ratios against the query. Rows are pre-sorted by `score` in
+descending order.
+
+### Top-K hits
+
+Use `topK` to truncate the ranked table – useful when the database is
+large and only the best matches matter:
+
+``` r
+hits_top3 <- align(query, db, topK = 3L)
+#> Searching 5 consortia using "FOS".
+scores(hits_top3)$ranking
+#> # A tibble: 3 × 8
+#>   reference   score   FOS jaccard brayCurtis redundancyOverlap coverageQuery
+#>   <chr>       <dbl> <dbl>   <dbl>      <dbl>             <dbl>         <dbl>
+#> 1 ac_A1R12_12 0.785 0.785   0.451      0.635             0.451         0.785
+#> 2 ac_A1R12_14 0.785 0.785   0.497      0.553             0.497         0.785
+#> 3 ac_A1R12_10 0.763 0.763   0.340      0.312             0.340         0.763
+#> # ℹ 1 more variable: coverageReference <dbl>
+```
+
+[`similarityMatrix()`](https://admarhi.github.io/ramen/reference/similarityMatrix.md)
+returns a 1 x n row vector (or 1 x topK if truncated), with the query
+name as the row label:
+
+``` r
+round(similarityMatrix(hits_top3), 3)
+#>            ac_A1R12_12 ac_A1R12_14 ac_A1R12_10
+#> ac_A1R12_1       0.785       0.785       0.763
+```
+
+Pathway correspondences always reflect the single overall top hit,
+regardless of `topK`:
+
+``` r
+head(pathways(hits_top3, type = "shared"))
+#> # A tibble: 6 × 2
+#>   consumed produced
+#>   <chr>    <chr>   
+#> 1 asp__L   ac      
+#> 2 etoh     ac      
+#> 3 gly      ac      
+#> 4 gthrd    ac      
+#> 5 h2o2     ac      
+#> 6 pyr      ac
+```
+
+### Choosing metrics
+
+By default all four base metrics are computed for every database member.
+For large databases, restricting `metrics` skips the weighted-assay
+expansion and can be substantially faster:
+
+``` r
+hits_fos <- align(query, db, metrics = "FOS")
+#> Searching 5 consortia using "FOS".
+scores(hits_fos)$ranking[,
+    c("reference", "score", "brayCurtis")
+]
+#> # A tibble: 5 × 3
+#>   reference   score brayCurtis
+#>   <chr>       <dbl>      <dbl>
+#> 1 ac_A1R12_12 0.785         NA
+#> 2 ac_A1R12_14 0.785         NA
+#> 3 ac_A1R12_10 0.763         NA
+#> 4 ac_A1R12_11 0.538         NA
+#> 5 ac_A1R12_13 0.538         NA
+```
+
+Columns for skipped metrics remain in the ranking table but are filled
+with `NA`, making the schema stable across calls.
+
+### Significance of the top hit
+
+As in pairwise alignment, `computePvalue = TRUE` runs a
+degree-preserving permutation test. For database search, the test is
+applied only to the top hit – a BLAST-style convention that keeps the
+cost comparable to a single pairwise p-value:
+
+``` r
+hits_p <- align(
+    query,
+    db,
+    computePvalue = TRUE,
+    nPermutations = 99L
+)
+#> Searching 5 consortia using "FOS".
+c(
+    top = hits_p@ReferenceName,
+    score = round(hits_p@PrimaryScore, 3),
+    pvalue = round(hits_p@Pvalue, 3)
+)
+#>           top         score        pvalue 
+#> "ac_A1R12_12"       "0.785"        "0.01"
+```
+
+If statistical confidence is needed for several top hits, re-run
+[`align()`](https://admarhi.github.io/ramen/reference/align.md) in
+pairwise mode against each candidate individually.
+
 ## Accessor reference
 
-| Accessor                                                                              | Alignment type | Returns                         |
-|---------------------------------------------------------------------------------------|----------------|---------------------------------|
-| [`scores()`](https://admarhi.github.io/ramen/reference/scores.md)                     | both           | Named list of scores            |
-| [`pathways()`](https://admarhi.github.io/ramen/reference/pathways.md)                 | both           | data.frame of all pathways      |
-| `pathways(type = "shared")`                                                           | pairwise       | data.frame of shared pathways   |
-| `pathways(type = "unique")`                                                           | pairwise       | list(query, reference)          |
-| `pathways(type = "consensus")`                                                        | multiple       | data.frame with prevalence      |
-| [`similarityMatrix()`](https://admarhi.github.io/ramen/reference/similarityMatrix.md) | multiple       | n x n numeric matrix            |
-| [`prevalence()`](https://admarhi.github.io/ramen/reference/prevalence.md)             | multiple       | data.frame with nConsortia      |
-| [`metabolites()`](https://admarhi.github.io/ramen/reference/metabolites.md)           | both           | Character vector of metabolites |
+| Accessor                                                                              | Alignment type   | Returns                                            |
+|---------------------------------------------------------------------------------------|------------------|----------------------------------------------------|
+| [`scores()`](https://admarhi.github.io/ramen/reference/scores.md)                     | all              | Named list of scores (+ `$ranking` for search)     |
+| [`pathways()`](https://admarhi.github.io/ramen/reference/pathways.md)                 | all              | data.frame of all pathways                         |
+| `pathways(type = "shared")`                                                           | pairwise, search | data.frame of shared pathways (top hit for search) |
+| `pathways(type = "unique")`                                                           | pairwise, search | list(query, reference) (top hit for search)        |
+| `pathways(type = "consensus")`                                                        | multiple         | data.frame with prevalence                         |
+| [`similarityMatrix()`](https://admarhi.github.io/ramen/reference/similarityMatrix.md) | multiple, search | n x n (multiple) or 1 x n (search) numeric matrix  |
+| [`prevalence()`](https://admarhi.github.io/ramen/reference/prevalence.md)             | multiple         | data.frame with nConsortia                         |
+| [`metabolites()`](https://admarhi.github.io/ramen/reference/metabolites.md)           | all              | Character vector of metabolites                    |
 
 Type guards prevent misuse – for example, calling
-`pathways(type = "shared")` on a multiple alignment raises an
+`pathways(type = "consensus")` on a pairwise alignment raises an
 informative error.
 
 ## Session info
@@ -431,7 +584,7 @@ sessionInfo()
 #> [11] generics_0.1.4                  stats4_4.5.3                   
 #> [13] parallel_4.5.3                  tibble_3.3.1                   
 #> [15] pkgconfig_2.0.3                 Matrix_1.7-4                   
-#> [17] RColorBrewer_1.1-3              S7_0.2.1                       
+#> [17] RColorBrewer_1.1-3              S7_0.2.1-1                     
 #> [19] desc_1.4.3                      S4Vectors_0.48.1               
 #> [21] lifecycle_1.0.5                 farver_2.1.2                   
 #> [23] compiler_4.5.3                  treeio_1.34.0                  
@@ -460,10 +613,10 @@ sessionInfo()
 #> [69] evaluate_1.0.5                  knitr_1.51                     
 #> [71] GenomicRanges_1.62.1            IRanges_2.44.0                 
 #> [73] viridisLite_0.4.3               rlang_1.2.0                    
-#> [75] dendextend_1.19.1               Rcpp_1.1.1                     
-#> [77] glue_1.8.0                      tidytree_0.4.7                 
+#> [75] dendextend_1.19.1               Rcpp_1.1.1-1                   
+#> [77] glue_1.8.1                      tidytree_0.4.7                 
 #> [79] BiocManager_1.30.27             BiocGenerics_0.56.0            
 #> [81] jsonlite_2.0.0                  R6_2.6.1                       
 #> [83] MatrixGenerics_1.22.0           systemfonts_1.3.2              
-#> [85] fs_2.0.1
+#> [85] fs_2.1.0
 ```

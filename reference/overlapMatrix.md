@@ -1,37 +1,45 @@
-# Show Method for `ConsortiumMetabolismSet` Object
+# Get Overlap Matrix
 
-Show Method for `ConsortiumMetabolismSet` Object
+Returns the pairwise dissimilarity matrix from a
+`ConsortiumMetabolismSet` object. Values are `1 - FOS` (Functional
+Overlap Score), so 0 indicates identical consortia and 1 indicates no
+shared pathways.
 
 ## Usage
 
 ``` r
+overlapMatrix(object)
+
 # S4 method for class 'ConsortiumMetabolismSet'
-show(object)
+overlapMatrix(object)
 ```
 
 ## Arguments
 
 - object:
 
-  An object of class `ConsortiumMetabolismSet`
+  A `ConsortiumMetabolismSet` object.
 
 ## Value
 
-The object, invisibly.
+A numeric \\n \times n\\ matrix of pairwise dissimilarities, where \\n\\
+is the number of consortia. Row and column names are consortium names.
 
 ## Examples
 
 ``` r
 cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
 cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
-cms <- ConsortiumMetabolismSet(cm1, cm2, name = "test")
+cms <- ConsortiumMetabolismSet(
+    cm1, cm2, name = "test"
+)
 #> 
 #> ── Creating CMS "test" ─────────────────────────────────────────────────────────
 #> ℹ Validating 2 <ConsortiumMetabolism> objects
 #> ✔ Validating 2 <ConsortiumMetabolism> objects [12ms]
 #> 
 #> ℹ Collecting metabolites from 2 consortia
-#> ✔ Collecting metabolites from 2 consortia [31ms]
+#> ✔ Collecting metabolites from 2 consortia [30ms]
 #> 
 #> ℹ Re-indexing 7 unique metabolites
 #> ✔ Re-indexing 7 unique metabolites [27ms]
@@ -43,13 +51,13 @@ cms <- ConsortiumMetabolismSet(cm1, cm2, name = "test")
 #> ✔ Computing 7 x 7 levels matrix [25ms]
 #> 
 #> ℹ Computing pairwise overlap (1 pairs via crossprod)
-#> ✔ Computing pairwise overlap (1 pairs via crossprod) [23ms]
+#> ✔ Computing pairwise overlap (1 pairs via crossprod) [24ms]
 #> 
 #> ℹ Assembling pathway data from 2 consortia
-#> ✔ Assembling pathway data from 2 consortia [38ms]
+#> ✔ Assembling pathway data from 2 consortia [39ms]
 #> 
 #> ℹ Building dendrogram from 2 x 2 dissimilarity matrix
-#> ✔ Building dendrogram from 2 x 2 dissimilarity matrix [22ms]
+#> ✔ Building dendrogram from 2 x 2 dissimilarity matrix [21ms]
 #> 
 #> ℹ Extracting dendrogram node positions
 #> ✔ Extracting dendrogram node positions [23ms]
@@ -58,11 +66,8 @@ cms <- ConsortiumMetabolismSet(cm1, cm2, name = "test")
 #> CMS "test" created: 2 consortia, 7 metabolites (0.2s)
 #> ✔ Collecting 2 consortium graphs [83ms]
 #> 
-show(cms)
-#> 
-#> ── ConsortiumMetabolismSet 
-#> Name: "test"
-#> 2 consortia, 7 species, 7 metabolites.
-#> Community size (species): min 3, mean 3.5, max 4.
-#> Community size (metabolites): min 5, mean 5.5, max 6.
+overlapMatrix(cms)
+#>        comm_1 comm_2
+#> comm_1    0.0    0.5
+#> comm_2    0.5    0.0
 ```

@@ -53,8 +53,14 @@ strains in different media.</p>
 <dd><p>Character, species identifier.</p></dd>
 
 <dt>metabolite</dt>
-<dd><p>Character, metabolite name (BiGG
-identifiers).</p></dd>
+<dd><p>Character, metabolite identifier following
+the BiGG namespace (King et al. 2016). Common examples:
+<code>ac</code> (acetate), <code>co2</code> (CO2), <code>etoh</code>
+(ethanol), <code>pyr</code> (pyruvate), <code>ala__L</code>
+(L-alanine), <code>ala__D</code> (D-alanine). The
+double-underscore convention encodes stereochemistry
+(e.g. <code>__L</code> = L-isomer, <code>__D</code> = D-isomer).
+See <a href="https://bigg.ucsd.edu" class="external-link">https://bigg.ucsd.edu</a> for the full namespace.</p></dd>
 
 <dt>flux</dt>
 <dd><p>Numeric, metabolic flux (negative for
@@ -65,6 +71,23 @@ consumption, positive for production).</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A list of 56 tibbles.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>Metabolite identifiers follow the BiGG (Biochemically,
+Genetically and Genomically structured) knowledge base
+namespace (<a href="https://bigg.ucsd.edu" class="external-link">https://bigg.ucsd.edu</a>; King et al. 2016).
+Raw exchange reaction IDs from flux-balance simulators
+(e.g. <code>R_EX_ac_e</code>, <code>EX_ac_e</code>) are normalized to
+bare metabolite names by <code><a href="importMisosoup.html">importMisosoup()</a></code> via
+<code>normalize_ids = TRUE</code> (default).</p>
+    </div>
+    <div class="section level2">
+    <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
+    <p>King ZA et al. (2016) BiGG Models: A platform for
+integrating, standardizing and sharing genome-scale models.
+<em>Nucleic Acids Research</em>, 44(D1), D515–D522.
+<a href="https://doi.org/10.1093/nar/gkv1049" class="external-link">doi:10.1093/nar/gkv1049</a></p>
     </div>
 
     <div class="section level2">

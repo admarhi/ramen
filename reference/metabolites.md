@@ -32,5 +32,5 @@ A character vector containing the names of metabolites in the network.
 ``` r
 cm <- synCM("test", n_species = 3, max_met = 5)
 metabolites(cm)
-#> [1] "met2" "met3"
+#> [1] "met3" "met1" "met5" "met4" "met2"
 ```

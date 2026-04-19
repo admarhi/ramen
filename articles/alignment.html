@@ -73,10 +73,13 @@
 <p>The alignment system in <code>ramen</code> quantifies how similar two
 or more microbial communities are from a functional perspective – not by
 which species are present, but by which metabolite-to-metabolite
-pathways they catalyse. The result is a
+pathways they catalyse. <code><a href="../reference/align.html">align()</a></code> supports three modes:
+<strong>pairwise</strong> (two consortia), <strong>multiple</strong>
+(all consortia in a set), and <strong>search</strong> (one query
+consortium against every member of a set). All three return a
 <code>ConsortiumMetabolismAlignment</code> (CMA) object containing
-similarity scores, pathway correspondences, and (for multiple
-alignments) a consensus network.</p>
+similarity scores and (depending on the mode) pathway correspondences, a
+consensus network, or a ranked hit table.</p>
 <p>This vignette covers the alignment system in depth. For a general
 introduction to the package, see
 <code><a href="../articles/ramen.html">vignette("ramen", package = "ramen")</a></code>.</p>
@@ -113,7 +116,7 @@ dataset to use throughout this vignette.</p>
 <span><span class="va">cma</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── ConsortiumMetabolismAlignment</span></span>
-<span><span class="co">#&gt; Name: <span style="color: #0000BB;">NA</span></span></span>
+<span><span class="co">#&gt; Name: <span style="color: #0000BB;">"ac_A1R12_1 vs ac_A1R12_10"</span></span></span>
 <span><span class="co">#&gt; Type: <span style="color: #0000BB;">"pairwise"</span></span></span>
 <span><span class="co">#&gt; Metric: <span style="color: #0000BB;">"FOS"</span></span></span>
 <span><span class="co">#&gt; Score: <span style="color: #0000BB;">0.7634</span></span></span>
@@ -459,6 +462,139 @@ Multiple alignment summary scores.
 </div>
 </div>
 <div class="section level2">
+<h2 id="database-search">Database search<a class="anchor" aria-label="anchor" href="#database-search"></a>
+</h2>
+<p><code>align(CM, CMS)</code> compares a single query consortium
+against every member of a set and returns a CMA with
+<code>Type = "search"</code>. This is the natural call for questions
+like “which consortium in my database is most functionally similar to
+this query?”</p>
+<div class="section level3">
+<h3 id="basic-search">Basic search<a class="anchor" aria-label="anchor" href="#basic-search"></a>
+</h3>
+<p>We hold out the first consortium as a query and search it against a
+database built from the remaining five:</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">query</span> <span class="op">&lt;-</span> <span class="va">cm_list</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="va">db</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ConsortiumMetabolismSet.html">ConsortiumMetabolismSet</a></span><span class="op">(</span><span class="va">cm_list</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span>, name <span class="op">=</span> <span class="st">"db"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">hits</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/align.html">align</a></span><span class="op">(</span><span class="va">query</span>, <span class="va">db</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Searching <span style="color: #0000BB;">5</span> consortia using <span style="color: #0000BB;">"FOS"</span>.</span></span>
+<span><span class="va">hits</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── ConsortiumMetabolismAlignment </span></span>
+<span><span class="co">#&gt; Name: <span style="color: #0000BB;">"ac_A1R12_1 vs CMS (5 consortia)"</span></span></span>
+<span><span class="co">#&gt; Type: <span style="color: #0000BB;">"search"</span></span></span>
+<span><span class="co">#&gt; Metric: <span style="color: #0000BB;">"FOS"</span></span></span>
+<span><span class="co">#&gt; Score: <span style="color: #0000BB;">0.7849</span></span></span>
+<span><span class="co">#&gt; Query: <span style="color: #0000BB;">"ac_A1R12_1"</span>, Top hit: <span style="color: #0000BB;">"ac_A1R12_12"</span> (of <span style="color: #0000BB;">5</span> consortia)</span></span></code></pre></div>
+<p>The top-hit name and score sit on <code>ReferenceName</code> /
+<code>PrimaryScore</code>. The full ranked table is stored in
+<code>Scores$ranking</code>:</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ranking</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scores.html">scores</a></span><span class="op">(</span><span class="va">hits</span><span class="op">)</span><span class="op">$</span><span class="va">ranking</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ranking</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 8</span></span></span>
+<span><span class="co">#&gt;   reference   score   FOS jaccard brayCurtis redundancyOverlap coverageQuery</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> ac_A1R12_12 0.785 0.785   0.451      0.635             0.451         0.785</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> ac_A1R12_14 0.785 0.785   0.497      0.553             0.497         0.785</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> ac_A1R12_10 0.763 0.763   0.340      0.312             0.340         0.763</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> ac_A1R12_11 0.538 0.538   0.226      0.500             0.226         0.538</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> ac_A1R12_13 0.538 0.538   0.270      0.515             0.270         0.538</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1 more variable: coverageReference &lt;dbl&gt;</span></span></span></code></pre></div>
+<p>Each row holds the reference consortium’s name, the primary
+<code>score</code> (under the requested <code>method</code>), all four
+individual metric columns, and the coverage ratios against the query.
+Rows are pre-sorted by <code>score</code> in descending order.</p>
+</div>
+<div class="section level3">
+<h3 id="top-k-hits">Top-K hits<a class="anchor" aria-label="anchor" href="#top-k-hits"></a>
+</h3>
+<p>Use <code>topK</code> to truncate the ranked table – useful when the
+database is large and only the best matches matter:</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">hits_top3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/align.html">align</a></span><span class="op">(</span><span class="va">query</span>, <span class="va">db</span>, topK <span class="op">=</span> <span class="fl">3L</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Searching <span style="color: #0000BB;">5</span> consortia using <span style="color: #0000BB;">"FOS"</span>.</span></span>
+<span><span class="fu"><a href="../reference/scores.html">scores</a></span><span class="op">(</span><span class="va">hits_top3</span><span class="op">)</span><span class="op">$</span><span class="va">ranking</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 8</span></span></span>
+<span><span class="co">#&gt;   reference   score   FOS jaccard brayCurtis redundancyOverlap coverageQuery</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> ac_A1R12_12 0.785 0.785   0.451      0.635             0.451         0.785</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> ac_A1R12_14 0.785 0.785   0.497      0.553             0.497         0.785</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> ac_A1R12_10 0.763 0.763   0.340      0.312             0.340         0.763</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1 more variable: coverageReference &lt;dbl&gt;</span></span></span></code></pre></div>
+<p><code><a href="../reference/similarityMatrix.html">similarityMatrix()</a></code> returns a 1 x n row vector (or 1 x
+topK if truncated), with the query name as the row label:</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="../reference/similarityMatrix.html">similarityMatrix</a></span><span class="op">(</span><span class="va">hits_top3</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="co">#&gt;            ac_A1R12_12 ac_A1R12_14 ac_A1R12_10</span></span>
+<span><span class="co">#&gt; ac_A1R12_1       0.785       0.785       0.763</span></span></code></pre></div>
+<p>Pathway correspondences always reflect the single overall top hit,
+regardless of <code>topK</code>:</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/pathways.html">pathways</a></span><span class="op">(</span><span class="va">hits_top3</span>, type <span class="op">=</span> <span class="st">"shared"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 2</span></span></span>
+<span><span class="co">#&gt;   consumed produced</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> asp__L   ac      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> etoh     ac      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> gly      ac      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> gthrd    ac      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> h2o2     ac      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> pyr      ac</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="choosing-metrics">Choosing metrics<a class="anchor" aria-label="anchor" href="#choosing-metrics"></a>
+</h3>
+<p>By default all four base metrics are computed for every database
+member. For large databases, restricting <code>metrics</code> skips the
+weighted-assay expansion and can be substantially faster:</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">hits_fos</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/align.html">align</a></span><span class="op">(</span><span class="va">query</span>, <span class="va">db</span>, metrics <span class="op">=</span> <span class="st">"FOS"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Searching <span style="color: #0000BB;">5</span> consortia using <span style="color: #0000BB;">"FOS"</span>.</span></span>
+<span><span class="fu"><a href="../reference/scores.html">scores</a></span><span class="op">(</span><span class="va">hits_fos</span><span class="op">)</span><span class="op">$</span><span class="va">ranking</span><span class="op">[</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"reference"</span>, <span class="st">"score"</span>, <span class="st">"brayCurtis"</span><span class="op">)</span></span>
+<span><span class="op">]</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 3</span></span></span>
+<span><span class="co">#&gt;   reference   score brayCurtis</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> ac_A1R12_12 0.785         <span style="color: #BB0000;">NA</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> ac_A1R12_14 0.785         <span style="color: #BB0000;">NA</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> ac_A1R12_10 0.763         <span style="color: #BB0000;">NA</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> ac_A1R12_11 0.538         <span style="color: #BB0000;">NA</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> ac_A1R12_13 0.538         <span style="color: #BB0000;">NA</span></span></span></code></pre></div>
+<p>Columns for skipped metrics remain in the ranking table but are
+filled with <code>NA</code>, making the schema stable across calls.</p>
+</div>
+<div class="section level3">
+<h3 id="significance-of-the-top-hit">Significance of the top hit<a class="anchor" aria-label="anchor" href="#significance-of-the-top-hit"></a>
+</h3>
+<p>As in pairwise alignment, <code>computePvalue = TRUE</code> runs a
+degree-preserving permutation test. For database search, the test is
+applied only to the top hit – a BLAST-style convention that keeps the
+cost comparable to a single pairwise p-value:</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">hits_p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/align.html">align</a></span><span class="op">(</span></span>
+<span>    <span class="va">query</span>,</span>
+<span>    <span class="va">db</span>,</span>
+<span>    computePvalue <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    nPermutations <span class="op">=</span> <span class="fl">99L</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; Searching <span style="color: #0000BB;">5</span> consortia using <span style="color: #0000BB;">"FOS"</span>.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    top <span class="op">=</span> <span class="va">hits_p</span><span class="op">@</span><span class="va">ReferenceName</span>,</span>
+<span>    score <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">hits_p</span><span class="op">@</span><span class="va">PrimaryScore</span>, <span class="fl">3</span><span class="op">)</span>,</span>
+<span>    pvalue <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">hits_p</span><span class="op">@</span><span class="va">Pvalue</span>, <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt;           top         score        pvalue </span></span>
+<span><span class="co">#&gt; "ac_A1R12_12"       "0.785"        "0.01"</span></span></code></pre></div>
+<p>If statistical confidence is needed for several top hits, re-run
+<code><a href="../reference/align.html">align()</a></code> in pairwise mode against each candidate
+individually.</p>
+</div>
+</div>
+<div class="section level2">
 <h2 id="accessor-reference">Accessor reference<a class="anchor" aria-label="anchor" href="#accessor-reference"></a>
 </h2>
 <table class="table">
@@ -475,23 +611,23 @@ Multiple alignment summary scores.
 <tbody>
 <tr class="odd">
 <td><code><a href="../reference/scores.html">scores()</a></code></td>
-<td>both</td>
-<td>Named list of scores</td>
+<td>all</td>
+<td>Named list of scores (+ <code>$ranking</code> for search)</td>
 </tr>
 <tr class="even">
 <td><code><a href="../reference/pathways.html">pathways()</a></code></td>
-<td>both</td>
+<td>all</td>
 <td>data.frame of all pathways</td>
 </tr>
 <tr class="odd">
 <td><code>pathways(type = "shared")</code></td>
-<td>pairwise</td>
-<td>data.frame of shared pathways</td>
+<td>pairwise, search</td>
+<td>data.frame of shared pathways (top hit for search)</td>
 </tr>
 <tr class="even">
 <td><code>pathways(type = "unique")</code></td>
-<td>pairwise</td>
-<td>list(query, reference)</td>
+<td>pairwise, search</td>
+<td>list(query, reference) (top hit for search)</td>
 </tr>
 <tr class="odd">
 <td><code>pathways(type = "consensus")</code></td>
@@ -500,8 +636,8 @@ Multiple alignment summary scores.
 </tr>
 <tr class="even">
 <td><code><a href="../reference/similarityMatrix.html">similarityMatrix()</a></code></td>
-<td>multiple</td>
-<td>n x n numeric matrix</td>
+<td>multiple, search</td>
+<td>n x n (multiple) or 1 x n (search) numeric matrix</td>
 </tr>
 <tr class="odd">
 <td><code><a href="../reference/prevalence.html">prevalence()</a></code></td>
@@ -510,19 +646,19 @@ Multiple alignment summary scores.
 </tr>
 <tr class="even">
 <td><code><a href="../reference/metabolites.html">metabolites()</a></code></td>
-<td>both</td>
+<td>all</td>
 <td>Character vector of metabolites</td>
 </tr>
 </tbody>
 </table>
 <p>Type guards prevent misuse – for example, calling
-<code>pathways(type = "shared")</code> on a multiple alignment raises an
-informative error.</p>
+<code>pathways(type = "consensus")</code> on a pairwise alignment raises
+an informative error.</p>
 </div>
 <div class="section level2">
 <h2 id="session-info">Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.5.3 (2026-03-11)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
@@ -556,7 +692,7 @@ informative error.</p>
 <span><span class="co">#&gt; [11] generics_0.1.4                  stats4_4.5.3                   </span></span>
 <span><span class="co">#&gt; [13] parallel_4.5.3                  tibble_3.3.1                   </span></span>
 <span><span class="co">#&gt; [15] pkgconfig_2.0.3                 Matrix_1.7-4                   </span></span>
-<span><span class="co">#&gt; [17] RColorBrewer_1.1-3              S7_0.2.1                       </span></span>
+<span><span class="co">#&gt; [17] RColorBrewer_1.1-3              S7_0.2.1-1                     </span></span>
 <span><span class="co">#&gt; [19] desc_1.4.3                      S4Vectors_0.48.1               </span></span>
 <span><span class="co">#&gt; [21] lifecycle_1.0.5                 farver_2.1.2                   </span></span>
 <span><span class="co">#&gt; [23] compiler_4.5.3                  treeio_1.34.0                  </span></span>
@@ -585,12 +721,12 @@ informative error.</p>
 <span><span class="co">#&gt; [69] evaluate_1.0.5                  knitr_1.51                     </span></span>
 <span><span class="co">#&gt; [71] GenomicRanges_1.62.1            IRanges_2.44.0                 </span></span>
 <span><span class="co">#&gt; [73] viridisLite_0.4.3               rlang_1.2.0                    </span></span>
-<span><span class="co">#&gt; [75] dendextend_1.19.1               Rcpp_1.1.1                     </span></span>
-<span><span class="co">#&gt; [77] glue_1.8.0                      tidytree_0.4.7                 </span></span>
+<span><span class="co">#&gt; [75] dendextend_1.19.1               Rcpp_1.1.1-1                   </span></span>
+<span><span class="co">#&gt; [77] glue_1.8.1                      tidytree_0.4.7                 </span></span>
 <span><span class="co">#&gt; [79] BiocManager_1.30.27             BiocGenerics_0.56.0            </span></span>
 <span><span class="co">#&gt; [81] jsonlite_2.0.0                  R6_2.6.1                       </span></span>
 <span><span class="co">#&gt; [83] MatrixGenerics_1.22.0           systemfonts_1.3.2              </span></span>
-<span><span class="co">#&gt; [85] fs_2.0.1</span></span></code></pre></div>
+<span><span class="co">#&gt; [85] fs_2.1.0</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

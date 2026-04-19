@@ -82,7 +82,17 @@ consortium against all in a set</p></li>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for class 'ConsortiumMetabolism,ConsortiumMetabolismSet'</span></span>
-<span><span class="fu">align</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, method <span class="op">=</span> <span class="st">"FOS"</span>, BPPARAM <span class="op">=</span> <span class="fu">BiocParallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocParallel/man/SerialParam-class.html" class="external-link">SerialParam</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">align</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">y</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"FOS"</span>,</span>
+<span>  metrics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FOS"</span>, <span class="st">"jaccard"</span>, <span class="st">"brayCurtis"</span>, <span class="st">"redundancyOverlap"</span><span class="op">)</span>,</span>
+<span>  topK <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  computePvalue <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  nPermutations <span class="op">=</span> <span class="fl">999L</span>,</span>
+<span>  BPPARAM <span class="op">=</span> <span class="fu">BiocParallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocParallel/man/SerialParam-class.html" class="external-link">SerialParam</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -98,7 +108,9 @@ consortium against all in a set</p></li>
 
 
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
-<dd><p>Character scalar specifying the metric.</p></dd>
+<dd><p>Character scalar specifying the primary metric
+used to rank hits. One of <code>"FOS"</code> (default), <code>"jaccard"</code>,
+<code>"brayCurtis"</code>, <code>"redundancyOverlap"</code>, or <code>"MAAS"</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -106,13 +118,14 @@ consortium against all in a set</p></li>
 
 
 <dt id="arg-computepvalue">computePvalue<a class="anchor" aria-label="anchor" href="#arg-computepvalue"></a></dt>
-<dd><p>Logical; compute permutation p-value?
-Default <code>FALSE</code>.</p></dd>
+<dd><p>Logical; compute a permutation p-value
+for the top hit? Default <code>FALSE</code>. Not supported for
+<code>"brayCurtis"</code> or <code>"redundancyOverlap"</code>.</p></dd>
 
 
 <dt id="arg-npermutations">nPermutations<a class="anchor" aria-label="anchor" href="#arg-npermutations"></a></dt>
-<dd><p>Integer; number of permutations.
-Default <code>999L</code>.</p></dd>
+<dd><p>Integer; number of permutations used
+when <code>computePvalue = TRUE</code>. Default <code>999L</code>.</p></dd>
 
 
 <dt id="arg-linkage">linkage<a class="anchor" aria-label="anchor" href="#arg-linkage"></a></dt>
@@ -126,6 +139,23 @@ method for hierarchical clustering. Passed to
 <dd><p>A <a href="https://rdrr.io/pkg/BiocParallel/man/BiocParallelParam-class.html" class="external-link">BiocParallel::BiocParallelParam</a> object.
 Default <code><a href="https://rdrr.io/pkg/BiocParallel/man/SerialParam-class.html" class="external-link">BiocParallel::SerialParam()</a></code>.</p></dd>
 
+
+<dt id="arg-metrics">metrics<a class="anchor" aria-label="anchor" href="#arg-metrics"></a></dt>
+<dd><p>Character vector of metrics to compute per
+hit. Defaults to all four base metrics
+(<code>"FOS"</code>, <code>"jaccard"</code>, <code>"brayCurtis"</code>,
+<code>"redundancyOverlap"</code>). Restrict to a subset (e.g.
+<code>metrics = "FOS"</code>) to skip weighted-assay expansion and
+speed up large-database searches. <code>"MAAS"</code> as the primary
+metric requires all four components.</p></dd>
+
+
+<dt id="arg-topk">topK<a class="anchor" aria-label="anchor" href="#arg-topk"></a></dt>
+<dd><p>Integer; if non-<code>NULL</code>, truncate the ranked
+results (and <code>SimilarityMatrix</code>) to the top <code>topK</code> hits.
+The overall top hit's pathway correspondences are always
+reported regardless of <code>topK</code>. Default <code>NULL</code> (all hits).</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -135,7 +165,11 @@ Default <code><a href="https://rdrr.io/pkg/BiocParallel/man/SerialParam-class.ht
 <p>A <a href="ConsortiumMetabolismAlignment.html">ConsortiumMetabolismAlignment</a> object of type
 <code>"multiple"</code>.</p>
 <p>A <a href="ConsortiumMetabolismAlignment.html">ConsortiumMetabolismAlignment</a> object of type
-<code>"search"</code>.</p>
+<code>"search"</code>. <code>PrimaryScore</code>/<code>ReferenceName</code> point to the
+top hit; the full ranked hit table is stored in
+<code>Scores$ranking</code> and as a 1-row <code>SimilarityMatrix</code>.
+Pathway correspondences (<code>SharedPathways</code>, <code>UniqueQuery</code>,
+<code>UniqueReference</code>) are for the top hit only.</p>
     </div>
     <div class="section level2">
     <h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a></h2>
@@ -157,12 +191,12 @@ Default <code><a href="https://rdrr.io/pkg/BiocParallel/man/SerialParam-class.ht
 <span class="r-in"><span><span class="va">cma</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── ConsortiumMetabolismAlignment </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Name: <span style="color: #0000BB;">NA</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Name: <span style="color: #0000BB;">"comm_1 vs comm_2"</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Type: <span style="color: #0000BB;">"pairwise"</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Metric: <span style="color: #0000BB;">"FOS"</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Score: <span style="color: #0000BB;">0</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Score: <span style="color: #0000BB;">0.2857</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Query: <span style="color: #0000BB;">"comm_1"</span>, Reference: <span style="color: #0000BB;">"comm_2"</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Coverage: query <span style="color: #0000BB;">0</span>, reference <span style="color: #0000BB;">0</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Coverage: query <span style="color: #0000BB;">0.286</span>, reference <span style="color: #0000BB;">0.118</span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

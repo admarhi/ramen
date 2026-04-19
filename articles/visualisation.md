@@ -286,7 +286,7 @@ sessionInfo()
 #> [11] generics_0.1.4                  stats4_4.5.3                   
 #> [13] parallel_4.5.3                  tibble_3.3.1                   
 #> [15] pkgconfig_2.0.3                 Matrix_1.7-4                   
-#> [17] RColorBrewer_1.1-3              S7_0.2.1                       
+#> [17] RColorBrewer_1.1-3              S7_0.2.1-1                     
 #> [19] desc_1.4.3                      S4Vectors_0.48.1               
 #> [21] lifecycle_1.0.5                 farver_2.1.2                   
 #> [23] compiler_4.5.3                  treeio_1.34.0                  
@@ -315,9 +315,9 @@ sessionInfo()
 #> [69] knitr_1.51                      GenomicRanges_1.62.1           
 #> [71] IRanges_2.44.0                  viridisLite_0.4.3              
 #> [73] rlang_1.2.0                     dendextend_1.19.1              
-#> [75] Rcpp_1.1.1                      glue_1.8.0                     
+#> [75] Rcpp_1.1.1-1                    glue_1.8.1                     
 #> [77] tidytree_0.4.7                  BiocManager_1.30.27            
 #> [79] BiocGenerics_0.56.0             jsonlite_2.0.0                 
 #> [81] R6_2.6.1                        MatrixGenerics_1.22.0          
-#> [83] systemfonts_1.3.2               fs_2.0.1
+#> [83] systemfonts_1.3.2               fs_2.1.0
 ```

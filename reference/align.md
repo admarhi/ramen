@@ -29,7 +29,17 @@ align(
 )
 
 # S4 method for class 'ConsortiumMetabolism,ConsortiumMetabolismSet'
-align(x, y, method = "FOS", BPPARAM = BiocParallel::SerialParam(), ...)
+align(
+  x,
+  y,
+  method = "FOS",
+  metrics = c("FOS", "jaccard", "brayCurtis", "redundancyOverlap"),
+  topK = NULL,
+  computePvalue = FALSE,
+  nPermutations = 999L,
+  BPPARAM = BiocParallel::SerialParam(),
+  ...
+)
 ```
 
 ## Arguments
@@ -48,7 +58,9 @@ align(x, y, method = "FOS", BPPARAM = BiocParallel::SerialParam(), ...)
 
 - method:
 
-  Character scalar specifying the metric.
+  Character scalar specifying the primary metric used to rank hits. One
+  of `"FOS"` (default), `"jaccard"`, `"brayCurtis"`,
+  `"redundancyOverlap"`, or `"MAAS"`.
 
 - ...:
 
@@ -56,11 +68,13 @@ align(x, y, method = "FOS", BPPARAM = BiocParallel::SerialParam(), ...)
 
 - computePvalue:
 
-  Logical; compute permutation p-value? Default `FALSE`.
+  Logical; compute a permutation p-value for the top hit? Default
+  `FALSE`. Not supported for `"brayCurtis"` or `"redundancyOverlap"`.
 
 - nPermutations:
 
-  Integer; number of permutations. Default `999L`.
+  Integer; number of permutations used when `computePvalue = TRUE`.
+  Default `999L`.
 
 - linkage:
 
@@ -75,6 +89,21 @@ align(x, y, method = "FOS", BPPARAM = BiocParallel::SerialParam(), ...)
   [BiocParallel::BiocParallelParam](https://rdrr.io/pkg/BiocParallel/man/BiocParallelParam-class.html)
   object. Default
   [`BiocParallel::SerialParam()`](https://rdrr.io/pkg/BiocParallel/man/SerialParam-class.html).
+
+- metrics:
+
+  Character vector of metrics to compute per hit. Defaults to all four
+  base metrics (`"FOS"`, `"jaccard"`, `"brayCurtis"`,
+  `"redundancyOverlap"`). Restrict to a subset (e.g. `metrics = "FOS"`)
+  to skip weighted-assay expansion and speed up large-database searches.
+  `"MAAS"` as the primary metric requires all four components.
+
+- topK:
+
+  Integer; if non-`NULL`, truncate the ranked results (and
+  `SimilarityMatrix`) to the top `topK` hits. The overall top hit's
+  pathway correspondences are always reported regardless of `topK`.
+  Default `NULL` (all hits).
 
 ## Value
 
@@ -92,7 +121,10 @@ object of type `"multiple"`.
 
 A
 [ConsortiumMetabolismAlignment](https://admarhi.github.io/ramen/reference/ConsortiumMetabolismAlignment.md)
-object of type `"search"`.
+object of type `"search"`. `PrimaryScore`/`ReferenceName` point to the
+top hit; the full ranked hit table is stored in `Scores$ranking` and as
+a 1-row `SimilarityMatrix`. Pathway correspondences (`SharedPathways`,
+`UniqueQuery`, `UniqueReference`) are for the top hit only.
 
 ## Functions
 
@@ -120,10 +152,10 @@ cma <- align(cm1, cm2)
 cma
 #> 
 #> ── ConsortiumMetabolismAlignment 
-#> Name: NA
+#> Name: "comm_1 vs comm_2"
 #> Type: "pairwise"
 #> Metric: "FOS"
-#> Score: 0
+#> Score: 0.2857
 #> Query: "comm_1", Reference: "comm_2"
-#> Coverage: query 0, reference 0
+#> Coverage: query 0.286, reference 0.118
 ```
