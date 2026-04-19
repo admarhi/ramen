@@ -377,6 +377,38 @@ setGeneric(
 )
 
 
+## ---- CMS accessors ---------------------------------------------------------
+
+#' @title Get Overlap Matrix
+#'
+#' @description
+#' Returns the pairwise dissimilarity matrix from a
+#' \code{ConsortiumMetabolismSet} object. Values are
+#' \code{1 - FOS} (Functional Overlap Score), so 0
+#' indicates identical consortia and 1 indicates no
+#' shared pathways.
+#'
+#' @param object A \code{ConsortiumMetabolismSet} object.
+#'
+#' @return A numeric \eqn{n \times n} matrix of pairwise
+#'   dissimilarities, where \eqn{n} is the number of
+#'   consortia. Row and column names are consortium
+#'   names.
+#'
+#' @examples
+#' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
+#' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
+#' cms <- ConsortiumMetabolismSet(
+#'     cm1, cm2, name = "test"
+#' )
+#' overlapMatrix(cms)
+#'
+#' @export
+setGeneric(
+    "overlapMatrix",
+    function(object) standardGeneric("overlapMatrix")
+)
+
 ## ---- Read accessors --------------------------------------------------------
 
 #' @title Get or Set Object Name

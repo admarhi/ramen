@@ -36,8 +36,7 @@
 #'   [ConsortiumMetabolism-class] per viable consortium found in the
 #'   input. Zero-growth solutions are silently skipped.
 #'
-#' @seealso [overviewMisosoup()] for a pre-import summary of a MiSoSoup
-#'   data structure; [importSmetana()] for the sibling SMETANA import.
+#' @seealso [importSmetana()] for the sibling SMETANA import.
 #'
 #' @export
 #'
@@ -133,51 +132,6 @@ importMisosoup <- function(
         "{.arg data} must be a file path, directory, or pre-loaded list.",
         "i" = "Got {.cls {class(data)}}."
     ))
-}
-
-
-#' Overview of MiSoSoup Data Structure
-#'
-#' Provides a summary of a MiSoSoup nested list, including the number of
-#' solutions and zero-growth solutions for each substrate /
-#' second-level-key combination. Useful for inspecting a data structure
-#' before importing with [importMisosoup()].
-#'
-#' @param data A nested list from `yaml::read_yaml()`. The structure
-#'   should be `data[[substrate]][[sec_level]][[solution]]` where
-#'   `sec_level` is typically either a focal strain name or `"min"`.
-#'
-#' @return A tibble with columns `substrate`, `sec_level`, `n_sol`, and
-#'   `n_zero_growth`.
-#'
-#' @seealso [importMisosoup()] for the full import.
-#'
-#' @export
-#'
-#' @examples
-#' \donttest{
-#' # raw <- yaml::read_yaml("path/to/misosoup.yaml")
-#' # overviewMisosoup(raw)
-#' }
-overviewMisosoup <- function(data) {
-    rows <- list()
-    for (sub in names(data)) {
-        for (sec in names(data[[sub]])) {
-            sols <- data[[sub]][[sec]]
-            n_zero <- sum(vapply(
-                sols,
-                \(s) is.null(s$community) || length(s$community) == 0,
-                logical(1)
-            ))
-            rows[[length(rows) + 1]] <- tibble::tibble(
-                substrate = sub,
-                sec_level = sec,
-                n_sol = length(sols),
-                n_zero_growth = n_zero
-            )
-        }
-    }
-    dplyr::bind_rows(rows)
 }
 
 

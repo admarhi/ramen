@@ -63,6 +63,5 @@ original bounds information if downstream code needs it.
 }
 }
 \seealso{
-\code{\link[=overviewMisosoup]{overviewMisosoup()}} for a pre-import summary of a MiSoSoup
-data structure; \code{\link[=importSmetana]{importSmetana()}} for the sibling SMETANA import.
+\code{\link[=importSmetana]{importSmetana()}} for the sibling SMETANA import.
 }

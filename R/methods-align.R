@@ -164,7 +164,9 @@ setMethod(
         }
 
         ## 8. Build and return CMA
+        auto_name <- paste0(x@Name, " vs ", y@Name)
         ConsortiumMetabolismAlignment(
+            Name = auto_name,
             Type = "pairwise",
             Metric = method,
             QueryName = x@Name,
@@ -272,7 +274,9 @@ setMethod(
             stats::as.dendrogram()
 
         ## 6. Build and return CMA
+        auto_name <- paste0("Multiple (", n, " consortia)")
         ConsortiumMetabolismAlignment(
+            Name = auto_name,
             Type = "multiple",
             Metric = method,
             Scores = scores,
@@ -642,7 +646,9 @@ setMethod(
         }
 
         ## 12. Build and return CMA
+        auto_name <- paste0(x@Name, " vs CMS (", n, " consortia)")
         ConsortiumMetabolismAlignment(
+            Name = auto_name,
             Type = "search",
             Metric = method,
             QueryName = x@Name,

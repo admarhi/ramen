@@ -88,8 +88,11 @@ test_that("MAAS p-value uses composite score, not FOS", {
     expect_true(!is.na(cma@Pvalue))
     expect_true(cma@Pvalue >= 0 && cma@Pvalue <= 1)
     ## p-value denominator should be nPerm + 1
+    ## Use tolerance check instead of %% to avoid floating-point issues
+    denom <- 1 / (49L + 1L)
     expect_true(
-        cma@Pvalue %% (1 / (49L + 1L)) < .Machine$double.eps^0.5
+        abs(cma@Pvalue / denom - round(cma@Pvalue / denom)) <
+            .Machine$double.eps^0.5
     )
 })
 

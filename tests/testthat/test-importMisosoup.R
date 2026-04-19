@@ -252,29 +252,3 @@ test_that("zero-growth solutions are silently skipped", {
     cms <- importMisosoup(raw, name = "mixed", verbose = FALSE)
     expect_equal(length(cms@Consortia), 1L)
 })
-
-
-# ---------------------------------------------------------------------------
-# overviewMisosoup()
-# ---------------------------------------------------------------------------
-
-test_that("overviewMisosoup summarizes nested structure", {
-    raw <- yaml::read_yaml(single_path)
-    overview <- overviewMisosoup(raw)
-    expect_s3_class(overview, "data.frame")
-    expect_named(overview, c("substrate", "sec_level", "n_sol", "n_zero_growth"))
-    expect_equal(overview$substrate, "2obut")
-    expect_equal(overview$sec_level, "min")
-    expect_equal(overview$n_sol, 2L)
-})
-
-test_that("overviewMisosoup counts zero-growth solutions", {
-    raw <- yaml::read_yaml(legacy_path)
-    raw$ac$A3R04 <- c(
-        raw$ac$A3R04,
-        list(list(community = list(), solution = list()))
-    )
-    overview <- overviewMisosoup(raw)
-    expect_equal(overview$n_zero_growth, 1L)
-    expect_equal(overview$n_sol, 2L)
-})

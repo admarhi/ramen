@@ -5,23 +5,43 @@
 \alias{ConsortiumMetabolismAlignment-class}
 \alias{newConsortiumMetabolismAlignment}
 \alias{ConsortiumMetabolismAlignment}
+\alias{as.data.frame,ConsortiumMetabolismAlignment-method}
 \title{Constructor for
 \code{ConsortiumMetabolismAlignment} Objects}
 \usage{
 ConsortiumMetabolismAlignment(...)
+
+\S4method{as.data.frame}{ConsortiumMetabolismAlignment}(x, row.names = NULL, optional = FALSE, ...)
 }
 \arguments{
-\item{...}{Named CMA slot values to set (e.g.,
-\code{Type = "pairwise"}, \code{PrimaryScore = 0.8}).}
+\item{...}{Additional arguments (currently unused).}
+
+\item{x}{A
+\code{\linkS4class{ConsortiumMetabolismAlignment}} object.}
 }
 \value{
 A validated
 \code{\linkS4class{ConsortiumMetabolismAlignment}} object.
+
+A \code{data.frame}. For pairwise alignments the
+result contains at minimum \code{consumed}, \code{produced},
+and \code{pathway_type} columns.
 }
 \description{
 Builds a valid
 \code{ConsortiumMetabolismAlignment} by setting CMA-specific
 slots with sensible defaults.
+
+Exports alignment results to a plain
+\code{data.frame} suitable for downstream analysis.
+For \code{"pairwise"} alignments the three pathway sets
+(\code{SharedPathways}, \code{UniqueQuery},
+\code{UniqueReference}) are row-bound with a
+\code{pathway_type} column added.
+For \code{"multiple"} alignments \code{ConsensusPathways}
+is returned. For all other types (or empty objects)
+\code{Pathways} is returned, falling back to an empty
+\code{data.frame()}.
 }
 \section{Slots}{
 
@@ -90,6 +110,12 @@ cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
 cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
 cma <- align(cm1, cm2)
 cma
+
+cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
+cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
+cma <- align(cm1, cm2)
+df <- as.data.frame(cma)
+head(df)
 
 }
 \seealso{

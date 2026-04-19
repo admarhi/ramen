@@ -45,12 +45,36 @@ setMethod("show", "ConsortiumMetabolismSet", function(object) {
     n_met <- length(unique(
         c(object@Pathways$consumed, object@Pathways$produced)
     ))
+
+    sp_counts <- vapply(
+        object@Consortia,
+        function(cm) length(species(cm)),
+        integer(1L)
+    )
+    met_counts <- vapply(
+        object@Consortia,
+        function(cm) length(setdiff(metabolites(cm), "media")),
+        integer(1L)
+    )
+
     cli::cli_h3("ConsortiumMetabolismSet")
     cli::cli_text("Name: {.val {object@Name}}")
     cli::cli_text(
         "{.val {n_cons}} consortia, ",
         "{.val {n_sp}} species, ",
         "{.val {n_met}} metabolites."
+    )
+    cli::cli_text(
+        "Community size (species): ",
+        "min {.val {min(sp_counts)}}, ",
+        "mean {.val {round(mean(sp_counts), 1)}}, ",
+        "max {.val {max(sp_counts)}}."
+    )
+    cli::cli_text(
+        "Community size (metabolites): ",
+        "min {.val {min(met_counts)}}, ",
+        "mean {.val {round(mean(met_counts), 1)}}, ",
+        "max {.val {max(met_counts)}}."
     )
     if (!is.na(object@Description)) {
         cli::cli_text(

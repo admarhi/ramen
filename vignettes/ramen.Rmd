@@ -116,7 +116,6 @@ cms <- importMisosoup("path/to/misosoup_dir/", name = "experiment1")
 
 ## Pre-loaded list -> CMS (name required)
 raw <- yaml::read_yaml("path/to/misosoup_output.yaml")
-overviewMisosoup(raw) # quick summary before full import
 cms <- importMisosoup(raw, name = "experiment1")
 
 ## Access stashed media bounds for a specific CM

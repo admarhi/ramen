@@ -134,6 +134,16 @@ setMethod(
     }
 )
 
+#' @rdname overlapMatrix
+#' @exportMethod overlapMatrix
+setMethod(
+    "overlapMatrix",
+    "ConsortiumMetabolismSet",
+    function(object) {
+        object@OverlapMatrix
+    }
+)
+
 #' @rdname metabolites
 setMethod("metabolites", "ConsortiumMetabolismSet", function(object) {
     Map(

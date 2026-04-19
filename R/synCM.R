@@ -369,12 +369,26 @@ synCM <- function(
             rows <- which(community$species == sp)
             fluxes <- community$fluxes[rows]
             if (all(fluxes > 0) || all(fluxes < 0)) {
-                idx <- sample(rows, 1L)
+                mets_sp <- community$metabolites[rows]
+                dup_mets <- mets_sp[duplicated(mets_sp)]
+                safe <- rows[!(mets_sp %in% dup_mets)]
+                if (length(safe) == 0L)
+                    safe <- rows
+                idx <- if (length(safe) == 1L) safe else
+                    sample(safe, 1L)
                 community$fluxes[idx] <-
                     community$fluxes[idx] * -1
             }
         }
     }
+
+    ## Net same-metabolite fluxes per species to avoid self-loop pathways
+    community <- community |>
+        dplyr::reframe(
+            fluxes = sum(.data$fluxes),
+            .by = c("species", "metabolites")
+        ) |>
+        dplyr::filter(.data$fluxes != 0)
 
     ## ---- return ----
     if (!cm) {

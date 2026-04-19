@@ -96,3 +96,64 @@ ConsortiumMetabolismAlignment <- function(...) {
 
     do.call(newConsortiumMetabolismAlignment, slot_vals)
 }
+
+#' @rdname ConsortiumMetabolismAlignment
+#'
+#' @title Coerce a ConsortiumMetabolismAlignment to a data.frame
+#'
+#' @description Exports alignment results to a plain
+#'   \code{data.frame} suitable for downstream analysis.
+#'   For \code{"pairwise"} alignments the three pathway sets
+#'   (\code{SharedPathways}, \code{UniqueQuery},
+#'   \code{UniqueReference}) are row-bound with a
+#'   \code{pathway_type} column added.
+#'   For \code{"multiple"} alignments \code{ConsensusPathways}
+#'   is returned. For all other types (or empty objects)
+#'   \code{Pathways} is returned, falling back to an empty
+#'   \code{data.frame()}.
+#'
+#' @param x A
+#'   \code{\linkS4class{ConsortiumMetabolismAlignment}} object.
+#' @param ... Additional arguments (currently unused).
+#'
+#' @return A \code{data.frame}. For pairwise alignments the
+#'   result contains at minimum \code{consumed}, \code{produced},
+#'   and \code{pathway_type} columns.
+#'
+#' @examples
+#' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
+#' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
+#' cma <- align(cm1, cm2)
+#' df <- as.data.frame(cma)
+#' head(df)
+#'
+#' @export
+setMethod(
+    "as.data.frame",
+    "ConsortiumMetabolismAlignment",
+    function(x, ...) {
+        type <- x@Type
+        if (isTRUE(type == "pairwise")) {
+            shared <- x@SharedPathways
+            uq <- x@UniqueQuery
+            ur <- x@UniqueReference
+            if (nrow(shared) > 0L)
+                shared$pathway_type <- "shared"
+            if (nrow(uq) > 0L)
+                uq$pathway_type <- "unique_query"
+            if (nrow(ur) > 0L)
+                ur$pathway_type <- "unique_reference"
+            return(as.data.frame(dplyr::bind_rows(shared, uq, ur)))
+        }
+        if (isTRUE(type == "multiple")) {
+            cp <- x@ConsensusPathways
+            if (nrow(cp) > 0L)
+                return(as.data.frame(cp))
+            return(as.data.frame(x@Pathways))
+        }
+        pways <- x@Pathways
+        if (nrow(pways) > 0L)
+            return(as.data.frame(pways))
+        data.frame()
+    }
+)

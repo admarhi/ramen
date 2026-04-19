@@ -299,3 +299,55 @@ test_that("consortia(cms) names match consortium names", {
         c("alpha", "beta")
     )
 })
+
+## ---- overlapMatrix() accessor -----------------------------------------------
+
+test_that("overlapMatrix returns numeric matrix with correct dims", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 4, max_met = 6, seed = 2)
+    cms <- ConsortiumMetabolismSet(
+        list(cm1, cm2),
+        name = "test"
+    )
+    om <- overlapMatrix(cms)
+    expect_true(is.matrix(om))
+    expect_true(is.numeric(om))
+    expect_equal(nrow(om), 2L)
+    expect_equal(ncol(om), 2L)
+    expect_equal(rownames(om), c("a", "b"))
+    expect_equal(colnames(om), c("a", "b"))
+})
+
+test_that("overlapMatrix diagonal is zero", {
+    cm1 <- synCM("x", n_species = 3, max_met = 5, seed = 10)
+    cm2 <- synCM("y", n_species = 3, max_met = 5, seed = 20)
+    cm3 <- synCM("z", n_species = 3, max_met = 5, seed = 30)
+    cms <- ConsortiumMetabolismSet(
+        list(cm1, cm2, cm3),
+        name = "test"
+    )
+    om <- overlapMatrix(cms)
+    expect_equal(nrow(om), 3L)
+    expect_true(all(diag(om) == 0))
+})
+
+## ---- show(CMS) community size stats -----------------------------------------
+
+test_that("show(cms) includes consortium count and community size stats", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 4, max_met = 6, seed = 2)
+    cms <- ConsortiumMetabolismSet(
+        list(cm1, cm2),
+        name = "test"
+    )
+    out <- paste(
+        capture.output(show(cms), type = "message"),
+        collapse = " "
+    )
+    expect_match(out, "2 consortia")
+    expect_match(out, "species")
+    expect_match(out, "min")
+    expect_match(out, "max")
+    expect_match(out, "mean")
+    expect_match(out, "metabolites")
+})

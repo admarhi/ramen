@@ -32,6 +32,8 @@
 #'   column name, defaults to \code{"metabolite"}.
 #' @param flux_col Character scalar for the flux column name,
 #'   defaults to \code{"flux"}.
+#' @param verbose Logical scalar. If \code{TRUE}, prints progress
+#'   messages during construction. Defaults to \code{FALSE}.
 #' @param ... Additional arguments passed to the constructor.
 #'
 #' @return A \code{ConsortiumMetabolism} object.
@@ -55,6 +57,7 @@ ConsortiumMetabolism <- function(
     species_col = "species",
     metabolite_col = "metabolite",
     flux_col = "flux",
+    verbose = FALSE,
     ...
 ) {
     # Validate and prepare input data
@@ -80,9 +83,10 @@ ConsortiumMetabolism <- function(
         mets <- dplyr::filter(mets, .data$met != "media")
     } else {
         if (length(only_cons) > 0) {
-            cli::cli_inform(
-                "{.val {name}} {.code {only_cons}} only consume,
-        production set to 'media'."
+            if (verbose) cli::cli_inform(
+                "Species {.code {only_cons}} in {.val {name}} \\
+                have no production flux; \\
+                synthetic {.val media} production added."
             )
             prod <- prod |>
                 dplyr::bind_rows(
@@ -95,9 +99,10 @@ ConsortiumMetabolism <- function(
         }
 
         if (length(only_prod) > 0) {
-            cli::cli_inform(
-                "{.val {name}} {.code {only_prod}} only produce,
-        consumption set to 'media'."
+            if (verbose) cli::cli_inform(
+                "Species {.code {only_prod}} in {.val {name}} \\
+                have no consumption flux; \\
+                synthetic {.val media} consumption added."
             )
             cons <- cons |>
                 dplyr::bind_rows(
@@ -115,6 +120,16 @@ ConsortiumMetabolism <- function(
 
     # Generate assay matrices
     assays <- .createAssayMatrices(out, mets)
+
+    n_selfloops <- sum(Matrix::diag(assays$Binary) != 0)
+    if (n_selfloops > 0L) {
+        cli::cli_warn(
+            "{n_selfloops} self-loop pathway{?s} \\
+            found in {.val {name}} \\
+            (metabolite consumed and produced by the \\
+            same pathway). Check input data."
+        )
+    }
 
     # Create TreeSummarizedExperiment object
     tse <- TreeSummarizedExperiment(
