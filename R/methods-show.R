@@ -10,7 +10,8 @@ NULL
 #' show(cm)
 #' @export
 setMethod("show", "ConsortiumMetabolism", function(object) {
-    weight_label <- if (object@Weighted) { # nolint: object_usage_linter.
+    weight_label <- if (object@Weighted) {
+        # nolint: object_usage_linter.
         "Weighted"
     } else {
         "Unweighted"
@@ -44,16 +45,19 @@ setMethod("show", "ConsortiumMetabolismSet", function(object) {
     n_cons <- length(object@Consortia) # nolint: object_usage_linter.
     # nolint next: object_usage_linter.
     n_sp <- dplyr::n_distinct(object@Pathways$species)
-    n_met <- length(unique( # nolint: object_usage_linter.
+    n_met <- length(unique(
+        # nolint: object_usage_linter.
         c(object@Pathways$consumed, object@Pathways$produced)
     ))
 
-    sp_counts <- vapply( # nolint: object_usage_linter.
+    sp_counts <- vapply(
+        # nolint: object_usage_linter.
         object@Consortia,
         function(cm) length(species(cm)),
         integer(1L)
     )
-    met_counts <- vapply( # nolint: object_usage_linter.
+    met_counts <- vapply(
+        # nolint: object_usage_linter.
         object@Consortia,
         function(cm) length(setdiff(metabolites(cm), "media")),
         integer(1L)
@@ -100,7 +104,8 @@ setMethod("show", "ConsortiumMetabolismAlignment", function(object) {
     ## Helper: TRUE if slot is a length-1 non-NA value
     .hasValue <- function(x) length(x) == 1L && !is.na(x)
 
-    type_label <- if (.hasValue(object@Type)) { # nolint: object_usage_linter.
+    type_label <- if (.hasValue(object@Type)) {
+        # nolint: object_usage_linter.
         object@Type
     } else {
         "uninitialized"
