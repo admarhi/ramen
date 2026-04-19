@@ -30,6 +30,14 @@ as.data.frame(x, row.names = NULL, optional = FALSE, ...)
 
   A `ConsortiumMetabolismAlignment` object.
 
+- row.names:
+
+  `NULL` or a character vector of row names; ignored.
+
+- optional:
+
+  Logical; ignored.
+
 ## Value
 
 A validated `ConsortiumMetabolismAlignment` object.
