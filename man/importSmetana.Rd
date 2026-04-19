@@ -25,7 +25,8 @@ the \code{.tsv_detailed.tsv} suffix. Required when \code{data} is a data.frame. 
 \code{\link[=ConsortiumMetabolismSet]{ConsortiumMetabolismSet()}}.}
 
 \item{use_scores}{If \code{FALSE}, flux is binary (+1 for production,
--1 for consumption). If \code{TRUE} (default), flux magnitude is the SMETANA score,
+-1 for consumption). If \code{TRUE} (default), flux magnitude is the
+SMETANA score,
 aggregated by \code{max()} when the same (species, compound) pair appears
 across multiple interaction partners.}
 
