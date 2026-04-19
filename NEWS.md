@@ -1,5 +1,16 @@
 # ramen (development version)
 
+* `importMisosoup()` gains a `biomassPattern` argument (Perl regex) so
+  users can point it at arbitrary biomass-reaction names. The default
+  matches `Growth_<sp>`, `R_Biomass_<sp>`, and `R_R_BIOMASS_<sp>`
+  case-insensitively (MiSoSoup's biomass reaction name is
+  model-dependent).
+* `importMisosoup()` now records CMSC/MSC provenance on each returned
+  CM as `metadata(cm)$misosoupMode` (`"CMSC"` or `"MSC"`) and
+  `metadata(cm)$focalStrain` (character or `NA`). The `community_growth`
+  summary row is captured as `metadata(cm)$communityGrowth` instead of
+  leaking into the media bucket.
+
 # ramen 0.0.0.9001
 
 ## New Features

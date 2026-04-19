@@ -5,11 +5,14 @@
 #   - single.yaml              (new format, 2obut/min with 2 solutions)
 #   - multi/substrate_*.yaml   (new format, 3 files with 1 solution each)
 #   - legacy.yaml              (OLD 202412 format, ac/A3R04 with 1 solution)
+#   - focal_strain.yaml        (CMSC-mode R_R_BIOMASS_ variant, MSC with
+#                               focal strain CNA_MM, 2 consortia)
 
 misosoup_dir <- testthat::test_path("fixtures/misosoup")
 single_path <- file.path(misosoup_dir, "single.yaml")
 legacy_path <- file.path(misosoup_dir, "legacy.yaml")
 multi_dir <- file.path(misosoup_dir, "multi")
+focal_path <- file.path(misosoup_dir, "focal_strain.yaml")
 
 
 # ---------------------------------------------------------------------------
@@ -251,4 +254,138 @@ test_that("zero-growth solutions are silently skipped", {
     )
     cms <- importMisosoup(raw, name = "mixed", verbose = FALSE)
     expect_equal(length(cms@Consortia), 1L)
+})
+
+
+# ---------------------------------------------------------------------------
+# Biomass-pattern default regex (R_R_BIOMASS_ variant)
+# ---------------------------------------------------------------------------
+
+test_that("default biomassPattern extracts species from all 3 variants", {
+    rxns <- c("R_R_BIOMASS_CNA_AW", "R_Biomass_BS_W", "Growth_BS_L")
+    default <- "(?i)^.*?(?:^|_)(?:biomass|growth)_"
+    expect_equal(
+        sub(default, "", rxns, perl = TRUE),
+        c("CNA_AW", "BS_W", "BS_L")
+    )
+    expect_false(grepl(default, "community_growth", perl = TRUE))
+})
+
+test_that("R_R_BIOMASS_ variant imports with growth populated", {
+    cms <- importMisosoup(focal_path, verbose = FALSE)
+    expect_gte(length(cms@Consortia), 1L)
+    cm <- cms@Consortia[[1]]
+    g <- growth(cm)
+    expect_true(length(g) > 0)
+    # Species names must be clean (no stray biomass prefix)
+    expect_false(any(grepl("BIOMASS", names(g))))
+    expect_true(all(names(g) %in% species(cm)))
+    # No biomass-shaped reactions leak into media
+    media_mets <- S4Vectors::metadata(cm)$media$metabolite
+    expect_false(any(grepl("(?i)BIOMASS|Biomass", media_mets, perl = TRUE)))
+})
+
+test_that("community_growth is stashed as scalar, not media flux", {
+    cms <- importMisosoup(focal_path, verbose = FALSE)
+    cm <- cms@Consortia[[1]]
+    cg <- S4Vectors::metadata(cm)$communityGrowth
+    expect_type(cg, "double")
+    expect_length(cg, 1L)
+    expect_true(is.finite(cg))
+    media_mets <- S4Vectors::metadata(cm)$media$metabolite
+    expect_false("community_growth" %in% media_mets)
+})
+
+test_that("community-level R_EX_ exchange totals stay in media", {
+    # Negative test: R_EX_Ac_EX, R_EX_BM_tot, etc. (no _<sp>_i suffix)
+    # are legitimate community-level exchange rows and must remain in
+    # media. After normalize_ids they appear as bare metabolite names.
+    cms <- importMisosoup(focal_path, verbose = FALSE)
+    cm <- cms@Consortia[[1]]
+    media_mets <- S4Vectors::metadata(cm)$media$metabolite
+    expect_true("Ac_EX" %in% media_mets)
+    expect_true("BM_tot" %in% media_mets)
+    expect_true("CH4_EX" %in% media_mets)
+})
+
+test_that("communityGrowth is NA_real_ when the summary row is absent", {
+    # Hand-built solution without a community_growth row.
+    raw <- list(
+        sub1 = list(
+            min = list(
+                list(
+                    community = list(y_SP1 = 1),
+                    solution = list(
+                        Growth_SP1 = 0.3,
+                        R_EX_glc_e_SP1_i = -1.0
+                    )
+                )
+            )
+        )
+    )
+    cms <- importMisosoup(raw, name = "nocg", verbose = FALSE)
+    cm <- cms@Consortia[[1]]
+    expect_true(is.na(S4Vectors::metadata(cm)$communityGrowth))
+})
+
+
+# ---------------------------------------------------------------------------
+# CMSC / MSC mode metadata
+# ---------------------------------------------------------------------------
+
+test_that("CMSC mode is recorded when second-level key is 'min'", {
+    cms <- importMisosoup(single_path, verbose = FALSE)
+    cm <- cms@Consortia[[1]]
+    expect_equal(S4Vectors::metadata(cm)$misosoupMode, "CMSC")
+    expect_true(is.na(S4Vectors::metadata(cm)$focalStrain))
+})
+
+test_that("MSC mode and focal strain are recorded for focal-strain runs", {
+    cms <- importMisosoup(focal_path, verbose = FALSE)
+    cm <- cms@Consortia[[1]]
+    expect_equal(S4Vectors::metadata(cm)$misosoupMode, "MSC")
+    expect_equal(S4Vectors::metadata(cm)$focalStrain, "CNA_MM")
+})
+
+test_that("legacy focal-strain format also records MSC mode", {
+    cms <- importMisosoup(legacy_path, verbose = FALSE)
+    cm <- cms@Consortia[[1]]
+    expect_equal(S4Vectors::metadata(cm)$misosoupMode, "MSC")
+    expect_equal(S4Vectors::metadata(cm)$focalStrain, "A3R04")
+})
+
+
+# ---------------------------------------------------------------------------
+# biomassPattern override
+# ---------------------------------------------------------------------------
+
+test_that("user-supplied biomassPattern overrides the default", {
+    # Hand-built minimal solution with a custom biomass reaction name
+    # that the default regex would NOT match.
+    raw <- list(
+        sub1 = list(
+            min = list(
+                list(
+                    community = list(y_SP1 = 1, y_SP2 = 1),
+                    solution = list(
+                        MYBIO_SP1 = 0.1,
+                        MYBIO_SP2 = 0.2,
+                        R_EX_glc_e_SP1_i = -1.0,
+                        R_EX_glc_e_SP2_i = -0.5
+                    )
+                )
+            )
+        )
+    )
+    # Default would misclassify MYBIO_ as media; custom pattern fixes it.
+    cms <- importMisosoup(
+        raw,
+        name = "custom",
+        biomassPattern = "(?i)^.*?MYBIO_",
+        verbose = FALSE
+    )
+    cm <- cms@Consortia[[1]]
+    g <- growth(cm)
+    expect_setequal(names(g), c("SP1", "SP2"))
+    expect_equal(unname(g[c("SP1", "SP2")]), c(0.1, 0.2))
 })

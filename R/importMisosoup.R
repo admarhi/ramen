@@ -8,14 +8,24 @@
 #' pre-loaded nested list.
 #'
 #' The function auto-detects format differences between MiSoSoup runs:
-#' the growth-row key (`Growth_<species>` in older runs,
-#' `R_Biomass_<species>` in newer runs), COBRApy-style `__NN__` escape
-#' sequences in reaction IDs (e.g. `__40__` for `(`), and the presence
-#' or absence of a focal-strain layer below each substrate.
+#' the biomass-reaction name (via a configurable regex that defaults to
+#' matching `Growth_<sp>`, `R_Biomass_<sp>`, and `R_R_BIOMASS_<sp>`
+#' case-insensitively — MiSoSoup derives this name from the underlying
+#' model, so it varies), COBRApy-style `__NN__` escape sequences in
+#' reaction IDs (e.g. `__40__` for `(`), and the second-level key of
+#' each substrate. That second-level key is either `min` — indicating a
+#' **CMSC** (complete minimal supplying community: no viable focal
+#' strain because no single member grows alone) — or a focal-strain ID,
+#' indicating an **MSC** (minimal supplying community for that strain).
 #'
-#' Media-level exchange fluxes (reactions without a species suffix) are
-#' stashed in `metadata(cm)$media` for each consortium, preserving the
-#' original bounds information if downstream code needs it.
+#' Per-consortium metadata set on each returned CM:
+#' - `metadata(cm)$media` — media-level exchange fluxes (reactions
+#'   without a species suffix), preserving the original bounds.
+#' - `metadata(cm)$communityGrowth` — the scalar `community_growth`
+#'   summary row from the MiSoSoup solution, or `NA_real_` if absent.
+#' - `metadata(cm)$misosoupMode` — `"CMSC"` or `"MSC"`.
+#' - `metadata(cm)$focalStrain` — focal-strain ID (character) for MSC
+#'   consortia, `NA_character_` for CMSC.
 #'
 #' @param data Either a file path to a single MiSoSoup YAML, a
 #'   directory path containing multiple YAML files, or a pre-loaded
@@ -28,6 +38,17 @@
 #'   via `.normalizeBiggIds()` (strip `R_EX_` prefix, `_e` suffix) and
 #'   decode COBRApy `__NN__` escape sequences via `.decodeBiggEscapes()`.
 #'   If `FALSE`, keep metabolite IDs in their raw form.
+#' @param biomassPattern Perl-compatible regex identifying biomass
+#'   reaction rows. The pattern must match *and consume* the entire
+#'   prefix from the start of the reaction ID up through the separator
+#'   before the species ID, because it is used for both detection and
+#'   species extraction (via `sub()`). Defaults to
+#'   `"(?i)^.*?(?:^|_)(?:biomass|growth)_"`, which covers the three
+#'   observed MiSoSoup variants (`Growth_<sp>`, `R_Biomass_<sp>`,
+#'   `R_R_BIOMASS_<sp>`) case-insensitively and correctly rejects the
+#'   `community_growth` summary row. Override this if your MiSoSoup
+#'   output uses a non-standard biomass reaction name, e.g.
+#'   `biomassPattern = "(?i)^.*?MYBIO_"`.
 #' @param verbose If `TRUE` (default), emit progress messages via
 #'   [cli::cli_inform()] and show a progress bar when importing a
 #'   directory.
@@ -56,6 +77,7 @@ importMisosoup <- function(
     data,
     name = NULL,
     normalize_ids = TRUE,
+    biomassPattern = "(?i)^.*?(?:^|_)(?:biomass|growth)_",
     verbose = TRUE
 ) {
     if (is.character(data) && length(data) == 1 && dir.exists(data)) {
@@ -82,7 +104,8 @@ importMisosoup <- function(
             raw <- yaml::read_yaml(files[[i]])
             file_cms <- .buildCMsFromMisosoup(
                 raw,
-                normalize_ids = normalize_ids
+                normalize_ids = normalize_ids,
+                biomassPattern = biomassPattern
             )
             cm_list <- c(cm_list, file_cms)
         }
@@ -101,7 +124,8 @@ importMisosoup <- function(
         raw <- yaml::read_yaml(data)
         cm_list <- .buildCMsFromMisosoup(
             raw,
-            normalize_ids = normalize_ids
+            normalize_ids = normalize_ids,
+            biomassPattern = biomassPattern
         )
         if (verbose) {
             cli::cli_inform(c(
@@ -119,7 +143,8 @@ importMisosoup <- function(
         }
         cm_list <- .buildCMsFromMisosoup(
             data,
-            normalize_ids = normalize_ids
+            normalize_ids = normalize_ids,
+            biomassPattern = biomassPattern
         )
         if (verbose) {
             cli::cli_inform(c(
@@ -147,12 +172,19 @@ importMisosoup <- function(
 #'
 #' @param raw Nested list from `yaml::read_yaml()`.
 #' @param normalize_ids Whether to normalize metabolite IDs.
+#' @param biomassPattern Perl regex identifying biomass reaction rows.
 #' @return Named list of CM objects.
 #' @keywords internal
-.buildCMsFromMisosoup <- function(raw, normalize_ids = TRUE) {
+.buildCMsFromMisosoup <- function(
+    raw,
+    normalize_ids = TRUE,
+    biomassPattern = "(?i)^.*?(?:^|_)(?:biomass|growth)_"
+) {
     cm_list <- list()
     for (sub in names(raw)) {
         for (sec in names(raw[[sub]])) {
+            mode <- if (identical(sec, "min")) "CMSC" else "MSC"
+            focal <- if (identical(sec, "min")) NA_character_ else sec
             sols <- raw[[sub]][[sec]]
             for (i in seq_along(sols)) {
                 sol <- sols[[i]]
@@ -165,7 +197,8 @@ importMisosoup <- function(
                 cons_id <- paste(sub, sec, i, sep = "_")
                 parsed <- .parseMisosoupSolution(
                     sol,
-                    normalize_ids = normalize_ids
+                    normalize_ids = normalize_ids,
+                    biomassPattern = biomassPattern
                 )
                 valid_species <- unique(parsed$consortia$species)
                 growth_vec <- parsed$growth[
@@ -177,6 +210,10 @@ importMisosoup <- function(
                     growth = growth_vec
                 )
                 S4Vectors::metadata(cm)$media <- parsed$media
+                S4Vectors::metadata(cm)$communityGrowth <-
+                    parsed$communityGrowth
+                S4Vectors::metadata(cm)$misosoupMode <- mode
+                S4Vectors::metadata(cm)$focalStrain <- focal
                 cm_list[[cons_id]] <- cm
             }
         }
@@ -197,24 +234,50 @@ importMisosoup <- function(
 #' robust to both escaped metabolite names and species IDs containing
 #' underscores (the old `_e_` delimiter split failed on both).
 #'
-#' The growth row key is matched against both `Growth_<species>` (older
-#' MiSoSoup runs) and `R_Biomass_<species>` (newer runs).
+#' The biomass-reaction name is model-dependent (MiSoSoup carries it
+#' through from the underlying GEM), so matching is done with a
+#' configurable Perl regex that consumes the full prefix through the
+#' species-ID separator. The default handles the three observed
+#' variants: `Growth_<sp>`, `R_Biomass_<sp>`, and `R_R_BIOMASS_<sp>`.
+#'
+#' A `community_growth` summary row (MiSoSoup's community-level growth
+#' rate, distinct from per-species biomass fluxes) is captured as a
+#' scalar in the returned list rather than treated as a media flux.
+#' Non-suffixed `R_EX_<metabolite>` rows remain in media — they are
+#' legitimate community-level exchange totals.
 #'
 #' @param sol A single solution entry with `community` and `solution`
 #'   fields.
 #' @param normalize_ids Whether to decode `__NN__` escapes and strip
 #'   `R_EX_`/`_e` from metabolite IDs.
+#' @param biomassPattern Perl regex identifying biomass rows; must
+#'   consume the full prefix through the species-ID separator (used
+#'   for both detection and species extraction via `sub()`).
 #' @return A list with `consortia` (tibble of species, metabolite, flux
 #'   for species-scoped exchanges), `media` (tibble of metabolite, flux
-#'   for media-level bounds), and `growth` (named numeric vector).
+#'   for media-level bounds), `growth` (named numeric vector), and
+#'   `communityGrowth` (scalar `community_growth` value or `NA_real_`).
 #' @keywords internal
-.parseMisosoupSolution <- function(sol, normalize_ids = TRUE) {
+.parseMisosoupSolution <- function(
+    sol,
+    normalize_ids = TRUE,
+    biomassPattern = "(?i)^.*?(?:^|_)(?:biomass|growth)_"
+) {
     species_list <- sub("^y_", "", names(sol$community))
     rxns <- names(sol$solution)
     fluxes <- unlist(sol$solution, use.names = FALSE)
 
-    is_growth <- grepl("^(R_Biomass|Growth)_", rxns)
-    growth_species <- sub("^(R_Biomass|Growth)_", "", rxns[is_growth])
+    # Community-level growth summary row: stash as scalar, drop from
+    # further classification. Distinct from per-species biomass rows
+    # (which the biomass regex catches) and from R_EX_* community
+    # exchange totals (which remain in media).
+    is_comm <- rxns == "community_growth"
+    community_growth <- if (any(is_comm)) fluxes[is_comm][[1]] else NA_real_
+    rxns <- rxns[!is_comm]
+    fluxes <- fluxes[!is_comm]
+
+    is_growth <- grepl(biomassPattern, rxns, perl = TRUE)
+    growth_species <- sub(biomassPattern, "", rxns[is_growth], perl = TRUE)
     growth_vec <- stats::setNames(fluxes[is_growth], growth_species)
 
     non_growth <- !is_growth
@@ -249,6 +312,7 @@ importMisosoup <- function(
     list(
         consortia = consortia,
         media = media,
-        growth = growth_vec
+        growth = growth_vec,
+        communityGrowth = community_growth
     )
 }
