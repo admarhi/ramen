@@ -80,17 +80,33 @@ consortia, \code{NA_character_} for CMSC.
 }
 }
 \examples{
-\donttest{
-# Single YAML file -> CMS
+# Build a minimal in-memory MiSoSoup-shaped list and import it. In
+# practice you would point at a real YAML file or a directory of
+# YAMLs from a MiSoSoup run.
+raw <- list(
+    glucose = list(
+        min = list(
+            list(
+                community = list(y_sp1 = 1, y_sp2 = 1),
+                solution = list(
+                    R_Biomass_sp1 = 0.4,
+                    R_Biomass_sp2 = 0.3,
+                    R_EX_glc__D_e_sp1_i = -10,
+                    R_EX_ac_e_sp1_i = 5,
+                    R_EX_ac_e_sp2_i = -4,
+                    R_EX_co2_e_sp2_i = 3,
+                    community_growth = 0.7
+                )
+            )
+        )
+    )
+)
+cms <- importMisosoup(raw, name = "demo", verbose = FALSE)
+cms
+
+# Real-world usage (commented; needs an actual MiSoSoup YAML on disk):
 # cms <- importMisosoup("path/to/misosoup.yaml")
-
-# Directory of YAML files -> CMS with consortia from all files
 # cms <- importMisosoup("path/to/misosoup_dir/", name = "experiment1")
-
-# Pre-loaded list -> CMS (name is required here)
-# raw <- yaml::read_yaml("path/to/misosoup.yaml")
-# cms <- importMisosoup(raw, name = "experiment1")
-}
 }
 \seealso{
 \code{\link[=importSmetana]{importSmetana()}} for the sibling SMETANA import.

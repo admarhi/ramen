@@ -39,7 +39,7 @@
 #' @return A \code{ConsortiumMetabolismSet} object.
 #'
 #' @seealso \linkS4class{ConsortiumMetabolism},
-#'   \linkS4class{TreeSummarizedExperiment}
+#'   \link[TreeSummarizedExperiment]{TreeSummarizedExperiment-class}
 #'
 #' @examples
 #' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)

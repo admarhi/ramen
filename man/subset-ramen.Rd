@@ -47,9 +47,10 @@ eagerly: \code{BinaryMatrices} is subsetted to the
 remaining metabolite space and \code{OverlapMatrix},
 \code{Dendrogram}, \code{NodeData}, \code{Pathways},
 \code{Metabolites}, and \code{Graphs} are recomputed
-accordingly. \code{@Consortia} is not modified — each
-\code{ConsortiumMetabolism} object retains its own
-metabolite space.
+accordingly. The per-consortium list returned by
+\code{consortia()} is not modified — each
+\code{ConsortiumMetabolism} retains its own metabolite
+space.
 
 \strong{Note on consortium-level selection:} to extract a
 subset of consortia rather than a subset of the metabolite
@@ -86,7 +87,7 @@ cms <- ConsortiumMetabolismSet(
 )
 ## Subset to first 3 metabolites (m x m assay semantics)
 sub <- cms[seq_len(3), seq_len(3)]
-nrow(sub@Metabolites)
+dim(sub)
 
 }
 \seealso{

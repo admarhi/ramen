@@ -60,11 +60,11 @@ The package provides three S4 classes that build on Bioconductor's
 `r BiocStyle::Biocpkg("TreeSummarizedExperiment")`:
 
 - **`ConsortiumMetabolism`** (CM) -- a single community's metabolic
-  exchange network
+    exchange network
 - **`ConsortiumMetabolismSet`** (CMS) -- a collection of CMs with
-  precomputed overlap scores and a dendrogram
+    precomputed overlap scores and a dendrogram
 - **`ConsortiumMetabolismAlignment`** (CMA) -- the result of
-  aligning two or more communities
+    aligning two or more communities
 
 This vignette walks through a complete analysis from data import to
 alignment using the bundled `misosoup24` dataset (56 metabolic
