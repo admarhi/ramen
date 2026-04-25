@@ -73,6 +73,51 @@ details on alignment metrics, see
 `vignette("alignment", package = "ramen")`; for a gallery of all
 plot types, see `vignette("visualisation", package = "ramen")`.
 
+## Why "consortium" and not "community"?
+
+`ramen` deliberately uses the term *consortium* throughout. A
+consortium here is defined by its **metabolic function** -- the set
+of metabolite-to-metabolite pathways its member species
+collectively catalyse -- not by its taxonomic composition. Two
+assemblages with entirely different species rosters but identical
+exchange networks are, from `ramen`'s perspective, the same
+consortium; conversely, two assemblages with the same species but
+different active pathways are different consortia. This functional
+framing follows a long-standing argument in microbial ecology that
+ecosystem behaviour is more robustly predicted by what microbes
+*do* than by which microbes are present (Falkowski, Fenchel &
+Delong 2008, *Science* **320**:1034).
+
+# Key Concepts
+
+A short glossary of terms used throughout the package:
+
+- **Consortium** -- a microbial assemblage characterised by its
+    metabolic exchange network, not its species composition (see
+    above).
+- **Pathway** -- in the `ramen` sense, a directed
+    metabolite-to-metabolite edge: metabolite *A* is consumed and
+    metabolite *B* is produced by at least one species. Not a
+    KEGG/MetaCyc biochemical pathway.
+- **Assay** -- one of the six *m x m* metabolite-by-metabolite
+    matrices stored in a `ConsortiumMetabolism` object (Binary,
+    nSpecies, Consumption, Production, EffectiveConsumption,
+    EffectiveProduction).
+- **FOS** -- Functional Overlap Score; the primary similarity
+    metric between two consortia, computed as the
+    Szymkiewicz-Simpson coefficient on expanded binary pathway
+    matrices.
+- **Szymkiewicz-Simpson** -- an asymmetric set-overlap coefficient
+    `|X intersect Y| / min(|X|, |Y|)` that measures how completely
+    the smaller set is contained in the larger.
+- **Alignment** -- the operation of putting two or more consortia
+    in correspondence in a shared metabolite/pathway space and
+    summarising their similarity, returning a
+    `ConsortiumMetabolismAlignment`.
+- **MAAS** -- Metabolite Abundance Adjusted Score; a
+    flux-magnitude-weighted variant of FOS that down-weights
+    pathways with very small fluxes.
+
 # Data import
 
 ## The `misosoup24` dataset
@@ -96,6 +141,18 @@ length(misosoup24)
 names(misosoup24)[1:8]
 head(misosoup24[[1]])
 ```
+
+> **Caution -- alternative optima.** MiSoSoup is a Mixed Integer
+> Linear Programming (MILP) enumerator: for a single underlying
+> metabolic model it returns *multiple alternative optimal
+> solutions* to the same growth problem. Two such alternatives will
+> typically share most of their pathways and produce very high
+> pairwise FOS values. This high overlap is **expected by
+> construction** and reflects solver consistency, not biological
+> similarity. When interpreting overlap scores, compare consortia
+> derived from *different* models or conditions; treat overlap
+> between alternatives of the same model as a sanity check on the
+> enumeration, not as an ecological signal.
 
 ## Importing raw MiSoSoup YAML
 
@@ -148,6 +205,44 @@ long_data <- pivotCM(
     flux = "flux"
 )
 head(long_data)
+```
+
+## Importing from MICOM / cobrapy
+
+`ConsortiumMetabolism()` accepts any long-format `data.frame` with
+columns `species`, `metabolite`, and `flux` (negative = consumption,
+positive = production). This makes interoperation with the
+Python-based [MICOM](https://github.com/micom-dev/micom) and
+[cobrapy](https://github.com/opencobra/cobrapy) ecosystems
+straightforward: export per-species exchange fluxes to CSV from
+Python, then read into R.
+
+A minimal MICOM growth solution can be exported as follows:
+
+```{python micom-export, eval = FALSE, python.reticulate = FALSE}
+import pandas as pd
+from micom import Community
+from micom.workflows import grow
+
+## com is a pre-built micom.Community
+sol = com.cooperative_tradeoff()
+
+## sol.exchanges is a tidy DataFrame with columns
+##   reaction, metabolite, taxon (species), flux, ...
+exchanges = sol.exchanges[["taxon", "metabolite", "flux"]]
+exchanges.columns = ["species", "metabolite", "flux"]
+exchanges.to_csv("micom_exchanges.csv", index = False)
+```
+
+The same pattern works for a plain `cobra.Model`: iterate over
+`model.exchanges`, record the carrying species, and write the
+columns above.
+
+On the R side:
+
+```{r micom-import, eval = FALSE}
+exch <- read.csv("micom_exchanges.csv")
+cm_micom <- ConsortiumMetabolism(exch, name = "micom_run1")
 ```
 
 # Building a ConsortiumMetabolism
@@ -372,6 +467,50 @@ plot(cms)
 ```{r plot-cma, fig.cap = "Pairwise similarity heatmap."}
 plot(cma_mult, type = "heatmap")
 ```
+
+# Bioconductor / SummarizedExperiment interoperability
+
+`ramen` classes inherit from
+`r BiocStyle::Biocpkg("TreeSummarizedExperiment")`, so the standard
+`r BiocStyle::Biocpkg("SummarizedExperiment")` accessors work out
+of the box. `ramen` is a first-class Bioconductor citizen, not an
+isolated framework -- you can mix its objects freely with other
+SE-based tools.
+
+Pull a raw assay matrix:
+
+```{r tse-assay}
+SummarizedExperiment::assay(cm1, "Binary")[1:5, 1:5]
+```
+
+Both rows and columns of a CM are metabolites (it is a square
+*m x m* network), so `dim()`, `rowData()`, and `colData()` all act
+in metabolite space:
+
+```{r tse-cm-dim}
+dim(cm1)
+head(SummarizedExperiment::rowData(cm1))
+head(SummarizedExperiment::colData(cm1))
+```
+
+A `ConsortiumMetabolismSet` likewise exposes the SE interface, with
+columns indexing the universal metabolite space:
+
+```{r tse-cms-dim}
+dim(cms)
+head(colnames(cms))
+```
+
+Subsetting works in metabolite space using the standard `[i, j]`
+syntax -- here, the first 5 rows and 5 columns:
+
+```{r tse-cms-subset}
+cms[1:5, 1:5]
+```
+
+This means downstream Bioconductor tooling -- e.g. `mia` for
+microbiome analysis or any package consuming `(Tree)SummarizedExperiment`
+objects -- can operate on `ramen` outputs without any conversion.
 
 # Session info
 
