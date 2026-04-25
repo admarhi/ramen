@@ -247,3 +247,119 @@ test_that("plotFunctionalGroups errors on list without dendrogram", {
         "dendrogram"
     )
 })
+
+## ===========================================================================
+## ConsortiumMetabolism method
+## ===========================================================================
+
+## ---- CM functionalGroups returns same shape as CMS ------------------------
+
+test_that("functionalGroups(CM) returns same list shape as CMS", {
+    cm <- synCM("a", n_species = 4, max_met = 8, seed = 11)
+    fg <- functionalGroups(cm)
+
+    expect_true(is.list(fg))
+    expected_names <- c(
+        "dendrogram",
+        "similarity_matrix",
+        "incidence_matrix",
+        "reactions_per_species"
+    )
+    expect_named(fg, expected_names, ignore.order = FALSE)
+    expect_true(is(fg$dendrogram, "dendrogram"))
+    expect_true(is(fg$incidence_matrix, "sparseMatrix"))
+    expect_true(is.matrix(fg$similarity_matrix))
+})
+
+## ---- CM Jaccard matrix properties -----------------------------------------
+
+test_that("functionalGroups(CM) similarity matrix is symmetric in [0,1]", {
+    cm <- synCM("a", n_species = 5, max_met = 10, seed = 12)
+    fg <- functionalGroups(cm)
+    sim <- fg$similarity_matrix
+
+    expect_equal(nrow(sim), ncol(sim))
+    expect_equal(sim, t(sim))
+    expect_true(all(sim >= 0))
+    expect_true(all(sim <= 1))
+    expect_equal(unname(diag(sim)), rep(1, nrow(sim)))
+
+    sp <- species(cm)
+    expect_equal(nrow(sim), length(sp))
+    expect_setequal(rownames(sim), sp)
+})
+
+## ---- CM dendrogram has correct number of leaves ---------------------------
+
+test_that("functionalGroups(CM) dendrogram has correct leaf count", {
+    cm <- synCM("a", n_species = 6, max_met = 12, seed = 13)
+    fg <- functionalGroups(cm)
+
+    n_leaves <- length(labels(fg$dendrogram))
+    expect_equal(n_leaves, length(species(cm)))
+    expect_setequal(labels(fg$dendrogram), species(cm))
+})
+
+## ---- CM 2-species edge case ------------------------------------------------
+
+test_that("functionalGroups(CM) handles 2-species consortium", {
+    cm <- synCM("a", n_species = 2, max_met = 6, seed = 14)
+    skip_if_not(
+        length(species(cm)) == 2L,
+        "synCM did not produce exactly 2 species"
+    )
+
+    fg <- functionalGroups(cm)
+    expect_true(is(fg$dendrogram, "dendrogram"))
+    expect_equal(length(labels(fg$dendrogram)), 2L)
+    expect_equal(dim(fg$similarity_matrix), c(2L, 2L))
+    expect_equal(unname(diag(fg$similarity_matrix)), c(1, 1))
+})
+
+## ---- CM 1-species edge case warns and returns NULL dendrogram -------------
+
+test_that("functionalGroups(CM) warns on single-species consortium", {
+    ## Build a CM directly with a single species so we are
+    ## not at the mercy of synCM's stochastic dead-end fix.
+    one_sp <- data.frame(
+        species = c("solo", "solo"),
+        metabolite = c("m1", "m2"),
+        flux = c(-1, 1)
+    )
+    cm <- ConsortiumMetabolism(one_sp, name = "single")
+
+    expect_warning(
+        fg <- functionalGroups(cm),
+        "at least 2"
+    )
+    expect_null(fg$dendrogram)
+    expect_equal(dim(fg$similarity_matrix), c(1L, 1L))
+    expect_equal(unname(fg$similarity_matrix[1, 1]), 1)
+    expect_true(is(fg$incidence_matrix, "sparseMatrix"))
+    expect_equal(nrow(fg$incidence_matrix), 1L)
+})
+
+## ---- CM linkage argument is honoured --------------------------------------
+
+test_that("functionalGroups(CM) respects linkage argument", {
+    cm <- synCM("a", n_species = 5, max_met = 10, seed = 15)
+
+    fg_complete <- functionalGroups(cm, linkage = "complete")
+    fg_average <- functionalGroups(cm, linkage = "average")
+
+    coph_complete <- stats::cophenetic(fg_complete$dendrogram)
+    coph_average <- stats::cophenetic(fg_average$dendrogram)
+    expect_false(identical(coph_complete, coph_average))
+
+    expect_error(functionalGroups(cm, linkage = "nope"))
+})
+
+## ---- CM deprecation warning shared with CMS -------------------------------
+
+test_that("functionalGroups(CM) warns on viz arguments", {
+    cm <- synCM("a", n_species = 3, max_met = 6, seed = 16)
+    expect_warning(
+        functionalGroups(cm, k = 2),
+        "plotFunctionalGroups"
+    )
+})

@@ -2,15 +2,19 @@
 % Please edit documentation in R/AllGenerics.R, R/methods-functionalGroups.R
 \name{functionalGroups}
 \alias{functionalGroups}
+\alias{functionalGroups,ConsortiumMetabolism-method}
 \alias{functionalGroups,ConsortiumMetabolismSet-method}
 \title{Get Functional Groups}
 \usage{
 functionalGroups(object, ...)
 
+\S4method{functionalGroups}{ConsortiumMetabolism}(object, ...)
+
 \S4method{functionalGroups}{ConsortiumMetabolismSet}(object, ...)
 }
 \arguments{
-\item{object}{A \code{ConsortiumMetabolismSet} object.}
+\item{object}{A \code{ConsortiumMetabolism} or
+\code{ConsortiumMetabolismSet} object.}
 
 \item{...}{Additional arguments passed to methods.
 Supported arguments include:
@@ -28,31 +32,68 @@ clustering. Passed to
 \value{
 A list (returned invisibly) containing:
 \itemize{
-\item \code{dendrogram}: The dendrogram object
+\item \code{dendrogram}: The dendrogram object, or
+\code{NULL} when fewer than two species are
+available.
 \item \code{similarity_matrix}: Matrix of Jaccard
-similarities between species
+similarities between species.
 \item \code{incidence_matrix}: Sparse binary
-species-by-pathway incidence matrix
+species-by-pathway incidence matrix.
 \item \code{reactions_per_species}: Data frame
-mapping species to their pathways
+mapping species to their pathways.
 }
 }
 \description{
 Calculates and returns functional groups based on
-metabolic reactions. For
-\code{ConsortiumMetabolismSet} objects, this involves
-analyzing shared reactions across species to identify
-clusters of species with similar metabolic
-capabilities.
+metabolic pathways. For
+\code{ConsortiumMetabolism} objects, species are
+clustered within a single consortium. For
+\code{ConsortiumMetabolismSet} objects, the analysis
+pools species across all consortia in the set,
+identifying clusters of species with similar metabolic
+capabilities regardless of which consortium they
+belong to.
 }
 \details{
 This method computes a Jaccard similarity matrix
 between species based on shared pathways, then
-performs hierarchical clustering. To visualize the
-resulting dendrogram, pass the output to
+performs hierarchical clustering. A pathway is
+represented as the unique \code{(consumed, produced)}
+metabolite pair. To visualize the resulting
+dendrogram, pass the output to
 \code{\link{plotFunctionalGroups}}.
+
+If a \code{ConsortiumMetabolism} contains fewer than
+two species, a warning is emitted and the returned
+list has \code{dendrogram = NULL}; the incidence
+matrix and (trivial) similarity matrix are still
+returned so downstream code can inspect them.
 }
+\section{Functions}{
+\itemize{
+\item \code{functionalGroups(ConsortiumMetabolism)}: Functional groups within a
+single \code{ConsortiumMetabolism}. Builds a species
+x pathway incidence from the consortium's
+\code{Pathways} slot (one pathway per unique
+\code{(consumed, produced)} pair) and clusters
+species by Jaccard similarity over their pathway
+sets. If the consortium contains fewer than two
+species, a \code{cli::cli_warn} is emitted and the
+returned list has \code{dendrogram = NULL}.
+
+\item \code{functionalGroups(ConsortiumMetabolismSet)}: Functional groups across a
+\code{ConsortiumMetabolismSet}. Pools species-pathway
+pairs from every consortium's \code{Pathways} table
+and clusters species by Jaccard similarity.
+
+}}
 \examples{
+## Single consortium
+cm <- synCM("test", n_species = 4, max_met = 8)
+fg_cm <- functionalGroups(cm)
+plotFunctionalGroups(fg_cm, k = 2)
+
+## Set of consortia
 cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
 cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
 cms <- ConsortiumMetabolismSet(
