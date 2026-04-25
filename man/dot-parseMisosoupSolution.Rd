@@ -4,7 +4,11 @@
 \alias{.parseMisosoupSolution}
 \title{Parse a single MiSoSoup solution entry}
 \usage{
-.parseMisosoupSolution(sol, normalize_ids = TRUE)
+.parseMisosoupSolution(
+  sol,
+  normalize_ids = TRUE,
+  biomassPattern = "(?i)^.*?(?:^|_)(?:biomass|growth)_"
+)
 }
 \arguments{
 \item{sol}{A single solution entry with \code{community} and \code{solution}
@@ -12,11 +16,16 @@ fields.}
 
 \item{normalize_ids}{Whether to decode \verb{__NN__} escapes and strip
 \code{R_EX_}/\verb{_e} from metabolite IDs.}
+
+\item{biomassPattern}{Perl regex identifying biomass rows; must
+consume the full prefix through the species-ID separator (used
+for both detection and species extraction via \code{sub()}).}
 }
 \value{
 A list with \code{consortia} (tibble of species, metabolite, flux
 for species-scoped exchanges), \code{media} (tibble of metabolite, flux
-for media-level bounds), and \code{growth} (named numeric vector).
+for media-level bounds), \code{growth} (named numeric vector), and
+\code{communityGrowth} (scalar \code{community_growth} value or \code{NA_real_}).
 }
 \description{
 Extracts the species list from the \code{community} block, classifies
@@ -30,7 +39,16 @@ suffixes against the known species list (from \code{community}), which is
 robust to both escaped metabolite names and species IDs containing
 underscores (the old \verb{_e_} delimiter split failed on both).
 
-The growth row key is matched against both \verb{Growth_<species>} (older
-MiSoSoup runs) and \verb{R_Biomass_<species>} (newer runs).
+The biomass-reaction name is model-dependent (MiSoSoup carries it
+through from the underlying GEM), so matching is done with a
+configurable Perl regex that consumes the full prefix through the
+species-ID separator. The default handles the three observed
+variants: \verb{Growth_<sp>}, \verb{R_Biomass_<sp>}, and \verb{R_R_BIOMASS_<sp>}.
+
+A \code{community_growth} summary row (MiSoSoup's community-level growth
+rate, distinct from per-species biomass fluxes) is captured as a
+scalar in the returned list rather than treated as a media flux.
+Non-suffixed \verb{R_EX_<metabolite>} rows remain in media — they are
+legitimate community-level exchange totals.
 }
 \keyword{internal}

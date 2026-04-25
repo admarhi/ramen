@@ -4,12 +4,18 @@
 \alias{.buildCMsFromMisosoup}
 \title{Build CMs from a raw MiSoSoup list}
 \usage{
-.buildCMsFromMisosoup(raw, normalize_ids = TRUE)
+.buildCMsFromMisosoup(
+  raw,
+  normalize_ids = TRUE,
+  biomassPattern = "(?i)^.*?(?:^|_)(?:biomass|growth)_"
+)
 }
 \arguments{
 \item{raw}{Nested list from \code{yaml::read_yaml()}.}
 
 \item{normalize_ids}{Whether to normalize metabolite IDs.}
+
+\item{biomassPattern}{Perl regex identifying biomass reaction rows.}
 }
 \value{
 Named list of CM objects.
