@@ -57,7 +57,7 @@ pivotCM <- function(tb, species, from, to, flux) {
         )
     }
     tb |>
-        tidyr::pivot_longer(cols = c(from, to)) |>
+        tidyr::pivot_longer(cols = dplyr::all_of(c(from, to))) |>
         dplyr::rename(
             met = "value",
             species = {{ species }},
