@@ -157,7 +157,7 @@ importMisosoup <- function(
         if (is.null(name)) {
             cli::cli_abort(
                 "{.arg name} is required when {.arg data} is a \\
-                 pre-loaded list."
+                pre-loaded list."
             )
         }
         cm_list <- .buildCMsFromMisosoup(
