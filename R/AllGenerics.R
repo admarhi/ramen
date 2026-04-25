@@ -144,10 +144,20 @@ setGeneric(
 #'
 #' @description
 #' Retrieves the metabolites involved in the metabolic
-#' network.
+#' network. For \code{ConsortiumMetabolism} objects, the
+#' result can optionally be restricted to a specific
+#' species and/or direction (\code{"consumed"} or
+#' \code{"produced"}).
 #'
-#' @param object A \code{ConsortiumMetabolism} or
+#' @param object A \code{ConsortiumMetabolism},
+#'   \code{ConsortiumMetabolismSet}, or
 #'   \code{ConsortiumMetabolismAlignment} object.
+#' @param ... Additional arguments. For
+#'   \code{ConsortiumMetabolism}: \code{species}
+#'   (character scalar; restrict to metabolites involved
+#'   with this species) and \code{direction} (one of
+#'   \code{"all"}, \code{"consumed"}, or
+#'   \code{"produced"}; defaults to \code{"all"}).
 #'
 #' @return A character vector containing the names of
 #'   metabolites in the network.
@@ -155,11 +165,14 @@ setGeneric(
 #' @examples
 #' cm <- synCM("test", n_species = 3, max_met = 5)
 #' metabolites(cm)
+#' ## Metabolites consumed by a specific species:
+#' sp <- species(cm)[1]
+#' metabolites(cm, species = sp, direction = "consumed")
 #'
 #' @export
 setGeneric(
     "metabolites",
-    function(object) standardGeneric("metabolites")
+    function(object, ...) standardGeneric("metabolites")
 )
 
 #' @title Retrieve Metabolic Pathways

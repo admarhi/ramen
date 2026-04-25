@@ -67,6 +67,46 @@ test_that("metabolites returns metabolites", {
     expect_true(length(mets) > 0)
 })
 
+test_that("metabolites filters by species and direction", {
+    test_data <- tibble::tibble(
+        species = c("s1", "s1", "s2", "s2"),
+        metabolite = c("m1", "m2", "m1", "m3"),
+        flux = c(-1, 1, -1, 1)
+    )
+    cm <- ConsortiumMetabolism(test_data, name = "test")
+
+    ## All metabolites involved with s1
+    s1_all <- metabolites(cm, species = "s1")
+    expect_true(all(c("m1", "m2") %in% s1_all))
+
+    ## s1 consumes m1, produces m2
+    expect_equal(
+        metabolites(cm, species = "s1", direction = "consumed"),
+        "m1"
+    )
+    expect_equal(
+        metabolites(cm, species = "s1", direction = "produced"),
+        "m2"
+    )
+
+    ## Direction without species applies globally
+    consumed_all <- metabolites(cm, direction = "consumed")
+    produced_all <- metabolites(cm, direction = "produced")
+    expect_true("m1" %in% consumed_all) ## consumed by s1 and s2
+    expect_true(all(c("m2", "m3") %in% produced_all))
+
+    ## Errors on unknown species
+    expect_error(
+        metabolites(cm, species = "no_such_species"),
+        "not found"
+    )
+    ## Errors on non-character species
+    expect_error(
+        metabolites(cm, species = 1L),
+        "character scalar"
+    )
+})
+
 test_that("pathways returns concise output by default", {
     test_data <- tibble::tibble(
         species = c("s1", "s1", "s2", "s2"),

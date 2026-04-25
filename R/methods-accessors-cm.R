@@ -26,9 +26,41 @@ setMethod(
 )
 
 #' @rdname metabolites
-setMethod("metabolites", "ConsortiumMetabolism", function(object) {
-    object@Metabolites
-})
+setMethod(
+    "metabolites",
+    "ConsortiumMetabolism",
+    function(
+        object,
+        species = NULL,
+        direction = c("all", "consumed", "produced")
+    ) {
+        direction <- match.arg(direction)
+        if (is.null(species) && direction == "all") {
+            return(object@Metabolites)
+        }
+        sp_pw <- tidyr::unnest(object@Pathways, "data")
+        if (!is.null(species)) {
+            if (!is.character(species) || length(species) != 1L) {
+                cli::cli_abort(
+                    "{.arg species} must be a length-1 character scalar."
+                )
+            }
+            if (!species %in% sp_pw$species) {
+                cli::cli_abort(
+                    "Species {.val {species}} not found in this consortium."
+                )
+            }
+            sp_pw <- sp_pw[sp_pw$species == species, , drop = FALSE]
+        }
+        mets <- switch(
+            direction,
+            all = unique(c(sp_pw$consumed, sp_pw$produced)),
+            consumed = unique(sp_pw$consumed),
+            produced = unique(sp_pw$produced)
+        )
+        sort(mets)
+    }
+)
 
 #' @describeIn species Return Species in a
 #'   \code{ConsortiumMetabolism}
