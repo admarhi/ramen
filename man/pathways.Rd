@@ -46,11 +46,13 @@ pathways to output.}
 \item{quantileCutoff}{Numeric scalar between 0 and 1
 giving the quantile threshold to use for filtering
 pathways. For \code{"pan-cons"} and \code{"core"}
-types, pathways above \code{1 - quantileCutoff}
+types, pathways strictly above \code{1 - quantileCutoff}
 are returned. For \code{"niche"} and \code{"aux"}
-types, pathways below \code{quantileCutoff} are
-returned. Defaults to 0.1 (i.e., top/bottom 10
-percent).}
+types, pathways at or below \code{quantileCutoff}
+are returned (the boundary is included on the lower
+tail so that ties at the quantile floor are not
+silently dropped). Defaults to 0.1 (i.e., top/bottom
+10 percent).}
 }
 \value{
 A data.frame of pathway information. With

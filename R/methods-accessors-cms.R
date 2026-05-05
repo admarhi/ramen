@@ -10,11 +10,13 @@ NULL
 #' @param quantileCutoff Numeric scalar between 0 and 1
 #'   giving the quantile threshold to use for filtering
 #'   pathways. For \code{"pan-cons"} and \code{"core"}
-#'   types, pathways above \code{1 - quantileCutoff}
+#'   types, pathways strictly above \code{1 - quantileCutoff}
 #'   are returned. For \code{"niche"} and \code{"aux"}
-#'   types, pathways below \code{quantileCutoff} are
-#'   returned. Defaults to 0.1 (i.e., top/bottom 10
-#'   percent).
+#'   types, pathways at or below \code{quantileCutoff}
+#'   are returned (the boundary is included on the lower
+#'   tail so that ties at the quantile floor are not
+#'   silently dropped). Defaults to 0.1 (i.e., top/bottom
+#'   10 percent).
 #' @export
 setMethod(
     "pathways",
@@ -77,9 +79,13 @@ setMethod(
                 seq_len(total_cons),
                 p = quantileCutoff
             )
+            # Use <= so ties at the floor (e.g. n_cons = 1)
+            # are included; without this, lower-tail filters
+            # collapse to empty when many pathways tie at
+            # the minimum.
             dplyr::filter(
                 pathway_summary,
-                .data$n_cons < quant
+                .data$n_cons <= quant
             ) |>
                 dplyr::arrange(.data$n_cons)
         } else if (type == "core") {
@@ -99,9 +105,12 @@ setMethod(
                 pathway_summary$n_species,
                 p = quantileCutoff
             )
+            # Use <= so ties at the floor (very common when
+            # many pathways have n_species = 1) are
+            # included; otherwise the filter is empty.
             dplyr::filter(
                 pathway_summary,
-                .data$n_species < quant
+                .data$n_species <= quant
             ) |>
                 dplyr::arrange(.data$n_species)
         }
@@ -175,13 +184,71 @@ setMethod("growth", "ConsortiumMetabolismSet", function(object) {
 })
 
 #' @describeIn species Return Species in a
-#'   \code{ConsortiumMetabolismSet}
+#'   \code{ConsortiumMetabolismSet}, optionally filtered to
+#'   metabolic generalists or specialists by pathway count.
 #' @param object A \code{ConsortiumMetabolismSet} object.
+#' @param type Character scalar. One of \code{"all"}
+#'   (default), \code{"generalists"} (top fraction by
+#'   pathway count), or \code{"specialists"} (bottom
+#'   fraction).
+#' @param quantileCutoff Numeric scalar in (0, 1) giving
+#'   the fraction of species to label as generalists or
+#'   specialists. Defaults to \code{0.15}.
 setMethod(
     "species",
     "ConsortiumMetabolismSet",
-    function(object, ...) {
-        sort(unique(object@Pathways$species))
+    function(
+        object,
+        type = c("all", "generalists", "specialists"),
+        quantileCutoff = 0.15,
+        ...
+    ) {
+        type <- match.arg(type)
+        all_species <- sort(unique(object@Pathways$species))
+
+        if (type == "all") {
+            return(all_species)
+        }
+
+        if (quantileCutoff <= 0 || quantileCutoff >= 1) {
+            cli::cli_abort(
+                "{.arg quantileCutoff} must be between 0 \\
+                and 1 (exclusive), not \\
+                {.val {quantileCutoff}}."
+            )
+        }
+
+        n_pathways_per_species <- object@Pathways |>
+            dplyr::mutate(
+                pathway_name = paste0(
+                    .data$consumed,
+                    "-",
+                    .data$produced
+                )
+            ) |>
+            dplyr::reframe(
+                n_pathways = dplyr::n_distinct(
+                    .data$pathway_name
+                ),
+                .by = "species"
+            )
+
+        counts <- n_pathways_per_species$n_pathways
+        names(counts) <- n_pathways_per_species$species
+
+        if (type == "generalists") {
+            quant <- stats::quantile(
+                counts,
+                p = 1 - quantileCutoff
+            )
+            sort(names(counts)[counts >= quant])
+        } else {
+            quant <- stats::quantile(
+                counts,
+                p = quantileCutoff
+            )
+            sort(names(counts)[counts <= quant])
+        }
     }
 )
 

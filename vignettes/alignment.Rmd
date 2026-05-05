@@ -35,6 +35,10 @@ This vignette covers the alignment system in depth. For a general
 introduction to the package, see
 `vignette("ramen", package = "ramen")`.
 
+**Note on help lookup.** If `tibble` or `pillar` is loaded in your
+session, `?align` may resolve to `pillar::align()` first. To view the
+documentation for this package's generic, use `?ramen::align`.
+
 ```{r load-library, message = FALSE}
 library(ramen)
 ```

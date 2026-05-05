@@ -477,3 +477,143 @@ test_that("filterConsortia errors on wrong-length logical", {
     )
     expect_error(filterConsortia(cms, c(TRUE)), "length")
 })
+
+## ---- species(CMS, type = ...) filter ---------------------------------------
+
+test_that("species(CMS, type='all') matches default", {
+    data("misosoup24", package = "ramen")
+    cm_list <- lapply(seq_len(10), function(i) {
+        ConsortiumMetabolism(
+            misosoup24[[i]],
+            name = names(misosoup24)[i]
+        )
+    })
+    cms <- ConsortiumMetabolismSet(cm_list, name = "ms10")
+    expect_equal(species(cms), species(cms, type = "all"))
+})
+
+test_that("species(CMS, type='generalists') returns non-empty subset", {
+    data("misosoup24", package = "ramen")
+    cm_list <- lapply(seq_len(10), function(i) {
+        ConsortiumMetabolism(
+            misosoup24[[i]],
+            name = names(misosoup24)[i]
+        )
+    })
+    cms <- ConsortiumMetabolismSet(cm_list, name = "ms10")
+    gen <- species(cms, type = "generalists")
+    expect_type(gen, "character")
+    expect_true(length(gen) >= 1L)
+    expect_true(all(gen %in% species(cms)))
+})
+
+test_that("species(CMS, type='specialists') returns non-empty subset", {
+    data("misosoup24", package = "ramen")
+    cm_list <- lapply(seq_len(10), function(i) {
+        ConsortiumMetabolism(
+            misosoup24[[i]],
+            name = names(misosoup24)[i]
+        )
+    })
+    cms <- ConsortiumMetabolismSet(cm_list, name = "ms10")
+    spec <- species(cms, type = "specialists")
+    expect_type(spec, "character")
+    expect_true(length(spec) >= 1L)
+    expect_true(all(spec %in% species(cms)))
+})
+
+test_that("species(CMS) generalists outrank specialists in pathway count", {
+    data("misosoup24", package = "ramen")
+    cm_list <- lapply(seq_len(10), function(i) {
+        ConsortiumMetabolism(
+            misosoup24[[i]],
+            name = names(misosoup24)[i]
+        )
+    })
+    cms <- ConsortiumMetabolismSet(cm_list, name = "ms10")
+    summary_df <- speciesSummary(cms)
+    gen <- species(cms, type = "generalists")
+    spec <- species(cms, type = "specialists")
+    gen_counts <- summary_df$n_pathways[
+        summary_df$species %in% gen
+    ]
+    spec_counts <- summary_df$n_pathways[
+        summary_df$species %in% spec
+    ]
+    expect_true(min(gen_counts) >= max(spec_counts))
+})
+
+test_that("species(CMS, type='invalid') errors via match.arg", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
+    cms <- ConsortiumMetabolismSet(
+        list(cm1, cm2),
+        name = "test"
+    )
+    expect_error(
+        species(cms, type = "bogus"),
+        "should be one of"
+    )
+})
+
+test_that("species(CMS) errors on invalid quantileCutoff", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
+    cms <- ConsortiumMetabolismSet(
+        list(cm1, cm2),
+        name = "test"
+    )
+    expect_error(
+        species(cms, type = "generalists", quantileCutoff = 0)
+    )
+    expect_error(
+        species(cms, type = "specialists", quantileCutoff = 1)
+    )
+})
+
+## ---- B6 residual: aux/niche tie handling -----------------------------------
+
+test_that("pathways(cms, 'aux') non-empty when n_species ties at floor", {
+    data("misosoup24", package = "ramen")
+    cm_list <- lapply(seq_len(10), function(i) {
+        ConsortiumMetabolism(
+            misosoup24[[i]],
+            name = names(misosoup24)[i]
+        )
+    })
+    cms <- ConsortiumMetabolismSet(cm_list, name = "ms10")
+    aux_pw <- pathways(cms, type = "aux")
+    expect_true(nrow(aux_pw) >= 1L)
+})
+
+test_that("pathways(cms, 'niche') non-empty when n_cons ties at floor", {
+    data("misosoup24", package = "ramen")
+    cm_list <- lapply(seq_len(10), function(i) {
+        ConsortiumMetabolism(
+            misosoup24[[i]],
+            name = names(misosoup24)[i]
+        )
+    })
+    cms <- ConsortiumMetabolismSet(cm_list, name = "ms10")
+    niche_pw <- pathways(cms, type = "niche")
+    expect_true(nrow(niche_pw) >= 1L)
+})
+
+test_that("aux and core do not double-count pathways at the boundary", {
+    data("misosoup24", package = "ramen")
+    cm_list <- lapply(seq_len(10), function(i) {
+        ConsortiumMetabolism(
+            misosoup24[[i]],
+            name = names(misosoup24)[i]
+        )
+    })
+    cms <- ConsortiumMetabolismSet(cm_list, name = "ms10")
+    aux_pw <- pathways(cms, type = "aux")
+    core_pw <- pathways(cms, type = "core")
+    aux_keys <- paste(aux_pw$consumed, aux_pw$produced, sep = "|")
+    core_keys <- paste(
+        core_pw$consumed, core_pw$produced,
+        sep = "|"
+    )
+    expect_length(intersect(aux_keys, core_keys), 0L)
+})

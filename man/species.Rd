@@ -14,12 +14,26 @@ species(object, ...)
 
 \S4method{species}{ConsortiumMetabolismAlignment}(object)
 
-\S4method{species}{ConsortiumMetabolismSet}(object, ...)
+\S4method{species}{ConsortiumMetabolismSet}(
+  object,
+  type = c("all", "generalists", "specialists"),
+  quantileCutoff = 0.15,
+  ...
+)
 }
 \arguments{
 \item{object}{A \code{ConsortiumMetabolismSet} object.}
 
 \item{...}{Additional arguments passed to methods.}
+
+\item{type}{Character scalar. One of \code{"all"}
+(default), \code{"generalists"} (top fraction by
+pathway count), or \code{"specialists"} (bottom
+fraction).}
+
+\item{quantileCutoff}{Numeric scalar in (0, 1) giving
+the fraction of species to label as generalists or
+specialists. Defaults to \code{0.15}.}
 }
 \value{
 A character vector of species names.
@@ -37,7 +51,8 @@ consortia.
 \code{ConsortiumMetabolismAlignment}
 
 \item \code{species(ConsortiumMetabolismSet)}: Return Species in a
-\code{ConsortiumMetabolismSet}
+\code{ConsortiumMetabolismSet}, optionally filtered to
+metabolic generalists or specialists by pathway count.
 
 }}
 \examples{
