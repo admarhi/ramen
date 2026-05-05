@@ -25,6 +25,12 @@ setMethod(
     }
 )
 
+#' @param species Optional length-1 character scalar. If supplied,
+#'   restrict the result to metabolites involved in pathways that
+#'   include this species. Defaults to \code{NULL} (all species).
+#' @param direction One of \code{"all"} (default), \code{"consumed"},
+#'   or \code{"produced"}. Restricts the result to metabolites in the
+#'   given role across the (possibly species-filtered) pathways.
 #' @rdname metabolites
 setMethod(
     "metabolites",

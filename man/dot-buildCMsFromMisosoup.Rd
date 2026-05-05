@@ -22,7 +22,7 @@ Named list of CM objects.
 }
 \description{
 Iterates over \code{raw[[substrate]][[sec]][[sol]]}, parses each viable
-solution, and constructs a \linkS4class{ConsortiumMetabolism} object.
+solution, and constructs a \link[=ConsortiumMetabolism-class]{ConsortiumMetabolism} object.
 Zero-growth solutions (empty community) are silently skipped.
 }
 \keyword{internal}

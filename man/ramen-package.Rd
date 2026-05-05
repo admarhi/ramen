@@ -25,5 +25,10 @@ Useful links:
 \author{
 \strong{Maintainer}: Adrian Hirt \email{am.hirt@pm.me} (\href{https://orcid.org/0009-0008-1929-6629}{ORCID})
 
+Authors:
+\itemize{
+  \item Adrian Hirt \email{am.hirt@pm.me} (\href{https://orcid.org/0009-0008-1929-6629}{ORCID})
+}
+
 }
 \keyword{internal}

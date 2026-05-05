@@ -55,7 +55,7 @@ method for hierarchical clustering. Passed to
 \code{\link[stats]{hclust}}. One of \code{"complete"} (default),
 \code{"average"}, \code{"single"}, or \code{"ward.D2"}.}
 
-\item{BPPARAM}{A \link[BiocParallel:BiocParallelParam-class]{BiocParallel::BiocParallelParam} object.
+\item{BPPARAM}{A \link[BiocParallel:BiocParallelParam]{BiocParallel::BiocParallelParam} object.
 Default \code{BiocParallel::SerialParam()}.}
 
 \item{metrics}{Character vector of metrics to compute per

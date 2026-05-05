@@ -15,7 +15,6 @@ biocViews: Software, Metagenomics, Microbiome, Network,
 BugReports: https://github.com/admarhi/ramen/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Imports:
     BiocParallel,
     cli,
@@ -74,3 +73,4 @@ Collate:
     'ramen-data.R'
     'ramen-package.R'
     'synCM.R'
+Config/roxygen2/version: 8.0.0
