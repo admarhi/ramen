@@ -62,7 +62,7 @@ speciesSummary(cm)
 #> # A tibble: 3 × 4
 #>   species  n_pathways n_consumed n_produced
 #>   <chr>         <int>      <int>      <int>
-#> 1 HYN9494M          6          3          2
-#> 2 QCT5569G          4          4          1
-#> 3 WUV2800U          3          1          3
+#> 1 QMS4985B          4          2          2
+#> 2 NOE8933A          4          2          2
+#> 3 YPI4940V          4          2          2
 ```

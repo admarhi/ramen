@@ -9,9 +9,10 @@ eagerly: BinaryMatrices is subsetted to the
 remaining metabolite space and OverlapMatrix,
 Dendrogram, NodeData, Pathways,
 Metabolites, and Graphs are recomputed
-accordingly. @Consortia is not modified — each
-ConsortiumMetabolism object retains its own
-metabolite space.
+accordingly. The per-consortium list returned by
+consortia() is not modified — each
+ConsortiumMetabolism retains its own metabolite
+space.
 Note on consortium-level selection: to extract a
 subset of consortia rather than a subset of the metabolite
 space, use extractCluster (dendrogram-based)
@@ -33,9 +34,10 @@ eagerly: BinaryMatrices is subsetted to the
 remaining metabolite space and OverlapMatrix,
 Dendrogram, NodeData, Pathways,
 Metabolites, and Graphs are recomputed
-accordingly. @Consortia is not modified — each
-ConsortiumMetabolism object retains its own
-metabolite space.
+accordingly. The per-consortium list returned by
+consortia() is not modified — each
+ConsortiumMetabolism retains its own metabolite
+space.
 Note on consortium-level selection: to extract a
 subset of consortia rather than a subset of the metabolite
 space, use extractCluster (dendrogram-based)
@@ -98,9 +100,10 @@ eagerly: <code>BinaryMatrices</code> is subsetted to the
 remaining metabolite space and <code>OverlapMatrix</code>,
 <code>Dendrogram</code>, <code>NodeData</code>, <code>Pathways</code>,
 <code>Metabolites</code>, and <code>Graphs</code> are recomputed
-accordingly. <code>@Consortia</code> is not modified — each
-<code>ConsortiumMetabolism</code> object retains its own
-metabolite space.</p>
+accordingly. The per-consortium list returned by
+<code><a href="consortia.html">consortia()</a></code> is not modified — each
+<code>ConsortiumMetabolism</code> retains its own metabolite
+space.</p>
 <p><strong>Note on consortium-level selection:</strong> to extract a
 subset of consortia rather than a subset of the metabolite
 space, use <code><a href="extractCluster.html">extractCluster</a></code> (dendrogram-based)
@@ -190,8 +193,8 @@ consortium selection.</p></div>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co">## Subset to first 3 metabolites (m x m assay semantics)</span></span></span>
 <span class="r-in"><span><span class="va">sub</span> <span class="op">&lt;-</span> <span class="va">cms</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span><span class="op">]</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">sub</span><span class="op">@</span><span class="va">Metabolites</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">sub</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3 3</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

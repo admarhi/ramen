@@ -60,7 +60,13 @@ pre-loaded nested list.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">importMisosoup</span><span class="op">(</span><span class="va">data</span>, name <span class="op">=</span> <span class="cn">NULL</span>, normalize_ids <span class="op">=</span> <span class="cn">TRUE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">importMisosoup</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  name <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  normalize_ids <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  biomassPattern <span class="op">=</span> <span class="st">"(?i)^.*?(?:^|_)(?:biomass|growth)_"</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -87,6 +93,20 @@ decode COBRApy <code>__NN__</code> escape sequences via <code><a href="dot-decod
 If <code>FALSE</code>, keep metabolite IDs in their raw form.</p></dd>
 
 
+<dt id="arg-biomasspattern">biomassPattern<a class="anchor" aria-label="anchor" href="#arg-biomasspattern"></a></dt>
+<dd><p>Perl-compatible regex identifying biomass
+reaction rows. The pattern must match <em>and consume</em> the entire
+prefix from the start of the reaction ID up through the separator
+before the species ID, because it is used for both detection and
+species extraction (via <code><a href="https://rdrr.io/r/base/grep.html" class="external-link">sub()</a></code>). Defaults to
+<code>"(?i)^.*?(?:^|_)(?:biomass|growth)_"</code>, which covers the three
+observed MiSoSoup variants (<code>Growth_&lt;sp&gt;</code>, <code>R_Biomass_&lt;sp&gt;</code>,
+<code>R_R_BIOMASS_&lt;sp&gt;</code>) case-insensitively and correctly rejects the
+<code>community_growth</code> summary row. Override this if your MiSoSoup
+output uses a non-standard biomass reaction name, e.g.
+<code>biomassPattern = "(?i)^.*?MYBIO_"</code>.</p></dd>
+
+
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
 <dd><p>If <code>TRUE</code> (default), emit progress messages via
 <code><a href="https://cli.r-lib.org/reference/cli_abort.html" class="external-link">cli::cli_inform()</a></code> and show a progress bar when importing a
@@ -102,14 +122,23 @@ input. Zero-growth solutions are silently skipped.</p>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The function auto-detects format differences between MiSoSoup runs:
-the growth-row key (<code>Growth_&lt;species&gt;</code> in older runs,
-<code>R_Biomass_&lt;species&gt;</code> in newer runs), COBRApy-style <code>__NN__</code> escape
-sequences in reaction IDs (e.g. <code>__40__</code> for <code>(</code>), and the presence
-or absence of a focal-strain layer below each substrate.</p>
-<p>Media-level exchange fluxes (reactions without a species suffix) are
-stashed in <code>metadata(cm)$media</code> for each consortium, preserving the
-original bounds information if downstream code needs it.</p>
-    </div>
+the biomass-reaction name (via a configurable regex that defaults to
+matching <code>Growth_&lt;sp&gt;</code>, <code>R_Biomass_&lt;sp&gt;</code>, and <code>R_R_BIOMASS_&lt;sp&gt;</code>
+case-insensitively — MiSoSoup derives this name from the underlying
+model, so it varies), COBRApy-style <code>__NN__</code> escape sequences in
+reaction IDs (e.g. <code>__40__</code> for <code>(</code>), and the second-level key of
+each substrate. That second-level key is either <code>min</code> — indicating a
+<strong>CMSC</strong> (complete minimal supplying community: no viable focal
+strain because no single member grows alone) — or a focal-strain ID,
+indicating an <strong>MSC</strong> (minimal supplying community for that strain).</p>
+<p>Per-consortium metadata set on each returned CM:</p><ul><li><p><code>metadata(cm)$media</code> — media-level exchange fluxes (reactions
+without a species suffix), preserving the original bounds.</p></li>
+<li><p><code>metadata(cm)$communityGrowth</code> — the scalar <code>community_growth</code>
+summary row from the MiSoSoup solution, or <code>NA_real_</code> if absent.</p></li>
+<li><p><code>metadata(cm)$misosoupMode</code> — <code>"CMSC"</code> or <code>"MSC"</code>.</p></li>
+<li><p><code>metadata(cm)$focalStrain</code> — focal-strain ID (character) for MSC
+consortia, <code>NA_character_</code> for CMSC.</p></li>
+</ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="importSmetana.html">importSmetana()</a></code> for the sibling SMETANA import.</p></div>
@@ -117,17 +146,66 @@ original bounds information if downstream code needs it.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
-<span class="r-in"><span><span class="co"># Single YAML file -&gt; CMS</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Build a minimal in-memory MiSoSoup-shaped list and import it. In</span></span></span>
+<span class="r-in"><span><span class="co"># practice you would point at a real YAML file or a directory of</span></span></span>
+<span class="r-in"><span><span class="co"># YAMLs from a MiSoSoup run.</span></span></span>
+<span class="r-in"><span><span class="va">raw</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    glucose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>        min <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>            <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>                community <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>y_sp1 <span class="op">=</span> <span class="fl">1</span>, y_sp2 <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                solution <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>                    R_Biomass_sp1 <span class="op">=</span> <span class="fl">0.4</span>,</span></span>
+<span class="r-in"><span>                    R_Biomass_sp2 <span class="op">=</span> <span class="fl">0.3</span>,</span></span>
+<span class="r-in"><span>                    R_EX_glc__D_e_sp1_i <span class="op">=</span> <span class="op">-</span><span class="fl">10</span>,</span></span>
+<span class="r-in"><span>                    R_EX_ac_e_sp1_i <span class="op">=</span> <span class="fl">5</span>,</span></span>
+<span class="r-in"><span>                    R_EX_ac_e_sp2_i <span class="op">=</span> <span class="op">-</span><span class="fl">4</span>,</span></span>
+<span class="r-in"><span>                    R_EX_co2_e_sp2_i <span class="op">=</span> <span class="fl">3</span>,</span></span>
+<span class="r-in"><span>                    community_growth <span class="op">=</span> <span class="fl">0.7</span></span></span>
+<span class="r-in"><span>                <span class="op">)</span></span></span>
+<span class="r-in"><span>            <span class="op">)</span></span></span>
+<span class="r-in"><span>        <span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">cms</span> <span class="op">&lt;-</span> <span class="fu">importMisosoup</span><span class="op">(</span><span class="va">raw</span>, name <span class="op">=</span> <span class="st">"demo"</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Creating CMS </span><span style="color: #0000BB; font-weight: bold;">"demo"</span> <span style="color: #00BBBB;">─────────────────────────────────────────────────────────</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Validating <span style="color: #0000BB;">1</span> <span style="color: #0000BB;">&lt;ConsortiumMetabolism&gt;</span> object</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Validating <span style="color: #0000BB;">1</span> <span style="color: #0000BB;">&lt;ConsortiumMetabolism&gt;</span> object <span style="color: #B2B2B2;">[9ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Collecting metabolites from <span style="color: #0000BB;">1</span> consortia</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Collecting metabolites from <span style="color: #0000BB;">1</span> consortia <span style="color: #B2B2B2;">[22ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Re-indexing <span style="color: #0000BB;">3</span> unique metabolites</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Re-indexing <span style="color: #0000BB;">3</span> unique metabolites <span style="color: #B2B2B2;">[21ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Expanding <span style="color: #0000BB;">1</span> binary matrices to <span style="color: #0000BB;">3</span>-dimensional space</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Expanding <span style="color: #0000BB;">1</span> binary matrices to <span style="color: #0000BB;">3</span>-dimensional space <span style="color: #B2B2B2;">[18ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Computing <span style="color: #0000BB;">3</span> x <span style="color: #0000BB;">3</span> levels matrix</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Computing <span style="color: #0000BB;">3</span> x <span style="color: #0000BB;">3</span> levels matrix <span style="color: #B2B2B2;">[19ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Computing pairwise overlap (<span style="color: #0000BB;">0</span> pairs via crossprod)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Computing pairwise overlap (<span style="color: #0000BB;">0</span> pairs via crossprod) <span style="color: #B2B2B2;">[17ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Assembling pathway data from <span style="color: #0000BB;">1</span> consortia</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Assembling pathway data from <span style="color: #0000BB;">1</span> consortia <span style="color: #B2B2B2;">[34ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Collecting <span style="color: #0000BB;">1</span> consortium graphs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> CMS <span style="color: #0000BB;">"demo"</span> created: <span style="color: #0000BB;">1</span> consortia, <span style="color: #0000BB;">3</span> metabolites (0.2s)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Collecting <span style="color: #0000BB;">1</span> consortium graphs <span style="color: #B2B2B2;">[65ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span><span class="va">cms</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── ConsortiumMetabolismSet </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Name: <span style="color: #0000BB;">"demo"</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">1</span> consortia, <span style="color: #0000BB;">2</span> species, <span style="color: #0000BB;">3</span> metabolites.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Community size (species): min <span style="color: #0000BB;">2</span>, mean <span style="color: #0000BB;">2</span>, max <span style="color: #0000BB;">2</span>.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Community size (metabolites): min <span style="color: #0000BB;">3</span>, mean <span style="color: #0000BB;">3</span>, max <span style="color: #0000BB;">3</span>.</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Real-world usage (commented; needs an actual MiSoSoup YAML on disk):</span></span></span>
 <span class="r-in"><span><span class="co"># cms &lt;- importMisosoup("path/to/misosoup.yaml")</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Directory of YAML files -&gt; CMS with consortia from all files</span></span></span>
 <span class="r-in"><span><span class="co"># cms &lt;- importMisosoup("path/to/misosoup_dir/", name = "experiment1")</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Pre-loaded list -&gt; CMS (name is required here)</span></span></span>
-<span class="r-in"><span><span class="co"># raw &lt;- yaml::read_yaml("path/to/misosoup.yaml")</span></span></span>
-<span class="r-in"><span><span class="co"># cms &lt;- importMisosoup(raw, name = "experiment1")</span></span></span>
-<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -5,6 +5,7 @@
 `ramen` can be installed from Bioconductor:
 
 ``` r
+
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 
@@ -12,6 +13,7 @@ BiocManager::install("ramen")
 ```
 
 ``` r
+
 library(ramen)
 ```
 
@@ -37,7 +39,7 @@ its collective metabolic capability.
 ### Package classes
 
 The package provides three S4 classes that build on Bioconductor’s
-*[TreeSummarizedExperiment](https://bioconductor.org/packages/3.22/TreeSummarizedExperiment)*:
+*[TreeSummarizedExperiment](https://bioconductor.org/packages/3.23/TreeSummarizedExperiment)*:
 
 - **`ConsortiumMetabolism`** (CM) – a single community’s metabolic
   exchange network
@@ -53,6 +55,46 @@ alignment metrics, see
 [`vignette("alignment", package = "ramen")`](https://admarhi.github.io/ramen/articles/alignment.md);
 for a gallery of all plot types, see
 [`vignette("visualisation", package = "ramen")`](https://admarhi.github.io/ramen/articles/visualisation.md).
+
+### Why “consortium” and not “community”?
+
+`ramen` deliberately uses the term *consortium* throughout. A consortium
+here is defined by its **metabolic function** – the set of
+metabolite-to-metabolite pathways its member species collectively
+catalyse – not by its taxonomic composition. Two assemblages with
+entirely different species rosters but identical exchange networks are,
+from `ramen`’s perspective, the same consortium; conversely, two
+assemblages with the same species but different active pathways are
+different consortia. This functional framing follows a long-standing
+argument in microbial ecology that ecosystem behaviour is more robustly
+predicted by what microbes *do* than by which microbes are present
+(Falkowski, Fenchel & Delong 2008, *Science* **320**:1034).
+
+## Key Concepts
+
+A short glossary of terms used throughout the package:
+
+- **Consortium** – a microbial assemblage characterised by its metabolic
+  exchange network, not its species composition (see above).
+- **Pathway** – in the `ramen` sense, a directed
+  metabolite-to-metabolite edge: metabolite *A* is consumed and
+  metabolite *B* is produced by at least one species. Not a KEGG/MetaCyc
+  biochemical pathway.
+- **Assay** – one of the six *m x m* metabolite-by-metabolite matrices
+  stored in a `ConsortiumMetabolism` object (Binary, nSpecies,
+  Consumption, Production, EffectiveConsumption, EffectiveProduction).
+- **FOS** – Functional Overlap Score; the primary similarity metric
+  between two consortia, computed as the Szymkiewicz-Simpson coefficient
+  on expanded binary pathway matrices.
+- **Szymkiewicz-Simpson** – an asymmetric set-overlap coefficient
+  `|X intersect Y| / min(|X|, |Y|)` that measures how completely the
+  smaller set is contained in the larger.
+- **Alignment** – the operation of putting two or more consortia in
+  correspondence in a shared metabolite/pathway space and summarising
+  their similarity, returning a `ConsortiumMetabolismAlignment`.
+- **MAAS** – Metabolite Abundance Adjusted Score; a
+  flux-magnitude-weighted variant of FOS that down-weights pathways with
+  very small fluxes.
 
 ## Data import
 
@@ -71,6 +113,7 @@ indicate production.
 > <https://bigg.ucsd.edu/metabolites>.
 
 ``` r
+
 data("misosoup24")
 length(misosoup24)
 #> [1] 56
@@ -89,6 +132,17 @@ head(misosoup24[[1]])
 #> 6 ala__D     I2R16    -0.760
 ```
 
+> **Caution – alternative optima.** MiSoSoup is a Mixed Integer Linear
+> Programming (MILP) enumerator: for a single underlying metabolic model
+> it returns *multiple alternative optimal solutions* to the same growth
+> problem. Two such alternatives will typically share most of their
+> pathways and produce very high pairwise FOS values. This high overlap
+> is **expected by construction** and reflects solver consistency, not
+> biological similarity. When interpreting overlap scores, compare
+> consortia derived from *different* models or conditions; treat overlap
+> between alternatives of the same model as a sanity check on the
+> enumeration, not as an ecological signal.
+
 ### Importing raw MiSoSoup YAML
 
 For raw MiSoSoup output (nested YAML),
@@ -102,6 +156,7 @@ Media-level exchange bounds are stashed in each CM’s `metadata()` slot
 under `$media` so they remain accessible if needed.
 
 ``` r
+
 ## Single file -> CMS (not run -- requires external data)
 cms <- importMisosoup("path/to/misosoup_output.yaml")
 
@@ -132,6 +187,7 @@ converts it to the long format that
 expects:
 
 ``` r
+
 wide_data <- data.frame(
     species = c("Sp_A", "Sp_B", "Sp_C"),
     uptake = c("met1", "met2", "met3"),
@@ -158,11 +214,52 @@ head(long_data)
 #> 6 Sp_C    met1      1
 ```
 
+### Importing from MICOM / cobrapy
+
+[`ConsortiumMetabolism()`](https://admarhi.github.io/ramen/reference/ConsortiumMetabolism.md)
+accepts any long-format `data.frame` with columns `species`,
+`metabolite`, and `flux` (negative = consumption, positive =
+production). This makes interoperation with the Python-based
+[MICOM](https://github.com/micom-dev/micom) and
+[cobrapy](https://github.com/opencobra/cobrapy) ecosystems
+straightforward: export per-species exchange fluxes to CSV from Python,
+then read into R.
+
+A minimal MICOM growth solution can be exported as follows:
+
+``` python
+import pandas as pd
+from micom import Community
+from micom.workflows import grow
+
+## com is a pre-built micom.Community
+sol = com.cooperative_tradeoff()
+
+## sol.exchanges is a tidy DataFrame with columns
+##   reaction, metabolite, taxon (species), flux, ...
+exchanges = sol.exchanges[["taxon", "metabolite", "flux"]]
+exchanges.columns = ["species", "metabolite", "flux"]
+exchanges.to_csv("micom_exchanges.csv", index = False)
+```
+
+The same pattern works for a plain `cobra.Model`: iterate over
+`model.exchanges`, record the carrying species, and write the columns
+above.
+
+On the R side:
+
+``` r
+
+exch <- read.csv("micom_exchanges.csv")
+cm_micom <- ConsortiumMetabolism(exch, name = "micom_run1")
+```
+
 ## Building a ConsortiumMetabolism
 
 ### From `misosoup24`
 
 ``` r
+
 cm1 <- ConsortiumMetabolism(
     misosoup24[[1]],
     name = names(misosoup24)[1]
@@ -181,6 +278,7 @@ For quick testing,
 generates a random consortium:
 
 ``` r
+
 cm_syn <- synCM("Synthetic", n_species = 4, max_met = 8, seed = 42)
 cm_syn
 #> 
@@ -196,6 +294,7 @@ accessors work. Rows and columns both correspond to metabolites (it is a
 square metabolite-by-metabolite matrix):
 
 ``` r
+
 dim(cm1)
 #> [1] 14 14
 ```
@@ -203,6 +302,7 @@ dim(cm1)
 The six assay matrices encode different views of the network:
 
 ``` r
+
 SummarizedExperiment::assayNames(cm1)
 #> [1] "Binary"               "nSpecies"             "Consumption"         
 #> [4] "Production"           "EffectiveConsumption" "EffectiveProduction"
@@ -220,6 +320,7 @@ SummarizedExperiment::assayNames(cm1)
 ### Accessors
 
 ``` r
+
 name(cm1)
 #> [1] "ac_A1R12_1"
 species(cm1)
@@ -233,6 +334,7 @@ metabolites(cm1)
 returns per-pathway summary statistics:
 
 ``` r
+
 head(pathways(cm1))
 #> # A tibble: 6 × 3
 #>   consumed produced n_species
@@ -249,6 +351,7 @@ head(pathways(cm1))
 returns the tidy input data:
 
 ``` r
+
 head(consortia(cm1))
 #>      met species        flux
 #> 1     ac   A1R12   0.7729250
@@ -262,6 +365,7 @@ head(consortia(cm1))
 Replacement methods allow renaming:
 
 ``` r
+
 name(cm1) <- "first_solution"
 name(cm1)
 #> [1] "first_solution"
@@ -275,6 +379,7 @@ metabolite space, computes pairwise overlap scores, and builds a
 hierarchical clustering dendrogram.
 
 ``` r
+
 ## Build 20 CMs from misosoup24
 cm_list <- lapply(seq_len(20), function(i) {
     ConsortiumMetabolism(
@@ -293,6 +398,7 @@ cms
 returns all species with the number of distinct pathways each catalyses:
 
 ``` r
+
 species(cms)
 #>  [1] "A1R12"  "A3R04"  "A3R12"  "B3M02"  "B3R10"  "C1M14"  "C2M11"  "C2R02" 
 #>  [9] "C3R12"  "D2M19"  "D2R05"  "D3R19"  "E3M18"  "E3R01"  "E3R11"  "F3R08" 
@@ -303,6 +409,7 @@ Filter by metabolic role – generalists (top fraction by pathway count)
 or specialists (bottom fraction):
 
 ``` r
+
 species(cms, type = "generalists")
 #>  [1] "A1R12"  "A3R04"  "A3R12"  "B3M02"  "B3R10"  "C1M14"  "C2M11"  "C2R02" 
 #>  [9] "C3R12"  "D2M19"  "D2R05"  "D3R19"  "E3M18"  "E3R01"  "E3R11"  "F3R08" 
@@ -319,6 +426,7 @@ species(cms, type = "specialists")
 with a `type` argument classifies pathways by prevalence:
 
 ``` r
+
 ## Pan-consortia: present in many consortia (top fraction)
 head(pathways(cms, type = "pan-cons"))
 #> # A tibble: 6 × 4
@@ -354,6 +462,7 @@ clusters species by the Jaccard similarity of their pathway sets.
 visualizes the resulting dendrogram:
 
 ``` r
+
 fg <- functionalGroups(cms)
 plotFunctionalGroups(fg, k = 3)
 #> Loading required namespace: colorspace
@@ -374,6 +483,7 @@ Functional groups dendrogram.
 ### Dendrogram and cluster extraction
 
 ``` r
+
 plot(cms)
 ```
 
@@ -385,6 +495,7 @@ CMS dendrogram with numbered nodes.
 The numbered internal nodes can be used to extract sub-clusters:
 
 ``` r
+
 sub_cms <- extractCluster(cms, node_id = 1)
 sub_cms
 ```
@@ -397,6 +508,7 @@ sub_cms
 two CMs and returns a `ConsortiumMetabolismAlignment`:
 
 ``` r
+
 cma_pair <- align(cm_list[[1]], cm_list[[2]])
 cma_pair
 #> 
@@ -412,6 +524,7 @@ cma_pair
 All similarity metrics are computed automatically:
 
 ``` r
+
 scores(cma_pair)
 #> $FOS
 #> [1] 0.7634409
@@ -435,6 +548,7 @@ scores(cma_pair)
 Pathway correspondences show shared and unique pathways:
 
 ``` r
+
 shared <- pathways(cma_pair, type = "shared")
 unique_pw <- pathways(cma_pair, type = "unique")
 nrow(shared)
@@ -451,6 +565,7 @@ nrow(unique_pw$reference)
 computes all pairwise similarities:
 
 ``` r
+
 cma_mult <- align(cms)
 cma_mult
 ```
@@ -458,6 +573,7 @@ cma_mult
 The similarity matrix and summary scores:
 
 ``` r
+
 scores(cma_mult)
 #> $mean
 #> [1] 0.5858039
@@ -488,6 +604,7 @@ round(similarityMatrix(cma_mult)[1:5, 1:5], 3)
 Pathway prevalence across consortia:
 
 ``` r
+
 prev <- prevalence(cma_mult)
 head(prev[order(-prev$nConsortia), ])
 #>     consumed produced nConsortia proportion
@@ -511,6 +628,7 @@ one example per class; for the full gallery, see
 [`vignette("visualisation", package = "ramen")`](https://admarhi.github.io/ramen/articles/visualisation.md).
 
 ``` r
+
 plot(cm_list[[1]], type = "Binary")
 ```
 
@@ -520,6 +638,7 @@ consortium.](ramen_files/figure-html/plot-cm-1.png)
 Metabolic network for the first consortium.
 
 ``` r
+
 plot(cms)
 ```
 
@@ -528,6 +647,7 @@ plot(cms)
 Dendrogram of 20 consortia.
 
 ``` r
+
 plot(cma_mult, type = "heatmap")
 ```
 
@@ -535,11 +655,96 @@ plot(cma_mult, type = "heatmap")
 
 Pairwise similarity heatmap.
 
+## Bioconductor / SummarizedExperiment interoperability
+
+`ramen` classes inherit from
+*[TreeSummarizedExperiment](https://bioconductor.org/packages/3.23/TreeSummarizedExperiment)*,
+so the standard
+*[SummarizedExperiment](https://bioconductor.org/packages/3.23/SummarizedExperiment)*
+accessors work out of the box. `ramen` is a first-class Bioconductor
+citizen, not an isolated framework – you can mix its objects freely with
+other SE-based tools.
+
+Pull a raw assay matrix:
+
+``` r
+
+SummarizedExperiment::assay(cm1, "Binary")[1:5, 1:5]
+#> 5 x 5 sparse Matrix of class "dgCMatrix"
+#>        ac acald ala__D ala__L asp__L
+#> ac      .     1      .      .      1
+#> acald   1     .      1      1      .
+#> ala__D  .     1      .      .      1
+#> ala__L  .     1      .      .      1
+#> asp__L  1     .      1      1      .
+```
+
+Both rows and columns of a CM are metabolites (it is a square *m x m*
+network), so [`dim()`](https://rdrr.io/r/base/dim.html), `rowData()`,
+and `colData()` all act in metabolite space:
+
+``` r
+
+dim(cm1)
+#> [1] 14 14
+head(SummarizedExperiment::rowData(cm1))
+#> DataFrame with 6 rows and 2 columns
+#>            index         met
+#>        <integer> <character>
+#> ac             1          ac
+#> acald          2       acald
+#> ala__D         3      ala__D
+#> ala__L         4      ala__L
+#> asp__L         5      asp__L
+#> co2            6         co2
+head(SummarizedExperiment::colData(cm1))
+#> DataFrame with 6 rows and 2 columns
+#>            index         met
+#>        <integer> <character>
+#> ac             1          ac
+#> acald          2       acald
+#> ala__D         3      ala__D
+#> ala__L         4      ala__L
+#> asp__L         5      asp__L
+#> co2            6         co2
+```
+
+A `ConsortiumMetabolismSet` likewise exposes the SE interface, with
+columns indexing the universal metabolite space:
+
+``` r
+
+dim(cms)
+#> [1] 37 37
+head(colnames(cms))
+#> [1] "4abut"            "LalaDgluMdap"     "LalaDgluMdapDala" "ac"              
+#> [5] "acald"            "ala__D"
+```
+
+Subsetting works in metabolite space using the standard `[i, j]` syntax
+– here, the first 5 rows and 5 columns:
+
+``` r
+
+cms[1:5, 1:5]
+#> 
+#> ── ConsortiumMetabolismSet
+#> Name: "MiSoSoup_20"
+#> 20 consortia, 14 species, 5 metabolites.
+#> Community size (species): min 2, mean 2.1, max 3.
+#> Community size (metabolites): min 12, mean 17.9, max 23.
+```
+
+This means downstream Bioconductor tooling – e.g. `mia` for microbiome
+analysis or any package consuming `(Tree)SummarizedExperiment` objects –
+can operate on `ramen` outputs without any conversion.
+
 ## Session info
 
 ``` r
+
 sessionInfo()
-#> R version 4.5.3 (2026-03-11)
+#> R version 4.6.0 (2026-04-24)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 24.04.4 LTS
 #> 
@@ -560,50 +765,50 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] ramen_0.99.0     BiocStyle_2.38.0
+#> [1] ramen_0.99.0     BiocStyle_2.40.0
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] SummarizedExperiment_1.40.0     gtable_0.3.6                   
-#>  [3] ggplot2_4.0.2                   xfun_0.57                      
-#>  [5] bslib_0.10.0                    Biobase_2.70.0                 
+#>  [1] SummarizedExperiment_1.42.0     gtable_0.3.6                   
+#>  [3] ggplot2_4.0.3                   xfun_0.57                      
+#>  [5] bslib_0.10.0                    Biobase_2.72.0                 
 #>  [7] lattice_0.22-9                  yulab.utils_0.2.4              
-#>  [9] vctrs_0.7.3                     tools_4.5.3                    
-#> [11] generics_0.1.4                  stats4_4.5.3                   
-#> [13] parallel_4.5.3                  tibble_3.3.1                   
-#> [15] pkgconfig_2.0.3                 Matrix_1.7-4                   
-#> [17] RColorBrewer_1.1-3              S7_0.2.1-1                     
-#> [19] desc_1.4.3                      S4Vectors_0.48.1               
+#>  [9] vctrs_0.7.3                     tools_4.6.0                    
+#> [11] generics_0.1.4                  stats4_4.6.0                   
+#> [13] parallel_4.6.0                  tibble_3.3.1                   
+#> [15] pkgconfig_2.0.3                 Matrix_1.7-5                   
+#> [17] RColorBrewer_1.1-3              S7_0.2.2                       
+#> [19] desc_1.4.3                      S4Vectors_0.50.0               
 #> [21] lifecycle_1.0.5                 farver_2.1.2                   
-#> [23] compiler_4.5.3                  treeio_1.34.0                  
-#> [25] textshaping_1.0.5               Biostrings_2.78.0              
-#> [27] Seqinfo_1.0.0                   codetools_0.2-20               
+#> [23] compiler_4.6.0                  treeio_1.36.1                  
+#> [25] textshaping_1.0.5               Biostrings_2.80.0              
+#> [27] Seqinfo_1.2.0                   codetools_0.2-20               
 #> [29] htmltools_0.5.9                 sass_0.4.10                    
 #> [31] yaml_2.3.12                     lazyeval_0.2.3                 
 #> [33] pkgdown_2.2.0                   pillar_1.11.1                  
 #> [35] crayon_1.5.3                    jquerylib_0.1.4                
-#> [37] tidyr_1.3.2                     BiocParallel_1.44.0            
-#> [39] SingleCellExperiment_1.32.0     DelayedArray_0.36.1            
+#> [37] tidyr_1.3.2                     BiocParallel_1.46.0            
+#> [39] SingleCellExperiment_1.34.0     DelayedArray_0.38.1            
 #> [41] cachem_1.1.0                    viridis_0.6.5                  
-#> [43] abind_1.4-8                     nlme_3.1-168                   
+#> [43] abind_1.4-8                     nlme_3.1-169                   
 #> [45] tidyselect_1.2.1                digest_0.6.39                  
 #> [47] dplyr_1.2.1                     purrr_1.2.2                    
 #> [49] bookdown_0.46                   labeling_0.4.3                 
-#> [51] TreeSummarizedExperiment_2.18.0 fastmap_1.2.0                  
-#> [53] grid_4.5.3                      cli_3.6.6                      
-#> [55] SparseArray_1.10.10             magrittr_2.0.5                 
-#> [57] S4Arrays_1.10.1                 utf8_1.2.6                     
+#> [51] TreeSummarizedExperiment_2.20.0 fastmap_1.2.0                  
+#> [53] grid_4.6.0                      cli_3.6.6                      
+#> [55] SparseArray_1.12.2              magrittr_2.0.5                 
+#> [57] S4Arrays_1.12.0                 utf8_1.2.6                     
 #> [59] ape_5.8-1                       withr_3.0.2                    
 #> [61] scales_1.4.0                    rappdirs_0.3.4                 
-#> [63] rmarkdown_2.31                  XVector_0.50.0                 
-#> [65] matrixStats_1.5.0               igraph_2.2.3                   
+#> [63] rmarkdown_2.31                  XVector_0.52.0                 
+#> [65] matrixStats_1.5.0               igraph_2.3.1                   
 #> [67] gridExtra_2.3                   ragg_1.5.2                     
 #> [69] evaluate_1.0.5                  knitr_1.51                     
-#> [71] GenomicRanges_1.62.1            IRanges_2.44.0                 
+#> [71] GenomicRanges_1.64.0            IRanges_2.46.0                 
 #> [73] viridisLite_0.4.3               rlang_1.2.0                    
-#> [75] dendextend_1.19.1               Rcpp_1.1.1-1                   
+#> [75] dendextend_1.19.1               Rcpp_1.1.1-1.1                 
 #> [77] glue_1.8.1                      tidytree_0.4.7                 
-#> [79] BiocManager_1.30.27             BiocGenerics_0.56.0            
+#> [79] BiocManager_1.30.27             BiocGenerics_0.58.0            
 #> [81] jsonlite_2.0.0                  R6_2.6.1                       
-#> [83] MatrixGenerics_1.22.0           systemfonts_1.3.2              
+#> [83] MatrixGenerics_1.24.0           systemfonts_1.3.2              
 #> [85] fs_2.1.0
 ```

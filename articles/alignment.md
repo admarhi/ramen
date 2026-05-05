@@ -18,6 +18,7 @@ introduction to the package, see
 [`vignette("ramen", package = "ramen")`](https://admarhi.github.io/ramen/articles/ramen.md).
 
 ``` r
+
 library(ramen)
 ```
 
@@ -27,6 +28,7 @@ We build six consortia from the bundled `misosoup24` dataset to use
 throughout this vignette.
 
 ``` r
+
 data("misosoup24")
 cm_list <- lapply(seq_len(6), function(i) {
     ConsortiumMetabolism(
@@ -46,6 +48,7 @@ cms <- ConsortiumMetabolismSet(cm_list, name = "Demo")
 a CMA with `Type = "pairwise"`.
 
 ``` r
+
 cma <- align(cm_list[[1]], cm_list[[2]])
 cma
 #> 
@@ -65,6 +68,7 @@ which is selected as the primary score, all applicable metrics are
 always computed and stored.
 
 ``` r
+
 cma_fos <- align(cm_list[[1]], cm_list[[2]], method = "FOS")
 cma_jac <- align(cm_list[[1]], cm_list[[2]], method = "jaccard")
 scores(cma_fos)
@@ -100,6 +104,7 @@ metrics. Weights are renormalized when some metrics are unavailable
 (e.g., unweighted networks lack Bray-Curtis):
 
 ``` r
+
 cma_maas <- align(cm_list[[1]], cm_list[[2]], method = "MAAS")
 scores(cma_maas)
 #> $FOS
@@ -135,6 +140,7 @@ To detect this, `ramen` reports **coverage ratios** alongside the
 similarity metrics:
 
 ``` r
+
 scores(cma_fos)[c("FOS", "coverageQuery", "coverageReference")]
 #> $FOS
 #> [1] 0.7634409
@@ -161,6 +167,7 @@ The alignment classifies every metabolite-to-metabolite pathway as
 shared, unique to the query, or unique to the reference.
 
 ``` r
+
 ## All pathways in the alignment
 head(pathways(cma))
 #> # A tibble: 6 × 2
@@ -197,6 +204,7 @@ the null distribution reflects topological variation in the composite
 score.
 
 ``` r
+
 cma_p <- align(
     cm_list[[1]],
     cm_list[[2]],
@@ -235,6 +243,7 @@ The network view shows shared (green), query-unique (blue), and
 reference-unique (red) pathways as a directed metabolite flow graph.
 
 ``` r
+
 plot(cma, type = "network")
 ```
 
@@ -246,6 +255,7 @@ Pairwise alignment network.
 #### Score bar chart
 
 ``` r
+
 plot(cma, type = "scores")
 ```
 
@@ -262,6 +272,7 @@ Pairwise metric scores.
 `ConsortiumMetabolismSet` and returns a CMA with `Type = "multiple"`.
 
 ``` r
+
 cma_mult <- align(cms)
 cma_mult
 ```
@@ -273,6 +284,7 @@ diagonal. For FOS, this is derived from the pre-computed CMS overlap
 matrix:
 
 ``` r
+
 round(similarityMatrix(cma_mult), 3)
 #>             ac_A1R12_1 ac_A1R12_10 ac_A1R12_11 ac_A1R12_12 ac_A1R12_13
 #> ac_A1R12_1       1.000       0.763       0.538       0.785       0.538
@@ -298,6 +310,7 @@ pairwise scores.
 returns full summary statistics:
 
 ``` r
+
 scores(cma_mult)
 #> $mean
 #> [1] 0.6215862
@@ -325,6 +338,7 @@ metabolite-to-metabolite pathway. This enables classification of
 pathways as core (present in most consortia) or niche (present in few).
 
 ``` r
+
 prev <- prevalence(cma_mult)
 head(prev[order(-prev$nConsortia), ])
 #>    consumed produced nConsortia proportion
@@ -347,6 +361,7 @@ The
 method with `type = "consensus"` returns the same information:
 
 ``` r
+
 head(pathways(cma_mult, type = "consensus"))
 #>   consumed produced nConsortia proportion
 #> 1    acald    4abut          1  0.1666667
@@ -364,6 +379,7 @@ head(pathways(cma_mult, type = "consensus"))
 The heatmap shows pairwise similarities with dendrogram-based ordering:
 
 ``` r
+
 plot(cma_mult, type = "heatmap")
 ```
 
@@ -374,6 +390,7 @@ Similarity heatmap.
 #### Score summary
 
 ``` r
+
 plot(cma_mult, type = "scores")
 ```
 
@@ -395,11 +412,13 @@ We hold out the first consortium as a query and search it against a
 database built from the remaining five:
 
 ``` r
+
 query <- cm_list[[1]]
 db <- ConsortiumMetabolismSet(cm_list[-1], name = "db")
 ```
 
 ``` r
+
 hits <- align(query, db)
 #> Searching 5 consortia using "FOS".
 hits
@@ -416,6 +435,7 @@ The top-hit name and score sit on `ReferenceName` / `PrimaryScore`. The
 full ranked table is stored in `Scores$ranking`:
 
 ``` r
+
 ranking <- scores(hits)$ranking
 head(ranking)
 #> # A tibble: 5 × 8
@@ -440,6 +460,7 @@ Use `topK` to truncate the ranked table – useful when the database is
 large and only the best matches matter:
 
 ``` r
+
 hits_top3 <- align(query, db, topK = 3L)
 #> Searching 5 consortia using "FOS".
 scores(hits_top3)$ranking
@@ -457,6 +478,7 @@ returns a 1 x n row vector (or 1 x topK if truncated), with the query
 name as the row label:
 
 ``` r
+
 round(similarityMatrix(hits_top3), 3)
 #>            ac_A1R12_12 ac_A1R12_14 ac_A1R12_10
 #> ac_A1R12_1       0.785       0.785       0.763
@@ -466,6 +488,7 @@ Pathway correspondences always reflect the single overall top hit,
 regardless of `topK`:
 
 ``` r
+
 head(pathways(hits_top3, type = "shared"))
 #> # A tibble: 6 × 2
 #>   consumed produced
@@ -485,6 +508,7 @@ For large databases, restricting `metrics` skips the weighted-assay
 expansion and can be substantially faster:
 
 ``` r
+
 hits_fos <- align(query, db, metrics = "FOS")
 #> Searching 5 consortia using "FOS".
 scores(hits_fos)$ranking[,
@@ -511,6 +535,7 @@ applied only to the top hit – a BLAST-style convention that keeps the
 cost comparable to a single pairwise p-value:
 
 ``` r
+
 hits_p <- align(
     query,
     db,
@@ -518,14 +543,20 @@ hits_p <- align(
     nPermutations = 99L
 )
 #> Searching 5 consortia using "FOS".
-c(
-    top = hits_p@ReferenceName,
-    score = round(hits_p@PrimaryScore, 3),
-    pvalue = round(hits_p@Pvalue, 3)
-)
-#>           top         score        pvalue 
-#> "ac_A1R12_12"       "0.785"        "0.01"
+hits_p
+#> 
+#> ── ConsortiumMetabolismAlignment 
+#> Name: "ac_A1R12_1 vs CMS (5 consortia)"
+#> Type: "search"
+#> Metric: "FOS"
+#> Score: 0.7849
+#> P-value: "0.01"
+#> Query: "ac_A1R12_1", Top hit: "ac_A1R12_12" (of 5 consortia)
 ```
+
+The `show()` output reports the top hit, its score, and the p-value
+directly; `scores(hits_p)` gives the full numeric breakdown including
+`pvalue`.
 
 If statistical confidence is needed for several top hits, re-run
 [`align()`](https://admarhi.github.io/ramen/reference/align.md) in
@@ -533,16 +564,16 @@ pairwise mode against each candidate individually.
 
 ## Accessor reference
 
-| Accessor                                                                              | Alignment type   | Returns                                            |
-|---------------------------------------------------------------------------------------|------------------|----------------------------------------------------|
-| [`scores()`](https://admarhi.github.io/ramen/reference/scores.md)                     | all              | Named list of scores (+ `$ranking` for search)     |
-| [`pathways()`](https://admarhi.github.io/ramen/reference/pathways.md)                 | all              | data.frame of all pathways                         |
-| `pathways(type = "shared")`                                                           | pairwise, search | data.frame of shared pathways (top hit for search) |
-| `pathways(type = "unique")`                                                           | pairwise, search | list(query, reference) (top hit for search)        |
-| `pathways(type = "consensus")`                                                        | multiple         | data.frame with prevalence                         |
-| [`similarityMatrix()`](https://admarhi.github.io/ramen/reference/similarityMatrix.md) | multiple, search | n x n (multiple) or 1 x n (search) numeric matrix  |
-| [`prevalence()`](https://admarhi.github.io/ramen/reference/prevalence.md)             | multiple         | data.frame with nConsortia                         |
-| [`metabolites()`](https://admarhi.github.io/ramen/reference/metabolites.md)           | all              | Character vector of metabolites                    |
+| Accessor | Alignment type | Returns |
+|----|----|----|
+| [`scores()`](https://admarhi.github.io/ramen/reference/scores.md) | all | Named list of scores (+ `$ranking` for search) |
+| [`pathways()`](https://admarhi.github.io/ramen/reference/pathways.md) | all | data.frame of all pathways |
+| `pathways(type = "shared")` | pairwise, search | shared pathways |
+| `pathways(type = "unique")` | pairwise, search | list(query, reference) |
+| `pathways(type = "consensus")` | multiple | data.frame with prevalence |
+| [`similarityMatrix()`](https://admarhi.github.io/ramen/reference/similarityMatrix.md) | multiple, search | n x n or 1 x n numeric matrix |
+| [`prevalence()`](https://admarhi.github.io/ramen/reference/prevalence.md) | multiple | data.frame with nConsortia |
+| [`metabolites()`](https://admarhi.github.io/ramen/reference/metabolites.md) | all | Character vector of metabolites |
 
 Type guards prevent misuse – for example, calling
 `pathways(type = "consensus")` on a pairwise alignment raises an
@@ -551,8 +582,9 @@ informative error.
 ## Session info
 
 ``` r
+
 sessionInfo()
-#> R version 4.5.3 (2026-03-11)
+#> R version 4.6.0 (2026-04-24)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 24.04.4 LTS
 #> 
@@ -573,50 +605,50 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] ramen_0.99.0     BiocStyle_2.38.0
+#> [1] ramen_0.99.0     BiocStyle_2.40.0
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] SummarizedExperiment_1.40.0     gtable_0.3.6                   
-#>  [3] ggplot2_4.0.2                   xfun_0.57                      
-#>  [5] bslib_0.10.0                    Biobase_2.70.0                 
+#>  [1] SummarizedExperiment_1.42.0     gtable_0.3.6                   
+#>  [3] ggplot2_4.0.3                   xfun_0.57                      
+#>  [5] bslib_0.10.0                    Biobase_2.72.0                 
 #>  [7] lattice_0.22-9                  yulab.utils_0.2.4              
-#>  [9] vctrs_0.7.3                     tools_4.5.3                    
-#> [11] generics_0.1.4                  stats4_4.5.3                   
-#> [13] parallel_4.5.3                  tibble_3.3.1                   
-#> [15] pkgconfig_2.0.3                 Matrix_1.7-4                   
-#> [17] RColorBrewer_1.1-3              S7_0.2.1-1                     
-#> [19] desc_1.4.3                      S4Vectors_0.48.1               
+#>  [9] vctrs_0.7.3                     tools_4.6.0                    
+#> [11] generics_0.1.4                  stats4_4.6.0                   
+#> [13] parallel_4.6.0                  tibble_3.3.1                   
+#> [15] pkgconfig_2.0.3                 Matrix_1.7-5                   
+#> [17] RColorBrewer_1.1-3              S7_0.2.2                       
+#> [19] desc_1.4.3                      S4Vectors_0.50.0               
 #> [21] lifecycle_1.0.5                 farver_2.1.2                   
-#> [23] compiler_4.5.3                  treeio_1.34.0                  
-#> [25] textshaping_1.0.5               Biostrings_2.78.0              
-#> [27] Seqinfo_1.0.0                   codetools_0.2-20               
+#> [23] compiler_4.6.0                  treeio_1.36.1                  
+#> [25] textshaping_1.0.5               Biostrings_2.80.0              
+#> [27] Seqinfo_1.2.0                   codetools_0.2-20               
 #> [29] htmltools_0.5.9                 sass_0.4.10                    
 #> [31] yaml_2.3.12                     lazyeval_0.2.3                 
 #> [33] pkgdown_2.2.0                   pillar_1.11.1                  
 #> [35] crayon_1.5.3                    jquerylib_0.1.4                
-#> [37] tidyr_1.3.2                     BiocParallel_1.44.0            
-#> [39] SingleCellExperiment_1.32.0     DelayedArray_0.36.1            
+#> [37] tidyr_1.3.2                     BiocParallel_1.46.0            
+#> [39] SingleCellExperiment_1.34.0     DelayedArray_0.38.1            
 #> [41] cachem_1.1.0                    viridis_0.6.5                  
-#> [43] abind_1.4-8                     nlme_3.1-168                   
+#> [43] abind_1.4-8                     nlme_3.1-169                   
 #> [45] tidyselect_1.2.1                digest_0.6.39                  
 #> [47] dplyr_1.2.1                     purrr_1.2.2                    
 #> [49] bookdown_0.46                   labeling_0.4.3                 
-#> [51] TreeSummarizedExperiment_2.18.0 fastmap_1.2.0                  
-#> [53] grid_4.5.3                      cli_3.6.6                      
-#> [55] SparseArray_1.10.10             magrittr_2.0.5                 
-#> [57] S4Arrays_1.10.1                 utf8_1.2.6                     
+#> [51] TreeSummarizedExperiment_2.20.0 fastmap_1.2.0                  
+#> [53] grid_4.6.0                      cli_3.6.6                      
+#> [55] SparseArray_1.12.2              magrittr_2.0.5                 
+#> [57] S4Arrays_1.12.0                 utf8_1.2.6                     
 #> [59] ape_5.8-1                       withr_3.0.2                    
 #> [61] scales_1.4.0                    rappdirs_0.3.4                 
-#> [63] rmarkdown_2.31                  XVector_0.50.0                 
-#> [65] matrixStats_1.5.0               igraph_2.2.3                   
+#> [63] rmarkdown_2.31                  XVector_0.52.0                 
+#> [65] matrixStats_1.5.0               igraph_2.3.1                   
 #> [67] gridExtra_2.3                   ragg_1.5.2                     
 #> [69] evaluate_1.0.5                  knitr_1.51                     
-#> [71] GenomicRanges_1.62.1            IRanges_2.44.0                 
+#> [71] GenomicRanges_1.64.0            IRanges_2.46.0                 
 #> [73] viridisLite_0.4.3               rlang_1.2.0                    
-#> [75] dendextend_1.19.1               Rcpp_1.1.1-1                   
+#> [75] dendextend_1.19.1               Rcpp_1.1.1-1.1                 
 #> [77] glue_1.8.1                      tidytree_0.4.7                 
-#> [79] BiocManager_1.30.27             BiocGenerics_0.56.0            
+#> [79] BiocManager_1.30.27             BiocGenerics_0.58.0            
 #> [81] jsonlite_2.0.0                  R6_2.6.1                       
-#> [83] MatrixGenerics_1.22.0           systemfonts_1.3.2              
+#> [83] MatrixGenerics_1.24.0           systemfonts_1.3.2              
 #> [85] fs_2.1.0
 ```

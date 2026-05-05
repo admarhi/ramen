@@ -47,5 +47,5 @@ A character vector of species names.
 ``` r
 cm <- synCM("test", n_species = 3, max_met = 5)
 species(cm)
-#> [1] "AJU3814B" "COK7774C" "YPS2470L"
+#> [1] "ZEQ5398Z" "UOG489Y"  "MXO4181U"
 ```

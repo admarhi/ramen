@@ -6,9 +6,11 @@ Subsetting methods for ramen S4 classes. For `ConsortiumMetabolismSet`,
 space, not the consortium list. After subsetting, all custom slots are
 updated eagerly: `BinaryMatrices` is subsetted to the remaining
 metabolite space and `OverlapMatrix`, `Dendrogram`, `NodeData`,
-`Pathways`, `Metabolites`, and `Graphs` are recomputed accordingly.
-`@Consortia` is not modified — each `ConsortiumMetabolism` object
-retains its own metabolite space.
+`Pathways`, `Metabolites`, and `Graphs` are recomputed accordingly. The
+per-consortium list returned by
+[`consortia()`](https://admarhi.github.io/ramen/reference/consortia.md)
+is not modified — each `ConsortiumMetabolism` retains its own metabolite
+space.
 
 **Note on consortium-level selection:** to extract a subset of consortia
 rather than a subset of the metabolite space, use
@@ -91,6 +93,6 @@ cms <- ConsortiumMetabolismSet(
 )
 ## Subset to first 3 metabolites (m x m assay semantics)
 sub <- cms[seq_len(3), seq_len(3)]
-nrow(sub@Metabolites)
-#> [1] 3
+dim(sub)
+#> [1] 3 3
 ```

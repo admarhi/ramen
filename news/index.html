@@ -40,7 +40,11 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="ramen-development-version">ramen (development version)<a class="anchor" aria-label="anchor" href="#ramen-development-version"></a></h2>
-</div>
+<ul><li>
+<code><a href="../reference/importMisosoup.html">importMisosoup()</a></code> gains a <code>biomassPattern</code> argument (Perl regex) so users can point it at arbitrary biomass-reaction names. The default matches <code>Growth_&lt;sp&gt;</code>, <code>R_Biomass_&lt;sp&gt;</code>, and <code>R_R_BIOMASS_&lt;sp&gt;</code> case-insensitively (MiSoSoup’s biomass reaction name is model-dependent).</li>
+<li>
+<code><a href="../reference/importMisosoup.html">importMisosoup()</a></code> now records CMSC/MSC provenance on each returned CM as <code>metadata(cm)$misosoupMode</code> (<code>"CMSC"</code> or <code>"MSC"</code>) and <code>metadata(cm)$focalStrain</code> (character or <code>NA</code>). The <code>community_growth</code> summary row is captured as <code>metadata(cm)$communityGrowth</code> instead of leaking into the media bucket.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.0.0.9001" id="ramen-0009001">ramen 0.0.0.9001<a class="anchor" aria-label="anchor" href="#ramen-0009001"></a></h2>
 <div class="section level3">

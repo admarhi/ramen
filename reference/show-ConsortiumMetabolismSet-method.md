@@ -28,41 +28,41 @@ cms <- ConsortiumMetabolismSet(cm1, cm2, name = "test")
 #> 
 #> ── Creating CMS "test" ─────────────────────────────────────────────────────────
 #> ℹ Validating 2 <ConsortiumMetabolism> objects
-#> ✔ Validating 2 <ConsortiumMetabolism> objects [10ms]
+#> ✔ Validating 2 <ConsortiumMetabolism> objects [9ms]
 #> 
 #> ℹ Collecting metabolites from 2 consortia
-#> ✔ Collecting metabolites from 2 consortia [27ms]
+#> ✔ Collecting metabolites from 2 consortia [25ms]
 #> 
-#> ℹ Re-indexing 7 unique metabolites
-#> ✔ Re-indexing 7 unique metabolites [24ms]
+#> ℹ Re-indexing 5 unique metabolites
+#> ✔ Re-indexing 5 unique metabolites [22ms]
 #> 
-#> ℹ Expanding 2 binary matrices to 7-dimensional space
-#> ✔ Expanding 2 binary matrices to 7-dimensional space [21ms]
+#> ℹ Expanding 2 binary matrices to 5-dimensional space
+#> ✔ Expanding 2 binary matrices to 5-dimensional space [19ms]
 #> 
-#> ℹ Computing 7 x 7 levels matrix
-#> ✔ Computing 7 x 7 levels matrix [22ms]
+#> ℹ Computing 5 x 5 levels matrix
+#> ✔ Computing 5 x 5 levels matrix [19ms]
 #> 
 #> ℹ Computing pairwise overlap (1 pairs via crossprod)
-#> ✔ Computing pairwise overlap (1 pairs via crossprod) [21ms]
+#> ✔ Computing pairwise overlap (1 pairs via crossprod) [18ms]
 #> 
 #> ℹ Assembling pathway data from 2 consortia
-#> ✔ Assembling pathway data from 2 consortia [29ms]
+#> ✔ Assembling pathway data from 2 consortia [25ms]
 #> 
 #> ℹ Building dendrogram from 2 x 2 dissimilarity matrix
-#> ✔ Building dendrogram from 2 x 2 dissimilarity matrix [20ms]
+#> ✔ Building dendrogram from 2 x 2 dissimilarity matrix [18ms]
 #> 
 #> ℹ Extracting dendrogram node positions
-#> ✔ Extracting dendrogram node positions [23ms]
+#> ✔ Extracting dendrogram node positions [20ms]
 #> 
 #> ℹ Collecting 2 consortium graphs
-#> CMS "test" created: 2 consortia, 7 metabolites (0.2s)
-#> ✔ Collecting 2 consortium graphs [78ms]
+#> CMS "test" created: 2 consortia, 5 metabolites (0.2s)
+#> ✔ Collecting 2 consortium graphs [67ms]
 #> 
 show(cms)
 #> 
 #> ── ConsortiumMetabolismSet 
 #> Name: "test"
-#> 2 consortia, 7 species, 7 metabolites.
+#> 2 consortia, 7 species, 5 metabolites.
 #> Community size (species): min 3, mean 3.5, max 4.
-#> Community size (metabolites): min 5, mean 5.5, max 6.
+#> Community size (metabolites): min 4, mean 4.5, max 5.
 ```

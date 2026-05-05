@@ -8,7 +8,11 @@ object. Zero-growth solutions (empty community) are silently skipped.
 ## Usage
 
 ``` r
-.buildCMsFromMisosoup(raw, normalize_ids = TRUE)
+.buildCMsFromMisosoup(
+  raw,
+  normalize_ids = TRUE,
+  biomassPattern = "(?i)^.*?(?:^|_)(?:biomass|growth)_"
+)
 ```
 
 ## Arguments
@@ -21,6 +25,10 @@ object. Zero-growth solutions (empty community) are silently skipped.
 - normalize_ids:
 
   Whether to normalize metabolite IDs.
+
+- biomassPattern:
+
+  Perl regex identifying biomass reaction rows.
 
 ## Value
 

@@ -98,7 +98,7 @@ A `ConsortiumMetabolism` object.
 
 ## See also
 
-TreeSummarizedExperiment
+[TreeSummarizedExperiment-class](https://rdrr.io/pkg/TreeSummarizedExperiment/man/TreeSummarizedExperiment-class.html)
 
 ## Examples
 

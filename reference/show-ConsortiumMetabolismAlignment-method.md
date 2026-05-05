@@ -31,7 +31,7 @@ show(cma)
 #> Name: "comm_1 vs comm_2"
 #> Type: "pairwise"
 #> Metric: "FOS"
-#> Score: 0.25
+#> Score: 0.3333
 #> Query: "comm_1", Reference: "comm_2"
-#> Coverage: query 0.25, reference 0.1
+#> Coverage: query 0.143, reference 0.333
 ```

@@ -12,12 +12,14 @@ and
 [`vignette("alignment", package = "ramen")`](https://admarhi.github.io/ramen/articles/alignment.md).
 
 ``` r
+
 library(ramen)
 ```
 
 ## Example data
 
 ``` r
+
 data("misosoup24")
 cm_list <- lapply(seq_len(6), function(i) {
     ConsortiumMetabolism(
@@ -44,6 +46,7 @@ The `type` argument selects which assay matrix determines edge weights.
 The default view shows network structure with uniform edge weights.
 
 ``` r
+
 plot(cm_list[[1]], type = "Binary")
 ```
 
@@ -57,6 +60,7 @@ Binary metabolic network.
 Edge weights reflect how many species catalyse each pathway.
 
 ``` r
+
 plot(cm_list[[1]], type = "nSpecies")
 ```
 
@@ -70,6 +74,7 @@ nSpecies-weighted network.
 Edges weighted by summed flux magnitudes.
 
 ``` r
+
 plot(cm_list[[1]], type = "Consumption")
 ```
 
@@ -79,6 +84,7 @@ network.](visualisation_files/figure-html/plot-cm-consumption-1.png)
 Consumption-weighted network.
 
 ``` r
+
 plot(cm_list[[1]], type = "Production")
 ```
 
@@ -93,6 +99,7 @@ Effective diversity measures how evenly species contribute to each
 pathway (Shannon-based effective number of species).
 
 ``` r
+
 plot(cm_list[[1]], type = "EffectiveConsumption")
 ```
 
@@ -102,6 +109,7 @@ network.](visualisation_files/figure-html/plot-cm-effcons-1.png)
 Effective consumption network.
 
 ``` r
+
 plot(cm_list[[1]], type = "EffectiveProduction")
 ```
 
@@ -120,6 +128,7 @@ internal nodes. These node IDs are used by
 to pull sub-clusters.
 
 ``` r
+
 plot(cms)
 ```
 
@@ -133,6 +142,7 @@ CMS dendrogram with numbered nodes.
 Supply a data.frame mapping leaf labels to colours.
 
 ``` r
+
 colour_map <- data.frame(
     label = names(misosoup24)[seq_len(6)],
     colour = c(
@@ -161,6 +171,7 @@ Pairwise FOS similarities with dendrogram-based ordering. Values range
 from 0 (no overlap) to 1 (identical).
 
 ``` r
+
 plot(cma_mult, type = "heatmap")
 ```
 
@@ -175,6 +186,7 @@ Shared pathways in **green**, query-unique in **blue**, reference-unique
 in **red**.
 
 ``` r
+
 plot(cma_pair, type = "network")
 ```
 
@@ -189,6 +201,7 @@ The bar chart displays similarity metrics for pairwise alignments or
 summary statistics for multiple alignments.
 
 ``` r
+
 plot(cma_pair, type = "scores")
 ```
 
@@ -198,6 +211,7 @@ scores.](visualisation_files/figure-html/plot-cma-scores-pair-1.png)
 Pairwise alignment scores.
 
 ``` r
+
 plot(cma_mult, type = "scores")
 ```
 
@@ -214,6 +228,7 @@ directly on an igraph object. This is the function underlying all CM and
 CMA network plots.
 
 ``` r
+
 g <- igraph::graph_from_adjacency_matrix(
     SummarizedExperiment::assay(cm_list[[2]], "nSpecies"),
     mode = "directed",
@@ -237,24 +252,25 @@ Custom directed flow plot.
 
 ## Plot type summary
 
-| Object class | `type` argument          | Description                           |
-|--------------|--------------------------|---------------------------------------|
-| CM           | `"Binary"` (default)     | Directed network, unweighted          |
-| CM           | `"nSpecies"`             | Pathways weighted by species count    |
-| CM           | `"Consumption"`          | Pathways weighted by consumption flux |
-| CM           | `"Production"`           | Pathways weighted by production flux  |
-| CM           | `"EffectiveConsumption"` | Effective consuming species           |
-| CM           | `"EffectiveProduction"`  | Effective producing species           |
-| CMS          | (none)                   | Dendrogram with numbered nodes        |
-| CMA          | `"heatmap"`              | Pairwise similarity heatmap           |
-| CMA          | `"network"`              | Shared/unique pathway graph           |
-| CMA          | `"scores"`               | Bar chart of similarity metrics       |
+| Object class | `type` argument | Description |
+|----|----|----|
+| CM | `"Binary"` (default) | Directed network, unweighted |
+| CM | `"nSpecies"` | Pathways weighted by species count |
+| CM | `"Consumption"` | Pathways weighted by consumption flux |
+| CM | `"Production"` | Pathways weighted by production flux |
+| CM | `"EffectiveConsumption"` | Effective consuming species |
+| CM | `"EffectiveProduction"` | Effective producing species |
+| CMS | (none) | Dendrogram with numbered nodes |
+| CMA | `"heatmap"` | Pairwise similarity heatmap |
+| CMA | `"network"` | Shared/unique pathway graph |
+| CMA | `"scores"` | Bar chart of similarity metrics |
 
 ## Session info
 
 ``` r
+
 sessionInfo()
-#> R version 4.5.3 (2026-03-11)
+#> R version 4.6.0 (2026-04-24)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 24.04.4 LTS
 #> 
@@ -275,49 +291,49 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] ramen_0.99.0     BiocStyle_2.38.0
+#> [1] ramen_0.99.0     BiocStyle_2.40.0
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] SummarizedExperiment_1.40.0     gtable_0.3.6                   
-#>  [3] ggplot2_4.0.2                   xfun_0.57                      
-#>  [5] bslib_0.10.0                    Biobase_2.70.0                 
+#>  [1] SummarizedExperiment_1.42.0     gtable_0.3.6                   
+#>  [3] ggplot2_4.0.3                   xfun_0.57                      
+#>  [5] bslib_0.10.0                    Biobase_2.72.0                 
 #>  [7] lattice_0.22-9                  yulab.utils_0.2.4              
-#>  [9] vctrs_0.7.3                     tools_4.5.3                    
-#> [11] generics_0.1.4                  stats4_4.5.3                   
-#> [13] parallel_4.5.3                  tibble_3.3.1                   
-#> [15] pkgconfig_2.0.3                 Matrix_1.7-4                   
-#> [17] RColorBrewer_1.1-3              S7_0.2.1-1                     
-#> [19] desc_1.4.3                      S4Vectors_0.48.1               
+#>  [9] vctrs_0.7.3                     tools_4.6.0                    
+#> [11] generics_0.1.4                  stats4_4.6.0                   
+#> [13] parallel_4.6.0                  tibble_3.3.1                   
+#> [15] pkgconfig_2.0.3                 Matrix_1.7-5                   
+#> [17] RColorBrewer_1.1-3              S7_0.2.2                       
+#> [19] desc_1.4.3                      S4Vectors_0.50.0               
 #> [21] lifecycle_1.0.5                 farver_2.1.2                   
-#> [23] compiler_4.5.3                  treeio_1.34.0                  
-#> [25] textshaping_1.0.5               Biostrings_2.78.0              
-#> [27] Seqinfo_1.0.0                   codetools_0.2-20               
+#> [23] compiler_4.6.0                  treeio_1.36.1                  
+#> [25] textshaping_1.0.5               Biostrings_2.80.0              
+#> [27] Seqinfo_1.2.0                   codetools_0.2-20               
 #> [29] htmltools_0.5.9                 sass_0.4.10                    
 #> [31] yaml_2.3.12                     lazyeval_0.2.3                 
 #> [33] pkgdown_2.2.0                   pillar_1.11.1                  
 #> [35] crayon_1.5.3                    jquerylib_0.1.4                
-#> [37] tidyr_1.3.2                     BiocParallel_1.44.0            
-#> [39] SingleCellExperiment_1.32.0     DelayedArray_0.36.1            
+#> [37] tidyr_1.3.2                     BiocParallel_1.46.0            
+#> [39] SingleCellExperiment_1.34.0     DelayedArray_0.38.1            
 #> [41] cachem_1.1.0                    viridis_0.6.5                  
-#> [43] abind_1.4-8                     nlme_3.1-168                   
+#> [43] abind_1.4-8                     nlme_3.1-169                   
 #> [45] tidyselect_1.2.1                digest_0.6.39                  
 #> [47] dplyr_1.2.1                     purrr_1.2.2                    
 #> [49] bookdown_0.46                   labeling_0.4.3                 
-#> [51] TreeSummarizedExperiment_2.18.0 fastmap_1.2.0                  
-#> [53] grid_4.5.3                      cli_3.6.6                      
-#> [55] SparseArray_1.10.10             magrittr_2.0.5                 
-#> [57] S4Arrays_1.10.1                 ape_5.8-1                      
+#> [51] TreeSummarizedExperiment_2.20.0 fastmap_1.2.0                  
+#> [53] grid_4.6.0                      cli_3.6.6                      
+#> [55] SparseArray_1.12.2              magrittr_2.0.5                 
+#> [57] S4Arrays_1.12.0                 ape_5.8-1                      
 #> [59] withr_3.0.2                     scales_1.4.0                   
 #> [61] rappdirs_0.3.4                  rmarkdown_2.31                 
-#> [63] XVector_0.50.0                  matrixStats_1.5.0              
-#> [65] igraph_2.2.3                    gridExtra_2.3                  
+#> [63] XVector_0.52.0                  matrixStats_1.5.0              
+#> [65] igraph_2.3.1                    gridExtra_2.3                  
 #> [67] ragg_1.5.2                      evaluate_1.0.5                 
-#> [69] knitr_1.51                      GenomicRanges_1.62.1           
-#> [71] IRanges_2.44.0                  viridisLite_0.4.3              
+#> [69] knitr_1.51                      GenomicRanges_1.64.0           
+#> [71] IRanges_2.46.0                  viridisLite_0.4.3              
 #> [73] rlang_1.2.0                     dendextend_1.19.1              
-#> [75] Rcpp_1.1.1-1                    glue_1.8.1                     
+#> [75] Rcpp_1.1.1-1.1                  glue_1.8.1                     
 #> [77] tidytree_0.4.7                  BiocManager_1.30.27            
-#> [79] BiocGenerics_0.56.0             jsonlite_2.0.0                 
-#> [81] R6_2.6.1                        MatrixGenerics_1.22.0          
+#> [79] BiocGenerics_0.58.0             jsonlite_2.0.0                 
+#> [81] R6_2.6.1                        MatrixGenerics_1.24.0          
 #> [83] systemfonts_1.3.2               fs_2.1.0
 ```

@@ -11,6 +11,7 @@ when they share no species at all.
 ## Quick start
 
 ``` r
+
 library(ramen)
 data("misosoup24")
 
@@ -53,6 +54,7 @@ groups, and visualization – see
 Install the development version from GitHub:
 
 ``` r
+
 pak::pkg_install("admarhi/ramen")
 # or
 devtools::install_github("admarhi/ramen")
