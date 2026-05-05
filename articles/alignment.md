@@ -17,6 +17,13 @@ This vignette covers the alignment system in depth. For a general
 introduction to the package, see
 [`vignette("ramen", package = "ramen")`](https://admarhi.github.io/ramen/articles/ramen.md).
 
+**Note on help lookup.** If `tibble` or `pillar` is loaded in your
+session, [`?align`](https://admarhi.github.io/ramen/reference/align.md)
+may resolve to
+[`pillar::align()`](https://pillar.r-lib.org/reference/align.html)
+first. To view the documentation for this package’s generic, use
+[`?ramen::align`](https://admarhi.github.io/ramen/reference/align.md).
+
 ``` r
 
 library(ramen)

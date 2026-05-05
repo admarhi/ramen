@@ -192,11 +192,13 @@ pathways to output.</p></dd>
 <dd><p>Numeric scalar between 0 and 1
 giving the quantile threshold to use for filtering
 pathways. For <code>"pan-cons"</code> and <code>"core"</code>
-types, pathways above <code>1 - quantileCutoff</code>
+types, pathways strictly above <code>1 - quantileCutoff</code>
 are returned. For <code>"niche"</code> and <code>"aux"</code>
-types, pathways below <code>quantileCutoff</code> are
-returned. Defaults to 0.1 (i.e., top/bottom 10
-percent).</p></dd>
+types, pathways at or below <code>quantileCutoff</code>
+are returned (the boundary is included on the lower
+tail so that ties at the quantile floor are not
+silently dropped). Defaults to 0.1 (i.e., top/bottom
+10 percent).</p></dd>
 
 </dl></div>
     <div class="section level2">

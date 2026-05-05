@@ -14,7 +14,12 @@ species(object)
 species(object)
 
 # S4 method for class 'ConsortiumMetabolismSet'
-species(object, ...)
+species(
+  object,
+  type = c("all", "generalists", "specialists"),
+  quantileCutoff = 0.15,
+  ...
+)
 ```
 
 ## Arguments
@@ -26,6 +31,16 @@ species(object, ...)
 - ...:
 
   Additional arguments passed to methods.
+
+- type:
+
+  Character scalar. One of `"all"` (default), `"generalists"` (top
+  fraction by pathway count), or `"specialists"` (bottom fraction).
+
+- quantileCutoff:
+
+  Numeric scalar in (0, 1) giving the fraction of species to label as
+  generalists or specialists. Defaults to `0.15`.
 
 ## Value
 
@@ -40,7 +55,8 @@ A character vector of species names.
   `ConsortiumMetabolismAlignment`
 
 - `species(ConsortiumMetabolismSet)`: Return Species in a
-  `ConsortiumMetabolismSet`
+  `ConsortiumMetabolismSet`, optionally filtered to metabolic
+  generalists or specialists by pathway count.
 
 ## Examples
 

@@ -411,13 +411,9 @@ or specialists (bottom fraction):
 ``` r
 
 species(cms, type = "generalists")
-#>  [1] "A1R12"  "A3R04"  "A3R12"  "B3M02"  "B3R10"  "C1M14"  "C2M11"  "C2R02" 
-#>  [9] "C3R12"  "D2M19"  "D2R05"  "D3R19"  "E3M18"  "E3R01"  "E3R11"  "F3R08" 
-#> [17] "G2R10"  "I2R16"  "I3M07"  "m_3C02" "m_3D05" "m_4B03" "m_6C06"
+#> [1] "A1R12" "D2M19" "E3M18" "F3R08"
 species(cms, type = "specialists")
-#>  [1] "A1R12"  "A3R04"  "A3R12"  "B3M02"  "B3R10"  "C1M14"  "C2M11"  "C2R02" 
-#>  [9] "C3R12"  "D2M19"  "D2R05"  "D3R19"  "E3M18"  "E3R01"  "E3R11"  "F3R08" 
-#> [17] "G2R10"  "I2R16"  "I3M07"  "m_3C02" "m_3D05" "m_4B03" "m_6C06"
+#> [1] "A3R04" "B3R10" "C1M14" "I2R16"
 ```
 
 ### Pathway classification

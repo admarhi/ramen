@@ -15,8 +15,7 @@ ConsortiumMetabolism(
   species_col = "species",
   metabolite_col = "metabolite",
   flux_col = "flux",
-  verbose = FALSE,
-  ...
+  verbose = FALSE
 )
 ```
 
@@ -56,10 +55,6 @@ ConsortiumMetabolism(
 
   Logical scalar. If `TRUE`, prints progress messages during
   construction. Defaults to `FALSE`.
-
-- ...:
-
-  Additional arguments passed to the constructor.
 
 ## Value
 
