@@ -18,6 +18,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/admarhi/ramen/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/admarhi/ramen/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/admarhi/ramen/branch/main/graph/badge.svg)](https://codecov.io/gh/admarhi/ramen?branch=main)
+[![CodeFactor](https://www.codefactor.io/repository/github/admarhi/ramen/badge)](https://www.codefactor.io/repository/github/admarhi/ramen)
 <!-- badges: end -->
 
 **ramen** (**R**econstruction and **A**lignment of **M**icrobial
@@ -50,6 +51,26 @@ scores(cma)
 For the full workflow -- from data import through alignment,
 functional groups, and visualization -- see
 `vignette("ramen", package = "ramen")`.
+
+## Compare many communities at once
+
+Bundle a handful of consortia into a `ConsortiumMetabolismSet`,
+align them all-against-all, and plot the resulting similarity
+matrix:
+
+```{r hero, message = FALSE, fig.alt = "Heatmap of pairwise FOS scores across eight MiSoSoup consortia, with rows and columns reordered by hierarchical clustering."}
+sel <- names(misosoup24)[seq_len(8)]
+cms <- do.call(
+    ConsortiumMetabolismSet,
+    c(
+        lapply(sel, function(n) {
+            ConsortiumMetabolism(misosoup24[[n]], name = n)
+        }),
+        list(name = "misosoup24[1:8]", verbose = FALSE)
+    )
+)
+plot(align(cms))
+```
 
 ## Installation
 
