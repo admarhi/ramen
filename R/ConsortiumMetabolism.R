@@ -38,7 +38,7 @@
 #'
 #' @return A \code{ConsortiumMetabolism} object.
 #'
-#' @seealso \linkS4class{TreeSummarizedExperiment}
+#' @seealso \link[TreeSummarizedExperiment]{TreeSummarizedExperiment-class}
 #'
 #' @examples
 #' cm <- synCM("example", n_species = 3, max_met = 5)
@@ -154,7 +154,7 @@ ConsortiumMetabolism <- function(
         tse,
         Name = name,
         Pathways = out,
-        Weighted = !all(data$flux**2 == 1),
+        Weighted = !all(abs(data$flux) == 1),
         InputData = as.data.frame(data),
         Metabolites = unique(data$met),
         Graphs = graphs

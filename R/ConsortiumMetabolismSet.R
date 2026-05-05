@@ -39,7 +39,7 @@
 #' @return A \code{ConsortiumMetabolismSet} object.
 #'
 #' @seealso \linkS4class{ConsortiumMetabolism},
-#'   \linkS4class{TreeSummarizedExperiment}
+#'   \link[TreeSummarizedExperiment]{TreeSummarizedExperiment-class}
 #'
 #' @examples
 #' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
@@ -267,8 +267,8 @@ ConsortiumMetabolismSet <- function(
     )
 
     ## ---- Done -------------------------------------------------
+    # nolint next: object_usage_linter.
     elapsed <- round(
-        # nolint: object_usage_linter.
         proc.time()[["elapsed"]] - t_start,
         1L
     )

@@ -5,3 +5,6 @@ linters: linters_with_defaults(
     object_length_linter = object_length_linter(length = 40L)
   )
 encoding: "UTF-8"
+exclusions: list(
+    "tests/testthat/fixtures/alignment_test_files.R"
+  )

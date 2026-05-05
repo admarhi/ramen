@@ -112,9 +112,9 @@ scores(cma_fos)[c("FOS", "coverageQuery", "coverageReference")]
 ```
 
 - `coverageQuery`: fraction of the query's pathways found in the
-  reference
+    reference
 - `coverageReference`: fraction of the reference's pathways found
-  in the query
+    in the query
 
 When FOS is high but one coverage ratio is low, the alignment
 represents a subset relationship rather than true functional
@@ -338,12 +338,12 @@ hits_p <- align(
     computePvalue = TRUE,
     nPermutations = 99L
 )
-c(
-    top = hits_p@ReferenceName,
-    score = round(hits_p@PrimaryScore, 3),
-    pvalue = round(hits_p@Pvalue, 3)
-)
+hits_p
 ```
+
+The `show()` output reports the top hit, its score, and the p-value
+directly; `scores(hits_p)` gives the full numeric breakdown including
+`pvalue`.
 
 If statistical confidence is needed for several top hits, re-run
 `align()` in pairwise mode against each candidate individually.
@@ -354,10 +354,10 @@ If statistical confidence is needed for several top hits, re-run
 |----------|---------------|---------|
 | `scores()` | all | Named list of scores (+ `$ranking` for search) |
 | `pathways()` | all | data.frame of all pathways |
-| `pathways(type = "shared")` | pairwise, search | data.frame of shared pathways (top hit for search) |
-| `pathways(type = "unique")` | pairwise, search | list(query, reference) (top hit for search) |
+| `pathways(type = "shared")` | pairwise, search | shared pathways |
+| `pathways(type = "unique")` | pairwise, search | list(query, reference) |
 | `pathways(type = "consensus")` | multiple | data.frame with prevalence |
-| `similarityMatrix()` | multiple, search | n x n (multiple) or 1 x n (search) numeric matrix |
+| `similarityMatrix()` | multiple, search | n x n or 1 x n numeric matrix |
 | `prevalence()` | multiple | data.frame with nConsortia |
 | `metabolites()` | all | Character vector of metabolites |
 

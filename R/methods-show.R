@@ -10,16 +10,12 @@ NULL
 #' show(cm)
 #' @export
 setMethod("show", "ConsortiumMetabolism", function(object) {
-    weight_label <- if (object@Weighted) {
-        # nolint: object_usage_linter.
-        "Weighted"
-    } else {
-        "Unweighted"
-    }
-    n_met <- length(object@Metabolites) # nolint: object_usage_linter.
-    # nolint next: object_usage_linter.
+    # nolint start: object_usage_linter.
+    weight_label <- if (object@Weighted) "Weighted" else "Unweighted"
+    n_met <- length(object@Metabolites)
     n_sp <- length(unique(object@InputData$species))
-    n_pw <- nrow(object@Pathways) # nolint: object_usage_linter.
+    n_pw <- nrow(object@Pathways)
+    # nolint end
     cli::cli_h3("ConsortiumMetabolism")
     cli::cli_text("Name: {.val {object@Name}}")
     cli::cli_text(
@@ -42,26 +38,23 @@ setMethod("show", "ConsortiumMetabolism", function(object) {
 #' show(cms)
 #' @export
 setMethod("show", "ConsortiumMetabolismSet", function(object) {
-    n_cons <- length(object@Consortia) # nolint: object_usage_linter.
-    # nolint next: object_usage_linter.
+    # nolint start: object_usage_linter.
+    n_cons <- length(object@Consortia)
     n_sp <- dplyr::n_distinct(object@Pathways$species)
     n_met <- length(unique(
-        # nolint: object_usage_linter.
         c(object@Pathways$consumed, object@Pathways$produced)
     ))
-
     sp_counts <- vapply(
-        # nolint: object_usage_linter.
         object@Consortia,
         function(cm) length(species(cm)),
         integer(1L)
     )
     met_counts <- vapply(
-        # nolint: object_usage_linter.
         object@Consortia,
         function(cm) length(setdiff(metabolites(cm), "media")),
         integer(1L)
     )
+    # nolint end
 
     cli::cli_h3("ConsortiumMetabolismSet")
     cli::cli_text("Name: {.val {object@Name}}")
@@ -104,12 +97,8 @@ setMethod("show", "ConsortiumMetabolismAlignment", function(object) {
     ## Helper: TRUE if slot is a length-1 non-NA value
     .hasValue <- function(x) length(x) == 1L && !is.na(x)
 
-    type_label <- if (.hasValue(object@Type)) {
-        # nolint: object_usage_linter.
-        object@Type
-    } else {
-        "uninitialized"
-    }
+    # nolint next: object_usage_linter.
+    type_label <- if (.hasValue(object@Type)) object@Type else "uninitialized"
     cli::cli_h3("ConsortiumMetabolismAlignment")
     cli::cli_text("Name: {.val {object@Name}}")
     cli::cli_text("Type: {.val {type_label}}")

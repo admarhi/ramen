@@ -4,7 +4,13 @@
 \alias{importMisosoup}
 \title{Import MiSoSoup YAML Output}
 \usage{
-importMisosoup(data, name = NULL, normalize_ids = TRUE, verbose = TRUE)
+importMisosoup(
+  data,
+  name = NULL,
+  normalize_ids = TRUE,
+  biomassPattern = "(?i)^.*?(?:^|_)(?:biomass|growth)_",
+  verbose = TRUE
+)
 }
 \arguments{
 \item{data}{Either a file path to a single MiSoSoup YAML, a
@@ -20,6 +26,18 @@ a file) or directory basename (for a directory). \strong{Required} when
 via \code{.normalizeBiggIds()} (strip \code{R_EX_} prefix, \verb{_e} suffix) and
 decode COBRApy \verb{__NN__} escape sequences via \code{.decodeBiggEscapes()}.
 If \code{FALSE}, keep metabolite IDs in their raw form.}
+
+\item{biomassPattern}{Perl-compatible regex identifying biomass
+reaction rows. The pattern must match \emph{and consume} the entire
+prefix from the start of the reaction ID up through the separator
+before the species ID, because it is used for both detection and
+species extraction (via \code{sub()}). Defaults to
+\code{"(?i)^.*?(?:^|_)(?:biomass|growth)_"}, which covers the three
+observed MiSoSoup variants (\verb{Growth_<sp>}, \verb{R_Biomass_<sp>},
+\verb{R_R_BIOMASS_<sp>}) case-insensitively and correctly rejects the
+\code{community_growth} summary row. Override this if your MiSoSoup
+output uses a non-standard biomass reaction name, e.g.
+\code{biomassPattern = "(?i)^.*?MYBIO_"}.}
 
 \item{verbose}{If \code{TRUE} (default), emit progress messages via
 \code{\link[cli:cli_abort]{cli::cli_inform()}} and show a progress bar when importing a
@@ -40,27 +58,55 @@ pre-loaded nested list.
 }
 \details{
 The function auto-detects format differences between MiSoSoup runs:
-the growth-row key (\verb{Growth_<species>} in older runs,
-\verb{R_Biomass_<species>} in newer runs), COBRApy-style \verb{__NN__} escape
-sequences in reaction IDs (e.g. \verb{__40__} for \code{(}), and the presence
-or absence of a focal-strain layer below each substrate.
+the biomass-reaction name (via a configurable regex that defaults to
+matching \verb{Growth_<sp>}, \verb{R_Biomass_<sp>}, and \verb{R_R_BIOMASS_<sp>}
+case-insensitively — MiSoSoup derives this name from the underlying
+model, so it varies), COBRApy-style \verb{__NN__} escape sequences in
+reaction IDs (e.g. \verb{__40__} for \code{(}), and the second-level key of
+each substrate. That second-level key is either \code{min} — indicating a
+\strong{CMSC} (complete minimal supplying community: no viable focal
+strain because no single member grows alone) — or a focal-strain ID,
+indicating an \strong{MSC} (minimal supplying community for that strain).
 
-Media-level exchange fluxes (reactions without a species suffix) are
-stashed in \code{metadata(cm)$media} for each consortium, preserving the
-original bounds information if downstream code needs it.
+Per-consortium metadata set on each returned CM:
+\itemize{
+\item \code{metadata(cm)$media} — media-level exchange fluxes (reactions
+without a species suffix), preserving the original bounds.
+\item \code{metadata(cm)$communityGrowth} — the scalar \code{community_growth}
+summary row from the MiSoSoup solution, or \code{NA_real_} if absent.
+\item \code{metadata(cm)$misosoupMode} — \code{"CMSC"} or \code{"MSC"}.
+\item \code{metadata(cm)$focalStrain} — focal-strain ID (character) for MSC
+consortia, \code{NA_character_} for CMSC.
+}
 }
 \examples{
-\donttest{
-# Single YAML file -> CMS
+# Build a minimal in-memory MiSoSoup-shaped list and import it. In
+# practice you would point at a real YAML file or a directory of
+# YAMLs from a MiSoSoup run.
+raw <- list(
+    glucose = list(
+        min = list(
+            list(
+                community = list(y_sp1 = 1, y_sp2 = 1),
+                solution = list(
+                    R_Biomass_sp1 = 0.4,
+                    R_Biomass_sp2 = 0.3,
+                    R_EX_glc__D_e_sp1_i = -10,
+                    R_EX_ac_e_sp1_i = 5,
+                    R_EX_ac_e_sp2_i = -4,
+                    R_EX_co2_e_sp2_i = 3,
+                    community_growth = 0.7
+                )
+            )
+        )
+    )
+)
+cms <- importMisosoup(raw, name = "demo", verbose = FALSE)
+cms
+
+# Real-world usage (commented; needs an actual MiSoSoup YAML on disk):
 # cms <- importMisosoup("path/to/misosoup.yaml")
-
-# Directory of YAML files -> CMS with consortia from all files
 # cms <- importMisosoup("path/to/misosoup_dir/", name = "experiment1")
-
-# Pre-loaded list -> CMS (name is required here)
-# raw <- yaml::read_yaml("path/to/misosoup.yaml")
-# cms <- importMisosoup(raw, name = "experiment1")
-}
 }
 \seealso{
 \code{\link[=importSmetana]{importSmetana()}} for the sibling SMETANA import.

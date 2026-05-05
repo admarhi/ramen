@@ -1,6 +1,11 @@
 #' @include AllClasses.R AllGenerics.R
 NULL
 
+## Length-1, non-NA scalar predicate. Empty CMA slots are
+## character(0) / numeric(0), not NA, so a bare !is.na(x) check raises
+## "missing value where TRUE/FALSE needed".
+.hasValue <- function(x) length(x) == 1L && !is.na(x)
+
 ## ---- CMA accessor methods ------------------------------------------------
 
 #' @describeIn scores Scores from a
@@ -37,7 +42,7 @@ setMethod(
     "ConsortiumMetabolismAlignment",
     function(object) {
         if (
-            is.na(object@Type) ||
+            !.hasValue(object@Type) ||
                 !object@Type %in% c("multiple", "search")
         ) {
             cli::cli_abort(
@@ -57,7 +62,7 @@ setMethod(
     "prevalence",
     "ConsortiumMetabolismAlignment",
     function(object) {
-        if (is.na(object@Type) || object@Type != "multiple") {
+        if (!.hasValue(object@Type) || object@Type != "multiple") {
             cli::cli_abort(
                 "{.fun prevalence} is only \\
                 available for multiple alignments."
@@ -79,7 +84,7 @@ setMethod(
     "ConsortiumMetabolismAlignment",
     function(object, ...) {
         if (
-            is.na(object@Type) ||
+            !.hasValue(object@Type) ||
                 object@Type != "pairwise"
         ) {
             cli::cli_abort(
@@ -238,7 +243,7 @@ setMethod(
     "species",
     "ConsortiumMetabolismAlignment",
     function(object) {
-        if (object@Type == "pairwise") {
+        if (.hasValue(object@Type) && object@Type == "pairwise") {
             sp <- unique(c(
                 unlist(lapply(
                     object@SharedPathways$querySpecies,

@@ -144,10 +144,20 @@ setGeneric(
 #'
 #' @description
 #' Retrieves the metabolites involved in the metabolic
-#' network.
+#' network. For \code{ConsortiumMetabolism} objects, the
+#' result can optionally be restricted to a specific
+#' species and/or direction (\code{"consumed"} or
+#' \code{"produced"}).
 #'
-#' @param object A \code{ConsortiumMetabolism} or
+#' @param object A \code{ConsortiumMetabolism},
+#'   \code{ConsortiumMetabolismSet}, or
 #'   \code{ConsortiumMetabolismAlignment} object.
+#' @param ... Additional arguments. For
+#'   \code{ConsortiumMetabolism}: \code{species}
+#'   (character scalar; restrict to metabolites involved
+#'   with this species) and \code{direction} (one of
+#'   \code{"all"}, \code{"consumed"}, or
+#'   \code{"produced"}; defaults to \code{"all"}).
 #'
 #' @return A character vector containing the names of
 #'   metabolites in the network.
@@ -155,11 +165,14 @@ setGeneric(
 #' @examples
 #' cm <- synCM("test", n_species = 3, max_met = 5)
 #' metabolites(cm)
+#' ## Metabolites consumed by a specific species:
+#' sp <- species(cm)[1]
+#' metabolites(cm, species = sp, direction = "consumed")
 #'
 #' @export
 setGeneric(
     "metabolites",
-    function(object) standardGeneric("metabolites")
+    function(object, ...) standardGeneric("metabolites")
 )
 
 #' @title Retrieve Metabolic Pathways
@@ -359,20 +372,32 @@ setGeneric(
 #'
 #' @description
 #' Calculates and returns functional groups based on
-#' metabolic reactions. For
-#' \code{ConsortiumMetabolismSet} objects, this involves
-#' analyzing shared reactions across species to identify
-#' clusters of species with similar metabolic
-#' capabilities.
+#' metabolic pathways. For
+#' \code{ConsortiumMetabolism} objects, species are
+#' clustered within a single consortium. For
+#' \code{ConsortiumMetabolismSet} objects, the analysis
+#' pools species across all consortia in the set,
+#' identifying clusters of species with similar metabolic
+#' capabilities regardless of which consortium they
+#' belong to.
 #'
 #' @details
 #' This method computes a Jaccard similarity matrix
 #' between species based on shared pathways, then
-#' performs hierarchical clustering. To visualize the
-#' resulting dendrogram, pass the output to
+#' performs hierarchical clustering. A pathway is
+#' represented as the unique \code{(consumed, produced)}
+#' metabolite pair. To visualize the resulting
+#' dendrogram, pass the output to
 #' \code{\link{plotFunctionalGroups}}.
 #'
-#' @param object A \code{ConsortiumMetabolismSet} object.
+#' If a \code{ConsortiumMetabolism} contains fewer than
+#' two species, a warning is emitted and the returned
+#' list has \code{dendrogram = NULL}; the incidence
+#' matrix and (trivial) similarity matrix are still
+#' returned so downstream code can inspect them.
+#'
+#' @param object A \code{ConsortiumMetabolism} or
+#'   \code{ConsortiumMetabolismSet} object.
 #' @param ... Additional arguments passed to methods.
 #'   Supported arguments include:
 #'   \describe{
@@ -388,16 +413,24 @@ setGeneric(
 #'
 #' @return A list (returned invisibly) containing:
 #' \itemize{
-#'   \item \code{dendrogram}: The dendrogram object
+#'   \item \code{dendrogram}: The dendrogram object, or
+#'     \code{NULL} when fewer than two species are
+#'     available.
 #'   \item \code{similarity_matrix}: Matrix of Jaccard
-#'     similarities between species
+#'     similarities between species.
 #'   \item \code{incidence_matrix}: Sparse binary
-#'     species-by-pathway incidence matrix
+#'     species-by-pathway incidence matrix.
 #'   \item \code{reactions_per_species}: Data frame
-#'     mapping species to their pathways
+#'     mapping species to their pathways.
 #' }
 #'
 #' @examples
+#' ## Single consortium
+#' cm <- synCM("test", n_species = 4, max_met = 8)
+#' fg_cm <- functionalGroups(cm)
+#' plotFunctionalGroups(fg_cm, k = 2)
+#'
+#' ## Set of consortia
 #' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
 #' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
 #' cms <- ConsortiumMetabolismSet(

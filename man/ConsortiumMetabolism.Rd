@@ -82,5 +82,5 @@ cm
 
 }
 \seealso{
-\linkS4class{TreeSummarizedExperiment}
+\link[TreeSummarizedExperiment]{TreeSummarizedExperiment-class}
 }
