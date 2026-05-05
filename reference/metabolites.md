@@ -37,6 +37,18 @@ metabolites(object)
   `direction` (one of `"all"`, `"consumed"`, or `"produced"`; defaults
   to `"all"`).
 
+- species:
+
+  Optional length-1 character scalar. If supplied, restrict the result
+  to metabolites involved in pathways that include this species.
+  Defaults to `NULL` (all species).
+
+- direction:
+
+  One of `"all"` (default), `"consumed"`, or `"produced"`. Restricts the
+  result to metabolites in the given role across the (possibly
+  species-filtered) pathways.
+
 ## Value
 
 A character vector containing the names of metabolites in the network.
