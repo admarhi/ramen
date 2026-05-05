@@ -14,8 +14,7 @@ ConsortiumMetabolism(
   species_col = "species",
   metabolite_col = "metabolite",
   flux_col = "flux",
-  verbose = FALSE,
-  ...
+  verbose = FALSE
 )
 }
 \arguments{
@@ -42,8 +41,6 @@ defaults to \code{"flux"}.}
 
 \item{verbose}{Logical scalar. If \code{TRUE}, prints progress
 messages during construction. Defaults to \code{FALSE}.}
-
-\item{...}{Additional arguments passed to the constructor.}
 }
 \value{
 A \code{ConsortiumMetabolism} object.

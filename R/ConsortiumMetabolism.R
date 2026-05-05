@@ -34,7 +34,6 @@
 #'   defaults to \code{"flux"}.
 #' @param verbose Logical scalar. If \code{TRUE}, prints progress
 #'   messages during construction. Defaults to \code{FALSE}.
-#' @param ... Additional arguments passed to the constructor.
 #'
 #' @return A \code{ConsortiumMetabolism} object.
 #'
@@ -56,8 +55,7 @@ ConsortiumMetabolism <- function(
     species_col = "species",
     metabolite_col = "metabolite",
     flux_col = "flux",
-    verbose = FALSE,
-    ...
+    verbose = FALSE
 ) {
     # Validate and prepare input data
     data <- .prepareInputData(data, species_col, metabolite_col, flux_col)
@@ -72,6 +70,15 @@ ConsortiumMetabolism <- function(
 
     # Process flux data into consumption and production
     tb <- .filterNonzeroFlux(data)
+    if (nrow(tb) == 0L) {
+        cli::cli_abort(
+            c(
+                "All flux values in {.arg data} are zero.",
+                "i" = "Provide at least one row with a non-zero flux \\
+                (negative for consumption, positive for production)."
+            )
+        )
+    }
     cons <- .calculateConsumption(tb)
     prod <- .calculateProduction(tb)
 
@@ -183,6 +190,61 @@ ConsortiumMetabolism <- function(
         cli::cli_abort(
             "Column{?s} {.val {missing_cols}} not found
             in {.arg data}."
+        )
+    }
+
+    if (nrow(data) == 0L) {
+        cli::cli_abort(
+            c(
+                "{.arg data} has 0 rows.",
+                "i" = "Provide at least one row of \\
+                species/metabolite/flux data."
+            )
+        )
+    }
+
+    bad_type <- character()
+    if (!is.character(data[[species_col]])) {
+        bad_type <- c(bad_type, species_col)
+    }
+    if (!is.character(data[[metabolite_col]])) {
+        bad_type <- c(bad_type, metabolite_col)
+    }
+    if (length(bad_type) > 0L) {
+        bad_first <- bad_type[1] # nolint: object_usage_linter.
+        cli::cli_abort(
+            c(
+                "Column{?s} {.val {bad_type}} in {.arg data} \\
+                must be {.cls character}.",
+                "i" = "Cast with {.code \\
+                data[[\"{bad_first}\"]] <- \\
+                as.character(data[[\"{bad_first}\"]])}."
+            )
+        )
+    }
+
+    na_rows <- which(
+        is.na(data[[species_col]]) |
+            is.na(data[[metabolite_col]]) |
+            is.na(data[[flux_col]])
+    )
+    if (length(na_rows) > 0L) {
+        preview <- if (length(na_rows) > 10L) { # nolint: object_usage_linter.
+            c(as.character(na_rows[seq_len(10L)]), "...")
+        } else {
+            as.character(na_rows)
+        }
+        # nolint next: object_usage_linter.
+        cols <- c(species_col, metabolite_col, flux_col)
+        cli::cli_abort(
+            c(
+                "{.arg data} contains NA values in the \\
+                species/metabolite/flux columns \\
+                ({.val {cols}}) at row(s) {.val {preview}}.",
+                "i" = "Drop incomplete rows with \\
+                {.code tidyr::drop_na(data, \\
+                {species_col}, {metabolite_col}, {flux_col})}."
+            )
         )
     }
 

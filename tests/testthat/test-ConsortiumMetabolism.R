@@ -150,6 +150,121 @@ test_that("CM constructor errors on non-data.frame input", {
     )
 })
 
+## ---- input validation: NA / type / shape ------------------------------------
+
+test_that("CM constructor errors on NA in species column", {
+    bad <- tibble::tibble(
+        species = c("s1", NA, "s2"),
+        metabolite = c("m1", "m2", "m1"),
+        flux = c(-1, 1, -1)
+    )
+    expect_error(
+        ConsortiumMetabolism(bad, name = "x"),
+        "NA"
+    )
+})
+
+test_that("CM constructor errors on NA in metabolite column", {
+    bad <- tibble::tibble(
+        species = c("s1", "s1", "s2"),
+        metabolite = c("m1", NA, "m1"),
+        flux = c(-1, 1, -1)
+    )
+    expect_error(
+        ConsortiumMetabolism(bad, name = "x"),
+        "NA"
+    )
+})
+
+test_that("CM constructor errors on NA in flux column", {
+    bad <- tibble::tibble(
+        species = c("s1", "s1", "s2"),
+        metabolite = c("m1", "m2", "m1"),
+        flux = c(-1, NA, -1)
+    )
+    err <- expect_error(
+        ConsortiumMetabolism(bad, name = "x")
+    )
+    ## Should be the friendly NA-row message, not the validity-leak
+    ## message about 'Weighted'.
+    expect_match(conditionMessage(err), "NA")
+    expect_false(grepl("Weighted", conditionMessage(err)))
+})
+
+test_that("CM constructor errors on empty data.frame", {
+    empty <- tibble::tibble(
+        species = character(),
+        metabolite = character(),
+        flux = numeric()
+    )
+    expect_error(
+        ConsortiumMetabolism(empty, name = "x"),
+        "0 rows"
+    )
+})
+
+test_that("CM constructor errors on numeric species column", {
+    bad <- data.frame(
+        species = c(1, 2),
+        metabolite = c("a", "b"),
+        flux = c(-1, 1)
+    )
+    expect_error(
+        ConsortiumMetabolism(bad, name = "x"),
+        "character"
+    )
+})
+
+test_that("CM constructor errors on numeric metabolite column", {
+    bad <- data.frame(
+        species = c("s1", "s2"),
+        metabolite = c(1, 2),
+        flux = c(-1, 1)
+    )
+    expect_error(
+        ConsortiumMetabolism(bad, name = "x"),
+        "character"
+    )
+})
+
+test_that("CM constructor rejects misspelled named arguments", {
+    test_data <- tibble::tibble(
+        species = c("s1", "s1", "s2", "s2"),
+        metabolite = c("m1", "m2", "m1", "m3"),
+        flux = c(-1, 1, -1, 1)
+    )
+    ## Capital N — should NOT be silently swallowed; with `...` removed
+    ## from the constructor, R's own "unused argument" error fires.
+    expect_error(
+        ConsortiumMetabolism(test_data, Name = "test_cm"),
+        "unused argument"
+    )
+})
+
+test_that("CM constructor errors when all flux values are zero", {
+    bad <- tibble::tibble(
+        species = c("s1", "s1", "s2"),
+        metabolite = c("m1", "m2", "m1"),
+        flux = c(0, 0, 0)
+    )
+    expect_error(
+        ConsortiumMetabolism(bad, name = "x"),
+        "zero"
+    )
+})
+
+test_that("CM constructor still works with valid input (positive control)", {
+    good <- tibble::tibble(
+        species = c("s1", "s1", "s2", "s2"),
+        metabolite = c("m1", "m2", "m1", "m3"),
+        flux = c(-1, 1, -1, 1)
+    )
+    expect_s4_class(
+        ConsortiumMetabolism(good, name = "ok"),
+        "ConsortiumMetabolism"
+    )
+})
+
 ## ---- growth parameter -------------------------------------------------------
 
 test_that("CM constructor accepts growth parameter", {
