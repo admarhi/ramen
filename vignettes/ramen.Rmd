@@ -153,6 +153,39 @@ name-normalisation helper; cross-namespace mapping (BiGG to ChEBI,
 ChEBI to free text, etc.) is the user's responsibility, ideally
 performed once at the data-import step before constructing CMs.
 
+## Species identifier hygiene
+
+The same string-equality contract applies to **species names**.
+A consortium that labels a strain `E_coli` and another that labels
+the same strain `E.coli`, `Ecoli`, or `Escherichia_coli` will be
+treated as harbouring three or four distinct species once the CMs
+are assembled into a `ConsortiumMetabolismSet`, compared via
+`compareSpecies()`, or aligned with `align()`. The mismatch is
+silent: there is no warning, just an inflated species count and
+spurious zeros in the cross-consortium overlap.
+
+Common typo patterns that quietly fragment a single organism into
+several are case differences (`E_coli` vs `e_coli` vs `E_Coli`),
+separator differences (`E_coli` vs `E.coli` vs `E-coli` vs
+`E coli`), abbreviation versus full name (`Ecoli` vs `E.coli` vs
+`Escherichia_coli` vs `Escherichia coli`), and inconsistent
+strain suffixes (`E.coli_K12` vs `E.coli_k12` vs bare `E.coli`).
+A minimal first pass collapses case and separators, which catches
+the first two classes:
+
+```{r normalise-species, eval = FALSE}
+data$species <- gsub("[._\\s-]+", "_", tolower(data$species))
+```
+
+Abbreviation-to-full-name reconciliation and strain-suffix
+disambiguation are genuinely harder and typically require a
+project-specific lookup table; pick a canonical scheme, normalise
+once at the data-import step, and apply it before constructing
+any CM. `ramen` does not currently ship a `cleanSpecies()` helper,
+so this hygiene step is the user's responsibility -- the same
+caveat applies symmetrically to every downstream comparison,
+including `compareSpecies()` and cross-consortium `align()`.
+
 ```{r load-data}
 data("misosoup24")
 length(misosoup24)
