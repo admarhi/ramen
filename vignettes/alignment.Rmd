@@ -43,6 +43,300 @@ documentation for this package's generic, use `?ramen::align`.
 library(ramen)
 ```
 
+# Mathematical formulation
+
+This section gives the formal definitions of every quantity computed
+by `align()`. Notation follows Hirt (2025), the master's thesis from
+which the package originated; equation numbers prefixed `(thesis
+eq. ...)` refer to that document.
+
+## Notation
+
+Let $\Omega = \{\omega^{(1)}, \dots, \omega^{(n)}\}$ denote a
+collection of consortia (thesis eq. 1). For one consortium
+$\omega^{(\alpha)}$, write $\mathcal{M}^{(\alpha)}$ for its set of
+metabolites; for two consortia under comparison let
+$\mathcal{M} = \mathcal{M}^{(\alpha)} \cup \mathcal{M}^{(\beta)}$
+with $|\mathcal{M}| = m$ (thesis eq. 3). All assays are square
+$m \times m$ matrices on this **union metabolite space**. We write
+$X = \mathbf{X}^{\mathrm{bin},(\alpha)}$ and
+$Y = \mathbf{X}^{\mathrm{bin},(\beta)}$ for the two binary assays
+under comparison; analogous symbols $C_X, P_X, N_X$ denote the
+Consumption, Production, and nSpecies assays. The
+**$L_1$ norm** $\lVert A \rVert_1 = \sum_{i,j} |A_{ij}|$ is the sum
+of all entries; $A \odot B$ is the elementwise (Hadamard) product.
+
+A **pathway** in `ramen` is a directed
+metabolite-to-metabolite pair $(i, j)$ such that some species in the
+consortium can consume $i$ and some species (possibly the same one)
+can produce $j$. Pathways are not biochemical reactions: they are
+**capabilities** inferred from the Cartesian product of each species'
+uptake set and secretion set. A consortium of two species, one
+consuming $\{a, b\}$ and producing $\{c, d\}$, contributes the four
+pathways $\{a \to c, a \to d, b \to c, b \to d\}$ even though only
+two exchange reactions exist. See the *Cross-product inflation*
+caveat below.
+
+## Assay matrices
+
+Each `ConsortiumMetabolism` stores six assays (thesis eq. 1, 2):
+
+- **Binary** $\mathbf{X}^{(\alpha,1)}$: $X^{(\alpha,1)}_{ij} = 1$ if
+  any species in $\omega^{(\alpha)}$ realises pathway $i \to j$,
+  else $0$.
+- **nSpecies** $\mathbf{X}^{(\alpha,2)}$: number of distinct species
+  supporting $i \to j$.
+- **Consumption** $\mathbf{X}^{(\alpha,3)}$:
+  $F^{(c)}_{ij} = \sum_s f^{(c,s)}_{ij}$, the summed uptake flux of
+  metabolite $i$ across all species participating in $i \to j$.
+- **Production** $\mathbf{X}^{(\alpha,4)}$:
+  $F^{(p)}_{ij} = \sum_s f^{(p,s)}_{ij}$, analogously for secretion.
+- **EffectiveConsumption** $\mathbf{X}^{(\alpha,5)}$ and
+  **EffectiveProduction** $\mathbf{X}^{(\alpha,6)}$: see below.
+
+All six are constructed as the Cartesian product
+$\mathrm{consumed}(s) \times \mathrm{produced}(s)$ for each species
+$s$, then aggregated across species. This **cross-product** is the
+source of the density inflation discussed under
+*Limitations and caveats*.
+
+## Effective flux (Hill-1 perplexity)
+
+For a pathway $(i, j)$ with participating species $s_1, \dots, s_n$,
+let $p^{(\phi,s)}_{ij} = f^{(\phi,s)}_{ij} / F^{(\phi)}_{ij}$ be the
+fraction of total flux of type $\phi \in \{c, p\}$ contributed by
+species $s$. The Shannon entropy of this distribution is
+$H_{ij}^{(\phi)} = -\sum_s p^{(\phi,s)}_{ij}
+\log_2 p^{(\phi,s)}_{ij}$, and the **Hill-1 perplexity** is
+$\,^{1}\!D_{ij}^{(\phi)} = 2^{H_{ij}^{(\phi)}}$. This is the
+*effective number of species* contributing to the pathway. The
+EffectiveConsumption / EffectiveProduction assays store
+$$
+\mathbf{X}^{(\alpha,5)}_{ij} = \mathrm{round}\bigl(
+2^{H^{(c)}_{ij}}, 2 \bigr),
+\qquad
+\mathbf{X}^{(\alpha,6)}_{ij} = \mathrm{round}\bigl(
+2^{H^{(p)}_{ij}}, 2 \bigr).
+$$
+Note that the implementation stores the **perplexity alone**, not
+the entropy-weighted flux $F^{(\phi)}_{ij} \cdot 2^{H}$ given as
+thesis eq. 2; the package follows the implementation. See the
+*Hill-1 saturation* caveat for behaviour on small consortia.
+
+## Pairwise alignment metrics
+
+Throughout, $X$ and $Y$ are binary assays expanded to the union
+metabolite space, and $C_X, P_X, N_X$ are the Consumption,
+Production, and nSpecies assays for consortium $X$.
+
+### FOS (Szymkiewicz-Simpson overlap)
+
+$$
+S_{\mathrm{FOS}}(X, Y)
+= \frac{\lVert X \odot Y \rVert_1}{\min\bigl(
+\lVert X \rVert_1, \lVert Y \rVert_1 \bigr)}
+\qquad \text{(thesis eq. 5)}.
+$$
+Range $[0, 1]$. **Asymmetric** in size: $S_{\mathrm{FOS}} = 1$
+whenever the smaller binary network is a subset of the larger,
+which is what motivates the coverage ratios below. Returns $0$ by
+convention if either matrix is empty. This is the default `method`.
+
+### Jaccard
+
+$$
+S_{\mathrm{J}}(X, Y)
+= \frac{\lVert X \odot Y \rVert_1}{\lVert X \rVert_1
++ \lVert Y \rVert_1 - \lVert X \odot Y \rVert_1}.
+$$
+Range $[0, 1]$. **Symmetric**. For binary $X, Y$ this is the
+classical $|S_X \cap S_Y| / |S_X \cup S_Y|$ on pathway sets.
+
+### Bray-Curtis (similarity, on combined fluxes)
+
+$$
+S_{\mathrm{BC}}(X, Y)
+= \max\!\Bigl(0,\; 1 - \frac{
+\lVert |C_X - C_Y| \rVert_1 + \lVert |P_X - P_Y| \rVert_1
+}{\lVert C_X \rVert_1 + \lVert C_Y \rVert_1
++ \lVert P_X \rVert_1 + \lVert P_Y \rVert_1}\Bigr).
+$$
+The implementation operates on the **combined Consumption +
+Production magnitudes** treated as one abundance vector; direction
+is conflated. Range $[0, 1]$, with $1$ at identical fluxes. The
+$\max(0, \cdot)$ clamp guards against floating-point near-negative
+zero; this is the consequence of the B7 fix and is why
+`brayCurtis = NA` is returned for unweighted CMs (the metric is
+undefined when fluxes are unit placeholders). See the
+`?ramen::align` `@note`.
+
+### RedundancyOverlap (weighted Jaccard / Ruzicka)
+
+Using $\min(a, b) = (a + b - |a - b|)/2$ and
+$\max(a, b) = (a + b + |a - b|)/2$,
+$$
+S_{\mathrm{RO}}(X, Y)
+= \frac{\sum_{i,j} \min\bigl(N_{X,ij}, N_{Y,ij}\bigr)}{
+\sum_{i,j} \max\bigl(N_{X,ij}, N_{Y,ij}\bigr)}.
+$$
+Range $[0, 1]$. **Collapse to Jaccard at $N = 1$.** When all
+positive entries of $N_X$ and $N_Y$ equal $1$ (every supported
+pathway is single-species) the numerator becomes the indicator
+intersection $\lVert X \odot Y \rVert_1$ and the denominator
+becomes the indicator union $\lVert X \rVert_1 + \lVert Y \rVert_1
+- \lVert X \odot Y \rVert_1$, which is exactly $S_{\mathrm{J}}$.
+Small communities therefore yield identical Jaccard and
+RedundancyOverlap scores.
+
+### MAAS (Metabolic Alignment Aggregate Score)
+
+A weighted convex combination of the four base metrics. Let
+$\mathcal{A}$ be the set of metrics whose inputs are available
+(Bray-Curtis and RedundancyOverlap drop out for unweighted CMs).
+$$
+S_{\mathrm{MAAS}}(X, Y)
+= \sum_{m \in \mathcal{A}} \frac{w_m}{\sum_{m' \in \mathcal{A}}
+w_{m'}} \cdot S_m(X, Y).
+$$
+Default weights are
+$(w_{\mathrm{FOS}}, w_{\mathrm{J}}, w_{\mathrm{BC}},
+w_{\mathrm{RO}}) = (0.4, 0.2, 0.2, 0.2)$. **Disclosure:** these
+defaults are not derived from data; they encode a soft preference
+for FOS as the primary metric and were not tuned by sensitivity
+analysis. A formal sensitivity sweep is deferred to the methods
+paper.
+
+### Coverage ratios
+
+To disambiguate FOS = 1 from full functional equivalence,
+$$
+\mathrm{cov}_{\mathrm{query}}
+= \frac{\lVert X \odot Y \rVert_1}{\lVert X \rVert_1},
+\qquad
+\mathrm{cov}_{\mathrm{ref}}
+= \frac{\lVert X \odot Y \rVert_1}{\lVert Y \rVert_1}.
+$$
+$S_{\mathrm{FOS}} = 1$ together with low $\mathrm{cov}_{\mathrm{ref}}$
+indicates that the query is a strict subset of the reference, not
+a functional twin.
+
+## Permutation null model
+
+For a metric $S$ and observed value $s_{\mathrm{obs}} = S(X, Y)$, a
+$p$-value is computed by **degree-preserving rewire** of the query
+binary network, treated as a directed graph
+$G_X = (\mathcal{M}, E_X)$. Let $\mathrm{rewire}(G_X)$ denote the
+graph obtained from $G_X$ by a sequence of edge swaps that preserve
+the in-degree and out-degree sequence; `igraph::keeping_degseq` is
+used with $\mathtt{niter} = 10 \cdot |E_X|$. The permutation
+$p$-value is
+$$
+p(s_{\mathrm{obs}})
+= \frac{1 + \sum_{k=1}^{B} \mathbf{1}\bigl[
+S(\mathrm{rewire}_k(G_X), Y) \ge s_{\mathrm{obs}}\bigr]}{1 + B},
+$$
+with $B = \mathtt{nPermutations}$ (default $999$). The null
+hypothesis is *"the observed similarity is no greater than expected
+under random rewiring of $X$ that preserves each metabolite's
+participation count"*.
+
+**Limitation (methods-paper concern, not a current correctness
+issue).** Degree-preserving rewire is the conventional null in
+ecological network analysis but is **not specifically motivated for
+FBA-derived networks**: edge presence in $X$ reflects mass-balance
+constraints on the underlying genome-scale metabolic models, plus
+the solver's choice among alternate optima. A null that respects
+those constraints (for example a species-set permutation, or a
+randomised-abundance null in the MICOM sense) would be more
+defensible. The current null is retained for reproducibility with
+prior `ramen` versions; sensitivity to null-model choice is on the
+methods-paper agenda.
+
+## When to use what: alignment vs functional groups
+
+`ramen` exposes two superficially similar comparisons. They answer
+**different questions** and are not interchangeable.
+
+**Alignment** (`align(CM, CM)`, `align(CMS)`, `align(CM, CMS)`)
+compares two or more *named consortia* by their metabolic exchange
+networks. The unit of analysis is the consortium; the question is
+*"how similar are these communities by what they collectively do?"*
+
+**Functional groups** (`functionalGroups()`) cluster *species* by
+the Jaccard similarity of their per-species pathway sets, either
+within a single consortium or pooled across a CMS. The unit of
+analysis is the species; the question is *"which species play
+equivalent metabolic roles?"* See `vignette("ramen", package =
+"ramen")` for functional groups.
+
+## Limitations and caveats
+
+The metric formulas above are not a license to run alignment on
+arbitrary inputs. Several known issues affect interpretation.
+
+**Cross-product inflation.** Pathways are inferred from the Cartesian
+product of each species' uptake and secretion sets, not from
+biochemical reactions. For a consortium of two species
+$S_1 : \{a, b\} \to \{c, d\}$ and $S_2 : \{c, d\} \to \{a, b\}$,
+the Binary assay has $|\{a, b\} \times \{c, d\}|
++ |\{c, d\} \times \{a, b\}| = 8$ nonzero entries in a $4 \times 4$
+matrix, giving density $0.5$ from only $4$ exchange reactions. This
+is a **capability-level** representation, not a mechanism-level one,
+and the inflation grows with $\min(|\mathrm{cons}|, |\mathrm{prod}|)$
+per species. Compare consortia of similar size and composition; do
+not interpret raw Binary density as a mechanistic property.
+
+**Hill-1 saturation on small consortia.** EffectiveConsumption /
+EffectiveProduction store Hill-1 perplexity rounded to two decimals.
+For two-species consortia the perplexity rarely exceeds $\approx 1.05$
+(one species typically dominates the flux at any given pathway), and
+the `round(., 2)` step collapses near-degenerate distributions to
+exactly $1.0$ -- indistinguishable from true single-species
+pathways. Effective C/P is informative only on consortia where
+several species contribute comparable flux to the same pathway.
+
+**Flux reversibility and no binarisation threshold.**
+`ConsortiumMetabolism()` admits any nonzero flux: a flux of $10^{-12}$
+produces an edge identical to a flux of $10^3$. FBA solvers
+(MiSoSoup, MICOM, cobrapy) routinely produce alternate optima that
+differ only in sign of small fluxes near the noise floor; under the
+current convention this turns a "consume $a$, produce $b$" pathway
+into "consume $b$, produce $a$", which the Binary assay treats as a
+different pathway. No `flux_tolerance` argument is currently exposed.
+For solver outputs we recommend pre-filtering by solver tolerance
+(typically $10^{-9}$ for COBRA / cobrapy) before constructing CMs.
+
+**Bray-Curtis on unweighted CMs returns NA.** The fix for the
+floating-point near-negative-zero bug (B7) introduced an explicit
+$\max(0, \cdot)$ clamp that propagates `NA` when fluxes are unit
+placeholders rather than measured values. This is documented in the
+`align()` `@note`. To get a non-`NA` Bray-Curtis, build CMs from
+non-unit fluxes.
+
+**Alternative optima are not biological signal.** MiSoSoup is a MILP
+enumerator: for a fixed metabolic model it returns multiple
+alternative optimal solutions to the same growth problem. Such
+alternatives typically share most pathways and produce very high
+pairwise FOS values that reflect **solver consistency, not
+biological similarity**. The same caveat applies to outputs from
+**MICOM** and **cobrapy**, where the choice of solver, tolerance,
+and tie-breaking affects which exchange fluxes appear in the
+solution. When interpreting overlap, compare consortia derived from
+*different* models, conditions, or experimental contexts; treat
+overlap between alternates of one model as a sanity check on the
+enumeration, not as ecology.
+
+**Minimum production flux drives the alignment.** Because pathways
+are inferred from the existence of any nonzero production flux for
+a given species and metabolite, low-magnitude secretions (whether
+biologically real or solver noise) determine the topology of the
+Binary assay just as much as high-magnitude ones. This is a design
+decision, not a bug: it preserves the **set of metabolic
+capabilities** the consortium can realise. Users who want to weight
+by magnitude should use Bray-Curtis or RedundancyOverlap rather than
+FOS / Jaccard, and should consider thresholding fluxes upstream of
+`ConsortiumMetabolism()`.
+
 # Test data
 
 We build six consortia from the bundled `misosoup24` dataset to use
