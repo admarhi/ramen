@@ -42,7 +42,7 @@ plotFunctionalGroups <- function(
     label_size = 6,
     label_colours = NULL
 ) {
-    if (!is.list(fg) || is.null(fg$dendrogram)) {
+    if (!is.list(fg)) {
         cli::cli_abort(
             c(
                 "{.arg fg} must be a list returned by",
@@ -52,8 +52,35 @@ plotFunctionalGroups <- function(
             )
         )
     }
+    if (is.null(fg$dendrogram)) {
+        cli::cli_abort(
+            c(
+                "{.arg fg} contains no dendrogram to plot.",
+                "i" = "{.fun functionalGroups} returns \\
+                {.field dendrogram = NULL} when fewer than \\
+                two species are present; nothing to cluster."
+            )
+        )
+    }
 
     dend <- fg$dendrogram
+    n_leaves <- length(labels(dend))
+
+    if (!is.numeric(k) || length(k) != 1L || is.na(k) || k < 1L) {
+        cli::cli_abort(
+            "{.arg k} must be a single positive integer."
+        )
+    }
+    k <- as.integer(k)
+    if (k > n_leaves) {
+        cli::cli_abort(
+            c(
+                "{.arg k} ({k}) exceeds the number of species \\
+                in the dendrogram ({n_leaves}).",
+                "i" = "Pick {.arg k} between 1 and {n_leaves}."
+            )
+        )
+    }
 
     # Color branches by cluster membership
     gg_dend <- dendextend::color_branches(

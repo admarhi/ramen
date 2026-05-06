@@ -91,7 +91,11 @@ setValidity("ConsortiumMetabolism", function(object) {
     ) {
         errors <- c(
             errors,
-            "'Weighted' must be a length-1 non-NA logical"
+            paste0(
+                "object is malformed: internal weighted-flux flag must be ",
+                "a single TRUE or FALSE. Construct via ",
+                "ConsortiumMetabolism(data) rather than new()."
+            )
         )
     }
 

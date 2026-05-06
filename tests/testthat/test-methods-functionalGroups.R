@@ -248,6 +248,53 @@ test_that("plotFunctionalGroups errors on list without dendrogram", {
     )
 })
 
+test_that("plotFunctionalGroups errors helpfully on single-species CM", {
+    cm <- synCM("solo", n_species = 1, max_met = 3, seed = 1)
+    fg <- functionalGroups(cm)
+    expect_null(fg$dendrogram)
+    expect_error(
+        plotFunctionalGroups(fg, k = 2),
+        "fewer than two species"
+    )
+})
+
+test_that("plotFunctionalGroups errors when k exceeds leaf count", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
+    cms <- ConsortiumMetabolismSet(list(cm1, cm2), name = "test")
+    fg <- functionalGroups(cms)
+    n_leaves <- length(labels(fg$dendrogram))
+    expect_error(
+        plotFunctionalGroups(fg, k = n_leaves + 1L),
+        "exceeds the number of species"
+    )
+})
+
+test_that("plotFunctionalGroups errors on default k for tiny dendrogram", {
+    ## Two-species dendrogram with default k = 4 used to surface the
+    ## raw cutree() error 'elements of \\'k\\' must be between 1 and 2'.
+    cm1 <- synCM("a", n_species = 2, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 2, max_met = 5, seed = 2)
+    cms <- ConsortiumMetabolismSet(list(cm1, cm2), name = "tiny")
+    fg <- functionalGroups(cms)
+    if (length(labels(fg$dendrogram)) < 4L) {
+        expect_error(
+            plotFunctionalGroups(fg),
+            "exceeds the number of species"
+        )
+    }
+})
+
+test_that("plotFunctionalGroups errors on bad k", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
+    cms <- ConsortiumMetabolismSet(list(cm1, cm2), name = "test")
+    fg <- functionalGroups(cms)
+    expect_error(plotFunctionalGroups(fg, k = 0L), "positive integer")
+    expect_error(plotFunctionalGroups(fg, k = NA_integer_), "positive integer")
+    expect_error(plotFunctionalGroups(fg, k = "two"), "positive integer")
+})
+
 ## ===========================================================================
 ## ConsortiumMetabolism method
 ## ===========================================================================

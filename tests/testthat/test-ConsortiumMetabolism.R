@@ -191,6 +191,18 @@ test_that("CM constructor errors on NA in flux column", {
     expect_false(grepl("Weighted", conditionMessage(err)))
 })
 
+test_that("Weighted validity message is user-facing, not slot-named", {
+    ## Build a valid CM, then break the @Weighted slot to trigger
+    ## validity. The message must guide users to the constructor
+    ## rather than leak slot internals.
+    cm <- synCM("a", n_species = 2, max_met = 3, seed = 1)
+    cm@Weighted <- logical(0L)
+    err <- expect_error(validObject(cm))
+    msg <- conditionMessage(err)
+    expect_match(msg, "ConsortiumMetabolism\\(")
+    expect_match(msg, "TRUE or FALSE")
+})
+
 test_that("CM constructor errors on empty data.frame", {
     empty <- tibble::tibble(
         species = character(),

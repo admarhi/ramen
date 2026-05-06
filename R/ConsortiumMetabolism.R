@@ -229,13 +229,14 @@ ConsortiumMetabolism <- function(
             is.na(data[[flux_col]])
     )
     if (length(na_rows) > 0L) {
-        preview <- if (length(na_rows) > 10L) { # nolint: object_usage_linter.
+        # nolint start: object_usage_linter.
+        preview <- if (length(na_rows) > 10L) {
             c(as.character(na_rows[seq_len(10L)]), "...")
         } else {
             as.character(na_rows)
         }
-        # nolint next: object_usage_linter.
         cols <- c(species_col, metabolite_col, flux_col)
+        # nolint end
         cli::cli_abort(
             c(
                 "{.arg data} contains NA values in the \\

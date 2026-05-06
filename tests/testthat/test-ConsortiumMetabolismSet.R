@@ -612,7 +612,8 @@ test_that("aux and core do not double-count pathways at the boundary", {
     core_pw <- pathways(cms, type = "core")
     aux_keys <- paste(aux_pw$consumed, aux_pw$produced, sep = "|")
     core_keys <- paste(
-        core_pw$consumed, core_pw$produced,
+        core_pw$consumed,
+        core_pw$produced,
         sep = "|"
     )
     expect_length(intersect(aux_keys, core_keys), 0L)
