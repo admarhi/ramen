@@ -436,7 +436,7 @@ The `quantileCutoff` parameter controls the threshold (default
 ## Functional groups
 
 `functionalGroups()` clusters species by the Jaccard similarity of
-their pathway sets. `plotFunctionalGroups()` visualizes the
+their pathway sets. `plotFunctionalGroups()` visualises the
 resulting dendrogram:
 
 ```{r cms-func-groups, fig.cap = "Functional groups dendrogram."}
@@ -512,7 +512,7 @@ For a detailed treatment of alignment metrics, p-values, and
 accessor functions, see
 `vignette("alignment", package = "ramen")`.
 
-# Visualization
+# Visualisation
 
 Each class has a `plot()` method. Here is one example per class;
 for the full gallery, see

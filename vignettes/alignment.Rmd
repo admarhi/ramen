@@ -417,7 +417,7 @@ scores(cma_fos)
 | MAAS | 0.4 FOS + 0.2 each of the rest |
 
 The **Metabolic Alignment Aggregate Score** (MAAS) combines all
-four metrics. Weights are renormalized when some metrics are
+four metrics. Weights are renormalised when some metrics are
 unavailable (e.g., unweighted networks lack Bray-Curtis):
 
 ```{r pairwise-maas}
@@ -488,7 +488,7 @@ cma_p <- align(
 scores(cma_p)
 ```
 
-## Visualization
+## Visualisation
 
 ### Network plot
 
@@ -560,7 +560,7 @@ information:
 head(pathways(cma_mult, type = "consensus"))
 ```
 
-## Visualization
+## Visualisation
 
 ### Heatmap
 
