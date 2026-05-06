@@ -159,14 +159,70 @@ setMethod("metabolites", "ConsortiumMetabolismSet", function(object) {
 
 #' @describeIn consortia Get the list of
 #'   \code{ConsortiumMetabolism} objects from a
-#'   \code{ConsortiumMetabolismSet}
+#'   \code{ConsortiumMetabolismSet}.
 #' @param object A \code{ConsortiumMetabolismSet} object.
-#' @return A named list of \code{ConsortiumMetabolism} objects.
 #' @export
 setMethod(
     "consortia",
     "ConsortiumMetabolismSet",
     function(object) object@Consortia
+)
+
+#' @title Coerce a ConsortiumMetabolismSet to a data.frame
+#'
+#' @description
+#' Row-binds the per-consortium edge lists of every
+#' \code{ConsortiumMetabolism} in the set, prefixing each
+#' row with a \code{consortium} column.
+#'
+#' @param x A \code{\linkS4class{ConsortiumMetabolismSet}}
+#'   object.
+#' @param row.names Ignored.
+#' @param optional Ignored.
+#' @param ... Additional arguments (currently unused).
+#'
+#' @return A \code{data.frame} with columns
+#'   \code{consortium}, \code{met}, \code{species}, and
+#'   \code{flux}. Empty sets return a 0-row
+#'   \code{data.frame} with the same column names.
+#'
+#' @examples
+#' cm1 <- synCM("a", n_species = 3, max_met = 5)
+#' cm2 <- synCM("b", n_species = 3, max_met = 5)
+#' cms <- ConsortiumMetabolismSet(list(cm1, cm2), name = "demo")
+#' head(as.data.frame(cms))
+#'
+#' @rdname as.data.frame-ConsortiumMetabolismSet
+#' @export
+setMethod(
+    "as.data.frame",
+    "ConsortiumMetabolismSet",
+    function(x, ...) {
+        cms_list <- x@Consortia
+        if (length(cms_list) == 0L) {
+            return(data.frame(
+                consortium = character(),
+                met = character(),
+                species = character(),
+                flux = numeric(),
+                stringsAsFactors = FALSE
+            ))
+        }
+        nm <- vapply(
+            cms_list,
+            \(cm) cm@Name,
+            character(1L)
+        )
+        per_cm <- lapply(seq_along(cms_list), function(i) {
+            df <- as.data.frame(cms_list[[i]])
+            cbind(
+                consortium = nm[[i]],
+                df,
+                stringsAsFactors = FALSE
+            )
+        })
+        do.call(rbind, per_cm)
+    }
 )
 
 #' @describeIn growth Get Growth Rates From a

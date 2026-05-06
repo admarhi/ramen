@@ -618,3 +618,24 @@ test_that("aux and core do not double-count pathways at the boundary", {
     )
     expect_length(intersect(aux_keys, core_keys), 0L)
 })
+
+## ---- as.data.frame(CMS) ----------------------------------------------------
+
+test_that("as.data.frame(CMS) row-binds per-CM edges with consortium col", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 4, max_met = 6, seed = 2)
+    cms <- ConsortiumMetabolismSet(list(cm1, cm2), name = "test")
+    df <- as.data.frame(cms)
+
+    expect_s3_class(df, "data.frame")
+    expect_setequal(
+        colnames(df),
+        c("consortium", "met", "species", "flux")
+    )
+    ## Row count equals sum of per-CM edge counts.
+    expect_equal(
+        nrow(df),
+        nrow(as.data.frame(cm1)) + nrow(as.data.frame(cm2))
+    )
+    expect_setequal(unique(df$consortium), c("a", "b"))
+})

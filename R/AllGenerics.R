@@ -251,24 +251,30 @@ setGeneric(
     function(object, ...) standardGeneric("pathways")
 )
 
-#' @title Get the Consortia
+#' @title Get the Constituent Consortia
 #'
 #' @description
-#' Returns the consortia data in a tabular format.
+#' Returns the \code{ConsortiumMetabolism} objects that a
+#' container is built from. Defined for
+#' \code{ConsortiumMetabolismSet} (the consortia in the set)
+#' and \code{ConsortiumMetabolismAlignment} (the consortia
+#' that produced the alignment). The plural noun reflects
+#' that the result is always a collection; for a single
+#' \code{ConsortiumMetabolism}, use
+#' \code{\link[=as.data.frame]{as.data.frame()}} to obtain
+#' the underlying edge list.
 #'
-#' @param object A \code{ConsortiumMetabolism},
-#'   \code{ConsortiumMetabolismSet}, or
+#' @param object A \code{ConsortiumMetabolismSet} or
 #'   \code{ConsortiumMetabolismAlignment} object.
 #'
-#' @return For \code{ConsortiumMetabolism} objects, returns
-#'   a tibble with species, metabolite and flux
-#'   information. For \code{ConsortiumMetabolismSet} and
-#'   \code{ConsortiumMetabolismAlignment} objects, returns
-#'   a list of such tibbles.
+#' @return A named list of \code{ConsortiumMetabolism}
+#'   objects.
 #'
 #' @examples
-#' cm <- synCM("test", n_species = 3, max_met = 5)
-#' consortia(cm)
+#' cm1 <- synCM("a", n_species = 3, max_met = 5)
+#' cm2 <- synCM("b", n_species = 3, max_met = 5)
+#' cms <- ConsortiumMetabolismSet(list(cm1, cm2), name = "demo")
+#' consortia(cms)
 #'
 #' @export
 setGeneric(

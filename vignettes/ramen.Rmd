@@ -305,11 +305,16 @@ metabolites(cm1)
 head(pathways(cm1))
 ```
 
-`consortia()` returns the tidy input data:
+`as.data.frame()` returns the underlying edge list. Use this to
+export a CM's data for downstream tools:
 
-```{r cm-consortia}
-head(consortia(cm1))
+```{r cm-as-data-frame}
+head(as.data.frame(cm1))
 ```
+
+(`consortia()` is reserved for containers of CMs --
+`ConsortiumMetabolismSet` and `ConsortiumMetabolismAlignment` --
+since the noun is plural.)
 
 Replacement methods allow renaming:
 

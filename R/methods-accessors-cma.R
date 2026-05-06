@@ -266,7 +266,14 @@ setMethod(
     }
 )
 
-#' @describeIn consortia Not applicable for alignments
+#' @describeIn consortia Not applicable to
+#'   \code{ConsortiumMetabolismAlignment}. By design the
+#'   class is a lightweight result object: it records the
+#'   names of its inputs (\code{QueryName} /
+#'   \code{ReferenceName}) but does not retain copies of
+#'   the \code{ConsortiumMetabolism} objects themselves.
+#'   Look up the originating CMs by name from the source
+#'   \code{ConsortiumMetabolismSet}.
 #' @param object A \code{ConsortiumMetabolismAlignment} object.
 #' @export
 setMethod(
@@ -274,11 +281,14 @@ setMethod(
     "ConsortiumMetabolismAlignment",
     function(object) {
         cli::cli_abort(
-            "{.fun consortia} is not applicable for \\
-            {.cls ConsortiumMetabolismAlignment} \\
-            objects. Use {.fun scores}, \\
-            {.fun pathways}, or \\
-            {.fun similarityMatrix} instead."
+            c(
+                "{.fun consortia} does not apply to \\
+                {.cls ConsortiumMetabolismAlignment}.",
+                "i" = "Alignments record only the input names \\
+                ({.field @QueryName}, {.field @ReferenceName}); \\
+                look the originating CMs up by name from the \\
+                source {.cls ConsortiumMetabolismSet}."
+            )
         )
     }
 )

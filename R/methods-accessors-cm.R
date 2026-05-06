@@ -105,14 +105,41 @@ setMethod(
     }
 )
 
-#' @param object An object of class \code{ConsortiumMetabolism}
-#' @describeIn consortia Get the Community
-#' @return A list with the community data.
+#' @title Coerce a ConsortiumMetabolism to a data.frame
+#'
+#' @description
+#' Returns the underlying edge list of a
+#' \code{ConsortiumMetabolism} as a plain
+#' \code{data.frame} with three columns: \code{met},
+#' \code{species}, and \code{flux}. Equivalent to
+#' \code{as.data.frame(object@InputData[, c("met",
+#' "species", "flux")])}.
+#'
+#' @param x A \code{\linkS4class{ConsortiumMetabolism}}
+#'   object.
+#' @param row.names Ignored.
+#' @param optional Ignored.
+#' @param ... Additional arguments (currently unused).
+#'
+#' @return A \code{data.frame} with columns \code{met},
+#'   \code{species}, and \code{flux}.
+#'
+#' @examples
+#' cm <- synCM("demo", n_species = 3, max_met = 5)
+#' head(as.data.frame(cm))
+#'
+#' @rdname as.data.frame-ConsortiumMetabolism
 #' @export
-setMethod("consortia", "ConsortiumMetabolism", function(object) {
-    object@InputData |>
-        dplyr::select("met", "species", "flux")
-})
+setMethod(
+    "as.data.frame",
+    "ConsortiumMetabolism",
+    function(x, ...) {
+        as.data.frame(
+            x@InputData[, c("met", "species", "flux")],
+            stringsAsFactors = FALSE
+        )
+    }
+)
 
 #' @rdname growth
 #' @importFrom S4Vectors metadata

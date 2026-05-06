@@ -165,7 +165,7 @@ test_that("description<- works for ConsortiumMetabolism", {
     expect_s4_class(cm, "ConsortiumMetabolism")
 })
 
-test_that("consortia returns consortium data", {
+test_that("as.data.frame(CM) returns the edge list", {
     test_data <- tibble::tibble(
         species = c("s1", "s1", "s2", "s2"),
         metabolite = c("m1", "m2", "m1", "m3"),
@@ -173,8 +173,14 @@ test_that("consortia returns consortium data", {
     )
 
     cm <- ConsortiumMetabolism(test_data, name = "test")
-    co_data <- consortia(cm)
+    co_data <- as.data.frame(cm)
 
     expect_s3_class(co_data, "data.frame")
     expect_true(nrow(co_data) > 0)
+    expect_setequal(colnames(co_data), c("met", "species", "flux"))
+})
+
+test_that("consortia(CM) is no longer defined", {
+    cm <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    expect_error(consortia(cm), "unable to find an inherited method")
 })

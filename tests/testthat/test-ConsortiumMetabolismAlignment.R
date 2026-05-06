@@ -102,11 +102,14 @@ test_that("pathways() returns data.frame for CMA", {
     expect_true(ncol(ev) >= ncol(e))
 })
 
-test_that("consortia() errors for CMA", {
+test_that("consortia(CMA) errors: not applicable by design", {
     cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cma <- align(cm1, cm2)
-    expect_error(consortia(cma), "not applicable")
+    err <- expect_error(consortia(cma))
+    msg <- conditionMessage(err)
+    expect_match(msg, "does not apply")
+    expect_match(msg, "QueryName")
 })
 
 ## ---- CMA accessors: type guards ------------------------------------------
