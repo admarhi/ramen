@@ -59,7 +59,7 @@ This method computes a Jaccard similarity matrix
 between species based on shared pathways, then
 performs hierarchical clustering. A pathway is
 represented as the unique \code{(consumed, produced)}
-metabolite pair. To visualize the resulting
+metabolite pair. To visualise the resulting
 dendrogram, pass the output to
 \code{\link{plotFunctionalGroups}}.
 
@@ -105,5 +105,5 @@ plotFunctionalGroups(fg, k = 2)
 }
 \seealso{
 \code{\link{plotFunctionalGroups}} for
-visualizing the dendrogram.
+visualising the dendrogram.
 }

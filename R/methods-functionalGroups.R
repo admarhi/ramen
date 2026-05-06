@@ -135,7 +135,7 @@ NULL
                 "i" = paste0(
                     "Use ",
                     "{.code plotFunctionalGroups",
-                    "(fg, ...)} to visualize."
+                    "(fg, ...)} to visualise."
                 )
             )
         )

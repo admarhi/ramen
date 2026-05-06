@@ -160,7 +160,7 @@ test_that("plot errors on invalid type", {
     expect_error(plot(cma, type = "invalid"))
 })
 
-## ---- B2: plotDirectedFlow preserves pre-set edge colors --------------------
+## ---- B2: plotDirectedFlow preserves pre-set edge colours -------------------
 
 test_that("plotDirectedFlow preserves pre-set E(g)$color", {
     g <- igraph::make_ring(4, directed = TRUE)
@@ -170,7 +170,7 @@ test_that("plotDirectedFlow preserves pre-set E(g)$color", {
     )
 })
 
-test_that("plotDirectedFlow defaults to gray when no pre-set colors", {
+test_that("plotDirectedFlow defaults to gray when no pre-set colours", {
     g <- igraph::make_ring(4, directed = TRUE)
     expect_no_error(
         plotDirectedFlow(g, colourEdgesByWeight = FALSE)
