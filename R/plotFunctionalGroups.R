@@ -105,7 +105,7 @@ plotFunctionalGroups <- function(
         showHeightAxis = TRUE,
         title = "Functional groups",
         subtitle = sprintf(
-            "k = %d clusters · %d species",
+            "k = %d clusters \u00b7 %d species",
             k,
             n_leaves
         )

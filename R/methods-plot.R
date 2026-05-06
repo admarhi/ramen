@@ -144,7 +144,7 @@ setMethod(
             showHeightAxis = TRUE,
             title = if (length(name(x))) name(x) else NULL,
             subtitle = sprintf(
-                "Hierarchical clustering · %d consortia",
+                "Hierarchical clustering \u00b7 %d consortia",
                 length(labels(dend))
             )
         )
@@ -309,7 +309,7 @@ setMethod(
         ggplot2::labs(
             title = "Pairwise similarity",
             subtitle = sprintf(
-                "%s · %d consortia",
+                "%s \u00b7 %d consortia",
                 cma@Metric,
                 n
             )
@@ -446,9 +446,18 @@ setMethod(
     plot_df$labelColour <- ifelse(insideBar, "white", "grey15")
 
     ctx <- if (cma@Type == "pairwise") {
-        sprintf("%s · %s vs %s", cma@Metric, cma@QueryName, cma@ReferenceName)
+        sprintf(
+            "%s \u00b7 %s vs %s",
+            cma@Metric,
+            cma@QueryName,
+            cma@ReferenceName
+        )
     } else {
-        sprintf("%s · %d consortia", cma@Metric, nrow(cma@SimilarityMatrix))
+        sprintf(
+            "%s \u00b7 %d consortia",
+            cma@Metric,
+            nrow(cma@SimilarityMatrix)
+        )
     }
 
     ggplot2::ggplot(
