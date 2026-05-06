@@ -585,6 +585,52 @@
     sim_mat
 }
 
+#' Summarise pairwise similarity scores
+#'
+#' Reduces the upper triangle of a square similarity matrix to a
+#' named list of summary statistics used as the multi-alignment
+#' `Scores` slot.
+#'
+#' @param simMat Numeric n x n similarity matrix (symmetric, with
+#'   `diag = 1`).
+#'
+#' @return Named list with `mean`, `median`, `min`, `max`, `sd`,
+#'   and `nPairs` (integer count of upper-triangle entries).
+#'
+#' @keywords internal
+#' @noRd
+.summariseSimilarityScores <- function(simMat) {
+    pairwiseVals <- simMat[upper.tri(simMat)]
+    list(
+        mean = mean(pairwiseVals),
+        median = stats::median(pairwiseVals),
+        min = min(pairwiseVals),
+        max = max(pairwiseVals),
+        sd = stats::sd(pairwiseVals),
+        nPairs = length(pairwiseVals)
+    )
+}
+
+#' Build a dendrogram from a similarity matrix
+#'
+#' Converts a similarity matrix to a distance object via
+#' `1 - simMat`, then runs `stats::hclust()` with the requested
+#' linkage and coerces to a dendrogram.
+#'
+#' @param simMat Numeric n x n similarity matrix.
+#' @param linkage Character scalar; agglomeration method passed to
+#'   `stats::hclust()`.
+#'
+#' @return A `dendrogram` object.
+#'
+#' @keywords internal
+#' @noRd
+.dendrogramFromSimilarity <- function(simMat, linkage) {
+    distMat <- stats::as.dist(1 - simMat)
+    stats::hclust(distMat, method = linkage) |>
+        stats::as.dendrogram()
+}
+
 #' Build pathway prevalence from a CMS
 #'
 #' Extracts the Levels assay from a CMS (which counts how many
@@ -626,5 +672,329 @@
         nConsortia = as.integer(levels_mat[idx]),
         proportion = levels_mat[idx] / n,
         stringsAsFactors = FALSE
+    )
+}
+
+## ---- Database search helpers --------------------------------------------
+
+#' Expand the Consumption/Production/nSpecies triple for a CM
+#'
+#' Returns the three weighted assay matrices for `cm`, expanded
+#' into the supplied `unionMets` space, or `NULL` for unweighted
+#' consortia.
+#'
+#' @param cm A [ConsortiumMetabolism].
+#' @param unionMets Character vector of target metabolite names.
+#'
+#' @return Named list with `Consumption`, `Production`, and
+#'   `nSpecies` sparse matrices, or `NULL` if `cm@Weighted` is
+#'   `FALSE`.
+#'
+#' @keywords internal
+#' @noRd
+.expandWeightedTriple <- function(cm, unionMets) {
+    if (!cm@Weighted) {
+        return(NULL)
+    }
+    list(
+        Consumption = .expandMatrix(
+            assays(cm)$Consumption,
+            unionMets
+        ),
+        Production = .expandMatrix(
+            assays(cm)$Production,
+            unionMets
+        ),
+        nSpecies = .expandMatrix(
+            assays(cm)$nSpecies,
+            unionMets
+        )
+    )
+}
+
+#' Expand query and database matrices into a shared metabolite space
+#'
+#' Builds the union metabolite space across the query CM and a
+#' database CMS, then expands the query binary matrix and every
+#' database consortium's binary matrix into that shared space.
+#' Optionally also expands the weighted assays (Consumption,
+#' Production, nSpecies) when the requested metric set requires
+#' them.
+#'
+#' @param x A [ConsortiumMetabolism] (query).
+#' @param y A [ConsortiumMetabolismSet] (database).
+#' @param metrics Character vector of metric names to be computed.
+#' @param method Character scalar; primary metric (used to decide
+#'   whether weighted assays are required even if not explicitly
+#'   in `metrics`, e.g. `"MAAS"`).
+#'
+#' @return Named list with elements `xBin`, `xWeighted` (or
+#'   `NULL`), `yBins` (named list of binary matrices keyed by
+#'   consortium name), `yWeightedList` (named list, may contain
+#'   `NULL` per element, or `NULL` overall), `unionMets`
+#'   (character vector), and `cmNames` (character vector).
+#'
+#' @keywords internal
+#' @noRd
+.alignSearchExpandSpace <- function(x, y, metrics, method) {
+    cmsUniversal <- rownames(y@BinaryMatrices[[1L]])
+    queryMets <- rownames(assays(x)$Binary)
+    unionMets <- sort(unique(c(cmsUniversal, queryMets)))
+
+    xBin <- .expandMatrix(assays(x)$Binary, unionMets)
+
+    needsWeighted <- any(
+        c("brayCurtis", "redundancyOverlap") %in% metrics
+    ) ||
+        method == "MAAS"
+
+    xWeighted <- if (needsWeighted) {
+        .expandWeightedTriple(x, unionMets)
+    } else {
+        NULL
+    }
+
+    cmNames <- names(y@BinaryMatrices)
+    yBins <- lapply(
+        y@BinaryMatrices,
+        function(m) .expandMatrix(m, unionMets)
+    )
+
+    yWeightedList <- NULL
+    if (needsWeighted) {
+        yWeightedList <- lapply(
+            y@Consortia,
+            function(cm) .expandWeightedTriple(cm, unionMets)
+        )
+        names(yWeightedList) <- cmNames
+    }
+
+    list(
+        xBin = xBin,
+        xWeighted = xWeighted,
+        yBins = yBins,
+        yWeightedList = yWeightedList,
+        unionMets = unionMets,
+        cmNames = cmNames
+    )
+}
+
+#' Score a query against every consortium in a database
+#'
+#' Runs `.computeAllScores()` and `.computeCoverage()` for every
+#' database consortium, optionally in parallel via BiocParallel.
+#'
+#' @param xBin Sparse binary matrix for the query in union space.
+#' @param xWeighted Named list of expanded weighted assays for
+#'   the query (or `NULL`).
+#' @param yBins Named list of expanded binary matrices for each
+#'   database consortium.
+#' @param yWeightedList Named list of expanded weighted assay
+#'   lists for each database consortium (or `NULL`).
+#' @param BPPARAM A [BiocParallel::BiocParallelParam] object.
+#'
+#' @return A list (length = `length(yBins)`) of named scores
+#'   lists. Each element contains `FOS`, `jaccard`, `brayCurtis`,
+#'   `redundancyOverlap`, `coverageQuery`, and
+#'   `coverageReference`.
+#'
+#' @keywords internal
+#' @noRd
+.alignSearchScoreAll <- function(
+    xBin,
+    xWeighted,
+    yBins,
+    yWeightedList,
+    BPPARAM
+) {
+    BiocParallel::bplapply(
+        seq_along(yBins),
+        function(i) {
+            yB <- yBins[[i]]
+            yW <- if (is.null(yWeightedList)) {
+                NULL
+            } else {
+                yWeightedList[[i]]
+            }
+            sc <- .computeAllScores(xBin, yB, xWeighted, yW)
+            cov <- .computeCoverage(xBin, yB)
+            sc$coverageQuery <- cov$coverageQuery
+            sc$coverageReference <- cov$coverageReference
+            sc
+        },
+        BPPARAM = BPPARAM
+    )
+}
+
+#' Reduce per-consortium scores to a primary-score vector
+#'
+#' For each entry in `scoresList`, picks the named primary metric
+#' (or, for `"MAAS"`, recomputes the composite from the four core
+#' metrics).
+#'
+#' @param scoresList List of per-consortium score lists.
+#' @param method Character scalar; primary metric.
+#'
+#' @return Numeric vector of primary scores, aligned with
+#'   `scoresList`.
+#'
+#' @keywords internal
+#' @noRd
+.alignSearchPrimaryScores <- function(scoresList, method) {
+    vapply(
+        scoresList,
+        function(s) {
+            if (method == "MAAS") {
+                core <- s[c(
+                    "FOS",
+                    "jaccard",
+                    "brayCurtis",
+                    "redundancyOverlap"
+                )]
+                .computeMAAS(core)
+            } else {
+                s[[method]]
+            }
+        },
+        numeric(1L)
+    )
+}
+
+#' Build the ranking tibble and similarity matrix for a search
+#'
+#' Assembles the per-consortium scores (with primary scores and
+#' coverage ratios) into a ranking tibble sorted by primary score,
+#' optionally truncated to `topK`. Also builds the 1-row
+#' similarity matrix labelled with the query name and identifies
+#' the top hit (always the overall best, regardless of `topK`).
+#'
+#' @param scoresList List of per-consortium score lists, as
+#'   returned by `.alignSearchScoreAll()`.
+#' @param primaryScores Numeric vector of primary scores aligned
+#'   with `scoresList`, as returned by
+#'   `.alignSearchPrimaryScores()`.
+#' @param cmNames Character vector of consortium names (database).
+#' @param topK Integer or `NULL`; if non-`NULL`, truncate the
+#'   ranked results to the top `topK` hits.
+#' @param queryLabel Character scalar; row name for the
+#'   similarity matrix.
+#'
+#' @return Named list with `ranking` (tibble), `topIdx` (integer
+#'   index into `scoresList` of the overall best hit, regardless
+#'   of `topK`), `topName` (character), `topScore` (numeric), and
+#'   `simMat` (1 x nrow(ranking) matrix).
+#'
+#' @keywords internal
+#' @noRd
+.alignSearchBuildRanking <- function(
+    scoresList,
+    primaryScores,
+    cmNames,
+    topK,
+    queryLabel
+) {
+    pluck <- function(field) {
+        vapply(scoresList, function(s) s[[field]], numeric(1L))
+    }
+    ranking <- tibble::tibble(
+        reference = cmNames,
+        score = primaryScores,
+        FOS = pluck("FOS"),
+        jaccard = pluck("jaccard"),
+        brayCurtis = pluck("brayCurtis"),
+        redundancyOverlap = pluck("redundancyOverlap"),
+        coverageQuery = pluck("coverageQuery"),
+        coverageReference = pluck("coverageReference")
+    ) |>
+        dplyr::arrange(dplyr::desc(.data$score))
+
+    if (!is.null(topK)) {
+        ranking <- utils::head(ranking, topK)
+    }
+
+    topIdx <- which.max(primaryScores)
+    simMat <- matrix(
+        ranking$score,
+        nrow = 1L,
+        ncol = nrow(ranking),
+        dimnames = list(queryLabel, ranking$reference)
+    )
+
+    list(
+        ranking = ranking,
+        topIdx = topIdx,
+        topName = cmNames[topIdx],
+        topScore = primaryScores[topIdx],
+        simMat = simMat
+    )
+}
+
+#' Permutation p-value for the top hit of a database search
+#'
+#' Wraps `.computePvalue()` for the top-scoring database
+#' consortium. Emits a warning and returns `NA_real_` for metrics
+#' where degree-preserving permutation is not yet supported
+#' (`"brayCurtis"`, `"redundancyOverlap"`).
+#'
+#' @param method Character scalar; primary metric.
+#' @param x The query [ConsortiumMetabolism] object (needs
+#'   `@Graphs[[1L]]` for permutation).
+#' @param xWeighted Expanded weighted assays for the query (or
+#'   `NULL`); used to recompute MAAS components on permuted nets.
+#' @param yBin Sparse binary matrix for the top-hit database
+#'   consortium in union space.
+#' @param topYWeighted Expanded weighted assays for the top-hit
+#'   database consortium (or `NULL`).
+#' @param topScore Numeric; observed primary score for the top
+#'   hit.
+#' @param nPermutations Integer.
+#' @param unionMets Character vector of union metabolite names.
+#'
+#' @return Numeric p-value in \[0, 1\], or `NA_real_` for
+#'   unsupported metrics.
+#'
+#' @keywords internal
+#' @noRd
+.alignSearchTopPvalue <- function(
+    method,
+    x,
+    xWeighted,
+    yBin,
+    topYWeighted,
+    topScore,
+    nPermutations,
+    unionMets
+) {
+    if (method %in% c("brayCurtis", "redundancyOverlap")) {
+        cli::cli_warn(
+            paste0(
+                "P-value computation for ",
+                "{.val {method}} not yet ",
+                "supported. Skipping."
+            )
+        )
+        return(NA_real_)
+    }
+    metricFn <- switch(
+        method,
+        FOS = .functionalOverlap,
+        jaccard = .jaccardIndex,
+        MAAS = function(xBinPerm, yBinTop) {
+            sc <- .computeAllScores(
+                xBinPerm,
+                yBinTop,
+                xWeighted,
+                topYWeighted
+            )
+            .computeMAAS(sc)
+        }
+    )
+    .computePvalue(
+        xGraph = x@Graphs[[1L]],
+        yBin = yBin,
+        observed = topScore,
+        metricFn = metricFn,
+        nPerm = nPermutations,
+        metabolites = unionMets
     )
 }

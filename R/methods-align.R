@@ -254,24 +254,16 @@ setMethod(
         )
 
         ## 3. Summary scores
-        pairwise_vals <- sim_mat[upper.tri(sim_mat)]
-        scores <- list(
-            mean = mean(pairwise_vals),
-            median = stats::median(pairwise_vals),
-            min = min(pairwise_vals),
-            max = max(pairwise_vals),
-            sd = stats::sd(pairwise_vals),
-            nPairs = length(pairwise_vals)
-        )
+        # nolint next: object_usage_linter.
+        scores <- .summariseSimilarityScores(sim_mat)
         primary <- scores$median
 
         ## 4. Consensus network and prevalence
         prevalence <- .buildPrevalence(x)
 
         ## 5. Dendrogram
-        dist_mat <- stats::as.dist(1 - sim_mat)
-        dend <- stats::hclust(dist_mat, method = linkage) |>
-            stats::as.dendrogram()
+        # nolint next: object_usage_linter.
+        dend <- .dendrogramFromSimilarity(sim_mat, linkage)
 
         ## 6. Build and return CMA
         auto_name <- paste0("Multiple (", n, " consortia)")
@@ -406,159 +398,6 @@ setMethod(
                 consortium."
             )
         }
-
-        ## 2. Harmonize metabolite space: union(CM, CMS universal)
-        cms_universal <- rownames(y@BinaryMatrices[[1L]])
-        query_mets <- rownames(assays(x)$Binary)
-        union_mets <- sort(unique(c(cms_universal, query_mets)))
-
-        ## 3. Expand query
-        xBin <- .expandMatrix(assays(x)$Binary, union_mets)
-
-        needsWeighted <- any(
-            c("brayCurtis", "redundancyOverlap") %in% metrics
-        ) ||
-            method == "MAAS"
-
-        xWeighted <- NULL
-        if (needsWeighted && x@Weighted) {
-            xWeighted <- list(
-                Consumption = .expandMatrix(
-                    assays(x)$Consumption,
-                    union_mets
-                ),
-                Production = .expandMatrix(
-                    assays(x)$Production,
-                    union_mets
-                ),
-                nSpecies = .expandMatrix(
-                    assays(x)$nSpecies,
-                    union_mets
-                )
-            )
-        }
-
-        ## 4. Expand each database consortium
-        cm_names <- names(y@BinaryMatrices)
-        yBins <- lapply(
-            y@BinaryMatrices,
-            function(m) .expandMatrix(m, union_mets)
-        )
-
-        yWeightedList <- NULL
-        if (needsWeighted) {
-            yWeightedList <- lapply(
-                y@Consortia,
-                function(cm) {
-                    if (!cm@Weighted) {
-                        return(NULL)
-                    }
-                    list(
-                        Consumption = .expandMatrix(
-                            assays(cm)$Consumption,
-                            union_mets
-                        ),
-                        Production = .expandMatrix(
-                            assays(cm)$Production,
-                            union_mets
-                        ),
-                        nSpecies = .expandMatrix(
-                            assays(cm)$nSpecies,
-                            union_mets
-                        )
-                    )
-                }
-            )
-            names(yWeightedList) <- cm_names
-        }
-
-        cli::cli_inform(
-            "Searching {.val {n}} consortia using \\
-            {.val {method}}."
-        )
-
-        ## 5. Score each database consortium
-        scores_list <- BiocParallel::bplapply(
-            seq_len(n),
-            function(i) {
-                yB <- yBins[[i]]
-                yW <- if (is.null(yWeightedList)) {
-                    NULL
-                } else {
-                    yWeightedList[[i]]
-                }
-                sc <- .computeAllScores(
-                    xBin,
-                    yB,
-                    xWeighted,
-                    yW
-                )
-                cov <- .computeCoverage(xBin, yB)
-                sc$coverageQuery <- cov$coverageQuery
-                sc$coverageReference <- cov$coverageReference
-                sc
-            },
-            BPPARAM = BPPARAM
-        )
-
-        ## 6. Primary score per hit
-        primary_scores <- vapply(
-            scores_list,
-            function(s) {
-                if (method == "MAAS") {
-                    core <- s[c(
-                        "FOS",
-                        "jaccard",
-                        "brayCurtis",
-                        "redundancyOverlap"
-                    )]
-                    .computeMAAS(core)
-                } else {
-                    s[[method]]
-                }
-            },
-            numeric(1L)
-        )
-
-        ## 7. Build ranking tibble
-        ranking <- tibble::tibble(
-            reference = cm_names,
-            score = primary_scores,
-            FOS = vapply(
-                scores_list,
-                function(s) s$FOS,
-                numeric(1L)
-            ),
-            jaccard = vapply(
-                scores_list,
-                function(s) s$jaccard,
-                numeric(1L)
-            ),
-            brayCurtis = vapply(
-                scores_list,
-                function(s) s$brayCurtis,
-                numeric(1L)
-            ),
-            redundancyOverlap = vapply(
-                scores_list,
-                function(s) s$redundancyOverlap,
-                numeric(1L)
-            ),
-            coverageQuery = vapply(
-                scores_list,
-                function(s) s$coverageQuery,
-                numeric(1L)
-            ),
-            coverageReference = vapply(
-                scores_list,
-                function(s) s$coverageReference,
-                numeric(1L)
-            )
-        ) |>
-            dplyr::arrange(
-                dplyr::desc(.data$score)
-            )
-
         if (!is.null(topK)) {
             topK <- as.integer(topK)
             if (
@@ -570,101 +409,99 @@ setMethod(
                     "{.arg topK} must be a positive integer."
                 )
             }
-            ranking <- utils::head(ranking, topK)
         }
 
-        ## 8. Top hit (overall best, regardless of topK)
-        top_idx <- which.max(primary_scores)
-        top_name <- cm_names[top_idx]
-        top_score <- primary_scores[top_idx]
-        top_cm <- y@Consortia[[top_idx]]
+        ## 2. Harmonize metabolite space and expand assays
+        # nolint next: object_usage_linter.
+        space <- .alignSearchExpandSpace(x, y, metrics, method)
 
-        ## 9. Similarity matrix: 1 x (topK or n)
-        query_label <- if (length(x@Name) == 1L && !is.na(x@Name)) {
+        cli::cli_inform(
+            "Searching {.val {n}} consortia using \\
+            {.val {method}}."
+        )
+
+        ## 3. Score query against every database consortium
+        # nolint next: object_usage_linter.
+        scoresList <- .alignSearchScoreAll(
+            xBin = space$xBin,
+            xWeighted = space$xWeighted,
+            yBins = space$yBins,
+            yWeightedList = space$yWeightedList,
+            BPPARAM = BPPARAM
+        )
+
+        ## 4. Build ranking, similarity matrix, and identify top hit
+        queryLabel <- if (length(x@Name) == 1L && !is.na(x@Name)) {
             x@Name
         } else {
             "query"
         }
-        sim_mat <- matrix(
-            ranking$score,
-            nrow = 1L,
-            ncol = nrow(ranking),
-            dimnames = list(query_label, ranking$reference)
+        # nolint next: object_usage_linter.
+        primaryScores <- .alignSearchPrimaryScores(scoresList, method)
+        # nolint next: object_usage_linter.
+        ranked <- .alignSearchBuildRanking(
+            scoresList = scoresList,
+            primaryScores = primaryScores,
+            cmNames = space$cmNames,
+            topK = topK,
+            queryLabel = queryLabel
         )
 
-        ## 10. Pathway correspondences for top hit only
+        ## 5. Pathway correspondences for top hit only
+        topCm <- y@Consortia[[ranked$topIdx]]
         correspondences <- .identifyPathwayCorrespondences(
-            xBin,
-            yBins[[top_idx]],
+            space$xBin,
+            space$yBins[[ranked$topIdx]],
             x@Pathways,
-            top_cm@Pathways
+            topCm@Pathways
         )
 
-        ## 11. Optional top-hit p-value
+        ## 6. Optional top-hit p-value
         pval <- NA_real_
         if (computePvalue) {
-            if (method %in% c("brayCurtis", "redundancyOverlap")) {
-                cli::cli_warn(
-                    paste0(
-                        "P-value computation for ",
-                        "{.val {method}} not yet ",
-                        "supported. Skipping."
-                    )
-                )
+            topYWeighted <- if (is.null(space$yWeightedList)) {
+                NULL
             } else {
-                top_yW <- if (is.null(yWeightedList)) {
-                    NULL
-                } else {
-                    yWeightedList[[top_idx]]
-                }
-                metric_fn <- switch(
-                    method,
-                    FOS = .functionalOverlap,
-                    jaccard = .jaccardIndex,
-                    MAAS = function(xBinPerm, yBinTop) {
-                        sc <- .computeAllScores(
-                            xBinPerm,
-                            yBinTop,
-                            xWeighted,
-                            top_yW
-                        )
-                        .computeMAAS(sc)
-                    }
-                )
-                pval <- .computePvalue(
-                    xGraph = x@Graphs[[1L]],
-                    yBin = yBins[[top_idx]],
-                    observed = top_score,
-                    metricFn = metric_fn,
-                    nPerm = nPermutations,
-                    metabolites = union_mets
-                )
+                space$yWeightedList[[ranked$topIdx]]
             }
+            # nolint next: object_usage_linter.
+            pval <- .alignSearchTopPvalue(
+                method = method,
+                x = x,
+                xWeighted = space$xWeighted,
+                yBin = space$yBins[[ranked$topIdx]],
+                topYWeighted = topYWeighted,
+                topScore = ranked$topScore,
+                nPermutations = nPermutations,
+                unionMets = space$unionMets
+            )
         }
 
-        ## 12. Build and return CMA
+        ## 7. Build and return CMA
         auto_name <- paste0(x@Name, " vs CMS (", n, " consortia)")
         ConsortiumMetabolismAlignment(
             Name = auto_name,
             Type = "search",
             Metric = method,
             QueryName = x@Name,
-            ReferenceName = top_name,
-            PrimaryScore = top_score,
+            ReferenceName = ranked$topName,
+            PrimaryScore = ranked$topScore,
             Pvalue = pval,
             Scores = list(
-                ranking = ranking,
-                top = scores_list[[top_idx]],
-                coverageQuery = scores_list[[top_idx]]$coverageQuery,
-                coverageReference = scores_list[[top_idx]]$coverageReference
+                ranking = ranked$ranking,
+                top = scoresList[[ranked$topIdx]],
+                coverageQuery = scoresList[[ranked$topIdx]]$coverageQuery,
+                coverageReference = scoresList[[
+                    ranked$topIdx
+                ]]$coverageReference
             ),
-            SimilarityMatrix = sim_mat,
+            SimilarityMatrix = ranked$simMat,
             SharedPathways = correspondences$shared,
             UniqueQuery = correspondences$uniqueQuery,
             UniqueReference = correspondences$uniqueReference,
             Pathways = correspondences$shared,
             Metabolites = data.frame(
-                met = union_mets,
+                met = space$unionMets,
                 stringsAsFactors = FALSE
             ),
             Params = list(
