@@ -143,17 +143,17 @@ cms <- importMisosoup(raw, name = "demo", verbose = FALSE)
 #> ✔ Expanding 1 binary matrices to 3-dimensional space [22ms]
 #> 
 #> ℹ Computing 3 x 3 levels matrix
-#> ✔ Computing 3 x 3 levels matrix [23ms]
+#> ✔ Computing 3 x 3 levels matrix [31ms]
 #> 
 #> ℹ Computing pairwise overlap (0 pairs via crossprod)
-#> ✔ Computing pairwise overlap (0 pairs via crossprod) [22ms]
+#> ✔ Computing pairwise overlap (0 pairs via crossprod) [20ms]
 #> 
 #> ℹ Assembling pathway data from 1 consortia
-#> ✔ Assembling pathway data from 1 consortia [30ms]
+#> ✔ Assembling pathway data from 1 consortia [28ms]
 #> 
 #> ℹ Collecting 1 consortium graphs
 #> CMS "demo" created: 1 consortia, 3 metabolites (0.2s)
-#> ✔ Collecting 1 consortium graphs [85ms]
+#> ✔ Collecting 1 consortium graphs [76ms]
 #> 
 cms
 #> 
