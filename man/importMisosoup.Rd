@@ -39,22 +39,24 @@ observed MiSoSoup variants (\verb{Growth_<sp>}, \verb{R_Biomass_<sp>},
 output uses a non-standard biomass reaction name, e.g.
 \code{biomassPattern = "(?i)^.*?MYBIO_"}.}
 
-\item{verbose}{If \code{TRUE} (default), emit progress messages via
-\code{\link[cli:cli_inform]{cli::cli_inform()}} and show a progress bar when importing a
-directory.}
+\item{verbose}{If \code{TRUE} (default), emit progress messages
+via \code{\link[cli:cli_inform]{cli::cli_inform()}} and show a progress bar when
+importing a directory.}
 }
 \value{
-A \link[=ConsortiumMetabolismSet-class]{ConsortiumMetabolismSet} object containing one
-\link[=ConsortiumMetabolism-class]{ConsortiumMetabolism} per viable consortium found in the
-input. Zero-growth solutions are silently skipped.
+A \link[=ConsortiumMetabolismSet-class]{ConsortiumMetabolismSet} object containing
+one \link[=ConsortiumMetabolism-class]{ConsortiumMetabolism} per viable consortium
+found in the input. Zero-growth solutions are silently
+skipped.
 }
 \description{
 Imports raw MiSoSoup YAML output into a
-\link[=ConsortiumMetabolismSet-class]{ConsortiumMetabolismSet} object. MiSoSoup YAMLs describe many
-consortia per file (one per \code{substrate} / second-level-key /
-\code{solution} triple), so a single call always produces a CMS regardless
-of whether the input is a single file, a directory of files, or a
-pre-loaded nested list.
+\link[=ConsortiumMetabolismSet-class]{ConsortiumMetabolismSet} object. MiSoSoup YAMLs
+describe many consortia per file (one per \code{substrate} /
+second-level-key / \code{solution} triple), so a single call
+always produces a CMS regardless of whether the input is a
+single file, a directory of files, or a pre-loaded nested
+list.
 }
 \details{
 The function auto-detects format differences between MiSoSoup runs:

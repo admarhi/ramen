@@ -1,11 +1,12 @@
 #' Import MiSoSoup YAML Output
 #'
 #' Imports raw MiSoSoup YAML output into a
-#' [ConsortiumMetabolismSet-class] object. MiSoSoup YAMLs describe many
-#' consortia per file (one per `substrate` / second-level-key /
-#' `solution` triple), so a single call always produces a CMS regardless
-#' of whether the input is a single file, a directory of files, or a
-#' pre-loaded nested list.
+#' [ConsortiumMetabolismSet-class] object. MiSoSoup YAMLs
+#' describe many consortia per file (one per `substrate` /
+#' second-level-key / `solution` triple), so a single call
+#' always produces a CMS regardless of whether the input is a
+#' single file, a directory of files, or a pre-loaded nested
+#' list.
 #'
 #' The function auto-detects format differences between MiSoSoup runs:
 #' the biomass-reaction name (via a configurable regex that defaults to
@@ -49,13 +50,14 @@
 #'   `community_growth` summary row. Override this if your MiSoSoup
 #'   output uses a non-standard biomass reaction name, e.g.
 #'   `biomassPattern = "(?i)^.*?MYBIO_"`.
-#' @param verbose If `TRUE` (default), emit progress messages via
-#'   [cli::cli_inform()] and show a progress bar when importing a
-#'   directory.
+#' @param verbose If `TRUE` (default), emit progress messages
+#'   via [cli::cli_inform()] and show a progress bar when
+#'   importing a directory.
 #'
-#' @return A [ConsortiumMetabolismSet-class] object containing one
-#'   [ConsortiumMetabolism-class] per viable consortium found in the
-#'   input. Zero-growth solutions are silently skipped.
+#' @return A [ConsortiumMetabolismSet-class] object containing
+#'   one [ConsortiumMetabolism-class] per viable consortium
+#'   found in the input. Zero-growth solutions are silently
+#'   skipped.
 #'
 #' @seealso [importSmetana()] for the sibling SMETANA import.
 #'

@@ -13,41 +13,48 @@ importSmetana(
 )
 }
 \arguments{
-\item{data}{Either a file path to a single SMETANA TSV, a directory path
-containing multiple SMETANA TSVs, or a pre-loaded data.frame with the
-required columns (\code{receiver}, \code{donor}, \code{compound}, and \code{smetana} if
+\item{data}{Either a file path to a single SMETANA TSV, a
+directory path containing multiple SMETANA TSVs, or a
+pre-loaded data.frame with the required columns
+(\code{receiver}, \code{donor}, \code{compound}, and \code{smetana} if
 \code{use_scores = TRUE}).}
 
-\item{name}{Consortium (or set) name as a length-1 character scalar. If
-\code{NULL} (default), names are derived from the input filename(s) by stripping
-the \code{.tsv_detailed.tsv} suffix. Required when \code{data} is a data.frame. If
-\code{data} is a directory, \code{name} is passed through to
-\code{\link[=ConsortiumMetabolismSet]{ConsortiumMetabolismSet()}}.}
+\item{name}{Consortium (or set) name as a length-1
+character scalar. If \code{NULL} (default), names are derived
+from the input filename(s) by stripping the
+\code{.tsv_detailed.tsv} suffix. Required when \code{data} is a
+data.frame. If \code{data} is a directory, \code{name} is passed
+through to \code{\link[=ConsortiumMetabolismSet]{ConsortiumMetabolismSet()}}.}
 
-\item{use_scores}{If \code{FALSE}, flux is binary (+1 for production,
--1 for consumption). If \code{TRUE} (default), flux magnitude is the
-SMETANA score,
-aggregated by \code{max()} when the same (species, compound) pair appears
+\item{use_scores}{If \code{FALSE}, flux is binary (+1 for
+production, -1 for consumption). If \code{TRUE} (default),
+flux magnitude is the SMETANA score, aggregated by
+\code{max()} when the same (species, compound) pair appears
 across multiple interaction partners.}
 
-\item{normalize_ids}{If \code{TRUE} (default), normalize compound IDs via
-\code{\link[=.normalizeBiggIds]{.normalizeBiggIds()}} (strips \code{M_} prefix and \verb{_e} compartment suffix).}
+\item{normalize_ids}{If \code{TRUE} (default), normalize
+compound IDs via \code{\link[=.normalizeBiggIds]{.normalizeBiggIds()}} (strips \code{M_}
+prefix and \verb{_e} compartment suffix).}
 
-\item{verbose}{If \code{TRUE} (default), emit progress messages via
-cli progress messages.}
+\item{verbose}{If \code{TRUE} (default), emit progress messages
+via cli progress messages.}
 }
 \value{
-A \code{ConsortiumMetabolism} object if \code{data} is a single file or
-data.frame; a \code{ConsortiumMetabolismSet} if \code{data} is a directory.
+A \code{ConsortiumMetabolism} object if \code{data} is a
+single file or data.frame; a \code{ConsortiumMetabolismSet}
+if \code{data} is a directory.
 }
 \description{
-Imports raw SMETANA \code{--detailed} output (one TSV file per consortium) into
-a ConsortiumMetabolism (single file/data.frame) or ConsortiumMetabolismSet
-(directory of files). The raw format has columns \code{community}, \code{medium},
-\code{receiver}, \code{donor}, \code{compound}, \code{scs}, \code{mus}, \code{mps}, \code{smetana}, where each
-row describes a cross-feeding interaction: \code{donor} produces \code{compound},
-\code{receiver} consumes it. This function collapses those directed interactions
-into ramen's (species, metabolite, flux) edge-list representation.
+Imports raw SMETANA \code{--detailed} output (one TSV file per
+consortium) into a ConsortiumMetabolism (single
+file/data.frame) or ConsortiumMetabolismSet (directory of
+files). The raw format has columns \code{community}, \code{medium},
+\code{receiver}, \code{donor}, \code{compound}, \code{scs}, \code{mus}, \code{mps},
+\code{smetana}, where each row describes a cross-feeding
+interaction: \code{donor} produces \code{compound}, \code{receiver}
+consumes it. This function collapses those directed
+interactions into ramen's (species, metabolite, flux)
+edge-list representation.
 }
 \examples{
 if (FALSE) {
@@ -62,6 +69,6 @@ cm <- importSmetana("path/to/bq_0.tsv_detailed.tsv", use_scores = TRUE)
 }
 }
 \seealso{
-\code{\link[=ConsortiumMetabolism]{ConsortiumMetabolism()}}, \code{\link[=ConsortiumMetabolismSet]{ConsortiumMetabolismSet()}},
-\code{\link[=importMisosoup]{importMisosoup()}}
+\code{\link[=ConsortiumMetabolism]{ConsortiumMetabolism()}},
+\code{\link[=ConsortiumMetabolismSet]{ConsortiumMetabolismSet()}}, \code{\link[=importMisosoup]{importMisosoup()}}
 }

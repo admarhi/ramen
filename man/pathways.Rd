@@ -41,7 +41,15 @@ pathway data including flux statistics, effective
 values, and per-species detail.}
 
 \item{type}{Character scalar giving the type of
-pathways to output.}
+pathways to output. Note that the four filtered
+types use two different rulers:
+\code{"pan-cons"} and \code{"niche"} rank by the
+integer per-pathway consortium count and quantile
+over a uniform integer ruler
+(\code{seq_len(total_cons)}); \code{"core"} and
+\code{"aux"} rank by per-pathway species count and
+quantile over the empirical \code{n_species}
+distribution across pathways.}
 
 \item{quantileCutoff}{Numeric scalar between 0 and 1
 giving the quantile threshold to use for filtering

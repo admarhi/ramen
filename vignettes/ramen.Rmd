@@ -135,6 +135,24 @@ positive fluxes indicate production.
 > D-alanine. Look up any identifier at
 > <https://bigg.ucsd.edu/metabolites>.
 
+## Metabolite identifier hygiene
+
+`ramen` performs **string-equality matching** on metabolite
+identifiers. Two species that consume the same molecule under
+different naming conventions will appear to consume two distinct
+metabolites in the network: a CM whose edge list mixes `ac_e`
+(BiGG), `CHEBI:30089` (ChEBI), and `acetate` (free text) for the
+same compound will yield three separate metabolite nodes rather
+than one. The same applies across CMs in a `ConsortiumMetabolismSet`
+or across operands of an `align()` call: identifiers must match
+character-for-character to be treated as the same metabolite.
+
+Pick one namespace and stick with it across all CMs in a CMS or
+alignment. The package does **not** currently provide a
+name-normalisation helper; cross-namespace mapping (BiGG to ChEBI,
+ChEBI to free text, etc.) is the user's responsibility, ideally
+performed once at the data-import step before constructing CMs.
+
 ```{r load-data}
 data("misosoup24")
 length(misosoup24)
