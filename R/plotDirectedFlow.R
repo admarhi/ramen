@@ -62,10 +62,20 @@
 #'   categorical edge colour scale. Defaults to \code{"Type"}.
 #' @param edgeColourLow Character string. The colour for the lowest edge
 #'   weight when \code{colourEdgesByWeight} is \code{TRUE}. Defaults to
-#'   \code{"gray80"}.
+#'   \code{"#DEEBF7"} (ColorBrewer Blues, light end).
 #' @param edgeColourHigh Character string. The colour for the highest
 #'   edge weight when \code{colourEdgesByWeight} is \code{TRUE}. Defaults
-#'   to \code{"black"}.
+#'   to \code{"#08519C"} (ColorBrewer Blues, dark end).
+#' @param nodeColourValues Named character vector of length 3 mapping
+#'   the node roles \code{"source"}, \code{"intermediate"}, and
+#'   \code{"sink"} to colours. Defaults to a maximally distinct
+#'   Okabe-Ito triple (blue / yellow / vermilion) chosen for
+#'   colour-blind safety and high mutual contrast.
+#' @param nodeColourLabels Optional named character vector mapping node
+#'   roles to legend labels. Defaults to \code{c(source = "Source",
+#'   intermediate = "Intermediate", sink = "Sink")}.
+#' @param nodeColourLegendTitle Character scalar. Legend title for the
+#'   node-role colour scale. Defaults to \code{"Node role"}.
 #' @param main Character string. Optional plot title.
 #' @param ... Additional arguments. Currently unused; retained for forward
 #'   compatibility.
@@ -92,7 +102,7 @@
 #' @importFrom ggraph scale_edge_width_continuous circle
 #' @importFrom ggraph guide_edge_colourbar
 #' @importFrom ggplot2 aes arrow unit theme theme_void element_text labs
-#' @importFrom ggplot2 margin scale_colour_manual
+#' @importFrom ggplot2 element_rect margin scale_colour_manual
 #' @importFrom rlang .data
 plotDirectedFlow <- function(
     g,
@@ -109,8 +119,19 @@ plotDirectedFlow <- function(
     edgeColourValues = NULL,
     edgeColourLabels = NULL,
     edgeColourLegendTitle = "Type",
-    edgeColourLow = "gray80",
-    edgeColourHigh = "black",
+    edgeColourLow = "#DEEBF7",
+    edgeColourHigh = "#08519C",
+    nodeColourValues = c(
+        source = "#0072B2",
+        intermediate = "#F0E442",
+        sink = "#D55E00"
+    ),
+    nodeColourLabels = c(
+        source = "Source",
+        intermediate = "Intermediate",
+        sink = "Sink"
+    ),
+    nodeColourLegendTitle = "Node role",
     main = NULL,
     ...
 ) {
@@ -281,17 +302,9 @@ plotDirectedFlow <- function(
             size = nodeSize
         ) +
         ggplot2::scale_colour_manual(
-            name = "Node role",
-            values = c(
-                source = "#56B4E9",
-                intermediate = "#F0E442",
-                sink = "#E69F00"
-            ),
-            labels = c(
-                source = "Source",
-                intermediate = "Intermediate",
-                sink = "Sink"
-            ),
+            name = nodeColourLegendTitle,
+            values = nodeColourValues,
+            labels = nodeColourLabels,
             drop = FALSE
         ) +
         ggraph::geom_node_text(
@@ -302,7 +315,20 @@ plotDirectedFlow <- function(
         ) +
         ggplot2::theme_void() +
         ggplot2::theme(
-            legend.position = "right",
+            legend.position = "bottom",
+            legend.box = "horizontal",
+            plot.background = ggplot2::element_rect(
+                fill = "white",
+                colour = NA
+            ),
+            panel.background = ggplot2::element_rect(
+                fill = "white",
+                colour = NA
+            ),
+            legend.background = ggplot2::element_rect(
+                fill = "white",
+                colour = NA
+            ),
             plot.title = ggplot2::element_text(
                 hjust = 0,
                 margin = ggplot2::margin(b = 6)

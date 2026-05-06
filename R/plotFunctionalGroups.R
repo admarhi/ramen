@@ -114,7 +114,8 @@ plotFunctionalGroups <- function(
             axis.ticks = ggplot2::element_blank(),
             axis.line = ggplot2::element_blank(),
             panel.background = ggplot2::element_blank(),
-            panel.grid = ggplot2::element_blank()
+            panel.grid = ggplot2::element_blank(),
+            legend.position = "bottom"
         ) +
         ggplot2::scale_y_continuous(
             expand = ggplot2::expansion(

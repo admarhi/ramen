@@ -115,7 +115,8 @@ setMethod(
                 axis.ticks = ggplot2::element_blank(),
                 axis.title = ggplot2::element_blank(),
                 panel.background = ggplot2::element_blank(),
-                panel.grid = ggplot2::element_blank()
+                panel.grid = ggplot2::element_blank(),
+                legend.position = "bottom"
             ) +
             ggplot2::geom_text(
                 # manually draw the axis labels (i.e., leaf labels)
@@ -140,6 +141,13 @@ setMethod(
 #' @param type Character specifying the plot type:
 #'   \code{"heatmap"}, \code{"network"}, or
 #'   \code{"scores"}.
+#' @param ... Extra arguments forwarded to the underlying plot
+#'   helper. For \code{type = "network"}, the most useful are
+#'   \code{edgeColourValues} (named character vector mapping
+#'   \code{shared}, \code{query}, \code{reference} to colours;
+#'   defaults emphasise the shared edges with solid black against
+#'   light/dark grey) and \code{nodeColourValues} (override the node
+#'   role palette).
 #' @return A \code{ggplot} object.
 #' @examples
 #' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
@@ -151,7 +159,7 @@ setMethod(
 setMethod(
     "plot",
     "ConsortiumMetabolismAlignment",
-    function(x, type = NULL) {
+    function(x, type = NULL, ...) {
         ## Default type based on alignment type
         if (is.null(type)) {
             type <- if (x@Type == "multiple") {
@@ -168,7 +176,7 @@ setMethod(
         switch(
             type,
             heatmap = .plotHeatmap(x),
-            network = .plotNetwork(x),
+            network = .plotNetwork(x, ...),
             scores = .plotScores(x)
         )
     }
@@ -243,7 +251,8 @@ setMethod(
                 hjust = 1
             ),
             axis.title = ggplot2::element_blank(),
-            panel.grid = ggplot2::element_blank()
+            panel.grid = ggplot2::element_blank(),
+            legend.position = "bottom"
         ) +
         ggplot2::ggtitle(
             paste("Similarity Heatmap -", cma@Metric)
@@ -252,7 +261,21 @@ setMethod(
 
 #' Plot network for pairwise alignment
 #' @noRd
-.plotNetwork <- function(cma) {
+.plotNetwork <- function(
+    cma,
+    edgeColourValues = c(
+        shared = "#000000",
+        query = "#a6a6a6",
+        reference = "#555555"
+    ),
+    edgeColourLabels = c(
+        shared = "Shared",
+        query = "Query-only",
+        reference = "Reference-only"
+    ),
+    edgeColourLegendTitle = "Pathway type",
+    ...
+) {
     if (cma@Type != "pairwise") {
         cli::cli_abort(
             "Network plot requires a pairwise alignment."
@@ -311,32 +334,20 @@ setMethod(
     edge_df <- pw_df[, c("consumed", "produced", "source")]
     g <- igraph::graph_from_data_frame(edge_df, directed = TRUE)
 
-    ## Okabe-Ito palette: bluish-green / blue / vermilion. Picked for
-    ## colour-blind safety and good separation under deuteranopia.
-    okabe_ito <- c(
-        shared = "#009E73",
-        query = "#0072B2",
-        reference = "#D55E00"
-    )
-    pathway_labels <- c(
-        shared = "Shared",
-        query = "Query-only",
-        reference = "Reference-only"
-    )
-
     plotDirectedFlow(
         g,
         colourEdgesByWeight = FALSE,
         edgeColourAttr = "source",
-        edgeColourValues = okabe_ito,
-        edgeColourLabels = pathway_labels,
-        edgeColourLegendTitle = "Pathway type",
+        edgeColourValues = edgeColourValues,
+        edgeColourLabels = edgeColourLabels,
+        edgeColourLegendTitle = edgeColourLegendTitle,
         edgeWidthRange = c(1, 1),
         main = paste(
             cma@QueryName,
             "vs",
             cma@ReferenceName
-        )
+        ),
+        ...
     )
 }
 

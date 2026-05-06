@@ -4,7 +4,7 @@
 \alias{plot,ConsortiumMetabolismAlignment,ANY-method}
 \title{Plot a ConsortiumMetabolismAlignment object}
 \usage{
-\S4method{plot}{ConsortiumMetabolismAlignment,ANY}(x, type = NULL)
+\S4method{plot}{ConsortiumMetabolismAlignment,ANY}(x, type = NULL, ...)
 }
 \arguments{
 \item{x}{A \code{ConsortiumMetabolismAlignment} object.}
@@ -12,6 +12,14 @@
 \item{type}{Character specifying the plot type:
 \code{"heatmap"}, \code{"network"}, or
 \code{"scores"}.}
+
+\item{...}{Extra arguments forwarded to the underlying plot
+helper. For \code{type = "network"}, the most useful are
+\code{edgeColourValues} (named character vector mapping
+\code{shared}, \code{query}, \code{reference} to colours;
+defaults emphasise the shared edges with solid black against
+light/dark grey) and \code{nodeColourValues} (override the node
+role palette).}
 }
 \value{
 A \code{ggplot} object.

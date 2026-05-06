@@ -19,8 +19,11 @@ plotDirectedFlow(
   edgeColourValues = NULL,
   edgeColourLabels = NULL,
   edgeColourLegendTitle = "Type",
-  edgeColourLow = "gray80",
-  edgeColourHigh = "black",
+  edgeColourLow = "#DEEBF7",
+  edgeColourHigh = "#08519C",
+  nodeColourValues = c(source = "#0072B2", intermediate = "#F0E442", sink = "#D55E00"),
+  nodeColourLabels = c(source = "Source", intermediate = "Intermediate", sink = "Sink"),
+  nodeColourLegendTitle = "Node role",
   main = NULL,
   ...
 )
@@ -75,11 +78,24 @@ categorical edge colour scale. Defaults to \code{"Type"}.}
 
 \item{edgeColourLow}{Character string. The colour for the lowest edge
 weight when \code{colourEdgesByWeight} is \code{TRUE}. Defaults to
-\code{"gray80"}.}
+\code{"#DEEBF7"} (ColorBrewer Blues, light end).}
 
 \item{edgeColourHigh}{Character string. The colour for the highest
 edge weight when \code{colourEdgesByWeight} is \code{TRUE}. Defaults
-to \code{"black"}.}
+to \code{"#08519C"} (ColorBrewer Blues, dark end).}
+
+\item{nodeColourValues}{Named character vector of length 3 mapping
+the node roles \code{"source"}, \code{"intermediate"}, and
+\code{"sink"} to colours. Defaults to a maximally distinct
+Okabe-Ito triple (blue / yellow / vermilion) chosen for
+colour-blind safety and high mutual contrast.}
+
+\item{nodeColourLabels}{Optional named character vector mapping node
+roles to legend labels. Defaults to \code{c(source = "Source",
+intermediate = "Intermediate", sink = "Sink")}.}
+
+\item{nodeColourLegendTitle}{Character scalar. Legend title for the
+node-role colour scale. Defaults to \code{"Node role"}.}
 
 \item{main}{Character string. Optional plot title.}
 
