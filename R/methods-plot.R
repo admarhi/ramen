@@ -5,8 +5,7 @@ NULL
 #'
 #' @param x A \code{ConsortiumMetabolism} object.
 #' @param type Character specifying the assay to plot.
-#' @return Invisibly returns \code{NULL}. Called for its
-#'   side effect of producing an igraph network plot.
+#' @return A \code{ggplot} object rendered with \pkg{ggraph}.
 #' @examples
 #' cm <- synCM("test", n_species = 3, max_met = 5)
 #' plot(cm)
@@ -141,9 +140,7 @@ setMethod(
 #' @param type Character specifying the plot type:
 #'   \code{"heatmap"}, \code{"network"}, or
 #'   \code{"scores"}.
-#' @return For \code{"heatmap"} and \code{"scores"}, a
-#'   \code{ggplot} object. For \code{"network"}, invisibly
-#'   returns \code{NULL} (base igraph plot).
+#' @return A \code{ggplot} object.
 #' @examples
 #' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
 #' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
@@ -309,23 +306,31 @@ setMethod(
         return(invisible(NULL))
     }
 
-    ## Build igraph
-    g <- igraph::graph_from_data_frame(
-        pw_df[, c("consumed", "produced")],
-        directed = TRUE
-    )
+    ## Build igraph; carry `source` as a categorical edge attribute so
+    ## plotDirectedFlow can render a colour-blind-safe legend.
+    edge_df <- pw_df[, c("consumed", "produced", "source")]
+    g <- igraph::graph_from_data_frame(edge_df, directed = TRUE)
 
-    ## Set edge colors by source
-    color_map <- c(
-        shared = "#4DAF4A",
-        query = "#377EB8",
-        reference = "#E41A1C"
+    ## Okabe-Ito palette: bluish-green / blue / vermilion. Picked for
+    ## colour-blind safety and good separation under deuteranopia.
+    okabe_ito <- c(
+        shared = "#009E73",
+        query = "#0072B2",
+        reference = "#D55E00"
     )
-    igraph::E(g)$color <- color_map[pw_df$source]
+    pathway_labels <- c(
+        shared = "Shared",
+        query = "Query-only",
+        reference = "Reference-only"
+    )
 
     plotDirectedFlow(
         g,
         color_edges_by_weight = FALSE,
+        edge_color_attr = "source",
+        edge_color_values = okabe_ito,
+        edge_color_labels = pathway_labels,
+        edge_color_legend_title = "Pathway type",
         edge_width_range = c(1, 1),
         main = paste(
             cma@QueryName,

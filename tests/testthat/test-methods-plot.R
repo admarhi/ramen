@@ -73,11 +73,68 @@ test_that("scores plot works for multiple", {
 
 ## ---- plot(CMA): network (pairwise) ---------------------------------------
 
-test_that("network plot runs without error for pairwise", {
+test_that("network plot returns ggplot for pairwise", {
     cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
     cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
     cma <- align(cm1, cm2)
-    expect_no_error(plot(cma, type = "network"))
+    p <- plot(cma, type = "network")
+    expect_s3_class(p, "ggplot")
+})
+
+test_that("network plot has Okabe-Ito categorical legend", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
+    cma <- align(cm1, cm2)
+    p <- plot(cma, type = "network")
+    ## The categorical edge-colour scale should be present and titled.
+    scale_titles <- vapply(
+        p$scales$scales,
+        function(s) {
+            tt <- s$name
+            if (
+                is.null(tt) ||
+                    inherits(tt, "waiver") ||
+                    length(tt) != 1L ||
+                    isTRUE(is.na(tt))
+            ) {
+                ""
+            } else {
+                as.character(tt)
+            }
+        },
+        character(1L)
+    )
+    expect_true("Pathway type" %in% scale_titles)
+})
+
+test_that("plot(cm) returns a ggplot object", {
+    cm <- synCM("test", n_species = 3, max_met = 5, seed = 1)
+    p <- plot(cm, type = "Binary")
+    expect_s3_class(p, "ggplot")
+})
+
+test_that("plot(cm) weighted has edge weight gradient legend", {
+    cm <- synCM("test", n_species = 4, max_met = 6, seed = 1)
+    p <- plot(cm, type = "nSpecies")
+    expect_s3_class(p, "ggplot")
+    scale_titles <- vapply(
+        p$scales$scales,
+        function(s) {
+            tt <- s$name
+            if (
+                is.null(tt) ||
+                    inherits(tt, "waiver") ||
+                    length(tt) != 1L ||
+                    isTRUE(is.na(tt))
+            ) {
+                ""
+            } else {
+                as.character(tt)
+            }
+        },
+        character(1L)
+    )
+    expect_true("Weight" %in% scale_titles)
 })
 
 test_that("network errors for multiple CMA", {

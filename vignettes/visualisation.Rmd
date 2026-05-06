@@ -28,6 +28,10 @@ of every plot type. For context on the underlying analyses, see
 `vignette("ramen", package = "ramen")` and
 `vignette("alignment", package = "ramen")`.
 
+All `ramen` plot methods return `ggplot` objects, composable with
+the usual `ggplot2` operators (e.g. `+ ggplot2::theme_minimal()`).
+Network plots are rendered with the `ggraph` package.
+
 ```{r load-library, message = FALSE}
 library(ramen)
 ```
@@ -51,7 +55,7 @@ cma_mult <- align(cms)
 # ConsortiumMetabolism plots
 
 `plot(CM)` renders a directed metabolic flow network using
-`igraph`. Nodes are coloured by role: **lightblue** for sources
+`ggraph`. Nodes are coloured by role: **lightblue** for sources
 (only outgoing edges), **salmon** for sinks (only incoming edges),
 and **lightgoldenrod** for intermediate nodes (both incoming and
 outgoing). The `type` argument selects which assay matrix
@@ -142,8 +146,9 @@ plot(cma_mult, type = "heatmap")
 
 ## Network (pairwise alignment)
 
-Shared pathways in **green**, query-unique in **blue**,
-reference-unique in **red**.
+Shared, query-unique, and reference-unique pathways are coloured
+using the colour-blind-safe Okabe-Ito palette (bluish-green, blue,
+vermilion). The legend is titled *Pathway type*.
 
 ```{r plot-cma-network, fig.cap = "Pairwise alignment network."}
 plot(cma_pair, type = "network")

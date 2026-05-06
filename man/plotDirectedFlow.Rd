@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotDirectedFlow.R
 \name{plotDirectedFlow}
 \alias{plotDirectedFlow}
-\title{Plot a Directed Graph Emphasizing Flow}
+\title{Plot a Directed Graph Emphasising Flow}
 \usage{
 plotDirectedFlow(
   g,
@@ -10,13 +10,18 @@ plotDirectedFlow(
   mixed_x = 1,
   sink_x = 2,
   vertical_spacing = 1,
-  vertex_size = 10,
-  vertex_label_cex = 0.8,
-  edge_arrow_size = 0.5,
-  edge_width_range = c(0.1, 0.1),
+  vertex_size = 4,
+  vertex_label_cex = 3,
+  edge_arrow_size = 2,
+  edge_width_range = c(0.3, 1.2),
   color_edges_by_weight = FALSE,
+  edge_color_attr = NULL,
+  edge_color_values = NULL,
+  edge_color_labels = NULL,
+  edge_color_legend_title = "Type",
   edge_color_low = "gray80",
   edge_color_high = "black",
+  main = NULL,
   ...
 )
 }
@@ -34,44 +39,69 @@ nodes. The actual layout spans \code{mixed_x} +/- 0.4. Defaults to 1.}
 \item{vertical_spacing}{Numeric scalar. The maximum y-coordinate, controlling
 the vertical spread of the layout. Defaults to 1.}
 
-\item{vertex_size}{Numeric scalar. The size of the vertices (nodes) in the
-plot. Defaults to 10.}
+\item{vertex_size}{Numeric scalar. The size of node points. Defaults to 4.}
 
-\item{vertex_label_cex}{Numeric scalar. The character expansion factor for
-vertex labels. Defaults to 0.8.}
+\item{vertex_label_cex}{Numeric scalar. The size of node labels. Defaults
+to 3.}
 
-\item{edge_arrow_size}{Numeric scalar. The size of the arrows on the edges.
-Defaults to 0.5.}
+\item{edge_arrow_size}{Numeric scalar. The arrow length on edges, in
+millimetres. Defaults to 2.}
 
 \item{edge_width_range}{Numeric vector of length 2. The minimum and maximum
 width for edges when scaled by weight. If the graph is unweighted or all
 weights are identical, the mean of this range is used. Defaults to
-\code{c(0.1, 0.1)}.}
+\code{c(0.3, 1.2)}.}
 
-\item{color_edges_by_weight}{Logical scalar.
-If \code{TRUE} and the graph has a
-'weight' edge attribute, edges will be colored based on their weight,
-interpolating between \code{edge_color_low} and \code{edge_color_high}.}
+\item{color_edges_by_weight}{Logical scalar. If \code{TRUE} and the graph
+has a \code{weight} edge attribute, edges are coloured on a continuous
+gradient from \code{edge_color_low} to \code{edge_color_high}.}
 
-\item{edge_color_low}{Character string. The color for the lowest edge weight
-when \code{color_edges_by_weight} is \code{TRUE}. Defaults to "gray80".}
+\item{edge_color_attr}{Optional character scalar naming a categorical edge
+attribute to colour edges by (e.g. \code{"source"}). When set, takes
+precedence over \code{color_edges_by_weight}.}
 
-\item{edge_color_high}{Character string. The color for the highest edge
-weight when \code{color_edges_by_weight} is \code{TRUE}. Defaults to "black".}
+\item{edge_color_values}{Optional named character vector mapping levels of
+\code{edge_color_attr} to colours. Used only when \code{edge_color_attr}
+is non-NULL.}
 
-\item{...}{Additional arguments passed to igraph.}
+\item{edge_color_labels}{Optional named character vector mapping levels of
+\code{edge_color_attr} to legend labels. Used only when
+\code{edge_color_attr} is non-NULL.}
+
+\item{edge_color_legend_title}{Character scalar. Legend title for the
+categorical edge colour scale. Defaults to \code{"Type"}.}
+
+\item{edge_color_low}{Character string. The colour for the lowest edge
+weight when \code{color_edges_by_weight} is \code{TRUE}. Defaults to
+\code{"gray80"}.}
+
+\item{edge_color_high}{Character string. The colour for the highest edge
+weight when \code{color_edges_by_weight} is \code{TRUE}. Defaults to
+\code{"black"}.}
+
+\item{main}{Character string. Optional plot title.}
+
+\item{...}{Additional arguments. Currently unused; retained for backwards
+compatibility with the previous igraph-based implementation.}
 }
 \value{
-Invisibly returns \code{NULL}. This function is called for its
-side effect of generating a plot.
+A \code{ggplot} object.
 }
 \description{
 Arranges nodes of a directed graph into three distinct columns representing
 sources (nodes with only outgoing edges), sinks (nodes with only incoming
 edges), and intermediate nodes (with both incoming and outgoing edges).
 The layout within the intermediate column is determined using the
-Fruchterman-Reingold algorithm. This visualization helps understand the
-overall flow structure within the graph.
+Kamada-Kawai algorithm. This visualisation helps understand the overall
+flow structure within the graph and is rendered with \pkg{ggraph}, so the
+returned object composes with the usual \pkg{ggplot2} operators.
+}
+\details{
+Edges may be coloured in three ways: by a continuous \code{weight}
+attribute (\code{color_edges_by_weight = TRUE}); by a categorical edge
+attribute (\code{edge_color_attr = "<name>"}), in which case
+\code{edge_color_values} and \code{edge_color_labels} customise the
+palette and legend; or with a single fixed colour (default).
 }
 \examples{
 cm <- synCM("test", n_species = 3, max_met = 5)
