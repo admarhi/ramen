@@ -3,12 +3,42 @@ NULL
 
 #' Plot a ConsortiumMetabolism object
 #'
+#' @description
+#' Render a single assay of a \code{ConsortiumMetabolism} as a
+#' directed metabolite-to-metabolite flow network. Each edge is a
+#' pathway (consumed metabolite \eqn{\rightarrow} produced
+#' metabolite); the chosen \code{type} determines what the edge
+#' weight encodes.
+#'
 #' @param x A \code{ConsortiumMetabolism} object.
-#' @param type Character specifying the assay to plot.
+#' @param type Character. Which of the eight CM assays to render.
+#'   One of:
+#'   \describe{
+#'     \item{\code{"Binary"}}{Presence / absence of each pathway
+#'       (consumed \eqn{\rightarrow} produced).}
+#'     \item{\code{"nSpecies"}}{Count of species that participate
+#'       in each pathway.}
+#'     \item{\code{"Consumption"}}{Total consumption flux per
+#'       pathway (sum of uptake fluxes).}
+#'     \item{\code{"Production"}}{Total production flux per pathway
+#'       (sum of secretion fluxes).}
+#'     \item{\code{"EffectiveConsumption"}}{Consumption flux scaled
+#'       by Hill-1 perplexity, \eqn{F \cdot 2^{H(p)}}; same units
+#'       as \code{Consumption} but combines magnitude with species
+#'       evenness across the pathway.}
+#'     \item{\code{"EffectiveProduction"}}{As above on the
+#'       production side.}
+#'     \item{\code{"nEffectiveSpeciesConsumption"}}{Hill-1
+#'       effective number of consuming species. Unitless, in
+#'       \eqn{[1, S]}.}
+#'     \item{\code{"nEffectiveSpeciesProduction"}}{As above on the
+#'       production side.}
+#'   }
 #' @return A \code{ggplot} object rendered with \pkg{ggraph}.
 #' @examples
 #' cm <- synCM("test", n_species = 3, max_met = 5)
 #' plot(cm)
+#' plot(cm, type = "EffectiveConsumption")
 #' @exportMethod plot
 setMethod(
     "plot",
@@ -45,22 +75,49 @@ setMethod(
 
 #' Plot a ConsortiumMetabolismSet object
 #'
+#' @description
+#' Render the dendrogram of a \code{ConsortiumMetabolismSet}'s
+#' hierarchical clustering of consortia, optionally annotated with
+#' the internal cluster identifiers used by
+#' \code{\link{extractCluster}}.
+#'
+#' @details
+#' The dendrogram is the one computed at CMS construction time
+#' from the FOS overlap matrix; tip labels are consortium names.
+#'
+#' When \code{showClusterIds = TRUE} (the default), small numbered
+#' circles overlay the internal nodes of the dendrogram (up to
+#' \code{max_nodes} of them). The numbers are the cluster IDs that
+#' \code{\link{extractCluster}} accepts to retrieve a sub-CMS for
+#' the subtree rooted at that node.
+#'
+#' For figure export, set \code{showClusterIds = FALSE} to obtain
+#' a clean dendrogram without the cluster-ID overlays. Use
+#' \code{label_colours} to recolour individual tip labels by
+#' supplying a tibble with \code{label} and \code{colour} columns
+#' (one row per consortium to recolour).
+#'
 #' @param x A \code{ConsortiumMetabolismSet} object.
-#' @param label_colours Optional tibble with label and
-#'   colour columns.
-#' @param max_nodes Maximum number of dendrogram nodes.
-#' @param label_size Numeric label size.
-#' @param showClusterIds Logical. If \code{TRUE} (default), draw the
-#'   internal cluster identifiers used by
-#'   \code{\link{extractCluster}} as small filled circles on top of
-#'   the dendrogram. Set to \code{FALSE} for a clean dendrogram
+#' @param label_colours Optional tibble with \code{label} and
+#'   \code{colour} columns mapping consortium names to custom tip
+#'   colours.
+#' @param max_nodes Integer. Maximum number of internal cluster
+#'   nodes to overlay with cluster-ID badges (only used when
+#'   \code{showClusterIds = TRUE}). Defaults to \code{20}.
+#' @param label_size Numeric tip-label size.
+#' @param showClusterIds Logical. If \code{TRUE} (default), draw
+#'   the internal cluster identifiers used by
+#'   \code{\link{extractCluster}} as small filled circles on top
+#'   of the dendrogram. Set to \code{FALSE} for a clean dendrogram
 #'   suitable for figure export.
 #' @return A \code{ggplot} object (returned invisibly).
+#' @seealso \code{\link{extractCluster}}
 #' @examples
 #' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
 #' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
 #' cms <- ConsortiumMetabolismSet(cm1, cm2, name = "test")
 #' plot(cms)
+#' plot(cms, showClusterIds = FALSE)
 #' @exportMethod plot
 setMethod(
     "plot",

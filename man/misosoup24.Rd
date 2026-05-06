@@ -5,9 +5,13 @@
 \alias{misosoup24}
 \title{Example Data from MiSoSoup 2024}
 \format{
-A list of 56 tibbles, each with columns:
+A named list of 56 data.frames, each with columns:
 \describe{
-\item{species}{Character, species identifier.}
+\item{species}{Character, species identifier. The species
+flagged as \emph{focal} appears in the list element name
+(see naming convention in \emph{Details}); the remaining
+species are the \emph{support} community selected by the
+MILP solver to keep the focal strain viable.}
 \item{metabolite}{Character, metabolite identifier following
 the BiGG namespace (King et al. 2016). Common examples:
 \code{ac} (acetate), \code{co2} (CO2), \code{etoh}
@@ -16,28 +20,82 @@ the BiGG namespace (King et al. 2016). Common examples:
 double-underscore convention encodes stereochemistry
 (e.g. \code{__L} = L-isomer, \code{__D} = D-isomer).
 See \url{https://bigg.ucsd.edu} for the full namespace.}
-\item{flux}{Numeric, metabolic flux (negative for
-consumption, positive for production).}
+\item{flux}{Numeric, metabolic flux. Negative values denote
+consumption (uptake by the species), positive values denote
+production (secretion).}
 }
 }
 \value{
-A list of 56 tibbles.
+A named list of 56 data.frames.
 }
 \description{
-List of 56 solutions from MiSoSoup for different focal
-strains in different media.
+Pre-imported exchange-flux tables for 56 microbial-community
+solutions enumerated by MiSoSoup. Each list element captures a
+single alternative optimal community around a focal strain on a
+single carbon source, in the flat \code{metabolite} /
+\code{species} / \code{flux} long form that
+\code{\link{ConsortiumMetabolism}()} consumes directly.
 }
 \details{
-Metabolite identifiers follow the BiGG (Biochemically,
+\strong{What MiSoSoup is.} MiSoSoup is a Mixed-Integer Linear
+Programming (MILP) enumerator that, given a community-level
+metabolic-modelling objective, returns \emph{multiple
+alternative optimal community compositions} satisfying that
+objective. The output ramen consumes is the per-solution
+exchange-flux table: which species exchange which metabolites,
+and at what flux, in each viable community.
+
+\strong{Focal strain and support community.} Each MiSoSoup run
+is anchored on a \emph{focal strain} -- the species the solver
+is instructed to keep alive while exploring viable communities
+around it. The other species in each solution are the
+\emph{support}: the MILP picks them so that the focal strain
+achieves the requested objective. A single focal-strain /
+substrate combination typically yields many alternative optima
+with distinct support compositions; these become the separate
+list elements that share a substrate / strain prefix.
+
+\strong{Biological scope.} The 56 solutions span three focal
+strains (\code{A1R12}, \code{A3R04}, \code{B3M02}) on three
+carbon sources: acetate (\code{ac}), citrate (\code{cit}), and
+fructose-6-phosphate (\code{f6p}). The growth medium is a
+minimal medium with the named substrate as the sole carbon
+source (see source paper for the full medium composition).
+
+\strong{Naming convention.} List element names follow the
+pattern \code{{substrate}_{focal-strain}_{solution-id}}. For
+example, \code{ac_A1R12_1} is alternative optimum 1 for focal
+strain \code{A1R12} on acetate. The substrate / strain grouping
+can be recovered by splitting the names on underscores.
+
+\strong{Caution -- alternative optima.} Two solutions with the
+same substrate / strain prefix are \emph{alternative optima of
+the same MILP}, not biologically independent communities. Their
+pairwise FOS overlap is expected to be high by construction;
+treat such overlaps as solver-consistency diagnostics rather
+than ecological signal.
+
+\strong{Relationship to \code{importMisosoup()}.} For raw
+MiSoSoup YAML output, use \code{\link{importMisosoup}()}, which
+parses the nested format and attaches per-solution biomass and
+medium metadata to the resulting CMs. The \code{misosoup24}
+list is already flattened to the long form that
+\code{\link{ConsortiumMetabolism}()} accepts directly, so
+medium composition is implicit rather than stored on each
+element.
+
+\strong{Metabolite identifiers.} BiGG (Biochemically,
 Genetically and Genomically structured) knowledge base
-namespace (\url{https://bigg.ucsd.edu}; King et al. 2016).
+identifiers (\url{https://bigg.ucsd.edu}; King et al. 2016).
 Raw exchange reaction IDs from flux-balance simulators
-(e.g. \code{R_EX_ac_e}, \code{EX_ac_e}) are normalized to
-bare metabolite names by \code{importMisosoup()} via
+(e.g. \code{R_EX_ac_e}, \code{EX_ac_e}) are normalised to bare
+metabolite names by \code{\link{importMisosoup}()} via
 \code{normalize_ids = TRUE} (default).
 }
 \examples{
 data("misosoup24")
+length(misosoup24)
+head(names(misosoup24))
 head(misosoup24[[1]])
 }
 \references{
@@ -45,4 +103,8 @@ King ZA et al. (2016) BiGG Models: A platform for
 integrating, standardizing and sharing genome-scale models.
 \emph{Nucleic Acids Research}, 44(D1), D515--D522.
 \doi{10.1093/nar/gkv1049}
+}
+\seealso{
+\code{\link{importMisosoup}},
+\code{\link{ConsortiumMetabolism}}
 }

@@ -13,15 +13,42 @@
 \arguments{
 \item{x}{A \code{ConsortiumMetabolism} object.}
 
-\item{type}{Character specifying the assay to plot.}
+\item{type}{Character. Which of the eight CM assays to render.
+One of:
+\describe{
+\item{\code{"Binary"}}{Presence / absence of each pathway
+(consumed \eqn{\rightarrow} produced).}
+\item{\code{"nSpecies"}}{Count of species that participate
+in each pathway.}
+\item{\code{"Consumption"}}{Total consumption flux per
+pathway (sum of uptake fluxes).}
+\item{\code{"Production"}}{Total production flux per pathway
+(sum of secretion fluxes).}
+\item{\code{"EffectiveConsumption"}}{Consumption flux scaled
+by Hill-1 perplexity, \eqn{F \cdot 2^{H(p)}}; same units
+as \code{Consumption} but combines magnitude with species
+evenness across the pathway.}
+\item{\code{"EffectiveProduction"}}{As above on the
+production side.}
+\item{\code{"nEffectiveSpeciesConsumption"}}{Hill-1
+effective number of consuming species. Unitless, in
+\eqn{[1, S]}.}
+\item{\code{"nEffectiveSpeciesProduction"}}{As above on the
+production side.}
+}}
 }
 \value{
 A \code{ggplot} object rendered with \pkg{ggraph}.
 }
 \description{
-Plot a ConsortiumMetabolism object
+Render a single assay of a \code{ConsortiumMetabolism} as a
+directed metabolite-to-metabolite flow network. Each edge is a
+pathway (consumed metabolite \eqn{\rightarrow} produced
+metabolite); the chosen \code{type} determines what the edge
+weight encodes.
 }
 \examples{
 cm <- synCM("test", n_species = 3, max_met = 5)
 plot(cm)
+plot(cm, type = "EffectiveConsumption")
 }
