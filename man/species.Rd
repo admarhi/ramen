@@ -55,6 +55,11 @@ consortia.
 metabolic generalists or specialists by pathway count.
 
 }}
+\note{
+\code{BiocGenerics::species} (deprecated) sometimes
+resolves first when typing \code{?species} interactively.
+Use \code{?ramen::species} to land on this page.
+}
 \examples{
 cm <- synCM("test", n_species = 3, max_met = 5)
 species(cm)

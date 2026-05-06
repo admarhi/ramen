@@ -111,6 +111,23 @@ consortium against all in a set
 \link{ConsortiumMetabolismSet}
 
 }}
+\note{
+\code{method = "brayCurtis"} is defined only for
+weighted CMs (i.e. constructed from non-unit fluxes).
+On unweighted inputs the score returns \code{NA}. To
+suppress this, build CMs from a weighted edge list or
+pick a different metric.
+
+\code{align(CM, CMS)} (database search) currently
+raises a not-yet-implemented error; the dispatch is
+reserved for the upcoming MinHash-prefiltered search
+feature.
+
+If \code{tibble} (or a package that re-exports
+\code{pillar::align}) is on the search path, plain
+\code{?align} may resolve to \code{pillar::align}. Use
+\code{?ramen::align} to land on this page.
+}
 \examples{
 cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
 cm2 <- synCM("comm_2", n_species = 4, max_met = 6)

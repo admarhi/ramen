@@ -11,6 +11,10 @@
 #'
 #' @return A character vector of species names.
 #'
+#' @note `BiocGenerics::species` (deprecated) sometimes
+#'   resolves first when typing `?species` interactively.
+#'   Use `?ramen::species` to land on this page.
+#'
 #' @examples
 #' cm <- synCM("test", n_species = 3, max_met = 5)
 #' species(cm)
@@ -320,6 +324,22 @@ setGeneric(
 #'   }
 #'
 #' @return A [ConsortiumMetabolismAlignment] object.
+#'
+#' @note `method = "brayCurtis"` is defined only for
+#'   weighted CMs (i.e. constructed from non-unit fluxes).
+#'   On unweighted inputs the score returns `NA`. To
+#'   suppress this, build CMs from a weighted edge list or
+#'   pick a different metric.
+#'
+#' @note `align(CM, CMS)` (database search) currently
+#'   raises a not-yet-implemented error; the dispatch is
+#'   reserved for the upcoming MinHash-prefiltered search
+#'   feature.
+#'
+#' @note If `tibble` (or a package that re-exports
+#'   `pillar::align`) is on the search path, plain
+#'   `?align` may resolve to `pillar::align`. Use
+#'   `?ramen::align` to land on this page.
 #'
 #' @examples
 #' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)

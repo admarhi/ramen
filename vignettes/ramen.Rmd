@@ -328,7 +328,9 @@ name(cm1)
 A `ConsortiumMetabolismSet` groups multiple CMs. During
 construction, `ramen` automatically expands all binary matrices to a
 shared universal metabolite space, computes pairwise overlap scores,
-and builds a hierarchical clustering dendrogram.
+and builds a hierarchical clustering dendrogram. By default the
+constructor prints a step-by-step progress trace; pass
+`verbose = FALSE` to silence it.
 
 ```{r build-cms, message = FALSE}
 ## Build 20 CMs from misosoup24
@@ -339,7 +341,11 @@ cm_list <- lapply(seq_len(20), function(i) {
     )
 })
 
-cms <- ConsortiumMetabolismSet(cm_list, name = "MiSoSoup_20")
+cms <- ConsortiumMetabolismSet(
+    cm_list,
+    name = "MiSoSoup_20",
+    verbose = FALSE
+)
 cms
 ```
 
