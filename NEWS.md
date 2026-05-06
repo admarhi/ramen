@@ -2,6 +2,17 @@
 
 ## Breaking changes
 
+* `EffectiveConsumption` and `EffectiveProduction` assays now store the
+  flux-corrected effective flux $F \cdot 2^{H(p)}$ (matching equation 2
+  of the underlying thesis), not the bare Hill-1 perplexity $2^{H(p)}$.
+  Same units as the `Consumption` / `Production` assays. Pre-Bioconductor
+  release, no users yet, so no deprecation cycle.
+* Two new assays expose the previous quantity under explicit names:
+  `nEffectiveSpeciesConsumption` and `nEffectiveSpeciesProduction` carry
+  the Hill-1 effective number of contributing species (unitless,
+  $\in [1, S]$), mirroring the existing `nSpecies` count.
+  Algebraic identity: `EffectiveConsumption = Consumption *
+  nEffectiveSpeciesConsumption` (modulo two-decimal rounding).
 * `consortia()` no longer has a `ConsortiumMetabolism` method. The
   plural noun applies only to containers of consortia, so the accessor
   is now scoped to `ConsortiumMetabolismSet` (returns the list of

@@ -8,8 +8,9 @@
 #' @slot Name character. Display name for the consortium.
 #' @slot Description character. Optional short description.
 #' @slot Pathways data.frame. Pathway list of metabolic
-#'   interactions with per-pathway metrics (species, flux
-#'   sums, effective diversity).
+#'   interactions with per-pathway metrics (species count,
+#'   flux sums, flux-corrected effective fluxes, and
+#'   Hill-1 effective number of contributing species).
 #' @slot Weighted logical. Whether flux magnitudes are used.
 #' @slot InputData data.frame. Original input data (species,
 #'   metabolite, flux columns).
@@ -328,23 +329,22 @@ ConsortiumMetabolism <- function(
                 .data$data,
                 \(x) x$flux_prod / sum(x$flux_prod)
             ),
-            c_eff = vapply(
+            c_neff = vapply(
                 .data$c_prob,
                 \(x) {
                     round(2**(-sum(x * log2(x))), 2)
                 },
                 numeric(1)
             ),
-            p_eff = vapply(
+            p_neff = vapply(
                 .data$p_prob,
                 \(x) {
-                    round(
-                        2**(-sum(x * log2(x))),
-                        2
-                    )
+                    round(2**(-sum(x * log2(x))), 2)
                 },
                 numeric(1)
-            )
+            ),
+            c_eff = round(.data$c_sum * .data$c_neff, 2),
+            p_eff = round(.data$p_sum * .data$p_neff, 2)
         ) |>
         left_join(mets, by = c(consumed = "met")) |>
         rename(c_ind = "index") |>
@@ -398,6 +398,20 @@ ConsortiumMetabolism <- function(
             out$c_ind,
             out$p_ind,
             x = out$p_eff,
+            dims = c(n, n),
+            dimnames = dimnames
+        ),
+        nEffectiveSpeciesConsumption = sparseMatrix(
+            out$c_ind,
+            out$p_ind,
+            x = out$c_neff,
+            dims = c(n, n),
+            dimnames = dimnames
+        ),
+        nEffectiveSpeciesProduction = sparseMatrix(
+            out$c_ind,
+            out$p_ind,
+            x = out$p_neff,
             dims = c(n, n),
             dimnames = dimnames
         )

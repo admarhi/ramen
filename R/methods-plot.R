@@ -22,7 +22,9 @@ setMethod(
             "Consumption",
             "Production",
             "EffectiveConsumption",
-            "EffectiveProduction"
+            "EffectiveProduction",
+            "nEffectiveSpeciesConsumption",
+            "nEffectiveSpeciesProduction"
         )
     ) {
         type <- match.arg(type)

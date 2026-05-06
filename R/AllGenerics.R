@@ -343,9 +343,10 @@ setGeneric(
 #'
 #' @note For the formal definitions of FOS (Szymkiewicz-Simpson),
 #'   Jaccard, Bray-Curtis, RedundancyOverlap, MAAS, coverage
-#'   ratios, the Hill-1 perplexity construction of the
-#'   EffectiveConsumption / EffectiveProduction assays, and the
-#'   degree-preserving permutation null, see the
+#'   ratios, the Hill-1 perplexity construction underlying the
+#'   EffectiveConsumption / EffectiveProduction (flux-corrected)
+#'   and nEffectiveSpeciesConsumption / nEffectiveSpeciesProduction
+#'   (effective species counts) assays, and the
 #'   "Mathematical formulation" section of
 #'   \code{vignette("alignment", package = "ramen")}. The same
 #'   section discusses cross-product inflation, Hill-1 saturation

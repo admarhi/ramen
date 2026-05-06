@@ -439,3 +439,87 @@ test_that("speciesSummary(CM) species match species(cm)", {
     ss <- speciesSummary(cm)
     expect_setequal(ss$species, species(cm))
 })
+
+## ---- effective-species assays ------------------------------------------
+
+test_that("CM exposes nEffectiveSpecies* assays alongside Effective*", {
+    cm <- synCM("test", n_species = 3, max_met = 5, seed = 1)
+    expect_true(
+        all(
+            c(
+                "EffectiveConsumption",
+                "EffectiveProduction",
+                "nEffectiveSpeciesConsumption",
+                "nEffectiveSpeciesProduction"
+            ) %in%
+                SummarizedExperiment::assayNames(cm)
+        )
+    )
+})
+
+test_that("EffectiveConsumption equals Consumption * nEffectiveSpecies (toy)", {
+    ## Two species, both consume m1 with equal flux (so perplexity = 2),
+    ## both produce m2 with unequal flux (perplexity < 2).
+    test_data <- tibble::tibble(
+        species = c("s1", "s1", "s2", "s2"),
+        metabolite = c("m1", "m2", "m1", "m2"),
+        flux = c(-1, 3, -1, 1)
+    )
+    cm <- ConsortiumMetabolism(test_data, name = "toy")
+    a <- SummarizedExperiment::assays(cm)
+
+    cons <- as.matrix(a$Consumption)
+    eff_c <- as.matrix(a$EffectiveConsumption)
+    nef_c <- as.matrix(a$nEffectiveSpeciesConsumption)
+
+    nz <- cons != 0
+    expect_equal(eff_c[nz], round(cons[nz] * nef_c[nz], 2))
+
+    ## Hand-check: at the (m1, m2) cell consumption flux sum is 1+1=2,
+    ## even split -> perplexity 2, so effective consumption = 4.
+    expect_equal(unname(cons["m1", "m2"]), 2)
+    expect_equal(unname(nef_c["m1", "m2"]), 2)
+    expect_equal(unname(eff_c["m1", "m2"]), 4)
+})
+
+test_that("EffectiveProduction equals Production * nEffectiveSpecies", {
+    test_data <- tibble::tibble(
+        species = c("s1", "s1", "s2", "s2"),
+        metabolite = c("m1", "m2", "m1", "m2"),
+        flux = c(-1, 3, -1, 1)
+    )
+    cm <- ConsortiumMetabolism(test_data, name = "toy")
+    a <- SummarizedExperiment::assays(cm)
+
+    prod <- as.matrix(a$Production)
+    eff_p <- as.matrix(a$EffectiveProduction)
+    nef_p <- as.matrix(a$nEffectiveSpeciesProduction)
+
+    nz <- prod != 0
+    expect_equal(eff_p[nz], round(prod[nz] * nef_p[nz], 2))
+
+    ## Production at (m1, m2): fluxes 3 and 1, sum 4, p = (0.75, 0.25),
+    ## perplexity 2^(-(0.75 log2 0.75 + 0.25 log2 0.25)) ~= 1.7549.
+    expect_equal(unname(prod["m1", "m2"]), 4)
+    expect_equal(
+        unname(nef_p["m1", "m2"]),
+        round(2^(-(0.75 * log2(0.75) + 0.25 * log2(0.25))), 2)
+    )
+    expect_equal(
+        unname(eff_p["m1", "m2"]),
+        round(4 * unname(nef_p["m1", "m2"]), 2)
+    )
+})
+
+test_that("nEffectiveSpecies* values lie in [1, nSpecies] cell-wise", {
+    cm <- synCM("test", n_species = 4, max_met = 6, seed = 7)
+    a <- SummarizedExperiment::assays(cm)
+    n_sp <- as.matrix(a$nSpecies)
+    nef_c <- as.matrix(a$nEffectiveSpeciesConsumption)
+    nef_p <- as.matrix(a$nEffectiveSpeciesProduction)
+    nz <- n_sp != 0
+    expect_true(all(nef_c[nz] >= 1 - 1e-8))
+    expect_true(all(nef_p[nz] >= 1 - 1e-8))
+    expect_true(all(nef_c[nz] <= n_sp[nz] + 1e-8))
+    expect_true(all(nef_p[nz] <= n_sp[nz] + 1e-8))
+})
