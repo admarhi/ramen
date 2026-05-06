@@ -26,11 +26,13 @@ plotDirectedFlow(
   edgeColourValues = NULL,
   edgeColourLabels = NULL,
   edgeColourLegendTitle = "Type",
-  edgeColourLow = "#DEEBF7",
-  edgeColourHigh = "#08519C",
-  nodeColourValues = c(source = "#0072B2", intermediate = "#F0E442", sink = "#D55E00"),
+  edgeColourLow = ramenPalette$edgeWeight[["low"]],
+  edgeColourHigh = ramenPalette$edgeWeight[["high"]],
+  nodeColourValues = ramenPalette$nodeRole,
   nodeColourLabels = c(source = "Source", intermediate = "Intermediate", sink = "Sink"),
   nodeColourLegendTitle = "Node role",
+  title = NULL,
+  subtitle = NULL,
   main = NULL,
   ...
 )
@@ -49,7 +51,7 @@ plotDirectedFlow(
 - mixedX:
 
   Numeric scalar. The central x-coordinate for intermediate nodes. The
-  actual layout spans `mixedX` +/- 0.4. Defaults to 1.
+  actual layout spans `mixedX` +/- 0.8. Defaults to 1.
 
 - sinkX:
 
@@ -110,21 +112,20 @@ plotDirectedFlow(
 - edgeColourLow:
 
   Character string. The colour for the lowest edge weight when
-  `colourEdgesByWeight` is `TRUE`. Defaults to `"#DEEBF7"` (ColorBrewer
-  Blues, light end).
+  `colourEdgesByWeight` is `TRUE`. Defaults to
+  `ramenPalette$edgeWeight[["low"]]` (ColorBrewer Blues, light end).
 
 - edgeColourHigh:
 
   Character string. The colour for the highest edge weight when
-  `colourEdgesByWeight` is `TRUE`. Defaults to `"#08519C"` (ColorBrewer
-  Blues, dark end).
+  `colourEdgesByWeight` is `TRUE`. Defaults to
+  `ramenPalette$edgeWeight[["high"]]` (ColorBrewer Blues, dark end).
 
 - nodeColourValues:
 
   Named character vector of length 3 mapping the node roles `"source"`,
-  `"intermediate"`, and `"sink"` to colours. Defaults to a maximally
-  distinct Okabe-Ito triple (blue / yellow / vermilion) chosen for
-  colour-blind safety and high mutual contrast.
+  `"intermediate"`, and `"sink"` to colours. Defaults to
+  `ramenPalette$nodeRole`.
 
 - nodeColourLabels:
 
@@ -137,9 +138,18 @@ plotDirectedFlow(
   Character scalar. Legend title for the node-role colour scale.
   Defaults to `"Node role"`.
 
+- title:
+
+  Character string. Optional plot title. Falls back to the deprecated
+  `main` alias when `title` is NULL.
+
+- subtitle:
+
+  Character string. Optional plot subtitle.
+
 - main:
 
-  Character string. Optional plot title.
+  Deprecated alias for `title`; will be removed in a future release.
 
 - ...:
 
@@ -158,14 +168,13 @@ Edges may be coloured in three ways: by a continuous `weight` attribute
 `edgeColourLabels` customise the palette and legend; or with a single
 fixed colour (default).
 
-When the graph carries non-positive edge weights, the Kamada-Kawai
-layout used for intermediate nodes falls back to topological placement
-(the `weight` attribute is dropped on the induced intermediate subgraph,
-since
-[`igraph::layout_with_kk`](https://r.igraph.org/reference/layout_with_kk.html)
-requires strictly positive weights, and `EffectiveConsumption`-style
-assays carry zeros). This affects only the within-column layout; the
-source / sink / intermediate column assignment is unaffected.
+The Kamada-Kawai layout used for the intermediate column is always run
+unweighted. Within-column position has no semantic meaning (edge weights
+are encoded via colour and width on the edges), and running Kamada-Kawai
+with heterogeneous weights would collapse strongly-connected
+intermediates into the centre on weighted assays such as `Consumption`
+or `Production`. The source / sink / intermediate column assignment is
+unaffected.
 
 The size-bearing arguments (`nodeSize`, `nodeLabelSize`,
 `edgeArrowSize`) use ggraph millimetre units rather than the igraph

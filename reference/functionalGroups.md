@@ -91,11 +91,6 @@ for visualizing the dendrogram.
 cm <- synCM("test", n_species = 4, max_met = 8)
 fg_cm <- functionalGroups(cm)
 plotFunctionalGroups(fg_cm, k = 2)
-#> Loading required namespace: colorspace
-#> Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
-#> ℹ Please use `linewidth` instead.
-#> ℹ The deprecated feature was likely used in the dendextend package.
-#>   Please report the issue at <https://github.com/talgalili/dendextend/issues>.
 
 
 ## Set of consortia
@@ -107,19 +102,19 @@ cms <- ConsortiumMetabolismSet(
 #> 
 #> ── Creating CMS "test" ─────────────────────────────────────────────────────────
 #> ℹ Validating 2 <ConsortiumMetabolism> objects
-#> ✔ Validating 2 <ConsortiumMetabolism> objects [12ms]
+#> ✔ Validating 2 <ConsortiumMetabolism> objects [11ms]
 #> 
 #> ℹ Collecting metabolites from 2 consortia
-#> ✔ Collecting metabolites from 2 consortia [31ms]
+#> ✔ Collecting metabolites from 2 consortia [29ms]
 #> 
 #> ℹ Re-indexing 7 unique metabolites
-#> ✔ Re-indexing 7 unique metabolites [28ms]
+#> ✔ Re-indexing 7 unique metabolites [27ms]
 #> 
 #> ℹ Expanding 2 binary matrices to 7-dimensional space
-#> ✔ Expanding 2 binary matrices to 7-dimensional space [25ms]
+#> ✔ Expanding 2 binary matrices to 7-dimensional space [24ms]
 #> 
 #> ℹ Computing 7 x 7 levels matrix
-#> ✔ Computing 7 x 7 levels matrix [39ms]
+#> ✔ Computing 7 x 7 levels matrix [24ms]
 #> 
 #> ℹ Computing pairwise overlap (1 pairs via crossprod)
 #> ✔ Computing pairwise overlap (1 pairs via crossprod) [23ms]
@@ -131,14 +126,13 @@ cms <- ConsortiumMetabolismSet(
 #> ✔ Building dendrogram from 2 x 2 dissimilarity matrix [22ms]
 #> 
 #> ℹ Extracting dendrogram node positions
-#> ✔ Extracting dendrogram node positions [24ms]
+#> ✔ Extracting dendrogram node positions [25ms]
 #> 
 #> ℹ Collecting 2 consortium graphs
 #> CMS "test" created: 2 consortia, 7 metabolites (0.2s)
-#> ✔ Collecting 2 consortium graphs [85ms]
+#> ✔ Collecting 2 consortium graphs [80ms]
 #> 
 fg <- functionalGroups(cms)
 plotFunctionalGroups(fg, k = 2)
-#> Loading required namespace: colorspace
 
 ```

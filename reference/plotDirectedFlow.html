@@ -78,11 +78,13 @@ returned object composes with the usual <span class="pkg">ggplot2</span> operato
 <span>  edgeColourValues <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  edgeColourLabels <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  edgeColourLegendTitle <span class="op">=</span> <span class="st">"Type"</span>,</span>
-<span>  edgeColourLow <span class="op">=</span> <span class="st">"#DEEBF7"</span>,</span>
-<span>  edgeColourHigh <span class="op">=</span> <span class="st">"#08519C"</span>,</span>
-<span>  nodeColourValues <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>source <span class="op">=</span> <span class="st">"#0072B2"</span>, intermediate <span class="op">=</span> <span class="st">"#F0E442"</span>, sink <span class="op">=</span> <span class="st">"#D55E00"</span><span class="op">)</span>,</span>
+<span>  edgeColourLow <span class="op">=</span> <span class="va">ramenPalette</span><span class="op">$</span><span class="va">edgeWeight</span><span class="op">[[</span><span class="st">"low"</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>  edgeColourHigh <span class="op">=</span> <span class="va">ramenPalette</span><span class="op">$</span><span class="va">edgeWeight</span><span class="op">[[</span><span class="st">"high"</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>  nodeColourValues <span class="op">=</span> <span class="va">ramenPalette</span><span class="op">$</span><span class="va">nodeRole</span>,</span>
 <span>  nodeColourLabels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>source <span class="op">=</span> <span class="st">"Source"</span>, intermediate <span class="op">=</span> <span class="st">"Intermediate"</span>, sink <span class="op">=</span> <span class="st">"Sink"</span><span class="op">)</span>,</span>
 <span>  nodeColourLegendTitle <span class="op">=</span> <span class="st">"Node role"</span>,</span>
+<span>  title <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  subtitle <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  main <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -103,7 +105,7 @@ Defaults to 0.</p></dd>
 
 <dt id="arg-mixedx">mixedX<a class="anchor" aria-label="anchor" href="#arg-mixedx"></a></dt>
 <dd><p>Numeric scalar. The central x-coordinate for intermediate
-nodes. The actual layout spans <code>mixedX</code> +/- 0.4. Defaults to 1.</p></dd>
+nodes. The actual layout spans <code>mixedX</code> +/- 0.8. Defaults to 1.</p></dd>
 
 
 <dt id="arg-sinkx">sinkX<a class="anchor" aria-label="anchor" href="#arg-sinkx"></a></dt>
@@ -170,21 +172,21 @@ categorical edge colour scale. Defaults to <code>"Type"</code>.</p></dd>
 <dt id="arg-edgecolourlow">edgeColourLow<a class="anchor" aria-label="anchor" href="#arg-edgecolourlow"></a></dt>
 <dd><p>Character string. The colour for the lowest edge
 weight when <code>colourEdgesByWeight</code> is <code>TRUE</code>. Defaults to
-<code>"#DEEBF7"</code> (ColorBrewer Blues, light end).</p></dd>
+<code>ramenPalette$edgeWeight[["low"]]</code> (ColorBrewer Blues, light
+end).</p></dd>
 
 
 <dt id="arg-edgecolourhigh">edgeColourHigh<a class="anchor" aria-label="anchor" href="#arg-edgecolourhigh"></a></dt>
 <dd><p>Character string. The colour for the highest
 edge weight when <code>colourEdgesByWeight</code> is <code>TRUE</code>. Defaults
-to <code>"#08519C"</code> (ColorBrewer Blues, dark end).</p></dd>
+to <code>ramenPalette$edgeWeight[["high"]]</code> (ColorBrewer Blues,
+dark end).</p></dd>
 
 
 <dt id="arg-nodecolourvalues">nodeColourValues<a class="anchor" aria-label="anchor" href="#arg-nodecolourvalues"></a></dt>
 <dd><p>Named character vector of length 3 mapping
 the node roles <code>"source"</code>, <code>"intermediate"</code>, and
-<code>"sink"</code> to colours. Defaults to a maximally distinct
-Okabe-Ito triple (blue / yellow / vermilion) chosen for
-colour-blind safety and high mutual contrast.</p></dd>
+<code>"sink"</code> to colours. Defaults to <code>ramenPalette$nodeRole</code>.</p></dd>
 
 
 <dt id="arg-nodecolourlabels">nodeColourLabels<a class="anchor" aria-label="anchor" href="#arg-nodecolourlabels"></a></dt>
@@ -198,8 +200,18 @@ intermediate = "Intermediate", sink = "Sink")</code>.</p></dd>
 node-role colour scale. Defaults to <code>"Node role"</code>.</p></dd>
 
 
+<dt id="arg-title">title<a class="anchor" aria-label="anchor" href="#arg-title"></a></dt>
+<dd><p>Character string. Optional plot title. Falls back to
+the deprecated <code>main</code> alias when <code>title</code> is NULL.</p></dd>
+
+
+<dt id="arg-subtitle">subtitle<a class="anchor" aria-label="anchor" href="#arg-subtitle"></a></dt>
+<dd><p>Character string. Optional plot subtitle.</p></dd>
+
+
 <dt id="arg-main">main<a class="anchor" aria-label="anchor" href="#arg-main"></a></dt>
-<dd><p>Character string. Optional plot title.</p></dd>
+<dd><p>Deprecated alias for <code>title</code>; will be removed in a
+future release.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -218,13 +230,13 @@ attribute (<code>colourEdgesByWeight = TRUE</code>); by a categorical edge
 attribute (<code>edgeColourAttr = "&lt;name&gt;"</code>), in which case
 <code>edgeColourValues</code> and <code>edgeColourLabels</code> customise the
 palette and legend; or with a single fixed colour (default).</p>
-<p>When the graph carries non-positive edge weights, the Kamada-Kawai
-layout used for intermediate nodes falls back to topological
-placement (the <code>weight</code> attribute is dropped on the induced
-intermediate subgraph, since <code><a href="https://r.igraph.org/reference/layout_with_kk.html" class="external-link">igraph::layout_with_kk</a></code> requires
-strictly positive weights, and <code>EffectiveConsumption</code>-style
-assays carry zeros). This affects only the within-column layout;
-the source / sink / intermediate column assignment is unaffected.</p>
+<p>The Kamada-Kawai layout used for the intermediate column is always
+run unweighted. Within-column position has no semantic meaning
+(edge weights are encoded via colour and width on the edges), and
+running Kamada-Kawai with heterogeneous weights would collapse
+strongly-connected intermediates into the centre on weighted assays
+such as <code>Consumption</code> or <code>Production</code>. The source / sink /
+intermediate column assignment is unaffected.</p>
 <p>The size-bearing arguments (<code>nodeSize</code>, <code>nodeLabelSize</code>,
 <code>edgeArrowSize</code>) use <span class="pkg">ggraph</span> millimetre units rather than
 the <span class="pkg">igraph</span> <code>cex</code> factors of the previous implementation.</p>

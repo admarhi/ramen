@@ -91,6 +91,9 @@
 - [`prevalence()`](https://admarhi.github.io/ramen/reference/prevalence.md)
   : Get Pathway Prevalence
 
+- [`ramenPalette`](https://admarhi.github.io/ramen/reference/ramenPalette.md)
+  : Ramen package palette
+
 - [`scores()`](https://admarhi.github.io/ramen/reference/scores.md) :
   Get Alignment Scores
 
@@ -125,3 +128,6 @@
 
 - [`synCM()`](https://admarhi.github.io/ramen/reference/synCM.md) :
   Generate Synthetic Consortium Metabolism
+
+- [`theme_ramen()`](https://admarhi.github.io/ramen/reference/theme_ramen.md)
+  : Ramen plot theme
