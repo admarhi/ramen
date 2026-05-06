@@ -91,8 +91,8 @@
 #' @importFrom ggraph scale_edge_colour_identity scale_edge_colour_manual
 #' @importFrom ggraph scale_edge_width_continuous circle
 #' @importFrom ggraph guide_edge_colourbar
-#' @importFrom ggplot2 aes arrow unit theme element_blank labs
-#' @importFrom ggplot2 scale_colour_manual
+#' @importFrom ggplot2 aes arrow unit theme theme_void element_text labs
+#' @importFrom ggplot2 margin scale_colour_manual
 #' @importFrom rlang .data
 plotDirectedFlow <- function(
     g,
@@ -278,14 +278,19 @@ plotDirectedFlow <- function(
     p <- p +
         ggraph::geom_node_point(
             ggplot2::aes(colour = .data$role),
-            size = nodeSize,
-            show.legend = FALSE
+            size = nodeSize
         ) +
         ggplot2::scale_colour_manual(
+            name = "Node role",
             values = c(
-                source = "lightblue",
-                intermediate = "lightgoldenrod",
-                sink = "salmon"
+                source = "#56B4E9",
+                intermediate = "#F0E442",
+                sink = "#E69F00"
+            ),
+            labels = c(
+                source = "Source",
+                intermediate = "Intermediate",
+                sink = "Sink"
             ),
             drop = FALSE
         ) +
@@ -295,12 +300,13 @@ plotDirectedFlow <- function(
             repel = TRUE,
             max.overlaps = Inf
         ) +
+        ggplot2::theme_void() +
         ggplot2::theme(
-            panel.background = ggplot2::element_blank(),
-            panel.grid = ggplot2::element_blank(),
-            axis.text = ggplot2::element_blank(),
-            axis.ticks = ggplot2::element_blank(),
-            axis.title = ggplot2::element_blank()
+            legend.position = "right",
+            plot.title = ggplot2::element_text(
+                hjust = 0,
+                margin = ggplot2::margin(b = 6)
+            )
         )
 
     if (!is.null(main)) {
