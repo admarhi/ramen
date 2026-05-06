@@ -73,13 +73,13 @@ can produce $j$. Pathways are not biochemical reactions: they are
 **capabilities** inferred from the Cartesian product of each species'
 uptake set and secretion set. A consortium of two species, one
 consuming $\{a, b\}$ and producing $\{c, d\}$, contributes the four
-pathways $\{a \to c, a \to d, b \to c, b \to d\}$ even though only
-two exchange reactions exist. See the *Cross-product inflation*
-caveat below.
+pathways $\{a \to c, a \to d, b \to c, b \to d\}$ from only four
+distinct exchange events (two uptakes, two secretions). See the
+*Cross-product inflation* caveat below.
 
 ## Assay matrices
 
-Each `ConsortiumMetabolism` stores six assays (thesis eq. 1, 2):
+Each `ConsortiumMetabolism` stores eight assays (thesis eq. 1, 2):
 
 - **Binary** $\mathbf{X}^{(\alpha,1)}$: $X^{(\alpha,1)}_{ij} = 1$ if
   any species in $\omega^{(\alpha)}$ realises pathway $i \to j$,
@@ -92,36 +92,52 @@ Each `ConsortiumMetabolism` stores six assays (thesis eq. 1, 2):
 - **Production** $\mathbf{X}^{(\alpha,4)}$:
   $F^{(p)}_{ij} = \sum_s f^{(p,s)}_{ij}$, analogously for secretion.
 - **EffectiveConsumption** $\mathbf{X}^{(\alpha,5)}$ and
-  **EffectiveProduction** $\mathbf{X}^{(\alpha,6)}$: see below.
+  **EffectiveProduction** $\mathbf{X}^{(\alpha,6)}$: flux-corrected
+  effective fluxes (see below).
+- **nEffectiveSpeciesConsumption** $\mathbf{X}^{(\alpha,7)}$ and
+  **nEffectiveSpeciesProduction** $\mathbf{X}^{(\alpha,8)}$: Hill-1
+  effective number of contributing species (see below).
 
-All six are constructed as the Cartesian product
+All eight are constructed as the Cartesian product
 $\mathrm{consumed}(s) \times \mathrm{produced}(s)$ for each species
 $s$, then aggregated across species. This **cross-product** is the
 source of the density inflation discussed under
 *Limitations and caveats*.
 
-## Effective flux (Hill-1 perplexity)
+## Effective flux and effective species count
 
 For a pathway $(i, j)$ with participating species $s_1, \dots, s_n$,
 let $p^{(\phi,s)}_{ij} = f^{(\phi,s)}_{ij} / F^{(\phi)}_{ij}$ be the
 fraction of total flux of type $\phi \in \{c, p\}$ contributed by
 species $s$. The Shannon entropy of this distribution is
 $H_{ij}^{(\phi)} = -\sum_s p^{(\phi,s)}_{ij}
-\log_2 p^{(\phi,s)}_{ij}$, and the **Hill-1 perplexity** is
-$\,^{1}\!D_{ij}^{(\phi)} = 2^{H_{ij}^{(\phi)}}$. This is the
-*effective number of species* contributing to the pathway. The
-EffectiveConsumption / EffectiveProduction assays store
+\log_2 p^{(\phi,s)}_{ij}$, and the Hill-1 perplexity
+$D_{1,ij}^{(\phi)} = 2^{H_{ij}^{(\phi)}}$ is the **effective number
+of species** contributing to the pathway: unitless, $\in [1, n]$,
+maximised when all species contribute equally.
+
+`ramen` exposes both the perplexity itself and the flux-corrected
+flux $F \cdot D_1$ (thesis eq. 2) as separate assays. They are two
+views of the same network:
 $$
 \mathbf{X}^{(\alpha,5)}_{ij} = \mathrm{round}\bigl(
-2^{H^{(c)}_{ij}}, 2 \bigr),
+F^{(c)}_{ij} \cdot 2^{H^{(c)}_{ij}}, 2 \bigr),
 \qquad
-\mathbf{X}^{(\alpha,6)}_{ij} = \mathrm{round}\bigl(
-2^{H^{(p)}_{ij}}, 2 \bigr).
+\mathbf{X}^{(\alpha,7)}_{ij} = \mathrm{round}\bigl(
+2^{H^{(c)}_{ij}}, 2 \bigr),
 $$
-Note that the implementation stores the **perplexity alone**, not
-the entropy-weighted flux $F^{(\phi)}_{ij} \cdot 2^{H}$ given as
-thesis eq. 2; the package follows the implementation. See the
-*Hill-1 saturation* caveat for behaviour on small consortia.
+and analogously $\mathbf{X}^{(\alpha,6)}, \mathbf{X}^{(\alpha,8)}$
+for production. **EffectiveConsumption** and **EffectiveProduction**
+carry the same units as **Consumption** / **Production** (a flux,
+larger when total flux is large *and* species contribute evenly);
+**nEffectiveSpeciesConsumption** and **nEffectiveSpeciesProduction**
+are unitless counts mirroring **nSpecies**. The algebraic identity
+$$
+\mathbf{X}^{(\alpha,5)} = \mathbf{X}^{(\alpha,3)} \odot
+\mathbf{X}^{(\alpha,7)}
+$$
+holds cell-wise (modulo two-decimal rounding); same for production.
+See the *Hill-1 saturation* caveat for behaviour on small consortia.
 
 ## Pairwise alignment metrics
 
@@ -161,9 +177,12 @@ S_{\mathrm{BC}}(X, Y)
 }{\lVert C_X \rVert_1 + \lVert C_Y \rVert_1
 + \lVert P_X \rVert_1 + \lVert P_Y \rVert_1}\Bigr).
 $$
-The implementation operates on the **combined Consumption +
-Production magnitudes** treated as one abundance vector; direction
-is conflated. Range $[0, 1]$, with $1$ at identical fluxes. The
+This is **equivalent to Bray-Curtis on the stacked $(C, P)$
+abundance vector**: summing the $L_1$ differences of $C$ and $P$
+separately and dividing by the combined $L_1$ norms is algebraically
+the same as concatenating $C$ and $P$ into one vector and applying
+the standard Bray-Curtis formula. Range $[0, 1]$, with $1$ at
+identical fluxes. The
 $\max(0, \cdot)$ clamp guards against floating-point near-negative
 zero; this is the consequence of the B7 fix and is why
 `brayCurtis = NA` is returned for unweighted CMs (the metric is
@@ -246,7 +265,8 @@ ecological network analysis but is **not specifically motivated for
 FBA-derived networks**: edge presence in $X$ reflects mass-balance
 constraints on the underlying genome-scale metabolic models, plus
 the solver's choice among alternate optima. A null that respects
-those constraints (for example a species-set permutation, or a
+those constraints (for example a configuration model on the
+species-pathway bipartite graph, a species-set permutation, or a
 randomised-abundance null in the MICOM sense) would be more
 defensible. The current null is retained for reproducibility with
 prior `ramen` versions; sensitivity to null-model choice is on the
@@ -269,6 +289,10 @@ analysis is the species; the question is *"which species play
 equivalent metabolic roles?"* See `vignette("ramen", package =
 "ramen")` for functional groups.
 
+In practice, run `functionalGroups()` first within a consortium (or
+pooled across a CMS) to understand internal structure, then
+`align()` to compare consortia.
+
 ## Limitations and caveats
 
 The metric formulas above are not a license to run alignment on
@@ -280,20 +304,26 @@ biochemical reactions. For a consortium of two species
 $S_1 : \{a, b\} \to \{c, d\}$ and $S_2 : \{c, d\} \to \{a, b\}$,
 the Binary assay has $|\{a, b\} \times \{c, d\}|
 + |\{c, d\} \times \{a, b\}| = 8$ nonzero entries in a $4 \times 4$
-matrix, giving density $0.5$ from only $4$ exchange reactions. This
+matrix, giving density $0.5$ from $8$ exchange events across $4$
+distinct metabolites. This
 is a **capability-level** representation, not a mechanism-level one,
 and the inflation grows with $\min(|\mathrm{cons}|, |\mathrm{prod}|)$
 per species. Compare consortia of similar size and composition; do
 not interpret raw Binary density as a mechanistic property.
 
-**Hill-1 saturation on small consortia.** EffectiveConsumption /
-EffectiveProduction store Hill-1 perplexity rounded to two decimals.
-For two-species consortia the perplexity rarely exceeds $\approx 1.05$
-(one species typically dominates the flux at any given pathway), and
-the `round(., 2)` step collapses near-degenerate distributions to
-exactly $1.0$ -- indistinguishable from true single-species
-pathways. Effective C/P is informative only on consortia where
-several species contribute comparable flux to the same pathway.
+**Hill-1 saturation on small consortia.**
+nEffectiveSpeciesConsumption / nEffectiveSpeciesProduction store the
+Hill-1 perplexity rounded to two decimals. For two-species consortia
+the perplexity rarely exceeds $\approx 1.05$ (one species typically
+dominates the flux at any given pathway), and the `round(., 2)` step
+collapses near-degenerate distributions to exactly $1.0$ --
+indistinguishable from true single-species pathways. Because
+EffectiveConsumption and EffectiveProduction are the elementwise
+product $F \cdot D_1$, the same saturation propagates to them: on
+small consortia they degenerate toward the underlying Consumption /
+Production assays. Both effective views are informative only on
+consortia where several species contribute comparable flux to the
+same pathway.
 
 **Flux reversibility and no binarisation threshold.**
 `ConsortiumMetabolism()` admits any nonzero flux: a flux of $10^{-12}$
