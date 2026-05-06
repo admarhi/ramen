@@ -54,6 +54,11 @@
   `metadata(cm)$focalStrain` (character or `NA`). The `community_growth`
   summary row is captured as `metadata(cm)$communityGrowth` instead of
   leaking into the media bucket.
+- Internal documentation, comments, and user-facing CLI messages
+  standardised on British English spelling (`colour`, `centre`,
+  `organise`, etc.). External-API identifiers from upstream packages
+  (igraph, ggplot2, ColorBrewer) keep their original spelling. The
+  `Language: en-GB` DESCRIPTION field will follow in a separate commit.
 
 ## ramen 0.0.0.9001
 
@@ -68,7 +73,7 @@
 - Pairwise and multiple alignment of consortium metabolisms using
   functional overlap scores (FOS), Jaccard, Bray-Curtis, and redundancy
   overlap metrics.
-- Visualization methods including heatmaps, network plots, and alignment
+- Visualisation methods including heatmaps, network plots, and alignment
   score plots.
 - Functional group analysis with hierarchical clustering of species by
   shared metabolic pathways.

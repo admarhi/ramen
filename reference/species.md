@@ -69,5 +69,5 @@ interactively. Use `?ramen::species` to land on this page.
 ``` r
 cm <- synCM("test", n_species = 3, max_met = 5)
 species(cm)
-#> [1] "RBI6415H" "NVP806D"  "KIO9929R"
+#> [1] "NRS6841X" "IFU334T"  "VUY8963S"
 ```

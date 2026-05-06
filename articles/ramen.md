@@ -131,6 +131,43 @@ name-normalisation helper; cross-namespace mapping (BiGG to ChEBI, ChEBI
 to free text, etc.) is the user’s responsibility, ideally performed once
 at the data-import step before constructing CMs.
 
+### Species identifier hygiene
+
+The same string-equality contract applies to **species names**. A
+consortium that labels a strain `E_coli` and another that labels the
+same strain `E.coli`, `Ecoli`, or `Escherichia_coli` will be treated as
+harbouring three or four distinct species once the CMs are assembled
+into a `ConsortiumMetabolismSet`, compared via
+[`compareSpecies()`](https://admarhi.github.io/ramen/reference/compareSpecies.md),
+or aligned with
+[`align()`](https://admarhi.github.io/ramen/reference/align.md). The
+mismatch is silent: there is no warning, just an inflated species count
+and spurious zeros in the cross-consortium overlap.
+
+Common typo patterns that quietly fragment a single organism into
+several are case differences (`E_coli` vs `e_coli` vs `E_Coli`),
+separator differences (`E_coli` vs `E.coli` vs `E-coli` vs `E coli`),
+abbreviation versus full name (`Ecoli` vs `E.coli` vs `Escherichia_coli`
+vs `Escherichia coli`), and inconsistent strain suffixes (`E.coli_K12`
+vs `E.coli_k12` vs bare `E.coli`). A minimal first pass collapses case
+and separators, which catches the first two classes:
+
+``` r
+
+data$species <- gsub("[._\\s-]+", "_", tolower(data$species))
+```
+
+Abbreviation-to-full-name reconciliation and strain-suffix
+disambiguation are genuinely harder and typically require a
+project-specific lookup table; pick a canonical scheme, normalise once
+at the data-import step, and apply it before constructing any CM.
+`ramen` does not currently ship a `cleanSpecies()` helper, so this
+hygiene step is the user’s responsibility – the same caveat applies
+symmetrically to every downstream comparison, including
+[`compareSpecies()`](https://admarhi.github.io/ramen/reference/compareSpecies.md)
+and cross-consortium
+[`align()`](https://admarhi.github.io/ramen/reference/align.md).
+
 ``` r
 
 data("misosoup24")
@@ -488,7 +525,7 @@ The `quantileCutoff` parameter controls the threshold (default 0.1).
 [`functionalGroups()`](https://admarhi.github.io/ramen/reference/functionalGroups.md)
 clusters species by the Jaccard similarity of their pathway sets.
 [`plotFunctionalGroups()`](https://admarhi.github.io/ramen/reference/plotFunctionalGroups.md)
-visualizes the resulting dendrogram:
+visualises the resulting dendrogram:
 
 ``` r
 
@@ -642,7 +679,7 @@ For a detailed treatment of alignment metrics, p-values, and accessor
 functions, see
 [`vignette("alignment", package = "ramen")`](https://admarhi.github.io/ramen/articles/alignment.md).
 
-## Visualization
+## Visualisation
 
 Each class has a
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) method. Here is
