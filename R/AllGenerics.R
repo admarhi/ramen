@@ -341,6 +341,17 @@ setGeneric(
 #'   `?align` may resolve to `pillar::align`. Use
 #'   `?ramen::align` to land on this page.
 #'
+#' @note For the formal definitions of FOS (Szymkiewicz-Simpson),
+#'   Jaccard, Bray-Curtis, RedundancyOverlap, MAAS, coverage
+#'   ratios, the Hill-1 perplexity construction of the
+#'   EffectiveConsumption / EffectiveProduction assays, and the
+#'   degree-preserving permutation null, see the
+#'   "Mathematical formulation" section of
+#'   \code{vignette("alignment", package = "ramen")}. The same
+#'   section discusses cross-product inflation, Hill-1 saturation
+#'   on small consortia, flux reversibility, and alternate-optima
+#'   caveats relevant to interpreting the scores returned here.
+#'
 #' @examples
 #' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
 #' cm2 <- synCM("comm_2", n_species = 4, max_met = 6)
