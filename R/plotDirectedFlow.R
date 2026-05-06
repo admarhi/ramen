@@ -9,51 +9,66 @@
 #' returned object composes with the usual \pkg{ggplot2} operators.
 #'
 #' Edges may be coloured in three ways: by a continuous \code{weight}
-#' attribute (\code{color_edges_by_weight = TRUE}); by a categorical edge
-#' attribute (\code{edge_color_attr = "<name>"}), in which case
-#' \code{edge_color_values} and \code{edge_color_labels} customise the
+#' attribute (\code{colourEdgesByWeight = TRUE}); by a categorical edge
+#' attribute (\code{edgeColourAttr = "<name>"}), in which case
+#' \code{edgeColourValues} and \code{edgeColourLabels} customise the
 #' palette and legend; or with a single fixed colour (default).
 #'
+#' @details
+#' When the graph carries non-positive edge weights, the Kamada-Kawai
+#' layout used for intermediate nodes falls back to topological
+#' placement (the \code{weight} attribute is dropped on the induced
+#' intermediate subgraph, since \code{igraph::layout_with_kk} requires
+#' strictly positive weights, and \code{EffectiveConsumption}-style
+#' assays carry zeros). This affects only the within-column layout;
+#' the source / sink / intermediate column assignment is unaffected.
+#'
+#' The size-bearing arguments (\code{nodeSize}, \code{nodeLabelSize},
+#' \code{edgeArrowSize}) use \pkg{ggraph} millimetre units rather than
+#' the \pkg{igraph} \code{cex} factors of the previous implementation.
+#'
 #' @param g An igraph object. Must be a directed graph.
-#' @param source_x Numeric scalar. The x-coordinate for source nodes.
+#' @param sourceX Numeric scalar. The x-coordinate for source nodes.
 #'   Defaults to 0.
-#' @param mixed_x Numeric scalar. The central x-coordinate for intermediate
-#'   nodes. The actual layout spans \code{mixed_x} +/- 0.4. Defaults to 1.
-#' @param sink_x Numeric scalar. The x-coordinate for sink nodes. Defaults to 2.
-#' @param vertical_spacing Numeric scalar. The maximum y-coordinate, controlling
-#'   the vertical spread of the layout. Defaults to 1.
-#' @param vertex_size Numeric scalar. The size of node points. Defaults to 4.
-#' @param vertex_label_cex Numeric scalar. The size of node labels. Defaults
-#'   to 3.
-#' @param edge_arrow_size Numeric scalar. The arrow length on edges, in
+#' @param mixedX Numeric scalar. The central x-coordinate for intermediate
+#'   nodes. The actual layout spans \code{mixedX} +/- 0.4. Defaults to 1.
+#' @param sinkX Numeric scalar. The x-coordinate for sink nodes. Defaults
+#'   to 2.
+#' @param verticalSpacing Numeric scalar. The maximum y-coordinate,
+#'   controlling the vertical spread of the layout. Defaults to 1.
+#' @param nodeSize Numeric scalar. The size of node points in millimetres
+#'   (\pkg{ggraph} unit). Defaults to 6.
+#' @param nodeLabelSize Numeric scalar. The size of node labels in
+#'   millimetres. Defaults to 3.
+#' @param edgeArrowSize Numeric scalar. The arrow length on edges, in
 #'   millimetres. Defaults to 2.
-#' @param edge_width_range Numeric vector of length 2. The minimum and maximum
-#'   width for edges when scaled by weight. If the graph is unweighted or all
-#'   weights are identical, the mean of this range is used. Defaults to
-#'   \code{c(0.3, 1.2)}.
-#' @param color_edges_by_weight Logical scalar. If \code{TRUE} and the graph
+#' @param edgeWidthRange Numeric vector of length 2. The minimum and
+#'   maximum width for edges when scaled by weight. If the graph is
+#'   unweighted or all weights are identical, the mean of this range is
+#'   used. Defaults to \code{c(0.3, 1.2)}.
+#' @param colourEdgesByWeight Logical scalar. If \code{TRUE} and the graph
 #'   has a \code{weight} edge attribute, edges are coloured on a continuous
-#'   gradient from \code{edge_color_low} to \code{edge_color_high}.
-#' @param edge_color_attr Optional character scalar naming a categorical edge
-#'   attribute to colour edges by (e.g. \code{"source"}). When set, takes
-#'   precedence over \code{color_edges_by_weight}.
-#' @param edge_color_values Optional named character vector mapping levels of
-#'   \code{edge_color_attr} to colours. Used only when \code{edge_color_attr}
-#'   is non-NULL.
-#' @param edge_color_labels Optional named character vector mapping levels of
-#'   \code{edge_color_attr} to legend labels. Used only when
-#'   \code{edge_color_attr} is non-NULL.
-#' @param edge_color_legend_title Character scalar. Legend title for the
+#'   gradient from \code{edgeColourLow} to \code{edgeColourHigh}.
+#' @param edgeColourAttr Optional character scalar naming a categorical
+#'   edge attribute to colour edges by (e.g. \code{"source"}). When set,
+#'   takes precedence over \code{colourEdgesByWeight}.
+#' @param edgeColourValues Optional named character vector mapping levels
+#'   of \code{edgeColourAttr} to colours. Used only when
+#'   \code{edgeColourAttr} is non-NULL.
+#' @param edgeColourLabels Optional named character vector mapping levels
+#'   of \code{edgeColourAttr} to legend labels. Used only when
+#'   \code{edgeColourAttr} is non-NULL.
+#' @param edgeColourLegendTitle Character scalar. Legend title for the
 #'   categorical edge colour scale. Defaults to \code{"Type"}.
-#' @param edge_color_low Character string. The colour for the lowest edge
-#'   weight when \code{color_edges_by_weight} is \code{TRUE}. Defaults to
+#' @param edgeColourLow Character string. The colour for the lowest edge
+#'   weight when \code{colourEdgesByWeight} is \code{TRUE}. Defaults to
 #'   \code{"gray80"}.
-#' @param edge_color_high Character string. The colour for the highest edge
-#'   weight when \code{color_edges_by_weight} is \code{TRUE}. Defaults to
-#'   \code{"black"}.
+#' @param edgeColourHigh Character string. The colour for the highest
+#'   edge weight when \code{colourEdgesByWeight} is \code{TRUE}. Defaults
+#'   to \code{"black"}.
 #' @param main Character string. Optional plot title.
-#' @param ... Additional arguments. Currently unused; retained for backwards
-#'   compatibility with the previous igraph-based implementation.
+#' @param ... Additional arguments. Currently unused; retained for forward
+#'   compatibility.
 #'
 #' @return A \code{ggplot} object.
 #'
@@ -81,21 +96,21 @@
 #' @importFrom rlang .data
 plotDirectedFlow <- function(
     g,
-    source_x = 0,
-    mixed_x = 1,
-    sink_x = 2,
-    vertical_spacing = 1,
-    vertex_size = 4,
-    vertex_label_cex = 3,
-    edge_arrow_size = 2,
-    edge_width_range = c(0.3, 1.2),
-    color_edges_by_weight = FALSE,
-    edge_color_attr = NULL,
-    edge_color_values = NULL,
-    edge_color_labels = NULL,
-    edge_color_legend_title = "Type",
-    edge_color_low = "gray80",
-    edge_color_high = "black",
+    sourceX = 0,
+    mixedX = 1,
+    sinkX = 2,
+    verticalSpacing = 1,
+    nodeSize = 6,
+    nodeLabelSize = 3,
+    edgeArrowSize = 2,
+    edgeWidthRange = c(0.3, 1.2),
+    colourEdgesByWeight = FALSE,
+    edgeColourAttr = NULL,
+    edgeColourValues = NULL,
+    edgeColourLabels = NULL,
+    edgeColourLegendTitle = "Type",
+    edgeColourLow = "gray80",
+    edgeColourHigh = "black",
     main = NULL,
     ...
 ) {
@@ -106,10 +121,10 @@ plotDirectedFlow <- function(
     ## ---- Layout: 3-column source / intermediate / sink ---------------------
     coords <- .threeColumnFlowLayout(
         g,
-        source_x = source_x,
-        mixed_x = mixed_x,
-        sink_x = sink_x,
-        vertical_spacing = vertical_spacing
+        sourceX = sourceX,
+        mixedX = mixedX,
+        sinkX = sinkX,
+        verticalSpacing = verticalSpacing
     )
 
     ## ---- Node-role classification (also used for node colours) -------------
@@ -140,26 +155,26 @@ plotDirectedFlow <- function(
     has_weight <- igraph::is_weighted(g)
 
     arrow_obj <- ggplot2::arrow(
-        length = ggplot2::unit(edge_arrow_size, "mm"),
+        length = ggplot2::unit(edgeArrowSize, "mm"),
         type = "closed"
     )
-    end_cap_obj <- ggraph::circle(vertex_size, "pt")
-    start_cap_obj <- ggraph::circle(vertex_size, "pt")
+    end_cap_obj <- ggraph::circle(nodeSize, "pt")
+    start_cap_obj <- ggraph::circle(nodeSize, "pt")
 
     p <- ggraph::ggraph(lay)
 
-    if (!is.null(edge_color_attr)) {
+    if (!is.null(edgeColourAttr)) {
         ## ---- Categorical edge colours --------------------------------------
-        if (!edge_color_attr %in% igraph::edge_attr_names(g)) {
+        if (!edgeColourAttr %in% igraph::edge_attr_names(g)) {
             cli::cli_abort(
-                "Edge attribute {.val {edge_color_attr}} not found on {.arg g}."
+                "Edge attribute {.val {edgeColourAttr}} not found on {.arg g}."
             )
         }
         ## Build an ad-hoc per-edge factor from the attribute values, ordered
         ## to match the names of the supplied palette where possible.
-        attr_vals <- igraph::edge_attr(g, edge_color_attr)
-        edge_levels <- if (!is.null(edge_color_values)) {
-            names(edge_color_values)
+        attr_vals <- igraph::edge_attr(g, edgeColourAttr)
+        edge_levels <- if (!is.null(edgeColourValues)) {
+            names(edgeColourValues)
         } else {
             sort(unique(attr_vals))
         }
@@ -188,31 +203,31 @@ plotDirectedFlow <- function(
         p <- ggraph::ggraph(lay) +
             ggraph::geom_edge_link(
                 ggplot2::aes(edge_colour = .data$`._edge_colour_`),
-                edge_width = mean(edge_width_range),
+                edge_width = mean(edgeWidthRange),
                 arrow = arrow_obj,
                 end_cap = end_cap_obj,
                 start_cap = start_cap_obj
             )
-        if (!is.null(edge_color_values)) {
+        if (!is.null(edgeColourValues)) {
             p <- p +
                 ggraph::scale_edge_colour_manual(
-                    values = edge_color_values,
-                    labels = if (!is.null(edge_color_labels)) {
-                        edge_color_labels
+                    values = edgeColourValues,
+                    labels = if (!is.null(edgeColourLabels)) {
+                        edgeColourLabels
                     } else {
                         ggplot2::waiver()
                     },
-                    name = edge_color_legend_title,
+                    name = edgeColourLegendTitle,
                     drop = FALSE
                 )
         }
-    } else if (color_edges_by_weight && has_weight) {
+    } else if (colourEdgesByWeight && has_weight) {
         eweight <- igraph::E(g)$weight
         if (length(unique(eweight)) == 1L) {
             p <- p +
                 ggraph::geom_edge_link(
-                    edge_colour = edge_color_high,
-                    edge_width = mean(edge_width_range),
+                    edge_colour = edgeColourHigh,
+                    edge_width = mean(edgeWidthRange),
                     arrow = arrow_obj,
                     end_cap = end_cap_obj,
                     start_cap = start_cap_obj
@@ -229,13 +244,13 @@ plotDirectedFlow <- function(
                     start_cap = start_cap_obj
                 ) +
                 ggraph::scale_edge_colour_gradient(
-                    low = edge_color_low,
-                    high = edge_color_high,
+                    low = edgeColourLow,
+                    high = edgeColourHigh,
                     name = "Weight",
                     guide = ggraph::guide_edge_colourbar()
                 ) +
                 ggraph::scale_edge_width_continuous(
-                    range = edge_width_range,
+                    range = edgeWidthRange,
                     guide = "none"
                 )
         }
@@ -243,7 +258,7 @@ plotDirectedFlow <- function(
         p <- p +
             ggraph::geom_edge_link(
                 ggplot2::aes(edge_colour = .data$color),
-                edge_width = mean(edge_width_range),
+                edge_width = mean(edgeWidthRange),
                 arrow = arrow_obj,
                 end_cap = end_cap_obj,
                 start_cap = start_cap_obj
@@ -253,7 +268,7 @@ plotDirectedFlow <- function(
         p <- p +
             ggraph::geom_edge_link(
                 edge_colour = "gray50",
-                edge_width = mean(edge_width_range),
+                edge_width = mean(edgeWidthRange),
                 arrow = arrow_obj,
                 end_cap = end_cap_obj,
                 start_cap = start_cap_obj
@@ -263,7 +278,7 @@ plotDirectedFlow <- function(
     p <- p +
         ggraph::geom_node_point(
             ggplot2::aes(colour = .data$role),
-            size = vertex_size,
+            size = nodeSize,
             show.legend = FALSE
         ) +
         ggplot2::scale_colour_manual(
@@ -276,7 +291,7 @@ plotDirectedFlow <- function(
         ) +
         ggraph::geom_node_text(
             ggplot2::aes(label = .data$name),
-            size = vertex_label_cex,
+            size = nodeLabelSize,
             repel = TRUE,
             max.overlaps = Inf
         ) +
@@ -298,25 +313,25 @@ plotDirectedFlow <- function(
 #' Compute the 3-column source / intermediate / sink layout
 #'
 #' Internal helper. Returns a 2-column matrix of (x, y) coordinates, one row
-#' per vertex of \code{g}, in vertex order. Sources occupy \code{source_x},
-#' sinks \code{sink_x}, and intermediates are spread across
-#' \code{mixed_x +/- 0.4} via Kamada-Kawai on the induced subgraph.
+#' per vertex of \code{g}, in vertex order. Sources occupy \code{sourceX},
+#' sinks \code{sinkX}, and intermediates are spread across
+#' \code{mixedX +/- 0.4} via Kamada-Kawai on the induced subgraph.
 #'
 #' @param g An igraph object.
-#' @param source_x Numeric scalar.
-#' @param mixed_x Numeric scalar.
-#' @param sink_x Numeric scalar.
-#' @param vertical_spacing Numeric scalar.
+#' @param sourceX Numeric scalar.
+#' @param mixedX Numeric scalar.
+#' @param sinkX Numeric scalar.
+#' @param verticalSpacing Numeric scalar.
 #'
 #' @return Numeric matrix with \code{vcount(g)} rows and 2 columns.
 #' @keywords internal
 #' @noRd
 .threeColumnFlowLayout <- function(
     g,
-    source_x = 0,
-    mixed_x = 1,
-    sink_x = 2,
-    vertical_spacing = 1
+    sourceX = 0,
+    mixedX = 1,
+    sinkX = 2,
+    verticalSpacing = 1
 ) {
     in_deg <- igraph::degree(g, mode = "in")
     out_deg <- igraph::degree(g, mode = "out")
@@ -343,49 +358,49 @@ plotDirectedFlow <- function(
         mix_layout <- igraph::layout_with_kk(subg)
         mix_layout[, 1L] <- scales::rescale(
             mix_layout[, 1L],
-            to = c(mixed_x - 0.4, mixed_x + 0.4)
+            to = c(mixedX - 0.4, mixedX + 0.4)
         )
         mix_layout[, 2L] <- scales::rescale(
             mix_layout[, 2L],
-            to = c(0, vertical_spacing)
+            to = c(0, verticalSpacing)
         )
         layout[mixed, ] <- mix_layout
     } else if (length(mixed) == 1L) {
-        layout[mixed, ] <- c(mixed_x, vertical_spacing / 2)
+        layout[mixed, ] <- c(mixedX, verticalSpacing / 2)
     }
 
     if (length(sources) > 0L) {
         y_sources <- seq(
-            from = vertical_spacing,
+            from = verticalSpacing,
             to = 0,
             length.out = max(1L, length(sources))
         )
         layout[sources, ] <- cbind(
-            rep(source_x, length(sources)),
+            rep(sourceX, length(sources)),
             y_sources
         )
     }
 
     if (length(sinks) > 0L) {
         y_sinks <- seq(
-            from = vertical_spacing,
+            from = verticalSpacing,
             to = 0,
             length.out = max(1L, length(sinks))
         )
         layout[sinks, ] <- cbind(
-            rep(sink_x, length(sinks)),
+            rep(sinkX, length(sinks)),
             y_sinks
         )
     }
 
     if (length(isolated) > 0L) {
         y_iso <- seq(
-            from = vertical_spacing * 1.2,
-            to = vertical_spacing * 1.05,
+            from = verticalSpacing * 1.2,
+            to = verticalSpacing * 1.05,
             length.out = max(1L, length(isolated))
         )
         layout[isolated, ] <- cbind(
-            rep(source_x, length(isolated)),
+            rep(sourceX, length(isolated)),
             y_iso
         )
     }

@@ -182,10 +182,10 @@ g <- igraph::graph_from_adjacency_matrix(
 
 plotDirectedFlow(
     g,
-    color_edges_by_weight = TRUE,
-    edge_width_range = c(0.5, 2),
-    vertex_size = 12,
-    vertex_label_cex = 0.7,
+    colourEdgesByWeight = TRUE,
+    edgeWidthRange = c(0.5, 2),
+    nodeSize = 8,
+    nodeLabelSize = 3.5,
     main = paste0(name(cm_list[[2]]), " - nSpecies (custom)")
 )
 ```

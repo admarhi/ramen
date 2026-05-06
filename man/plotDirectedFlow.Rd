@@ -6,21 +6,21 @@
 \usage{
 plotDirectedFlow(
   g,
-  source_x = 0,
-  mixed_x = 1,
-  sink_x = 2,
-  vertical_spacing = 1,
-  vertex_size = 4,
-  vertex_label_cex = 3,
-  edge_arrow_size = 2,
-  edge_width_range = c(0.3, 1.2),
-  color_edges_by_weight = FALSE,
-  edge_color_attr = NULL,
-  edge_color_values = NULL,
-  edge_color_labels = NULL,
-  edge_color_legend_title = "Type",
-  edge_color_low = "gray80",
-  edge_color_high = "black",
+  sourceX = 0,
+  mixedX = 1,
+  sinkX = 2,
+  verticalSpacing = 1,
+  nodeSize = 6,
+  nodeLabelSize = 3,
+  edgeArrowSize = 2,
+  edgeWidthRange = c(0.3, 1.2),
+  colourEdgesByWeight = FALSE,
+  edgeColourAttr = NULL,
+  edgeColourValues = NULL,
+  edgeColourLabels = NULL,
+  edgeColourLegendTitle = "Type",
+  edgeColourLow = "gray80",
+  edgeColourHigh = "black",
   main = NULL,
   ...
 )
@@ -28,61 +28,63 @@ plotDirectedFlow(
 \arguments{
 \item{g}{An igraph object. Must be a directed graph.}
 
-\item{source_x}{Numeric scalar. The x-coordinate for source nodes.
+\item{sourceX}{Numeric scalar. The x-coordinate for source nodes.
 Defaults to 0.}
 
-\item{mixed_x}{Numeric scalar. The central x-coordinate for intermediate
-nodes. The actual layout spans \code{mixed_x} +/- 0.4. Defaults to 1.}
+\item{mixedX}{Numeric scalar. The central x-coordinate for intermediate
+nodes. The actual layout spans \code{mixedX} +/- 0.4. Defaults to 1.}
 
-\item{sink_x}{Numeric scalar. The x-coordinate for sink nodes. Defaults to 2.}
+\item{sinkX}{Numeric scalar. The x-coordinate for sink nodes. Defaults
+to 2.}
 
-\item{vertical_spacing}{Numeric scalar. The maximum y-coordinate, controlling
-the vertical spread of the layout. Defaults to 1.}
+\item{verticalSpacing}{Numeric scalar. The maximum y-coordinate,
+controlling the vertical spread of the layout. Defaults to 1.}
 
-\item{vertex_size}{Numeric scalar. The size of node points. Defaults to 4.}
+\item{nodeSize}{Numeric scalar. The size of node points in millimetres
+(\pkg{ggraph} unit). Defaults to 6.}
 
-\item{vertex_label_cex}{Numeric scalar. The size of node labels. Defaults
-to 3.}
+\item{nodeLabelSize}{Numeric scalar. The size of node labels in
+millimetres. Defaults to 3.}
 
-\item{edge_arrow_size}{Numeric scalar. The arrow length on edges, in
+\item{edgeArrowSize}{Numeric scalar. The arrow length on edges, in
 millimetres. Defaults to 2.}
 
-\item{edge_width_range}{Numeric vector of length 2. The minimum and maximum
-width for edges when scaled by weight. If the graph is unweighted or all
-weights are identical, the mean of this range is used. Defaults to
-\code{c(0.3, 1.2)}.}
+\item{edgeWidthRange}{Numeric vector of length 2. The minimum and
+maximum width for edges when scaled by weight. If the graph is
+unweighted or all weights are identical, the mean of this range is
+used. Defaults to \code{c(0.3, 1.2)}.}
 
-\item{color_edges_by_weight}{Logical scalar. If \code{TRUE} and the graph
+\item{colourEdgesByWeight}{Logical scalar. If \code{TRUE} and the graph
 has a \code{weight} edge attribute, edges are coloured on a continuous
-gradient from \code{edge_color_low} to \code{edge_color_high}.}
+gradient from \code{edgeColourLow} to \code{edgeColourHigh}.}
 
-\item{edge_color_attr}{Optional character scalar naming a categorical edge
-attribute to colour edges by (e.g. \code{"source"}). When set, takes
-precedence over \code{color_edges_by_weight}.}
+\item{edgeColourAttr}{Optional character scalar naming a categorical
+edge attribute to colour edges by (e.g. \code{"source"}). When set,
+takes precedence over \code{colourEdgesByWeight}.}
 
-\item{edge_color_values}{Optional named character vector mapping levels of
-\code{edge_color_attr} to colours. Used only when \code{edge_color_attr}
-is non-NULL.}
+\item{edgeColourValues}{Optional named character vector mapping levels
+of \code{edgeColourAttr} to colours. Used only when
+\code{edgeColourAttr} is non-NULL.}
 
-\item{edge_color_labels}{Optional named character vector mapping levels of
-\code{edge_color_attr} to legend labels. Used only when
-\code{edge_color_attr} is non-NULL.}
+\item{edgeColourLabels}{Optional named character vector mapping levels
+of \code{edgeColourAttr} to legend labels. Used only when
+\code{edgeColourAttr} is non-NULL.}
 
-\item{edge_color_legend_title}{Character scalar. Legend title for the
+\item{edgeColourLegendTitle}{Character scalar. Legend title for the
 categorical edge colour scale. Defaults to \code{"Type"}.}
 
-\item{edge_color_low}{Character string. The colour for the lowest edge
-weight when \code{color_edges_by_weight} is \code{TRUE}. Defaults to
+\item{edgeColourLow}{Character string. The colour for the lowest edge
+weight when \code{colourEdgesByWeight} is \code{TRUE}. Defaults to
 \code{"gray80"}.}
 
-\item{edge_color_high}{Character string. The colour for the highest edge
-weight when \code{color_edges_by_weight} is \code{TRUE}. Defaults to
-\code{"black"}.}
+\item{edgeColourHigh}{Character string. The colour for the highest
+edge weight when \code{colourEdgesByWeight} is \code{TRUE}. Defaults
+to \code{"black"}.}
 
 \item{main}{Character string. Optional plot title.}
 
-\item{...}{Additional arguments. Currently unused; retained for backwards
-compatibility with the previous igraph-based implementation.}
+\item{...}{Additional arguments. Currently unused; retained for forward
+compatibility.}
 }
 \value{
 A \code{ggplot} object.
@@ -98,10 +100,22 @@ returned object composes with the usual \pkg{ggplot2} operators.
 }
 \details{
 Edges may be coloured in three ways: by a continuous \code{weight}
-attribute (\code{color_edges_by_weight = TRUE}); by a categorical edge
-attribute (\code{edge_color_attr = "<name>"}), in which case
-\code{edge_color_values} and \code{edge_color_labels} customise the
+attribute (\code{colourEdgesByWeight = TRUE}); by a categorical edge
+attribute (\code{edgeColourAttr = "<name>"}), in which case
+\code{edgeColourValues} and \code{edgeColourLabels} customise the
 palette and legend; or with a single fixed colour (default).
+
+When the graph carries non-positive edge weights, the Kamada-Kawai
+layout used for intermediate nodes falls back to topological
+placement (the \code{weight} attribute is dropped on the induced
+intermediate subgraph, since \code{igraph::layout_with_kk} requires
+strictly positive weights, and \code{EffectiveConsumption}-style
+assays carry zeros). This affects only the within-column layout;
+the source / sink / intermediate column assignment is unaffected.
+
+The size-bearing arguments (\code{nodeSize}, \code{nodeLabelSize},
+\code{edgeArrowSize}) use \pkg{ggraph} millimetre units rather than
+the \pkg{igraph} \code{cex} factors of the previous implementation.
 }
 \examples{
 cm <- synCM("test", n_species = 3, max_met = 5)

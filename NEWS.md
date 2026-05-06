@@ -21,6 +21,12 @@
   `consortia(cma)` continues to raise an error -- by design,
   `ConsortiumMetabolismAlignment` is a result object that records
   only its inputs' names rather than retaining copies of them.
+* `plotDirectedFlow()` parameters renamed to lowerCamelCase
+  throughout, with British-English spelling for colour-related
+  args. The size-bearing arguments (`nodeSize`, `nodeLabelSize`,
+  `edgeArrowSize`) now use ggraph millimetre units rather than
+  igraph `cex` factors, with defaults adjusted for legibility.
+  This is a hard rename -- no aliases for the old names.
 
 ## New methods
 

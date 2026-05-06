@@ -35,8 +35,8 @@ setMethod(
 
         plotDirectedFlow(
             g,
-            color_edges_by_weight = TRUE,
-            edge_width_range = c(0.5, 1),
+            colourEdgesByWeight = TRUE,
+            edgeWidthRange = c(0.5, 1),
             main = paste(type, "in", x@Name)
         )
     }
@@ -326,12 +326,12 @@ setMethod(
 
     plotDirectedFlow(
         g,
-        color_edges_by_weight = FALSE,
-        edge_color_attr = "source",
-        edge_color_values = okabe_ito,
-        edge_color_labels = pathway_labels,
-        edge_color_legend_title = "Pathway type",
-        edge_width_range = c(1, 1),
+        colourEdgesByWeight = FALSE,
+        edgeColourAttr = "source",
+        edgeColourValues = okabe_ito,
+        edgeColourLabels = pathway_labels,
+        edgeColourLegendTitle = "Pathway type",
+        edgeWidthRange = c(1, 1),
         main = paste(
             cma@QueryName,
             "vs",

@@ -166,14 +166,14 @@ test_that("plotDirectedFlow preserves pre-set E(g)$color", {
     g <- igraph::make_ring(4, directed = TRUE)
     igraph::E(g)$color <- c("red", "blue", "green", "red")
     expect_no_error(
-        plotDirectedFlow(g, color_edges_by_weight = FALSE)
+        plotDirectedFlow(g, colourEdgesByWeight = FALSE)
     )
 })
 
 test_that("plotDirectedFlow defaults to gray when no pre-set colors", {
     g <- igraph::make_ring(4, directed = TRUE)
     expect_no_error(
-        plotDirectedFlow(g, color_edges_by_weight = FALSE)
+        plotDirectedFlow(g, colourEdgesByWeight = FALSE)
     )
 })
 
@@ -192,4 +192,32 @@ test_that("scores plot for multiple alignment excludes nPairs/sd", {
     expect_s3_class(p, "ggplot")
     expect_false("nPairs" %in% as.character(p$data$metric))
     expect_false("sd" %in% as.character(p$data$metric))
+})
+
+## ---- Layout fidelity: 3-column structure ----------------------------------
+
+test_that("plotDirectedFlow places sources / sinks at requested x", {
+    ## Build a directed graph with one source-only node (s),
+    ## two intermediates (m1, m2), and one sink-only node (t).
+    edges <- data.frame(
+        from = c("s", "s", "m1", "m2"),
+        to = c("m1", "m2", "m2", "t")
+    )
+    g <- igraph::graph_from_data_frame(edges, directed = TRUE)
+
+    p <- plotDirectedFlow(g, sourceX = -2, mixedX = 1.5, sinkX = 5)
+    expect_s3_class(p, "ggplot")
+
+    lay <- p$data
+    expect_true(all(c("name", "x", "y") %in% names(lay)))
+
+    src_x <- lay$x[lay$name == "s"]
+    sink_x <- lay$x[lay$name == "t"]
+    mid_x <- lay$x[lay$name %in% c("m1", "m2")]
+
+    expect_equal(src_x, -2)
+    expect_equal(sink_x, 5)
+    ## Intermediate nodes must lie strictly between source and sink x,
+    ## guarding against a regression to a generic stress / kk / fr layout.
+    expect_true(all(mid_x > -2 & mid_x < 5))
 })
