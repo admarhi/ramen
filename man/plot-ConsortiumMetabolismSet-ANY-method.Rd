@@ -4,7 +4,13 @@
 \alias{plot,ConsortiumMetabolismSet,ANY-method}
 \title{Plot a ConsortiumMetabolismSet object}
 \usage{
-\S4method{plot}{ConsortiumMetabolismSet,ANY}(x, label_colours = NULL, max_nodes = 20, label_size = 4)
+\S4method{plot}{ConsortiumMetabolismSet,ANY}(
+  x,
+  label_colours = NULL,
+  max_nodes = 20,
+  label_size = 3,
+  showClusterIds = TRUE
+)
 }
 \arguments{
 \item{x}{A \code{ConsortiumMetabolismSet} object.}
@@ -15,6 +21,12 @@ colour columns.}
 \item{max_nodes}{Maximum number of dendrogram nodes.}
 
 \item{label_size}{Numeric label size.}
+
+\item{showClusterIds}{Logical. If \code{TRUE} (default), draw the
+internal cluster identifiers used by
+\code{\link{extractCluster}} as small filled circles on top of
+the dendrogram. Set to \code{FALSE} for a clean dendrogram
+suitable for figure export.}
 }
 \value{
 A \code{ggplot} object (returned invisibly).

@@ -1,3 +1,6 @@
+#' @include theme-ramen.R plot-helpers.R
+NULL
+
 #' @title Plot Functional Groups Dendrogram
 #'
 #' @description
@@ -13,7 +16,7 @@
 #'   clusters to color in the dendrogram. Default
 #'   \code{4}.
 #' @param label_size Numeric scalar specifying the text
-#'   size for species labels. Default \code{6}.
+#'   size for species labels. Default \code{3}.
 #' @param label_colours If not \code{NULL}, a data frame
 #'   with columns \code{label} and \code{colour} mapping
 #'   species names to colors. When \code{NULL} (default),
@@ -39,7 +42,7 @@
 plotFunctionalGroups <- function(
     fg,
     k = 4,
-    label_size = 6,
+    label_size = 3,
     label_colours = NULL
 ) {
     if (!is.list(fg)) {
@@ -82,59 +85,29 @@ plotFunctionalGroups <- function(
         )
     }
 
-    # Color branches by cluster membership
-    gg_dend <- dendextend::color_branches(
-        dend,
-        k = k
-    ) |>
-        dendextend::as.ggdend()
-
-    if (!is.null(label_colours)) {
-        label_tb <- gg_dend$labels |>
-            dplyr::left_join(
-                label_colours,
-                by = "label"
-            )
-    } else {
-        label_tb <- gg_dend$labels |>
-            dplyr::mutate(colour = "black")
+    # Colour branches by cluster membership using the ramen palette
+    # (Okabe-Ito-derived, recycled if k > length(palette)).
+    clusterCols <- ramenPalette$cluster # nolint: object_usage_linter.
+    if (k > length(clusterCols)) {
+        clusterCols <- rep_len(clusterCols, k)
     }
-    # Remove the default label layer
-    gg_dend$labels <- gg_dend$labels[0, ]
+    dend <- dendextend::color_branches(
+        dend,
+        k = k,
+        col = clusterCols[seq_len(k)]
+    )
 
-    # Build ggplot dendrogram
-    plot_obj <- ggplot2::ggplot(
-        gg_dend,
-        horiz = FALSE
-    ) +
-        ggplot2::theme_minimal() +
-        ggplot2::theme(
-            axis.title = ggplot2::element_blank(),
-            axis.text = ggplot2::element_blank(),
-            axis.ticks = ggplot2::element_blank(),
-            axis.line = ggplot2::element_blank(),
-            panel.background = ggplot2::element_blank(),
-            panel.grid = ggplot2::element_blank(),
-            legend.position = "bottom"
-        ) +
-        ggplot2::scale_y_continuous(
-            expand = ggplot2::expansion(
-                mult = c(0, 0),
-                add = c(2, 1)
-            )
-        ) +
-        ggplot2::geom_text(
-            data = label_tb,
-            ggplot2::aes(
-                x = .data$x,
-                y = .data$y - 0.1,
-                label = .data$label
-            ),
-            angle = 90,
-            hjust = 1,
-            size = label_size,
-            color = label_tb$colour
+    # nolint next: object_usage_linter.
+    .dendrogramGgplot(
+        dend,
+        labelSize = label_size,
+        labelColours = label_colours,
+        showHeightAxis = TRUE,
+        title = "Functional groups",
+        subtitle = sprintf(
+            "k = %d clusters · %d species",
+            k,
+            n_leaves
         )
-
-    plot_obj
+    )
 }

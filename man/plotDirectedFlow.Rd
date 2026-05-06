@@ -19,11 +19,13 @@ plotDirectedFlow(
   edgeColourValues = NULL,
   edgeColourLabels = NULL,
   edgeColourLegendTitle = "Type",
-  edgeColourLow = "#DEEBF7",
-  edgeColourHigh = "#08519C",
-  nodeColourValues = c(source = "#0072B2", intermediate = "#F0E442", sink = "#D55E00"),
+  edgeColourLow = ramenPalette$edgeWeight[["low"]],
+  edgeColourHigh = ramenPalette$edgeWeight[["high"]],
+  nodeColourValues = ramenPalette$nodeRole,
   nodeColourLabels = c(source = "Source", intermediate = "Intermediate", sink = "Sink"),
   nodeColourLegendTitle = "Node role",
+  title = NULL,
+  subtitle = NULL,
   main = NULL,
   ...
 )
@@ -35,7 +37,7 @@ plotDirectedFlow(
 Defaults to 0.}
 
 \item{mixedX}{Numeric scalar. The central x-coordinate for intermediate
-nodes. The actual layout spans \code{mixedX} +/- 0.4. Defaults to 1.}
+nodes. The actual layout spans \code{mixedX} +/- 0.8. Defaults to 1.}
 
 \item{sinkX}{Numeric scalar. The x-coordinate for sink nodes. Defaults
 to 2.}
@@ -78,17 +80,17 @@ categorical edge colour scale. Defaults to \code{"Type"}.}
 
 \item{edgeColourLow}{Character string. The colour for the lowest edge
 weight when \code{colourEdgesByWeight} is \code{TRUE}. Defaults to
-\code{"#DEEBF7"} (ColorBrewer Blues, light end).}
+\code{ramenPalette$edgeWeight[["low"]]} (ColorBrewer Blues, light
+end).}
 
 \item{edgeColourHigh}{Character string. The colour for the highest
 edge weight when \code{colourEdgesByWeight} is \code{TRUE}. Defaults
-to \code{"#08519C"} (ColorBrewer Blues, dark end).}
+to \code{ramenPalette$edgeWeight[["high"]]} (ColorBrewer Blues,
+dark end).}
 
 \item{nodeColourValues}{Named character vector of length 3 mapping
 the node roles \code{"source"}, \code{"intermediate"}, and
-\code{"sink"} to colours. Defaults to a maximally distinct
-Okabe-Ito triple (blue / yellow / vermilion) chosen for
-colour-blind safety and high mutual contrast.}
+\code{"sink"} to colours. Defaults to \code{ramenPalette$nodeRole}.}
 
 \item{nodeColourLabels}{Optional named character vector mapping node
 roles to legend labels. Defaults to \code{c(source = "Source",
@@ -97,7 +99,13 @@ intermediate = "Intermediate", sink = "Sink")}.}
 \item{nodeColourLegendTitle}{Character scalar. Legend title for the
 node-role colour scale. Defaults to \code{"Node role"}.}
 
-\item{main}{Character string. Optional plot title.}
+\item{title}{Character string. Optional plot title. Falls back to
+the deprecated \code{main} alias when \code{title} is NULL.}
+
+\item{subtitle}{Character string. Optional plot subtitle.}
+
+\item{main}{Deprecated alias for \code{title}; will be removed in a
+future release.}
 
 \item{...}{Additional arguments. Currently unused; retained for forward
 compatibility.}
@@ -121,13 +129,13 @@ attribute (\code{edgeColourAttr = "<name>"}), in which case
 \code{edgeColourValues} and \code{edgeColourLabels} customise the
 palette and legend; or with a single fixed colour (default).
 
-When the graph carries non-positive edge weights, the Kamada-Kawai
-layout used for intermediate nodes falls back to topological
-placement (the \code{weight} attribute is dropped on the induced
-intermediate subgraph, since \code{igraph::layout_with_kk} requires
-strictly positive weights, and \code{EffectiveConsumption}-style
-assays carry zeros). This affects only the within-column layout;
-the source / sink / intermediate column assignment is unaffected.
+The Kamada-Kawai layout used for the intermediate column is always
+run unweighted. Within-column position has no semantic meaning
+(edge weights are encoded via colour and width on the edges), and
+running Kamada-Kawai with heterogeneous weights would collapse
+strongly-connected intermediates into the centre on weighted assays
+such as \code{Consumption} or \code{Production}. The source / sink /
+intermediate column assignment is unaffected.
 
 The size-bearing arguments (\code{nodeSize}, \code{nodeLabelSize},
 \code{edgeArrowSize}) use \pkg{ggraph} millimetre units rather than

@@ -1,3 +1,6 @@
+#' @include theme-ramen.R
+NULL
+
 #' Plot a Directed Graph Emphasising Flow
 #'
 #' Arranges nodes of a directed graph into three distinct columns representing
@@ -15,13 +18,13 @@
 #' palette and legend; or with a single fixed colour (default).
 #'
 #' @details
-#' When the graph carries non-positive edge weights, the Kamada-Kawai
-#' layout used for intermediate nodes falls back to topological
-#' placement (the \code{weight} attribute is dropped on the induced
-#' intermediate subgraph, since \code{igraph::layout_with_kk} requires
-#' strictly positive weights, and \code{EffectiveConsumption}-style
-#' assays carry zeros). This affects only the within-column layout;
-#' the source / sink / intermediate column assignment is unaffected.
+#' The Kamada-Kawai layout used for the intermediate column is always
+#' run unweighted. Within-column position has no semantic meaning
+#' (edge weights are encoded via colour and width on the edges), and
+#' running Kamada-Kawai with heterogeneous weights would collapse
+#' strongly-connected intermediates into the centre on weighted assays
+#' such as \code{Consumption} or \code{Production}. The source / sink /
+#' intermediate column assignment is unaffected.
 #'
 #' The size-bearing arguments (\code{nodeSize}, \code{nodeLabelSize},
 #' \code{edgeArrowSize}) use \pkg{ggraph} millimetre units rather than
@@ -31,7 +34,7 @@
 #' @param sourceX Numeric scalar. The x-coordinate for source nodes.
 #'   Defaults to 0.
 #' @param mixedX Numeric scalar. The central x-coordinate for intermediate
-#'   nodes. The actual layout spans \code{mixedX} +/- 0.4. Defaults to 1.
+#'   nodes. The actual layout spans \code{mixedX} +/- 0.8. Defaults to 1.
 #' @param sinkX Numeric scalar. The x-coordinate for sink nodes. Defaults
 #'   to 2.
 #' @param verticalSpacing Numeric scalar. The maximum y-coordinate,
@@ -62,21 +65,25 @@
 #'   categorical edge colour scale. Defaults to \code{"Type"}.
 #' @param edgeColourLow Character string. The colour for the lowest edge
 #'   weight when \code{colourEdgesByWeight} is \code{TRUE}. Defaults to
-#'   \code{"#DEEBF7"} (ColorBrewer Blues, light end).
+#'   \code{ramenPalette$edgeWeight[["low"]]} (ColorBrewer Blues, light
+#'   end).
 #' @param edgeColourHigh Character string. The colour for the highest
 #'   edge weight when \code{colourEdgesByWeight} is \code{TRUE}. Defaults
-#'   to \code{"#08519C"} (ColorBrewer Blues, dark end).
+#'   to \code{ramenPalette$edgeWeight[["high"]]} (ColorBrewer Blues,
+#'   dark end).
 #' @param nodeColourValues Named character vector of length 3 mapping
 #'   the node roles \code{"source"}, \code{"intermediate"}, and
-#'   \code{"sink"} to colours. Defaults to a maximally distinct
-#'   Okabe-Ito triple (blue / yellow / vermilion) chosen for
-#'   colour-blind safety and high mutual contrast.
+#'   \code{"sink"} to colours. Defaults to \code{ramenPalette$nodeRole}.
 #' @param nodeColourLabels Optional named character vector mapping node
 #'   roles to legend labels. Defaults to \code{c(source = "Source",
 #'   intermediate = "Intermediate", sink = "Sink")}.
 #' @param nodeColourLegendTitle Character scalar. Legend title for the
 #'   node-role colour scale. Defaults to \code{"Node role"}.
-#' @param main Character string. Optional plot title.
+#' @param title Character string. Optional plot title. Falls back to
+#'   the deprecated \code{main} alias when \code{title} is NULL.
+#' @param subtitle Character string. Optional plot subtitle.
+#' @param main Deprecated alias for \code{title}; will be removed in a
+#'   future release.
 #' @param ... Additional arguments. Currently unused; retained for forward
 #'   compatibility.
 #'
@@ -119,24 +126,27 @@ plotDirectedFlow <- function(
     edgeColourValues = NULL,
     edgeColourLabels = NULL,
     edgeColourLegendTitle = "Type",
-    edgeColourLow = "#DEEBF7",
-    edgeColourHigh = "#08519C",
-    nodeColourValues = c(
-        source = "#0072B2",
-        intermediate = "#F0E442",
-        sink = "#D55E00"
-    ),
+    # nolint start: object_usage_linter.
+    edgeColourLow = ramenPalette$edgeWeight[["low"]],
+    edgeColourHigh = ramenPalette$edgeWeight[["high"]],
+    nodeColourValues = ramenPalette$nodeRole,
+    # nolint end
     nodeColourLabels = c(
         source = "Source",
         intermediate = "Intermediate",
         sink = "Sink"
     ),
     nodeColourLegendTitle = "Node role",
+    title = NULL,
+    subtitle = NULL,
     main = NULL,
     ...
 ) {
     if (!igraph::is_directed(g)) {
         cli::cli_abort("{.arg g} must be a directed graph.")
+    }
+    if (is.null(title) && !is.null(main)) {
+        title <- main
     }
 
     ## ---- Layout: 3-column source / intermediate / sink ---------------------
@@ -296,6 +306,16 @@ plotDirectedFlow <- function(
             )
     }
 
+    ## Drop unused role rows from the legend so categories never
+    ## represented in the data don't clutter it.
+    presentRoles <- levels(droplevels(role))
+    nodeColourValuesUsed <- nodeColourValues[
+        names(nodeColourValues) %in% presentRoles
+    ]
+    nodeColourLabelsUsed <- nodeColourLabels[
+        names(nodeColourLabels) %in% presentRoles
+    ]
+
     p <- p +
         ggraph::geom_node_point(
             ggplot2::aes(colour = .data$role),
@@ -303,9 +323,10 @@ plotDirectedFlow <- function(
         ) +
         ggplot2::scale_colour_manual(
             name = nodeColourLegendTitle,
-            values = nodeColourValues,
-            labels = nodeColourLabels,
-            drop = FALSE
+            values = nodeColourValuesUsed,
+            labels = nodeColourLabelsUsed,
+            drop = TRUE,
+            limits = presentRoles
         ) +
         ggraph::geom_node_text(
             ggplot2::aes(label = .data$name),
@@ -313,30 +334,11 @@ plotDirectedFlow <- function(
             repel = TRUE,
             max.overlaps = Inf
         ) +
-        ggplot2::theme_void() +
-        ggplot2::theme(
-            legend.position = "bottom",
-            legend.box = "horizontal",
-            plot.background = ggplot2::element_rect(
-                fill = "white",
-                colour = NA
-            ),
-            panel.background = ggplot2::element_rect(
-                fill = "white",
-                colour = NA
-            ),
-            legend.background = ggplot2::element_rect(
-                fill = "white",
-                colour = NA
-            ),
-            plot.title = ggplot2::element_text(
-                hjust = 0,
-                margin = ggplot2::margin(b = 6)
-            )
-        )
+        ggplot2::coord_cartesian(clip = "off") +
+        theme_ramen(network = TRUE) # nolint: object_usage_linter.
 
-    if (!is.null(main)) {
-        p <- p + ggplot2::labs(title = main)
+    if (!is.null(title) || !is.null(subtitle)) {
+        p <- p + ggplot2::labs(title = title, subtitle = subtitle)
     }
 
     p
@@ -347,7 +349,7 @@ plotDirectedFlow <- function(
 #' Internal helper. Returns a 2-column matrix of (x, y) coordinates, one row
 #' per vertex of \code{g}, in vertex order. Sources occupy \code{sourceX},
 #' sinks \code{sinkX}, and intermediates are spread across
-#' \code{mixedX +/- 0.4} via Kamada-Kawai on the induced subgraph.
+#' \code{mixedX +/- 0.8} via Kamada-Kawai on the induced subgraph.
 #'
 #' @param g An igraph object.
 #' @param sourceX Numeric scalar.
@@ -377,20 +379,19 @@ plotDirectedFlow <- function(
 
     if (length(mixed) > 1L) {
         subg <- igraph::induced_subgraph(g, vids = mixed)
-        ## Kamada-Kawai requires strictly positive edge weights. If any
-        ## edge has a non-positive weight, drop the weight attribute on the
-        ## induced subgraph so layout_with_kk falls back to topological
-        ## (unweighted) placement.
+        ## Lay out the intermediate column unweighted: within-column
+        ## position is purely visual (edge weights are already encoded
+        ## via colour and width). Heterogeneous weights would otherwise
+        ## make Kamada-Kawai collapse strongly-connected nodes into the
+        ## centre, producing an unreadable star on weighted assays
+        ## (e.g. Consumption, Production).
         if (igraph::is_weighted(subg)) {
-            sub_weights <- igraph::E(subg)$weight
-            if (any(!is.finite(sub_weights)) || any(sub_weights <= 0)) {
-                subg <- igraph::delete_edge_attr(subg, "weight")
-            }
+            subg <- igraph::delete_edge_attr(subg, "weight")
         }
         mix_layout <- igraph::layout_with_kk(subg)
         mix_layout[, 1L] <- scales::rescale(
             mix_layout[, 1L],
-            to = c(mixedX - 0.4, mixedX + 0.4)
+            to = c(mixedX - 0.8, mixedX + 0.8)
         )
         mix_layout[, 2L] <- scales::rescale(
             mix_layout[, 2L],

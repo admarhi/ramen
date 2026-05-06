@@ -1,4 +1,4 @@
-#' @include AllClasses.R AllGenerics.R
+#' @include AllClasses.R AllGenerics.R theme-ramen.R plot-helpers.R
 NULL
 
 #' Plot a ConsortiumMetabolism object
@@ -37,7 +37,8 @@ setMethod(
             g,
             colourEdgesByWeight = TRUE,
             edgeWidthRange = c(0.5, 1),
-            main = paste(type, "in", x@Name)
+            title = x@Name,
+            subtitle = paste(type, "network")
         )
     }
 )
@@ -49,6 +50,11 @@ setMethod(
 #'   colour columns.
 #' @param max_nodes Maximum number of dendrogram nodes.
 #' @param label_size Numeric label size.
+#' @param showClusterIds Logical. If \code{TRUE} (default), draw the
+#'   internal cluster identifiers used by
+#'   \code{\link{extractCluster}} as small filled circles on top of
+#'   the dendrogram. Set to \code{FALSE} for a clean dendrogram
+#'   suitable for figure export.
 #' @return A \code{ggplot} object (returned invisibly).
 #' @examples
 #' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
@@ -59,79 +65,58 @@ setMethod(
 setMethod(
     "plot",
     "ConsortiumMetabolismSet",
-    function(x, label_colours = NULL, max_nodes = 20, label_size = 4) {
+    function(
+        x,
+        label_colours = NULL,
+        max_nodes = 20,
+        label_size = 3,
+        showClusterIds = TRUE
+    ) {
         if (length(x@Dendrogram) == 0) {
             cli::cli_abort(
                 "The {.cls ConsortiumMetabolismSet} has not been clustered yet."
             )
         }
         dend <- x@Dendrogram[[1]]
-        node_data <- x@NodeData |>
-            dplyr::filter(.data$node_id <= max_nodes)
 
-        gg_dend <- dendextend::as.ggdend(
+        # nolint next: object_usage_linter.
+        p <- .dendrogramGgplot(
             dend,
-            labels = TRUE,
-            type = "rectangle"
+            labelSize = label_size,
+            labelColours = label_colours,
+            showHeightAxis = TRUE,
+            title = if (length(name(x))) name(x) else NULL,
+            subtitle = sprintf(
+                "Hierarchical clustering · %d consortia",
+                length(labels(dend))
+            )
         )
 
-        if (!is.null(label_colours)) {
-            label_tb <- gg_dend$labels |>
-                dplyr::left_join(label_colours, by = "label")
-        } else {
-            label_tb <- gg_dend$labels |>
-                dplyr::mutate(colour = "black")
-        }
-
-        ggplot2::ggplot() +
-            # Dendrogram branches
-            ggplot2::geom_segment(
-                data = gg_dend$segments,
-                ggplot2::aes(
-                    x = .data$x,
-                    y = .data$y,
-                    xend = .data$xend,
-                    yend = .data$yend
+        if (isTRUE(showClusterIds) && nrow(x@NodeData) > 0L) {
+            nodeData <- x@NodeData |>
+                dplyr::filter(.data$node_id <= max_nodes)
+            p <- p +
+                ggplot2::geom_point(
+                    data = nodeData,
+                    ggplot2::aes(x = .data$x, y = .data$y),
+                    colour = "grey25",
+                    fill = "grey25",
+                    shape = 21,
+                    size = 5
+                ) +
+                ggplot2::geom_text(
+                    data = nodeData,
+                    ggplot2::aes(
+                        x = .data$x,
+                        y = .data$y,
+                        label = .data$node_id
+                    ),
+                    colour = "white",
+                    size = 2.8,
+                    fontface = "bold"
                 )
-            ) +
-            ggplot2::geom_point(
-                data = node_data,
-                ggplot2::aes(x = .data$x, y = .data$y),
-                color = "red",
-                size = 7
-            ) +
-            ggplot2::geom_text(
-                data = node_data,
-                ggplot2::aes(x = .data$x, y = .data$y, label = .data$node_id),
-                color = "white",
-                size = 4,
-                fontface = "bold"
-            ) +
-            ggplot2::scale_y_continuous(
-                expand = ggplot2::expansion(mult = c(0, 0), add = c(2, 1))
-            ) +
-            ggplot2::theme(
-                axis.text = ggplot2::element_blank(),
-                axis.ticks = ggplot2::element_blank(),
-                axis.title = ggplot2::element_blank(),
-                panel.background = ggplot2::element_blank(),
-                panel.grid = ggplot2::element_blank(),
-                legend.position = "bottom"
-            ) +
-            ggplot2::geom_text(
-                # manually draw the axis labels (i.e., leaf labels)
-                data = label_tb,
-                # y - 2 to push below branches
-                ggplot2::aes(
-                    x = .data$x,
-                    y = .data$y - 0.1,
-                    label = .data$label
-                ),
-                angle = 90,
-                hjust = 1,
-                size = label_size,
-                color = label_tb$colour # vector of colors
-            )
+        }
+        p
     }
 )
 
@@ -228,34 +213,49 @@ setMethod(
         ggplot2::geom_tile(color = "white")
 
     if (n <= 30L) {
+        ## Flip text colour for legibility on dark tiles.
         p <- p +
             ggplot2::geom_text(
                 ggplot2::aes(
-                    label = round(.data$similarity, 2)
+                    label = round(.data$similarity, 2),
+                    colour = .data$similarity > 0.6
                 ),
-                size = 3
+                size = 3,
+                show.legend = FALSE
+            ) +
+            ggplot2::scale_colour_manual(
+                values = c(`TRUE` = "white", `FALSE` = "grey15")
             )
     }
 
     p +
-        ggplot2::scale_fill_gradient(
-            low = "white",
-            high = "#B2182B",
+        ggplot2::scale_fill_gradient2(
+            # nolint start: object_usage_linter.
+            low = ramenPalette$heatmapFill[["low"]],
+            mid = ramenPalette$heatmapFill[["mid"]],
+            high = ramenPalette$heatmapFill[["high"]],
+            # nolint end
+            midpoint = 0.5,
             limits = c(0, 1),
             name = cma@Metric
         ) +
-        ggplot2::theme_minimal() +
+        ggplot2::coord_fixed() +
+        theme_ramen() + # nolint: object_usage_linter.
         ggplot2::theme(
             axis.text.x = ggplot2::element_text(
                 angle = 45,
                 hjust = 1
             ),
             axis.title = ggplot2::element_blank(),
-            panel.grid = ggplot2::element_blank(),
-            legend.position = "bottom"
+            panel.grid = ggplot2::element_blank()
         ) +
-        ggplot2::ggtitle(
-            paste("Similarity Heatmap -", cma@Metric)
+        ggplot2::labs(
+            title = "Pairwise similarity",
+            subtitle = sprintf(
+                "%s · %d consortia",
+                cma@Metric,
+                n
+            )
         )
 }
 
@@ -263,11 +263,8 @@ setMethod(
 #' @noRd
 .plotNetwork <- function(
     cma,
-    edgeColourValues = c(
-        shared = "#000000",
-        query = "#a6a6a6",
-        reference = "#555555"
-    ),
+    # nolint next: object_usage_linter.
+    edgeColourValues = ramenPalette$edgeCategorical,
     edgeColourLabels = c(
         shared = "Shared",
         query = "Query-only",
@@ -334,6 +331,11 @@ setMethod(
     edge_df <- pw_df[, c("consumed", "produced", "source")]
     g <- igraph::graph_from_data_frame(edge_df, directed = TRUE)
 
+    fos <- if (!is.null(cma@Scores$FOS)) {
+        sprintf("%s = %.3f", cma@Metric, cma@Scores$FOS)
+    } else {
+        cma@Metric
+    }
     plotDirectedFlow(
         g,
         colourEdgesByWeight = FALSE,
@@ -342,11 +344,8 @@ setMethod(
         edgeColourLabels = edgeColourLabels,
         edgeColourLegendTitle = edgeColourLegendTitle,
         edgeWidthRange = c(1, 1),
-        main = paste(
-            cma@QueryName,
-            "vs",
-            cma@ReferenceName
-        ),
+        title = paste(cma@QueryName, "vs", cma@ReferenceName),
+        subtitle = fos,
         ...
     )
 }
@@ -377,11 +376,23 @@ setMethod(
     plot_df <- data.frame(
         metric = factor(
             names(vals),
-            levels = names(vals)
+            levels = rev(names(vals))
         ),
         value = unname(vals),
         stringsAsFactors = FALSE
     )
+
+    ## Place value labels inside the bar when the bar is long enough,
+    ## outside otherwise; flip text colour to match.
+    insideBar <- plot_df$value > 0.7
+    plot_df$labelHjust <- ifelse(insideBar, 1.1, -0.1)
+    plot_df$labelColour <- ifelse(insideBar, "white", "grey15")
+
+    ctx <- if (cma@Type == "pairwise") {
+        sprintf("%s · %s vs %s", cma@Metric, cma@QueryName, cma@ReferenceName)
+    } else {
+        sprintf("%s · %d consortia", cma@Metric, nrow(cma@SimilarityMatrix))
+    }
 
     ggplot2::ggplot(
         plot_df,
@@ -391,22 +402,33 @@ setMethod(
         )
     ) +
         ggplot2::geom_col(
-            fill = "#377EB8",
+            fill = ramenPalette$bar, # nolint: object_usage_linter.
             width = 0.6
         ) +
         ggplot2::geom_text(
             ggplot2::aes(
-                label = round(.data$value, 3)
+                label = round(.data$value, 3),
+                hjust = .data$labelHjust,
+                colour = .data$labelColour
             ),
-            hjust = -0.1,
-            size = 3
+            size = 3,
+            show.legend = FALSE
+        ) +
+        ggplot2::scale_colour_identity() +
+        ggplot2::scale_y_continuous(
+            limits = c(0, 1),
+            breaks = seq(0, 1, 0.25),
+            expand = ggplot2::expansion(mult = c(0, 0.05))
         ) +
         ggplot2::coord_flip() +
-        ggplot2::ylim(0, 1.1) +
-        ggplot2::theme_minimal() +
+        theme_ramen() + # nolint: object_usage_linter.
+        ggplot2::theme(
+            panel.grid.major.y = ggplot2::element_blank()
+        ) +
         ggplot2::labs(
             x = NULL,
             y = "Score",
-            title = paste("Scores -", cma@Metric)
+            title = "Alignment scores",
+            subtitle = ctx
         )
 }

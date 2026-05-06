@@ -4,7 +4,7 @@
 \alias{plotFunctionalGroups}
 \title{Plot Functional Groups Dendrogram}
 \usage{
-plotFunctionalGroups(fg, k = 4, label_size = 6, label_colours = NULL)
+plotFunctionalGroups(fg, k = 4, label_size = 3, label_colours = NULL)
 }
 \arguments{
 \item{fg}{A list as returned by
@@ -16,7 +16,7 @@ clusters to color in the dendrogram. Default
 \code{4}.}
 
 \item{label_size}{Numeric scalar specifying the text
-size for species labels. Default \code{6}.}
+size for species labels. Default \code{3}.}
 
 \item{label_colours}{If not \code{NULL}, a data frame
 with columns \code{label} and \code{colour} mapping
