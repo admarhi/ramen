@@ -39,35 +39,35 @@ cms <- ConsortiumMetabolismSet(cm1, cm2, name = "test")
 #> 
 #> ── Creating CMS "test" ─────────────────────────────────────────────────────────
 #> ℹ Validating 2 <ConsortiumMetabolism> objects
-#> ✔ Validating 2 <ConsortiumMetabolism> objects [11ms]
+#> ✔ Validating 2 <ConsortiumMetabolism> objects [10ms]
 #> 
 #> ℹ Collecting metabolites from 2 consortia
-#> ✔ Collecting metabolites from 2 consortia [31ms]
+#> ✔ Collecting metabolites from 2 consortia [28ms]
 #> 
 #> ℹ Re-indexing 6 unique metabolites
-#> ✔ Re-indexing 6 unique metabolites [28ms]
+#> ✔ Re-indexing 6 unique metabolites [24ms]
 #> 
 #> ℹ Expanding 2 binary matrices to 6-dimensional space
-#> ✔ Expanding 2 binary matrices to 6-dimensional space [25ms]
+#> ✔ Expanding 2 binary matrices to 6-dimensional space [22ms]
 #> 
 #> ℹ Computing 6 x 6 levels matrix
-#> ✔ Computing 6 x 6 levels matrix [25ms]
+#> ✔ Computing 6 x 6 levels matrix [24ms]
 #> 
 #> ℹ Computing pairwise overlap (1 pairs via crossprod)
-#> ✔ Computing pairwise overlap (1 pairs via crossprod) [24ms]
+#> ✔ Computing pairwise overlap (1 pairs via crossprod) [21ms]
 #> 
 #> ℹ Assembling pathway data from 2 consortia
-#> ✔ Assembling pathway data from 2 consortia [33ms]
+#> ✔ Assembling pathway data from 2 consortia [29ms]
 #> 
 #> ℹ Building dendrogram from 2 x 2 dissimilarity matrix
-#> ✔ Building dendrogram from 2 x 2 dissimilarity matrix [23ms]
+#> ✔ Building dendrogram from 2 x 2 dissimilarity matrix [21ms]
 #> 
 #> ℹ Extracting dendrogram node positions
-#> ✔ Extracting dendrogram node positions [26ms]
+#> ✔ Extracting dendrogram node positions [24ms]
 #> 
 #> ℹ Collecting 2 consortium graphs
 #> CMS "test" created: 2 consortia, 6 metabolites (0.2s)
-#> ✔ Collecting 2 consortium graphs [90ms]
+#> ✔ Collecting 2 consortium graphs [77ms]
 #> 
 cma <- align(cms)
 #> Computing multiple alignment for 2 consortia using "FOS".

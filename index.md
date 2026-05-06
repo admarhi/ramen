@@ -49,6 +49,30 @@ For the full workflow – from data import through alignment, functional
 groups, and visualization – see
 [`vignette("ramen", package = "ramen")`](https://admarhi.github.io/ramen/articles/ramen.md).
 
+## Compare many communities at once
+
+Bundle a handful of consortia into a `ConsortiumMetabolismSet`, align
+them all-against-all, and plot the resulting similarity matrix:
+
+``` r
+
+sel <- names(misosoup24)[seq_len(8)]
+cms <- do.call(
+    ConsortiumMetabolismSet,
+    c(
+        lapply(sel, function(n) {
+            ConsortiumMetabolism(misosoup24[[n]], name = n)
+        }),
+        list(name = "misosoup24[1:8]", verbose = FALSE)
+    )
+)
+plot(align(cms))
+```
+
+![Heatmap of pairwise FOS scores across eight MiSoSoup consortia, with
+rows and columns reordered by hierarchical
+clustering.](reference/figures/README-hero-1.png)
+
 ## Installation
 
 Install the development version from GitHub:
