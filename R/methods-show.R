@@ -1,6 +1,34 @@
 #' @include AllClasses.R AllGenerics.R
 NULL
 
+## ---- internal helpers ------------------------------------------------------
+
+## Counts rows in a slot that may be NULL or an empty data.frame.
+.nrowOr0 <- function(x) {
+    if (is.null(x) || !is.data.frame(x)) {
+        return(0L)
+    }
+    nrow(x)
+}
+
+## Format a level histogram as a single inline string. For wide alignments
+## (k > maxInline), only the first three and last bucket are printed.
+.formatLevelCounts <- function(counts, maxInline = 8L) {
+    k <- length(counts)
+    if (k == 0L) {
+        return("")
+    }
+    parts <- sprintf("n=%d: %d", seq_along(counts), counts)
+    if (k <= maxInline) {
+        return(paste(parts, collapse = "  "))
+    }
+    paste0(
+        paste(parts[seq_len(3L)], collapse = "  "),
+        "  ...  ",
+        parts[k]
+    )
+}
+
 #' Show Method for \code{ConsortiumMetabolism} Object
 #'
 #' @param object An object of class \code{ConsortiumMetabolism}
@@ -24,6 +52,25 @@ setMethod("show", "ConsortiumMetabolism", function(object) {
         "{.val {n_met}} metabolites, ",
         "{.val {n_pw}} pathways."
     )
+
+    ## Per-species pathway range -- only meaningful with multiple species.
+    if (n_sp >= 2L) {
+        pw_per_sp <- tryCatch(
+            {
+                ss <- speciesSummary(object)
+                ss$n_pathways
+            },
+            error = function(e) NULL
+        )
+        if (!is.null(pw_per_sp) && length(pw_per_sp) > 0L) {
+            cli::cli_text(
+                "Pathways per species: ",
+                "min {.val {min(pw_per_sp)}}, ",
+                "mean {.val {round(mean(pw_per_sp), 1)}}, ",
+                "max {.val {max(pw_per_sp)}}."
+            )
+        }
+    }
     invisible(object)
 })
 
@@ -75,6 +122,79 @@ setMethod("show", "ConsortiumMetabolismSet", function(object) {
         "mean {.val {round(mean(met_counts), 1)}}, ",
         "max {.val {max(met_counts)}}."
     )
+
+    ## Per-class pathway breakdown. Quantile annotated so the printed
+    ## counts are reproducible (defaults: 0.1 for pathways, 0.15 for
+    ## species). Skipped when there is only one consortium since
+    ## pan-cons / niche collapse trivially.
+    if (n_cons >= 2L) {
+        pw_q <- 0.1
+        pw_classes <- tryCatch(
+            list(
+                pan = nrow(pathways(
+                    object,
+                    type = "pan-cons",
+                    quantileCutoff = pw_q
+                )),
+                niche = nrow(pathways(
+                    object,
+                    type = "niche",
+                    quantileCutoff = pw_q
+                )),
+                core = nrow(pathways(
+                    object,
+                    type = "core",
+                    quantileCutoff = pw_q
+                )),
+                aux = nrow(pathways(
+                    object,
+                    type = "aux",
+                    quantileCutoff = pw_q
+                ))
+            ),
+            error = function(e) NULL
+        )
+        if (!is.null(pw_classes)) {
+            cli::cli_text(
+                "Pathways: ",
+                "{.val {pw_classes$pan}} pan-cons, ",
+                "{.val {pw_classes$niche}} niche, ",
+                "{.val {pw_classes$core}} core, ",
+                "{.val {pw_classes$aux}} aux ",
+                "(quantile = {.val {pw_q}})."
+            )
+        }
+    }
+
+    ## Generalist / specialist split needs at least a handful of species
+    ## for the 15% quantile to mean anything.
+    if (n_sp >= 3L) {
+        sp_q <- 0.15
+        sp_classes <- tryCatch(
+            list(
+                generalists = length(species(
+                    object,
+                    type = "generalists",
+                    quantileCutoff = sp_q
+                )),
+                specialists = length(species(
+                    object,
+                    type = "specialists",
+                    quantileCutoff = sp_q
+                ))
+            ),
+            error = function(e) NULL
+        )
+        if (!is.null(sp_classes)) {
+            cli::cli_text(
+                "Species: ",
+                "{.val {sp_classes$generalists}} generalists, ",
+                "{.val {sp_classes$specialists}} specialists ",
+                "(quantile = {.val {sp_q}})."
+            )
+        }
+    }
+
     if (!is.na(object@Description)) {
         cli::cli_text(
             "Description: {.val {object@Description}}"
@@ -128,10 +248,46 @@ setMethod("show", "ConsortiumMetabolismAlignment", function(object) {
                 "{.val {round(cr, 3)}}"
             )
         }
+        ## Pairwise pathway intersection: shared / unique-each-side.
+        ## This is the n=1 / n=2 case of the multi-level hierarchy.
+        n_shared <- .nrowOr0(object@SharedPathways)
+        n_uq <- .nrowOr0(object@UniqueQuery)
+        n_ur <- .nrowOr0(object@UniqueReference)
+        if (n_shared + n_uq + n_ur > 0L) {
+            cli::cli_text(
+                "Pathways: ",
+                "{.val {n_shared}} shared, ",
+                "{.val {n_uq}} query-only, ",
+                "{.val {n_ur}} reference-only."
+            )
+        }
     }
     if (.hasValue(object@Type) && object@Type == "multiple") {
         n <- nrow(object@SimilarityMatrix) # nolint: object_usage_linter.
         cli::cli_text("Consortia: {.val {n}}")
+
+        ## Multi-level hierarchy: pathways at n=1..n=k consortia.
+        prev <- object@Prevalence
+        if (
+            is.data.frame(prev) &&
+                nrow(prev) > 0L &&
+                "nConsortia" %in% names(prev) &&
+                n > 0L
+        ) {
+            counts <- tabulate(
+                as.integer(prev$nConsortia),
+                nbins = n
+            )
+            n_core <- counts[n] # nolint: object_usage_linter.
+            cli::cli_text(
+                "Core (shared by all {.val {n}}): ",
+                "{.val {n_core}} pathways."
+            )
+            cli::cli_text(
+                "Levels: ",
+                .formatLevelCounts(counts) # nolint
+            )
+        }
     }
     if (.hasValue(object@Type) && object@Type == "search") {
         nDb <- ncol(object@SimilarityMatrix) # nolint: object_usage_linter.
