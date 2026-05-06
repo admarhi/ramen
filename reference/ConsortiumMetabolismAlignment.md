@@ -150,6 +150,7 @@ cma
 #> Score: 0
 #> Query: "comm_1", Reference: "comm_2"
 #> Coverage: query 0, reference 0
+#> Pathways: 0 shared, 3 query-only, 12 reference-only.
 
 cm1 <- synCM("comm_1", n_species = 3, max_met = 5)
 cm2 <- synCM("comm_2", n_species = 4, max_met = 6)

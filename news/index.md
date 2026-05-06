@@ -2,6 +2,46 @@
 
 ## ramen (development version)
 
+### Breaking changes
+
+- `EffectiveConsumption` and `EffectiveProduction` assays now store the
+  flux-corrected effective flux $`F \cdot 2^{H(p)}`$ (matching equation
+  2 of the underlying thesis), not the bare Hill-1 perplexity
+  $`2^{H(p)}`$. Same units as the `Consumption` / `Production` assays.
+  Pre-Bioconductor release, no users yet, so no deprecation cycle.
+- Two new assays expose the previous quantity under explicit names:
+  `nEffectiveSpeciesConsumption` and `nEffectiveSpeciesProduction` carry
+  the Hill-1 effective number of contributing species (unitless,
+  $`\in [1, S]`$), mirroring the existing `nSpecies` count. Algebraic
+  identity:
+  `EffectiveConsumption = Consumption * nEffectiveSpeciesConsumption`
+  (modulo two-decimal rounding).
+- [`consortia()`](https://admarhi.github.io/ramen/reference/consortia.md)
+  no longer has a `ConsortiumMetabolism` method. The plural noun applies
+  only to containers of consortia, so the accessor is now scoped to
+  `ConsortiumMetabolismSet` (returns the list of constituent CMs). For
+  the underlying edge list of a single `ConsortiumMetabolism`, use
+  `as.data.frame(cm)`. `consortia(cma)` continues to raise an error – by
+  design, `ConsortiumMetabolismAlignment` is a result object that
+  records only its inputs’ names rather than retaining copies of them.
+- [`plotDirectedFlow()`](https://admarhi.github.io/ramen/reference/plotDirectedFlow.md)
+  parameters renamed to lowerCamelCase throughout, with British-English
+  spelling for colour-related args. The size-bearing arguments
+  (`nodeSize`, `nodeLabelSize`, `edgeArrowSize`) now use ggraph
+  millimetre units rather than igraph `cex` factors, with defaults
+  adjusted for legibility. This is a hard rename – no aliases for the
+  old names.
+
+### New methods
+
+- [`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html) is now
+  defined for `ConsortiumMetabolism` (returns the edge list with columns
+  `met`, `species`, `flux`) and `ConsortiumMetabolismSet` (row-binds
+  per-CM edges and prefixes a `consortium` column). The pre-existing
+  `ConsortiumMetabolismAlignment` method is unchanged.
+
+### Other changes
+
 - [`importMisosoup()`](https://admarhi.github.io/ramen/reference/importMisosoup.md)
   gains a `biomassPattern` argument (Perl regex) so users can point it
   at arbitrary biomass-reaction names. The default matches

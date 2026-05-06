@@ -9,7 +9,7 @@ Plot a ConsortiumMetabolism object
 plot(
   x,
   type = c("Binary", "nSpecies", "Consumption", "Production", "EffectiveConsumption",
-    "EffectiveProduction")
+    "EffectiveProduction", "nEffectiveSpeciesConsumption", "nEffectiveSpeciesProduction")
 )
 ```
 
@@ -25,8 +25,7 @@ plot(
 
 ## Value
 
-Invisibly returns `NULL`. Called for its side effect of producing an
-igraph network plot.
+A `ggplot` object rendered with ggraph.
 
 ## Examples
 

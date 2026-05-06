@@ -131,29 +131,29 @@ cms <- importMisosoup(raw, name = "demo", verbose = FALSE)
 #> 
 #> ── Creating CMS "demo" ─────────────────────────────────────────────────────────
 #> ℹ Validating 1 <ConsortiumMetabolism> object
-#> ✔ Validating 1 <ConsortiumMetabolism> object [11ms]
+#> ✔ Validating 1 <ConsortiumMetabolism> object [12ms]
 #> 
 #> ℹ Collecting metabolites from 1 consortia
-#> ✔ Collecting metabolites from 1 consortia [26ms]
+#> ✔ Collecting metabolites from 1 consortia [28ms]
 #> 
 #> ℹ Re-indexing 3 unique metabolites
-#> ✔ Re-indexing 3 unique metabolites [25ms]
+#> ✔ Re-indexing 3 unique metabolites [27ms]
 #> 
 #> ℹ Expanding 1 binary matrices to 3-dimensional space
-#> ✔ Expanding 1 binary matrices to 3-dimensional space [21ms]
+#> ✔ Expanding 1 binary matrices to 3-dimensional space [23ms]
 #> 
 #> ℹ Computing 3 x 3 levels matrix
-#> ✔ Computing 3 x 3 levels matrix [32ms]
+#> ✔ Computing 3 x 3 levels matrix [24ms]
 #> 
 #> ℹ Computing pairwise overlap (0 pairs via crossprod)
 #> ✔ Computing pairwise overlap (0 pairs via crossprod) [22ms]
 #> 
 #> ℹ Assembling pathway data from 1 consortia
-#> ✔ Assembling pathway data from 1 consortia [28ms]
+#> ✔ Assembling pathway data from 1 consortia [30ms]
 #> 
 #> ℹ Collecting 1 consortium graphs
 #> CMS "demo" created: 1 consortia, 3 metabolites (0.2s)
-#> ✔ Collecting 1 consortium graphs [77ms]
+#> ✔ Collecting 1 consortium graphs [94ms]
 #> 
 cms
 #> 

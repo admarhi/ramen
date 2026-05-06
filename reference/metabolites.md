@@ -58,7 +58,7 @@ A character vector containing the names of metabolites in the network.
 ``` r
 cm <- synCM("test", n_species = 3, max_met = 5)
 metabolites(cm)
-#> [1] "met5" "met4" "met3" "met2" "met1"
+#> [1] "met5" "met3" "met1" "met2" "met4"
 ## Metabolites consumed by a specific species:
 sp <- species(cm)[1]
 metabolites(cm, species = sp, direction = "consumed")

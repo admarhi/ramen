@@ -1,28 +1,37 @@
-# Plot a Directed Graph Emphasizing Flow
+# Plot a Directed Graph Emphasising Flow
 
 Arranges nodes of a directed graph into three distinct columns
 representing sources (nodes with only outgoing edges), sinks (nodes with
 only incoming edges), and intermediate nodes (with both incoming and
 outgoing edges). The layout within the intermediate column is determined
-using the Fruchterman-Reingold algorithm. This visualization helps
-understand the overall flow structure within the graph.
+using the Kamada-Kawai algorithm. This visualisation helps understand
+the overall flow structure within the graph and is rendered with ggraph,
+so the returned object composes with the usual ggplot2 operators.
 
 ## Usage
 
 ``` r
 plotDirectedFlow(
   g,
-  source_x = 0,
-  mixed_x = 1,
-  sink_x = 2,
-  vertical_spacing = 1,
-  vertex_size = 10,
-  vertex_label_cex = 0.8,
-  edge_arrow_size = 0.5,
-  edge_width_range = c(0.1, 0.1),
-  color_edges_by_weight = FALSE,
-  edge_color_low = "gray80",
-  edge_color_high = "black",
+  sourceX = 0,
+  mixedX = 1,
+  sinkX = 2,
+  verticalSpacing = 1,
+  nodeSize = 6,
+  nodeLabelSize = 3,
+  edgeArrowSize = 2,
+  edgeWidthRange = c(0.3, 1.2),
+  colourEdgesByWeight = FALSE,
+  edgeColourAttr = NULL,
+  edgeColourValues = NULL,
+  edgeColourLabels = NULL,
+  edgeColourLegendTitle = "Type",
+  edgeColourLow = "#DEEBF7",
+  edgeColourHigh = "#08519C",
+  nodeColourValues = c(source = "#0072B2", intermediate = "#F0E442", sink = "#D55E00"),
+  nodeColourLabels = c(source = "Source", intermediate = "Intermediate", sink = "Sink"),
+  nodeColourLegendTitle = "Node role",
+  main = NULL,
   ...
 )
 ```
@@ -33,68 +42,134 @@ plotDirectedFlow(
 
   An igraph object. Must be a directed graph.
 
-- source_x:
+- sourceX:
 
   Numeric scalar. The x-coordinate for source nodes. Defaults to 0.
 
-- mixed_x:
+- mixedX:
 
   Numeric scalar. The central x-coordinate for intermediate nodes. The
-  actual layout spans `mixed_x` +/- 0.4. Defaults to 1.
+  actual layout spans `mixedX` +/- 0.4. Defaults to 1.
 
-- sink_x:
+- sinkX:
 
   Numeric scalar. The x-coordinate for sink nodes. Defaults to 2.
 
-- vertical_spacing:
+- verticalSpacing:
 
   Numeric scalar. The maximum y-coordinate, controlling the vertical
   spread of the layout. Defaults to 1.
 
-- vertex_size:
+- nodeSize:
 
-  Numeric scalar. The size of the vertices (nodes) in the plot. Defaults
-  to 10.
+  Numeric scalar. The size of node points in millimetres (ggraph unit).
+  Defaults to 6.
 
-- vertex_label_cex:
+- nodeLabelSize:
 
-  Numeric scalar. The character expansion factor for vertex labels.
-  Defaults to 0.8.
+  Numeric scalar. The size of node labels in millimetres. Defaults to 3.
 
-- edge_arrow_size:
+- edgeArrowSize:
 
-  Numeric scalar. The size of the arrows on the edges. Defaults to 0.5.
+  Numeric scalar. The arrow length on edges, in millimetres. Defaults to
+  2.
 
-- edge_width_range:
+- edgeWidthRange:
 
   Numeric vector of length 2. The minimum and maximum width for edges
   when scaled by weight. If the graph is unweighted or all weights are
-  identical, the mean of this range is used. Defaults to `c(0.1, 0.1)`.
+  identical, the mean of this range is used. Defaults to `c(0.3, 1.2)`.
 
-- color_edges_by_weight:
+- colourEdgesByWeight:
 
-  Logical scalar. If `TRUE` and the graph has a 'weight' edge attribute,
-  edges will be colored based on their weight, interpolating between
-  `edge_color_low` and `edge_color_high`.
+  Logical scalar. If `TRUE` and the graph has a `weight` edge attribute,
+  edges are coloured on a continuous gradient from `edgeColourLow` to
+  `edgeColourHigh`.
 
-- edge_color_low:
+- edgeColourAttr:
 
-  Character string. The color for the lowest edge weight when
-  `color_edges_by_weight` is `TRUE`. Defaults to "gray80".
+  Optional character scalar naming a categorical edge attribute to
+  colour edges by (e.g. `"source"`). When set, takes precedence over
+  `colourEdgesByWeight`.
 
-- edge_color_high:
+- edgeColourValues:
 
-  Character string. The color for the highest edge weight when
-  `color_edges_by_weight` is `TRUE`. Defaults to "black".
+  Optional named character vector mapping levels of `edgeColourAttr` to
+  colours. Used only when `edgeColourAttr` is non-NULL.
+
+- edgeColourLabels:
+
+  Optional named character vector mapping levels of `edgeColourAttr` to
+  legend labels. Used only when `edgeColourAttr` is non-NULL.
+
+- edgeColourLegendTitle:
+
+  Character scalar. Legend title for the categorical edge colour scale.
+  Defaults to `"Type"`.
+
+- edgeColourLow:
+
+  Character string. The colour for the lowest edge weight when
+  `colourEdgesByWeight` is `TRUE`. Defaults to `"#DEEBF7"` (ColorBrewer
+  Blues, light end).
+
+- edgeColourHigh:
+
+  Character string. The colour for the highest edge weight when
+  `colourEdgesByWeight` is `TRUE`. Defaults to `"#08519C"` (ColorBrewer
+  Blues, dark end).
+
+- nodeColourValues:
+
+  Named character vector of length 3 mapping the node roles `"source"`,
+  `"intermediate"`, and `"sink"` to colours. Defaults to a maximally
+  distinct Okabe-Ito triple (blue / yellow / vermilion) chosen for
+  colour-blind safety and high mutual contrast.
+
+- nodeColourLabels:
+
+  Optional named character vector mapping node roles to legend labels.
+  Defaults to
+  `c(source = "Source", intermediate = "Intermediate", sink = "Sink")`.
+
+- nodeColourLegendTitle:
+
+  Character scalar. Legend title for the node-role colour scale.
+  Defaults to `"Node role"`.
+
+- main:
+
+  Character string. Optional plot title.
 
 - ...:
 
-  Additional arguments passed to igraph.
+  Additional arguments. Currently unused; retained for forward
+  compatibility.
 
 ## Value
 
-Invisibly returns `NULL`. This function is called for its side effect of
-generating a plot.
+A `ggplot` object.
+
+## Details
+
+Edges may be coloured in three ways: by a continuous `weight` attribute
+(`colourEdgesByWeight = TRUE`); by a categorical edge attribute
+(`edgeColourAttr = "<name>"`), in which case `edgeColourValues` and
+`edgeColourLabels` customise the palette and legend; or with a single
+fixed colour (default).
+
+When the graph carries non-positive edge weights, the Kamada-Kawai
+layout used for intermediate nodes falls back to topological placement
+(the `weight` attribute is dropped on the induced intermediate subgraph,
+since
+[`igraph::layout_with_kk`](https://r.igraph.org/reference/layout_with_kk.html)
+requires strictly positive weights, and `EffectiveConsumption`-style
+assays carry zeros). This affects only the within-column layout; the
+source / sink / intermediate column assignment is unaffected.
+
+The size-bearing arguments (`nodeSize`, `nodeLabelSize`,
+`edgeArrowSize`) use ggraph millimetre units rather than the igraph
+`cex` factors of the previous implementation.
 
 ## Examples
 

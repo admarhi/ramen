@@ -95,16 +95,16 @@ cm <- synCM("test", n_species = 3, max_met = 5)
 sp <- species(cm)
 compareSpecies(cm, sp[1], sp[2])
 #> $fos
-#> [1] 0.5
+#> [1] 0.3333333
 #> 
 #> $jaccard
-#> [1] 0.1428571
+#> [1] 0.125
 #> 
 #> $n_shared
 #> [1] 1
 #> 
 #> $n_unique_sp1
-#> [1] 1
+#> [1] 2
 #> 
 #> $n_unique_sp2
 #> [1] 5

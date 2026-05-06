@@ -58,10 +58,16 @@ A character vector of species names.
   `ConsortiumMetabolismSet`, optionally filtered to metabolic
   generalists or specialists by pathway count.
 
+## Note
+
+[`BiocGenerics::species`](https://rdrr.io/pkg/BiocGenerics/man/organism_species.html)
+(deprecated) sometimes resolves first when typing `?species`
+interactively. Use `?ramen::species` to land on this page.
+
 ## Examples
 
 ``` r
 cm <- synCM("test", n_species = 3, max_met = 5)
 species(cm)
-#> [1] "ZEQ5398Z" "UOG489Y"  "MXO4181U"
+#> [1] "RBI6415H" "NVP806D"  "KIO9929R"
 ```

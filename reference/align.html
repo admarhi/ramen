@@ -182,6 +182,33 @@ Pathway correspondences (<code>SharedPathways</code>, <code>UniqueQuery</code>,
 <a href="ConsortiumMetabolism.html">ConsortiumMetabolism</a> against all consortia in a
 <a href="ConsortiumMetabolismSet.html">ConsortiumMetabolismSet</a></p></li>
 </ul></div>
+    <div class="section level2">
+    <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
+    <p><code>method = "brayCurtis"</code> is defined only for
+weighted CMs (i.e. constructed from non-unit fluxes).
+On unweighted inputs the score returns <code>NA</code>. To
+suppress this, build CMs from a weighted edge list or
+pick a different metric.</p>
+<p><code>align(CM, CMS)</code> (database search) currently
+raises a not-yet-implemented error; the dispatch is
+reserved for the upcoming MinHash-prefiltered search
+feature.</p>
+<p>If <code>tibble</code> (or a package that re-exports
+<code><a href="https://pillar.r-lib.org/reference/align.html" class="external-link">pillar::align</a></code>) is on the search path, plain
+<code>?align</code> may resolve to <code><a href="https://pillar.r-lib.org/reference/align.html" class="external-link">pillar::align</a></code>. Use
+<code>?ramen::align</code> to land on this page.</p>
+<p>For the formal definitions of FOS (Szymkiewicz-Simpson),
+Jaccard, Bray-Curtis, RedundancyOverlap, MAAS, coverage
+ratios, the Hill-1 perplexity construction underlying the
+EffectiveConsumption / EffectiveProduction (flux-corrected)
+and nEffectiveSpeciesConsumption / nEffectiveSpeciesProduction
+(effective species counts) assays, and the
+"Mathematical formulation" section of
+<code><a href="../articles/alignment.html">vignette("alignment", package = "ramen")</a></code>. The same
+section discusses cross-product inflation, Hill-1 saturation
+on small consortia, flux reversibility, and alternate-optima
+caveats relevant to interpreting the scores returned here.</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
@@ -197,6 +224,7 @@ Pathway correspondences (<code>SharedPathways</code>, <code>UniqueQuery</code>,
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Score: <span style="color: #0000BB;">0.2857</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Query: <span style="color: #0000BB;">"comm_1"</span>, Reference: <span style="color: #0000BB;">"comm_2"</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Coverage: query <span style="color: #0000BB;">0.286</span>, reference <span style="color: #0000BB;">0.118</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Pathways: <span style="color: #0000BB;">2</span> shared, <span style="color: #0000BB;">5</span> query-only, <span style="color: #0000BB;">15</span> reference-only.</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

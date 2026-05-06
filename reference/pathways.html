@@ -185,7 +185,15 @@ values, and per-species detail.</p></dd>
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
 <dd><p>Character scalar giving the type of
-pathways to output.</p></dd>
+pathways to output. Note that the four filtered
+types use two different rulers:
+<code>"pan-cons"</code> and <code>"niche"</code> rank by the
+integer per-pathway consortium count and quantile
+over a uniform integer ruler
+(<code>seq_len(total_cons)</code>); <code>"core"</code> and
+<code>"aux"</code> rank by per-pathway species count and
+quantile over the empirical <code>n_species</code>
+distribution across pathways.</p></dd>
 
 
 <dt id="arg-quantilecutoff">quantileCutoff<a class="anchor" aria-label="anchor" href="#arg-quantilecutoff"></a></dt>
@@ -229,61 +237,62 @@ data.frame for <code>"all"</code>, <code>"shared"</code>, and
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">cm</span> <span class="op">&lt;-</span> <span class="fu"><a href="synCM.html">synCM</a></span><span class="op">(</span><span class="st">"test"</span>, n_species <span class="op">=</span> <span class="fl">3</span>, max_met <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">pathways</span><span class="op">(</span><span class="va">cm</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 9 × 3</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   consumed produced n_species</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> met5     met1             1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> met5     met4             1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> met5     met2             1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> met1     met5             2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> met3     met5             1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> met4     met5             1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">7</span> met3     met1             1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">8</span> met3     met4             1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">9</span> met3     met2             1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    consumed produced n_species</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> met4     media            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> met4     met5             1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> met4     met1             1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> met5     met4             1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> met5     met1             1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> met3     met5             1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> met3     met1             2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> met3     met4             1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> met2     met4             1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> met2     met1             1</span>
 <span class="r-in"><span><span class="fu">pathways</span><span class="op">(</span><span class="va">cm</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 9 × 12</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   consumed produced data     n_species c_sum p_sum c_prob    p_prob c_eff p_eff</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;list&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> met5     met1     <span style="color: #949494;">&lt;tibble&gt;</span>         1 1.80  1.59  <span style="color: #949494;">&lt;dbl [1]&gt;</span> <span style="color: #949494;">&lt;dbl&gt;</span>   1     1   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> met5     met4     <span style="color: #949494;">&lt;tibble&gt;</span>         1 1.80  1.29  <span style="color: #949494;">&lt;dbl [1]&gt;</span> <span style="color: #949494;">&lt;dbl&gt;</span>   1     1   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> met5     met2     <span style="color: #949494;">&lt;tibble&gt;</span>         1 1.80  1.02  <span style="color: #949494;">&lt;dbl [1]&gt;</span> <span style="color: #949494;">&lt;dbl&gt;</span>   1     1   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> met1     met5     <span style="color: #949494;">&lt;tibble&gt;</span>         2 1.78  1.80  <span style="color: #949494;">&lt;dbl [2]&gt;</span> <span style="color: #949494;">&lt;dbl&gt;</span>   1.89  1.98</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> met3     met5     <span style="color: #949494;">&lt;tibble&gt;</span>         1 7.80  0.788 <span style="color: #949494;">&lt;dbl [1]&gt;</span> <span style="color: #949494;">&lt;dbl&gt;</span>   1     1   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> met4     met5     <span style="color: #949494;">&lt;tibble&gt;</span>         1 1.38  0.788 <span style="color: #949494;">&lt;dbl [1]&gt;</span> <span style="color: #949494;">&lt;dbl&gt;</span>   1     1   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">7</span> met3     met1     <span style="color: #949494;">&lt;tibble&gt;</span>         1 0.630 1.59  <span style="color: #949494;">&lt;dbl [1]&gt;</span> <span style="color: #949494;">&lt;dbl&gt;</span>   1     1   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">8</span> met3     met4     <span style="color: #949494;">&lt;tibble&gt;</span>         1 0.630 1.29  <span style="color: #949494;">&lt;dbl [1]&gt;</span> <span style="color: #949494;">&lt;dbl&gt;</span>   1     1   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">9</span> met3     met2     <span style="color: #949494;">&lt;tibble&gt;</span>         1 0.630 1.02  <span style="color: #949494;">&lt;dbl [1]&gt;</span> <span style="color: #949494;">&lt;dbl&gt;</span>   1     1   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 2 more variables: c_ind &lt;int&gt;, p_ind &lt;int&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 14</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    consumed produced data     n_species  c_sum p_sum c_prob p_prob c_neff p_neff</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> met4     media    <span style="color: #949494;">&lt;tibble&gt;</span>         1  0.384 1     <span style="color: #949494;">&lt;dbl&gt;</span>  <span style="color: #949494;">&lt;dbl&gt;</span>    1      1   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> met4     met5     <span style="color: #949494;">&lt;tibble&gt;</span>         1  1.91  1.34  <span style="color: #949494;">&lt;dbl&gt;</span>  <span style="color: #949494;">&lt;dbl&gt;</span>    1      1   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> met4     met1     <span style="color: #949494;">&lt;tibble&gt;</span>         1  1.91  3.94  <span style="color: #949494;">&lt;dbl&gt;</span>  <span style="color: #949494;">&lt;dbl&gt;</span>    1      1   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> met5     met4     <span style="color: #949494;">&lt;tibble&gt;</span>         1  1.34  2.29  <span style="color: #949494;">&lt;dbl&gt;</span>  <span style="color: #949494;">&lt;dbl&gt;</span>    1      1   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> met5     met1     <span style="color: #949494;">&lt;tibble&gt;</span>         1  1.34  0.790 <span style="color: #949494;">&lt;dbl&gt;</span>  <span style="color: #949494;">&lt;dbl&gt;</span>    1      1   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> met3     met5     <span style="color: #949494;">&lt;tibble&gt;</span>         1  7.00  1.34  <span style="color: #949494;">&lt;dbl&gt;</span>  <span style="color: #949494;">&lt;dbl&gt;</span>    1      1   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> met3     met1     <span style="color: #949494;">&lt;tibble&gt;</span>         2 10.2   4.73  <span style="color: #949494;">&lt;dbl&gt;</span>  <span style="color: #949494;">&lt;dbl&gt;</span>    1.86   1.57</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> met3     met4     <span style="color: #949494;">&lt;tibble&gt;</span>         1  3.18  2.29  <span style="color: #949494;">&lt;dbl&gt;</span>  <span style="color: #949494;">&lt;dbl&gt;</span>    1      1   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> met2     met4     <span style="color: #949494;">&lt;tibble&gt;</span>         1  0.826 2.29  <span style="color: #949494;">&lt;dbl&gt;</span>  <span style="color: #949494;">&lt;dbl&gt;</span>    1      1   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> met2     met1     <span style="color: #949494;">&lt;tibble&gt;</span>         1  0.826 0.790 <span style="color: #949494;">&lt;dbl&gt;</span>  <span style="color: #949494;">&lt;dbl&gt;</span>    1      1   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 4 more variables: c_eff &lt;dbl&gt;, p_eff &lt;dbl&gt;, c_ind &lt;int&gt;, p_ind &lt;int&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">cm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="synCM.html">synCM</a></span><span class="op">(</span><span class="st">"comm_1"</span>, n_species <span class="op">=</span> <span class="fl">3</span>, max_met <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">cm2</span> <span class="op">&lt;-</span> <span class="fu"><a href="synCM.html">synCM</a></span><span class="op">(</span><span class="st">"comm_2"</span>, n_species <span class="op">=</span> <span class="fl">4</span>, max_met <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">cma</span> <span class="op">&lt;-</span> <span class="fu"><a href="align.html">align</a></span><span class="op">(</span><span class="va">cm1</span>, <span class="va">cm2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">pathways</span><span class="op">(</span><span class="va">cma</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 2</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   consumed produced</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> met2     met1    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> met1     met2    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 0 × 2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 2 variables: consumed &lt;chr&gt;, produced &lt;chr&gt;</span></span>
 <span class="r-in"><span><span class="fu">pathways</span><span class="op">(</span><span class="va">cma</span>, type <span class="op">=</span> <span class="st">"shared"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 2</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   consumed produced</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> met2     met1    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> met1     met2    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 0 × 2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 2 variables: consumed &lt;chr&gt;, produced &lt;chr&gt;</span></span>
 <span class="r-in"><span><span class="fu">pathways</span><span class="op">(</span><span class="va">cma</span>, type <span class="op">=</span> <span class="st">"unique"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $query</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   consumed produced</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> media    met2    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> met1     media   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> met2     met1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> met1     met2    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> met1     met3    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> met2     met5    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $reference</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   consumed produced</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> met2     met4    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> met1     met6    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> met4     met1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> met1     met4    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> met5     met4    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

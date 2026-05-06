@@ -40,11 +40,29 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="ramen-development-version">ramen (development version)<a class="anchor" aria-label="anchor" href="#ramen-development-version"></a></h2>
+<div class="section level3">
+<h3 id="breaking-changes-development-version">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
+<ul><li>
+<code>EffectiveConsumption</code> and <code>EffectiveProduction</code> assays now store the flux-corrected effective flux <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo>⋅</mo><msup><mn>2</mn><mrow><mi>H</mi><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup></mrow><annotation encoding="application/x-tex">F \cdot 2^{H(p)}</annotation></semantics></math> (matching equation 2 of the underlying thesis), not the bare Hill-1 perplexity <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>2</mn><mrow><mi>H</mi><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><annotation encoding="application/x-tex">2^{H(p)}</annotation></semantics></math>. Same units as the <code>Consumption</code> / <code>Production</code> assays. Pre-Bioconductor release, no users yet, so no deprecation cycle.</li>
+<li>Two new assays expose the previous quantity under explicit names: <code>nEffectiveSpeciesConsumption</code> and <code>nEffectiveSpeciesProduction</code> carry the Hill-1 effective number of contributing species (unitless, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∈</mo><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo>,</mo><mi>S</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">\in [1, S]</annotation></semantics></math>), mirroring the existing <code>nSpecies</code> count. Algebraic identity: <code>EffectiveConsumption = Consumption * nEffectiveSpeciesConsumption</code> (modulo two-decimal rounding).</li>
+<li>
+<code><a href="../reference/consortia.html">consortia()</a></code> no longer has a <code>ConsortiumMetabolism</code> method. The plural noun applies only to containers of consortia, so the accessor is now scoped to <code>ConsortiumMetabolismSet</code> (returns the list of constituent CMs). For the underlying edge list of a single <code>ConsortiumMetabolism</code>, use <code>as.data.frame(cm)</code>. <code>consortia(cma)</code> continues to raise an error – by design, <code>ConsortiumMetabolismAlignment</code> is a result object that records only its inputs’ names rather than retaining copies of them.</li>
+<li>
+<code><a href="../reference/plotDirectedFlow.html">plotDirectedFlow()</a></code> parameters renamed to lowerCamelCase throughout, with British-English spelling for colour-related args. The size-bearing arguments (<code>nodeSize</code>, <code>nodeLabelSize</code>, <code>edgeArrowSize</code>) now use ggraph millimetre units rather than igraph <code>cex</code> factors, with defaults adjusted for legibility. This is a hard rename – no aliases for the old names.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="new-methods-development-version">New methods<a class="anchor" aria-label="anchor" href="#new-methods-development-version"></a></h3>
+<ul><li>
+<code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame()</a></code> is now defined for <code>ConsortiumMetabolism</code> (returns the edge list with columns <code>met</code>, <code>species</code>, <code>flux</code>) and <code>ConsortiumMetabolismSet</code> (row-binds per-CM edges and prefixes a <code>consortium</code> column). The pre-existing <code>ConsortiumMetabolismAlignment</code> method is unchanged.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="other-changes-development-version">Other changes<a class="anchor" aria-label="anchor" href="#other-changes-development-version"></a></h3>
 <ul><li>
 <code><a href="../reference/importMisosoup.html">importMisosoup()</a></code> gains a <code>biomassPattern</code> argument (Perl regex) so users can point it at arbitrary biomass-reaction names. The default matches <code>Growth_&lt;sp&gt;</code>, <code>R_Biomass_&lt;sp&gt;</code>, and <code>R_R_BIOMASS_&lt;sp&gt;</code> case-insensitively (MiSoSoup’s biomass reaction name is model-dependent).</li>
 <li>
 <code><a href="../reference/importMisosoup.html">importMisosoup()</a></code> now records CMSC/MSC provenance on each returned CM as <code>metadata(cm)$misosoupMode</code> (<code>"CMSC"</code> or <code>"MSC"</code>) and <code>metadata(cm)$focalStrain</code> (character or <code>NA</code>). The <code>community_growth</code> summary row is captured as <code>metadata(cm)$communityGrowth</code> instead of leaking into the media bucket.</li>
 </ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.0.0.9001" id="ramen-0009001">ramen 0.0.0.9001<a class="anchor" aria-label="anchor" href="#ramen-0009001"></a></h2>
 <div class="section level3">

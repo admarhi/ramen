@@ -143,6 +143,34 @@ a 1-row `SimilarityMatrix`. Pathway correspondences (`SharedPathways`,
   against all consortia in a
   [ConsortiumMetabolismSet](https://admarhi.github.io/ramen/reference/ConsortiumMetabolismSet.md)
 
+## Note
+
+`method = "brayCurtis"` is defined only for weighted CMs (i.e.
+constructed from non-unit fluxes). On unweighted inputs the score
+returns `NA`. To suppress this, build CMs from a weighted edge list or
+pick a different metric.
+
+`align(CM, CMS)` (database search) currently raises a
+not-yet-implemented error; the dispatch is reserved for the upcoming
+MinHash-prefiltered search feature.
+
+If `tibble` (or a package that re-exports
+[`pillar::align`](https://pillar.r-lib.org/reference/align.html)) is on
+the search path, plain `?align` may resolve to
+[`pillar::align`](https://pillar.r-lib.org/reference/align.html). Use
+`?ramen::align` to land on this page.
+
+For the formal definitions of FOS (Szymkiewicz-Simpson), Jaccard,
+Bray-Curtis, RedundancyOverlap, MAAS, coverage ratios, the Hill-1
+perplexity construction underlying the EffectiveConsumption /
+EffectiveProduction (flux-corrected) and nEffectiveSpeciesConsumption /
+nEffectiveSpeciesProduction (effective species counts) assays, and the
+"Mathematical formulation" section of
+[`vignette("alignment", package = "ramen")`](https://admarhi.github.io/ramen/articles/alignment.md).
+The same section discusses cross-product inflation, Hill-1 saturation on
+small consortia, flux reversibility, and alternate-optima caveats
+relevant to interpreting the scores returned here.
+
 ## Examples
 
 ``` r
@@ -158,4 +186,5 @@ cma
 #> Score: 0.2857
 #> Query: "comm_1", Reference: "comm_2"
 #> Coverage: query 0.286, reference 0.118
+#> Pathways: 2 shared, 5 query-only, 15 reference-only.
 ```

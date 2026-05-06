@@ -6,7 +6,7 @@ Plot a ConsortiumMetabolismAlignment object
 
 ``` r
 # S4 method for class 'ConsortiumMetabolismAlignment,ANY'
-plot(x, type = NULL)
+plot(x, type = NULL, ...)
 ```
 
 ## Arguments
@@ -20,10 +20,18 @@ plot(x, type = NULL)
   Character specifying the plot type: `"heatmap"`, `"network"`, or
   `"scores"`.
 
+- ...:
+
+  Extra arguments forwarded to the underlying plot helper. For
+  `type = "network"`, the most useful are `edgeColourValues` (named
+  character vector mapping `shared`, `query`, `reference` to colours;
+  defaults emphasise the shared edges with solid black against
+  light/dark grey) and `nodeColourValues` (override the node role
+  palette).
+
 ## Value
 
-For `"heatmap"` and `"scores"`, a `ggplot` object. For `"network"`,
-invisibly returns `NULL` (base igraph plot).
+A `ggplot` object.
 
 ## Examples
 

@@ -73,7 +73,8 @@ A `ConsortiumMetabolism` object.
 - `Pathways`:
 
   data.frame. Pathway list of metabolic interactions with per-pathway
-  metrics (species, flux sums, effective diversity).
+  metrics (species count, flux sums, flux-corrected effective fluxes,
+  and Hill-1 effective number of contributing species).
 
 - `Weighted`:
 
@@ -104,4 +105,5 @@ cm
 #> ── ConsortiumMetabolism 
 #> Name: "example"
 #> Weighted metabolic network: 3 species, 3 metabolites, 4 pathways.
+#> Pathways per species: min 1, mean 1.3, max 2.
 ```

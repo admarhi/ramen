@@ -91,6 +91,477 @@ for this package’s generic, use <code><a href="../reference/align.html">?ramen
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://admarhi.github.io/ramen/">ramen</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
+<h2 id="mathematical-formulation">Mathematical formulation<a class="anchor" aria-label="anchor" href="#mathematical-formulation"></a>
+</h2>
+<p>This section gives the formal definitions of every quantity computed
+by <code><a href="../reference/align.html">align()</a></code>. Notation follows Hirt (2025), the master’s
+thesis from which the package originated; equation numbers prefixed
+<code>(thesis eq. ...)</code> refer to that document.</p>
+<div class="section level3">
+<h3 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a>
+</h3>
+<p>Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Ω</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><msup><mi>ω</mi><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>,</mo><mi>…</mi><mo>,</mo><msup><mi>ω</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>n</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\Omega = \{\omega^{(1)}, \dots, \omega^{(n)}\}</annotation></semantics></math>
+denote a collection of consortia (thesis eq. 1). For one consortium
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ω</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><annotation encoding="application/x-tex">\omega^{(\alpha)}</annotation></semantics></math>,
+write
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ℳ</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><annotation encoding="application/x-tex">\mathcal{M}^{(\alpha)}</annotation></semantics></math>
+for its set of metabolites; for two consortia under comparison let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℳ</mi><mo>=</mo><msup><mi>ℳ</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>∪</mo><msup><mi>ℳ</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>β</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup></mrow><annotation encoding="application/x-tex">\mathcal{M} = \mathcal{M}^{(\alpha)} \cup \mathcal{M}^{(\beta)}</annotation></semantics></math>
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><mi>ℳ</mi><mo stretchy="false" form="prefix">|</mo><mo>=</mo><mi>m</mi></mrow><annotation encoding="application/x-tex">|\mathcal{M}| = m</annotation></semantics></math>
+(thesis eq. 3). All assays are square
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>×</mo><mi>m</mi></mrow><annotation encoding="application/x-tex">m \times m</annotation></semantics></math>
+matrices on this <strong>union metabolite space</strong>. We write
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>=</mo><msup><mi>𝐗</mi><mrow><mrow><mi mathvariant="normal">b</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi></mrow><mo>,</mo><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup></mrow><annotation encoding="application/x-tex">X = \mathbf{X}^{\mathrm{bin},(\alpha)}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Y</mi><mo>=</mo><msup><mi>𝐗</mi><mrow><mrow><mi mathvariant="normal">b</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">n</mi></mrow><mo>,</mo><mo stretchy="false" form="prefix">(</mo><mi>β</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup></mrow><annotation encoding="application/x-tex">Y = \mathbf{X}^{\mathrm{bin},(\beta)}</annotation></semantics></math>
+for the two binary assays under comparison; analogous symbols
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mi>X</mi></msub><mo>,</mo><msub><mi>P</mi><mi>X</mi></msub><mo>,</mo><msub><mi>N</mi><mi>X</mi></msub></mrow><annotation encoding="application/x-tex">C_X, P_X, N_X</annotation></semantics></math>
+denote the Consumption, Production, and nSpecies assays. The
+<strong><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>L</mi><mn>1</mn></msub><annotation encoding="application/x-tex">L_1</annotation></semantics></math>
+norm</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mrow><mo stretchy="true" form="prefix">‖</mo><mi>A</mi><mo stretchy="true" form="postfix">‖</mo></mrow><mn>1</mn></msub><mo>=</mo><msub><mo>∑</mo><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo><msub><mi>A</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">\lVert A \rVert_1 = \sum_{i,j} |A_{ij}|</annotation></semantics></math>
+is the sum of all entries;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mo>⊙</mo><mi>B</mi></mrow><annotation encoding="application/x-tex">A \odot B</annotation></semantics></math>
+is the elementwise (Hadamard) product.</p>
+<p>A <strong>pathway</strong> in <code>ramen</code> is a directed
+metabolite-to-metabolite pair
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(i, j)</annotation></semantics></math>
+such that some species in the consortium can consume
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+and some species (possibly the same one) can produce
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>.
+Pathways are not biochemical reactions: they are
+<strong>capabilities</strong> inferred from the Cartesian product of
+each species’ uptake set and secretion set. A consortium of two species,
+one consuming
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{a, b\}</annotation></semantics></math>
+and producing
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><mi>c</mi><mo>,</mo><mi>d</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{c, d\}</annotation></semantics></math>,
+contributes the four pathways
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><mi>a</mi><mo>→</mo><mi>c</mi><mo>,</mo><mi>a</mi><mo>→</mo><mi>d</mi><mo>,</mo><mi>b</mi><mo>→</mo><mi>c</mi><mo>,</mo><mi>b</mi><mo>→</mo><mi>d</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{a \to c, a \to d, b \to c, b \to d\}</annotation></semantics></math>
+from only four distinct exchange events (two uptakes, two secretions).
+See the <em>Cross-product inflation</em> caveat below.</p>
+</div>
+<div class="section level3">
+<h3 id="assay-matrices">Assay matrices<a class="anchor" aria-label="anchor" href="#assay-matrices"></a>
+</h3>
+<p>Each <code>ConsortiumMetabolism</code> stores eight assays (thesis
+eq. 1, 2):</p>
+<ul>
+<li>
+<strong>Binary</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>𝐗</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow></msup><annotation encoding="application/x-tex">\mathbf{X}^{(\alpha,1)}</annotation></semantics></math>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>X</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">X^{(\alpha,1)}_{ij} = 1</annotation></semantics></math>
+if any species in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ω</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo stretchy="false" form="postfix">)</mo></mrow></msup><annotation encoding="application/x-tex">\omega^{(\alpha)}</annotation></semantics></math>
+realises pathway
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo>→</mo><mi>j</mi></mrow><annotation encoding="application/x-tex">i \to j</annotation></semantics></math>,
+else
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>.</li>
+<li>
+<strong>nSpecies</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>𝐗</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo>,</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow></msup><annotation encoding="application/x-tex">\mathbf{X}^{(\alpha,2)}</annotation></semantics></math>:
+number of distinct species supporting
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo>→</mo><mi>j</mi></mrow><annotation encoding="application/x-tex">i \to j</annotation></semantics></math>.</li>
+<li>
+<strong>Consumption</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>𝐗</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo>,</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo></mrow></msup><annotation encoding="application/x-tex">\mathbf{X}^{(\alpha,3)}</annotation></semantics></math>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>F</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>c</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>=</mo><msub><mo>∑</mo><mi>s</mi></msub><msubsup><mi>f</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>c</mi><mo>,</mo><mi>s</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup></mrow><annotation encoding="application/x-tex">F^{(c)}_{ij} = \sum_s f^{(c,s)}_{ij}</annotation></semantics></math>,
+the summed uptake flux of metabolite
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+across all species participating in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo>→</mo><mi>j</mi></mrow><annotation encoding="application/x-tex">i \to j</annotation></semantics></math>.</li>
+<li>
+<strong>Production</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>𝐗</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo>,</mo><mn>4</mn><mo stretchy="false" form="postfix">)</mo></mrow></msup><annotation encoding="application/x-tex">\mathbf{X}^{(\alpha,4)}</annotation></semantics></math>:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>F</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>=</mo><msub><mo>∑</mo><mi>s</mi></msub><msubsup><mi>f</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>p</mi><mo>,</mo><mi>s</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup></mrow><annotation encoding="application/x-tex">F^{(p)}_{ij} = \sum_s f^{(p,s)}_{ij}</annotation></semantics></math>,
+analogously for secretion.</li>
+<li>
+<strong>EffectiveConsumption</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>𝐗</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo>,</mo><mn>5</mn><mo stretchy="false" form="postfix">)</mo></mrow></msup><annotation encoding="application/x-tex">\mathbf{X}^{(\alpha,5)}</annotation></semantics></math>
+and <strong>EffectiveProduction</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>𝐗</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo>,</mo><mn>6</mn><mo stretchy="false" form="postfix">)</mo></mrow></msup><annotation encoding="application/x-tex">\mathbf{X}^{(\alpha,6)}</annotation></semantics></math>:
+flux-corrected effective fluxes (see below).</li>
+<li>
+<strong>nEffectiveSpeciesConsumption</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>𝐗</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo>,</mo><mn>7</mn><mo stretchy="false" form="postfix">)</mo></mrow></msup><annotation encoding="application/x-tex">\mathbf{X}^{(\alpha,7)}</annotation></semantics></math>
+and <strong>nEffectiveSpeciesProduction</strong>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>𝐗</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo>,</mo><mn>8</mn><mo stretchy="false" form="postfix">)</mo></mrow></msup><annotation encoding="application/x-tex">\mathbf{X}^{(\alpha,8)}</annotation></semantics></math>:
+Hill-1 effective number of contributing species (see below).</li>
+</ul>
+<p>All eight are constructed as the Cartesian product
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">d</mi></mrow><mo stretchy="false" form="prefix">(</mo><mi>s</mi><mo stretchy="false" form="postfix">)</mo><mo>×</mo><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">d</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">d</mi></mrow><mo stretchy="false" form="prefix">(</mo><mi>s</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mathrm{consumed}(s) \times \mathrm{produced}(s)</annotation></semantics></math>
+for each species
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>,
+then aggregated across species. This <strong>cross-product</strong> is
+the source of the density inflation discussed under <em>Limitations and
+caveats</em>.</p>
+</div>
+<div class="section level3">
+<h3 id="effective-flux-and-effective-species-count">Effective flux and effective species count<a class="anchor" aria-label="anchor" href="#effective-flux-and-effective-species-count"></a>
+</h3>
+<p>For a pathway
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(i, j)</annotation></semantics></math>
+with participating species
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>s</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>s</mi><mi>n</mi></msub></mrow><annotation encoding="application/x-tex">s_1, \dots, s_n</annotation></semantics></math>,
+let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>p</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>ϕ</mi><mo>,</mo><mi>s</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>=</mo><msubsup><mi>f</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>ϕ</mi><mo>,</mo><mi>s</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mi>/</mi><msubsup><mi>F</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>ϕ</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup></mrow><annotation encoding="application/x-tex">p^{(\phi,s)}_{ij} = f^{(\phi,s)}_{ij} / F^{(\phi)}_{ij}</annotation></semantics></math>
+be the fraction of total flux of type
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϕ</mi><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mi>c</mi><mo>,</mo><mi>p</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\phi \in \{c, p\}</annotation></semantics></math>
+contributed by species
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>.
+The Shannon entropy of this distribution is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>H</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>ϕ</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>=</mo><mi>−</mi><msub><mo>∑</mo><mi>s</mi></msub><msubsup><mi>p</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>ϕ</mi><mo>,</mo><mi>s</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><msub><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mn>2</mn></msub><msubsup><mi>p</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>ϕ</mi><mo>,</mo><mi>s</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup></mrow><annotation encoding="application/x-tex">H_{ij}^{(\phi)} = -\sum_s p^{(\phi,s)}_{ij}
+\log_2 p^{(\phi,s)}_{ij}</annotation></semantics></math>, and the Hill-1
+perplexity
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>D</mi><mrow><mn>1</mn><mo>,</mo><mi>i</mi><mi>j</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>ϕ</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>=</mo><msup><mn>2</mn><msubsup><mi>H</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>ϕ</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup></msup></mrow><annotation encoding="application/x-tex">D_{1,ij}^{(\phi)} = 2^{H_{ij}^{(\phi)}}</annotation></semantics></math>
+is the <strong>effective number of species</strong> contributing to the
+pathway: unitless,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>∈</mo><mo stretchy="false" form="prefix">[</mo><mn>1</mn><mo>,</mo><mi>n</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">\in [1, n]</annotation></semantics></math>,
+maximised when all species contribute equally.</p>
+<p><code>ramen</code> exposes both the perplexity itself and the
+flux-corrected flux
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo>⋅</mo><msub><mi>D</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">F \cdot D_1</annotation></semantics></math>
+(thesis eq. 2) as separate assays. They are two views of the same
+network:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>𝐗</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo>,</mo><mn>5</mn><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>=</mo><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">d</mi></mrow><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><msubsup><mi>F</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>c</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>⋅</mo><msup><mn>2</mn><msubsup><mi>H</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>c</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup></msup><mo>,</mo><mn>2</mn><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><msubsup><mi>𝐗</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo>,</mo><mn>7</mn><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>=</mo><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">d</mi></mrow><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><msup><mn>2</mn><msubsup><mi>H</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>c</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup></msup><mo>,</mo><mn>2</mn><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\mathbf{X}^{(\alpha,5)}_{ij} = \mathrm{round}\bigl(
+F^{(c)}_{ij} \cdot 2^{H^{(c)}_{ij}}, 2 \bigr),
+\qquad
+\mathbf{X}^{(\alpha,7)}_{ij} = \mathrm{round}\bigl(
+2^{H^{(c)}_{ij}}, 2 \bigr),
+</annotation></semantics></math> and analogously
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>𝐗</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo>,</mo><mn>6</mn><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>,</mo><msup><mi>𝐗</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo>,</mo><mn>8</mn><mo stretchy="false" form="postfix">)</mo></mrow></msup></mrow><annotation encoding="application/x-tex">\mathbf{X}^{(\alpha,6)}, \mathbf{X}^{(\alpha,8)}</annotation></semantics></math>
+for production. <strong>EffectiveConsumption</strong> and
+<strong>EffectiveProduction</strong> carry the same units as
+<strong>Consumption</strong> / <strong>Production</strong> (a flux,
+larger when total flux is large <em>and</em> species contribute evenly);
+<strong>nEffectiveSpeciesConsumption</strong> and
+<strong>nEffectiveSpeciesProduction</strong> are unitless counts
+mirroring <strong>nSpecies</strong>. The algebraic identity
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>𝐗</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo>,</mo><mn>5</mn><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>=</mo><msup><mi>𝐗</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo>,</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo></mrow></msup><mo>⊙</mo><msup><mi>𝐗</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>α</mi><mo>,</mo><mn>7</mn><mo stretchy="false" form="postfix">)</mo></mrow></msup></mrow><annotation encoding="application/x-tex">
+\mathbf{X}^{(\alpha,5)} = \mathbf{X}^{(\alpha,3)} \odot
+\mathbf{X}^{(\alpha,7)}
+</annotation></semantics></math> holds cell-wise (modulo two-decimal
+rounding); same for production. See the <em>Hill-1 saturation</em>
+caveat for behaviour on small consortia.</p>
+</div>
+<div class="section level3">
+<h3 id="pairwise-alignment-metrics">Pairwise alignment metrics<a class="anchor" aria-label="anchor" href="#pairwise-alignment-metrics"></a>
+</h3>
+<p>Throughout,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>
+are binary assays expanded to the union metabolite space, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mi>X</mi></msub><mo>,</mo><msub><mi>P</mi><mi>X</mi></msub><mo>,</mo><msub><mi>N</mi><mi>X</mi></msub></mrow><annotation encoding="application/x-tex">C_X, P_X, N_X</annotation></semantics></math>
+are the Consumption, Production, and nSpecies assays for consortium
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>.</p>
+<div class="section level4">
+<h4 id="fos-szymkiewicz-simpson-overlap">FOS (Szymkiewicz-Simpson overlap)<a class="anchor" aria-label="anchor" href="#fos-szymkiewicz-simpson-overlap"></a>
+</h4>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mrow><mi mathvariant="normal">F</mi><mi mathvariant="normal">O</mi><mi mathvariant="normal">S</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo>,</mo><mi>Y</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><msub><mrow><mo stretchy="true" form="prefix">‖</mo><mi>X</mi><mo>⊙</mo><mi>Y</mi><mo stretchy="true" form="postfix">‖</mo></mrow><mn>1</mn></msub><mrow><mrow><mi mathvariant="normal">min</mi><mo>⁡</mo></mrow><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><msub><mrow><mo stretchy="true" form="prefix">‖</mo><mi>X</mi><mo stretchy="true" form="postfix">‖</mo></mrow><mn>1</mn></msub><mo>,</mo><msub><mrow><mo stretchy="true" form="prefix">‖</mo><mi>Y</mi><mo stretchy="true" form="postfix">‖</mo></mrow><mn>1</mn></msub><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo></mrow></mfrac><mspace width="2.0em"></mspace><mtext mathvariant="normal">(thesis eq. 5)</mtext><mi>.</mi></mrow><annotation encoding="application/x-tex">
+S_{\mathrm{FOS}}(X, Y)
+= \frac{\lVert X \odot Y \rVert_1}{\min\bigl(
+\lVert X \rVert_1, \lVert Y \rVert_1 \bigr)}
+\qquad \text{(thesis eq. 5)}.
+</annotation></semantics></math> Range
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[0, 1]</annotation></semantics></math>.
+<strong>Asymmetric</strong> in size:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mrow><mi mathvariant="normal">F</mi><mi mathvariant="normal">O</mi><mi mathvariant="normal">S</mi></mrow></msub><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">S_{\mathrm{FOS}} = 1</annotation></semantics></math>
+whenever the smaller binary network is a subset of the larger, which is
+what motivates the coverage ratios below. Returns
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math>
+by convention if either matrix is empty. This is the default
+<code>method</code>.</p>
+</div>
+<div class="section level4">
+<h4 id="jaccard">Jaccard<a class="anchor" aria-label="anchor" href="#jaccard"></a>
+</h4>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mi mathvariant="normal">J</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo>,</mo><mi>Y</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><msub><mrow><mo stretchy="true" form="prefix">‖</mo><mi>X</mi><mo>⊙</mo><mi>Y</mi><mo stretchy="true" form="postfix">‖</mo></mrow><mn>1</mn></msub><mrow><msub><mrow><mo stretchy="true" form="prefix">‖</mo><mi>X</mi><mo stretchy="true" form="postfix">‖</mo></mrow><mn>1</mn></msub><mo>+</mo><msub><mrow><mo stretchy="true" form="prefix">‖</mo><mi>Y</mi><mo stretchy="true" form="postfix">‖</mo></mrow><mn>1</mn></msub><mo>−</mo><msub><mrow><mo stretchy="true" form="prefix">‖</mo><mi>X</mi><mo>⊙</mo><mi>Y</mi><mo stretchy="true" form="postfix">‖</mo></mrow><mn>1</mn></msub></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+S_{\mathrm{J}}(X, Y)
+= \frac{\lVert X \odot Y \rVert_1}{\lVert X \rVert_1
++ \lVert Y \rVert_1 - \lVert X \odot Y \rVert_1}.
+</annotation></semantics></math> Range
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[0, 1]</annotation></semantics></math>.
+<strong>Symmetric</strong>. For binary
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>,</mo><mi>Y</mi></mrow><annotation encoding="application/x-tex">X, Y</annotation></semantics></math>
+this is the classical
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>S</mi><mi>X</mi></msub><mo>∩</mo><msub><mi>S</mi><mi>Y</mi></msub><mo stretchy="false" form="prefix">|</mo><mi>/</mi><mo stretchy="false" form="prefix">|</mo><msub><mi>S</mi><mi>X</mi></msub><mo>∪</mo><msub><mi>S</mi><mi>Y</mi></msub><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">|S_X \cap S_Y| / |S_X \cup S_Y|</annotation></semantics></math>
+on pathway sets.</p>
+</div>
+<div class="section level4">
+<h4 id="bray-curtis-similarity-on-combined-fluxes">Bray-Curtis (similarity, on combined fluxes)<a class="anchor" aria-label="anchor" href="#bray-curtis-similarity-on-combined-fluxes"></a>
+</h4>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mrow><mi mathvariant="normal">B</mi><mi mathvariant="normal">C</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo>,</mo><mi>Y</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow><mi mathvariant="normal">max</mi><mo>⁡</mo></mrow><mspace width="-0.167em"></mspace><mo minsize="180%" maxsize="180%" stretchy="true" form="prefix">(</mo><mn>0</mn><mo>,</mo><mspace width="0.278em"></mspace><mn>1</mn><mo>−</mo><mfrac><mrow><msub><mrow><mo stretchy="true" form="prefix">‖</mo><mo stretchy="false" form="prefix">|</mo><msub><mi>C</mi><mi>X</mi></msub><mo>−</mo><msub><mi>C</mi><mi>Y</mi></msub><mo stretchy="false" form="prefix">|</mo><mo stretchy="true" form="postfix">‖</mo></mrow><mn>1</mn></msub><mo>+</mo><msub><mrow><mo stretchy="true" form="prefix">‖</mo><mo stretchy="false" form="prefix">|</mo><msub><mi>P</mi><mi>X</mi></msub><mo>−</mo><msub><mi>P</mi><mi>Y</mi></msub><mo stretchy="false" form="prefix">|</mo><mo stretchy="true" form="postfix">‖</mo></mrow><mn>1</mn></msub></mrow><mrow><msub><mrow><mo stretchy="true" form="prefix">‖</mo><msub><mi>C</mi><mi>X</mi></msub><mo stretchy="true" form="postfix">‖</mo></mrow><mn>1</mn></msub><mo>+</mo><msub><mrow><mo stretchy="true" form="prefix">‖</mo><msub><mi>C</mi><mi>Y</mi></msub><mo stretchy="true" form="postfix">‖</mo></mrow><mn>1</mn></msub><mo>+</mo><msub><mrow><mo stretchy="true" form="prefix">‖</mo><msub><mi>P</mi><mi>X</mi></msub><mo stretchy="true" form="postfix">‖</mo></mrow><mn>1</mn></msub><mo>+</mo><msub><mrow><mo stretchy="true" form="prefix">‖</mo><msub><mi>P</mi><mi>Y</mi></msub><mo stretchy="true" form="postfix">‖</mo></mrow><mn>1</mn></msub></mrow></mfrac><mo minsize="180%" maxsize="180%" stretchy="true" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+S_{\mathrm{BC}}(X, Y)
+= \max\!\Bigl(0,\; 1 - \frac{
+\lVert |C_X - C_Y| \rVert_1 + \lVert |P_X - P_Y| \rVert_1
+}{\lVert C_X \rVert_1 + \lVert C_Y \rVert_1
++ \lVert P_X \rVert_1 + \lVert P_Y \rVert_1}\Bigr).
+</annotation></semantics></math> This is <strong>equivalent to
+Bray-Curtis on the stacked
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>C</mi><mo>,</mo><mi>P</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(C, P)</annotation></semantics></math>
+abundance vector</strong>: summing the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>L</mi><mn>1</mn></msub><annotation encoding="application/x-tex">L_1</annotation></semantics></math>
+differences of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>C</mi><annotation encoding="application/x-tex">C</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>
+separately and dividing by the combined
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>L</mi><mn>1</mn></msub><annotation encoding="application/x-tex">L_1</annotation></semantics></math>
+norms is algebraically the same as concatenating
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>C</mi><annotation encoding="application/x-tex">C</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>P</mi><annotation encoding="application/x-tex">P</annotation></semantics></math>
+into one vector and applying the standard Bray-Curtis formula. Range
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[0, 1]</annotation></semantics></math>,
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+at identical fluxes. The
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">max</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>⋅</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\max(0, \cdot)</annotation></semantics></math>
+clamp guards against floating-point near-negative zero; this is the
+consequence of the B7 fix and is why <code>brayCurtis = NA</code> is
+returned for unweighted CMs (the metric is undefined when fluxes are
+unit placeholders). See the <code><a href="../reference/align.html">?ramen::align</a></code>
+<code>@note</code>.</p>
+</div>
+<div class="section level4">
+<h4 id="redundancyoverlap-weighted-jaccard-ruzicka">RedundancyOverlap (weighted Jaccard / Ruzicka)<a class="anchor" aria-label="anchor" href="#redundancyoverlap-weighted-jaccard-ruzicka"></a>
+</h4>
+<p>Using
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">min</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>a</mi><mo>+</mo><mi>b</mi><mo>−</mo><mo stretchy="false" form="prefix">|</mo><mi>a</mi><mo>−</mo><mi>b</mi><mo stretchy="false" form="prefix">|</mo><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">\min(a, b) = (a + b - |a - b|)/2</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">max</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>a</mi><mo>+</mo><mi>b</mi><mo>+</mo><mo stretchy="false" form="prefix">|</mo><mi>a</mi><mo>−</mo><mi>b</mi><mo stretchy="false" form="prefix">|</mo><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">\max(a, b) = (a + b + |a - b|)/2</annotation></semantics></math>,
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">O</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo>,</mo><mi>Y</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mrow><munder><mo>∑</mo><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></munder><mrow><mi mathvariant="normal">min</mi><mo>⁡</mo></mrow><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><msub><mi>N</mi><mrow><mi>X</mi><mo>,</mo><mi>i</mi><mi>j</mi></mrow></msub><mo>,</mo><msub><mi>N</mi><mrow><mi>Y</mi><mo>,</mo><mi>i</mi><mi>j</mi></mrow></msub><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo></mrow><mrow><munder><mo>∑</mo><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></munder><mrow><mi mathvariant="normal">max</mi><mo>⁡</mo></mrow><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><msub><mi>N</mi><mrow><mi>X</mi><mo>,</mo><mi>i</mi><mi>j</mi></mrow></msub><mo>,</mo><msub><mi>N</mi><mrow><mi>Y</mi><mo>,</mo><mi>i</mi><mi>j</mi></mrow></msub><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+S_{\mathrm{RO}}(X, Y)
+= \frac{\sum_{i,j} \min\bigl(N_{X,ij}, N_{Y,ij}\bigr)}{
+\sum_{i,j} \max\bigl(N_{X,ij}, N_{Y,ij}\bigr)}.
+</annotation></semantics></math> Range
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[0, 1]</annotation></semantics></math>.
+<strong>Collapse to Jaccard at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">N = 1</annotation></semantics></math>.</strong>
+When all positive entries of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>N</mi><mi>X</mi></msub><annotation encoding="application/x-tex">N_X</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>N</mi><mi>Y</mi></msub><annotation encoding="application/x-tex">N_Y</annotation></semantics></math>
+equal
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>
+(every supported pathway is single-species) the numerator becomes the
+indicator intersection
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mrow><mo stretchy="true" form="prefix">‖</mo><mi>X</mi><mo>⊙</mo><mi>Y</mi><mo stretchy="true" form="postfix">‖</mo></mrow><mn>1</mn></msub><annotation encoding="application/x-tex">\lVert X \odot Y \rVert_1</annotation></semantics></math>
+and the denominator becomes the indicator union
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mrow><mo stretchy="true" form="prefix">‖</mo><mi>X</mi><mo stretchy="true" form="postfix">‖</mo></mrow><mn>1</mn></msub><mo>+</mo><msub><mrow><mo stretchy="true" form="prefix">‖</mo><mi>Y</mi><mo stretchy="true" form="postfix">‖</mo></mrow><mn>1</mn></msub><mo>−</mo><msub><mrow><mo stretchy="true" form="prefix">‖</mo><mi>X</mi><mo>⊙</mo><mi>Y</mi><mo stretchy="true" form="postfix">‖</mo></mrow><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">\lVert X \rVert_1 + \lVert Y \rVert_1
+- \lVert X \odot Y \rVert_1</annotation></semantics></math>, which is
+exactly
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mi mathvariant="normal">J</mi></msub><annotation encoding="application/x-tex">S_{\mathrm{J}}</annotation></semantics></math>.
+Small communities therefore yield identical Jaccard and
+RedundancyOverlap scores.</p>
+</div>
+<div class="section level4">
+<h4 id="maas-metabolic-alignment-aggregate-score">MAAS (Metabolic Alignment Aggregate Score)<a class="anchor" aria-label="anchor" href="#maas-metabolic-alignment-aggregate-score"></a>
+</h4>
+<p>A weighted convex combination of the four base metrics. Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝒜</mi><annotation encoding="application/x-tex">\mathcal{A}</annotation></semantics></math>
+be the set of metrics whose inputs are available (Bray-Curtis and
+RedundancyOverlap drop out for unweighted CMs).
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mrow><mi mathvariant="normal">M</mi><mi mathvariant="normal">A</mi><mi mathvariant="normal">A</mi><mi mathvariant="normal">S</mi></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo>,</mo><mi>Y</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><munder><mo>∑</mo><mrow><mi>m</mi><mo>∈</mo><mi>𝒜</mi></mrow></munder><mfrac><msub><mi>w</mi><mi>m</mi></msub><mrow><munder><mo>∑</mo><mrow><msup><mi>m</mi><mo>′</mo></msup><mo>∈</mo><mi>𝒜</mi></mrow></munder><msub><mi>w</mi><msup><mi>m</mi><mo>′</mo></msup></msub></mrow></mfrac><mo>⋅</mo><msub><mi>S</mi><mi>m</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo>,</mo><mi>Y</mi><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+S_{\mathrm{MAAS}}(X, Y)
+= \sum_{m \in \mathcal{A}} \frac{w_m}{\sum_{m' \in \mathcal{A}}
+w_{m'}} \cdot S_m(X, Y).
+</annotation></semantics></math> Default weights are
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>w</mi><mrow><mi mathvariant="normal">F</mi><mi mathvariant="normal">O</mi><mi mathvariant="normal">S</mi></mrow></msub><mo>,</mo><msub><mi>w</mi><mi mathvariant="normal">J</mi></msub><mo>,</mo><msub><mi>w</mi><mrow><mi mathvariant="normal">B</mi><mi mathvariant="normal">C</mi></mrow></msub><mo>,</mo><msub><mi>w</mi><mrow><mi mathvariant="normal">R</mi><mi mathvariant="normal">O</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>0.4</mn><mo>,</mo><mn>0.2</mn><mo>,</mo><mn>0.2</mn><mo>,</mo><mn>0.2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(w_{\mathrm{FOS}}, w_{\mathrm{J}}, w_{\mathrm{BC}},
+w_{\mathrm{RO}}) = (0.4, 0.2, 0.2, 0.2)</annotation></semantics></math>.
+<strong>Disclosure:</strong> these defaults are not derived from data;
+they encode a soft preference for FOS as the primary metric and were not
+tuned by sensitivity analysis. A formal sensitivity sweep is deferred to
+the methods paper.</p>
+</div>
+<div class="section level4">
+<h4 id="coverage-ratios">Coverage ratios<a class="anchor" aria-label="anchor" href="#coverage-ratios"></a>
+</h4>
+<p>To disambiguate FOS = 1 from full functional equivalence,
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">v</mi></mrow><mrow><mi mathvariant="normal">q</mi><mi mathvariant="normal">u</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">y</mi></mrow></msub><mo>=</mo><mfrac><msub><mrow><mo stretchy="true" form="prefix">‖</mo><mi>X</mi><mo>⊙</mo><mi>Y</mi><mo stretchy="true" form="postfix">‖</mo></mrow><mn>1</mn></msub><msub><mrow><mo stretchy="true" form="prefix">‖</mo><mi>X</mi><mo stretchy="true" form="postfix">‖</mo></mrow><mn>1</mn></msub></mfrac><mo>,</mo><mspace width="2.0em"></mspace><msub><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">v</mi></mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></msub><mo>=</mo><mfrac><msub><mrow><mo stretchy="true" form="prefix">‖</mo><mi>X</mi><mo>⊙</mo><mi>Y</mi><mo stretchy="true" form="postfix">‖</mo></mrow><mn>1</mn></msub><msub><mrow><mo stretchy="true" form="prefix">‖</mo><mi>Y</mi><mo stretchy="true" form="postfix">‖</mo></mrow><mn>1</mn></msub></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\mathrm{cov}_{\mathrm{query}}
+= \frac{\lVert X \odot Y \rVert_1}{\lVert X \rVert_1},
+\qquad
+\mathrm{cov}_{\mathrm{ref}}
+= \frac{\lVert X \odot Y \rVert_1}{\lVert Y \rVert_1}.
+</annotation></semantics></math><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mrow><mi mathvariant="normal">F</mi><mi mathvariant="normal">O</mi><mi mathvariant="normal">S</mi></mrow></msub><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">S_{\mathrm{FOS}} = 1</annotation></semantics></math>
+together with low
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">v</mi></mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">f</mi></mrow></msub><annotation encoding="application/x-tex">\mathrm{cov}_{\mathrm{ref}}</annotation></semantics></math>
+indicates that the query is a strict subset of the reference, not a
+functional twin.</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="permutation-null-model">Permutation null model<a class="anchor" aria-label="anchor" href="#permutation-null-model"></a>
+</h3>
+<p>For a metric
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>
+and observed value
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>s</mi><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">b</mi><mi mathvariant="normal">s</mi></mrow></msub><mo>=</mo><mi>S</mi><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo>,</mo><mi>Y</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">s_{\mathrm{obs}} = S(X, Y)</annotation></semantics></math>,
+a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>-value
+is computed by <strong>degree-preserving rewire</strong> of the query
+binary network, treated as a directed graph
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>G</mi><mi>X</mi></msub><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mi>ℳ</mi><mo>,</mo><msub><mi>E</mi><mi>X</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">G_X = (\mathcal{M}, E_X)</annotation></semantics></math>.
+Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">w</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>G</mi><mi>X</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\mathrm{rewire}(G_X)</annotation></semantics></math>
+denote the graph obtained from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>G</mi><mi>X</mi></msub><annotation encoding="application/x-tex">G_X</annotation></semantics></math>
+by a sequence of edge swaps that preserve the in-degree and out-degree
+sequence; <code><a href="https://r.igraph.org/reference/keeping_degseq.html" class="external-link">igraph::keeping_degseq</a></code> is used with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>𝚗</mi><mi>𝚒</mi><mi>𝚝</mi><mi>𝚎</mi><mi>𝚛</mi></mrow><mo>=</mo><mn>10</mn><mo>⋅</mo><mo stretchy="false" form="prefix">|</mo><msub><mi>E</mi><mi>X</mi></msub><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">\mathtt{niter} = 10 \cdot |E_X|</annotation></semantics></math>.
+The permutation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>-value
+is
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>s</mi><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">b</mi><mi mathvariant="normal">s</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mrow><mn>1</mn><mo>+</mo><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>B</mi></munderover><mn>𝟏</mn><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">[</mo><mi>S</mi><mo stretchy="false" form="prefix">(</mo><msub><mrow><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">w</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">e</mi></mrow><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>G</mi><mi>X</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mi>Y</mi><mo stretchy="false" form="postfix">)</mo><mo>≥</mo><msub><mi>s</mi><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">b</mi><mi mathvariant="normal">s</mi></mrow></msub><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">]</mo></mrow><mrow><mn>1</mn><mo>+</mo><mi>B</mi></mrow></mfrac><mo>,</mo></mrow><annotation encoding="application/x-tex">
+p(s_{\mathrm{obs}})
+= \frac{1 + \sum_{k=1}^{B} \mathbf{1}\bigl[
+S(\mathrm{rewire}_k(G_X), Y) \ge s_{\mathrm{obs}}\bigr]}{1 + B},
+</annotation></semantics></math> with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mo>=</mo><mrow><mi>𝚗</mi><mi>𝙿</mi><mi>𝚎</mi><mi>𝚛</mi><mi>𝚖</mi><mi>𝚞</mi><mi>𝚝</mi><mi>𝚊</mi><mi>𝚝</mi><mi>𝚒</mi><mi>𝚘</mi><mi>𝚗</mi><mi>𝚜</mi></mrow></mrow><annotation encoding="application/x-tex">B = \mathtt{nPermutations}</annotation></semantics></math>
+(default
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>999</mn><annotation encoding="application/x-tex">999</annotation></semantics></math>).
+The null hypothesis is <em>“the observed similarity is no greater than
+expected under random rewiring of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+that preserves each metabolite’s participation count”</em>.</p>
+<p><strong>Limitation (methods-paper concern, not a current correctness
+issue).</strong> Degree-preserving rewire is the conventional null in
+ecological network analysis but is <strong>not specifically motivated
+for FBA-derived networks</strong>: edge presence in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+reflects mass-balance constraints on the underlying genome-scale
+metabolic models, plus the solver’s choice among alternate optima. A
+null that respects those constraints (for example a configuration model
+on the species-pathway bipartite graph, a species-set permutation, or a
+randomised-abundance null in the MICOM sense) would be more defensible.
+The current null is retained for reproducibility with prior
+<code>ramen</code> versions; sensitivity to null-model choice is on the
+methods-paper agenda.</p>
+</div>
+<div class="section level3">
+<h3 id="when-to-use-what-alignment-vs-functional-groups">When to use what: alignment vs functional groups<a class="anchor" aria-label="anchor" href="#when-to-use-what-alignment-vs-functional-groups"></a>
+</h3>
+<p><code>ramen</code> exposes two superficially similar comparisons.
+They answer <strong>different questions</strong> and are not
+interchangeable.</p>
+<p><strong>Alignment</strong> (<code>align(CM, CM)</code>,
+<code>align(CMS)</code>, <code>align(CM, CMS)</code>) compares two or
+more <em>named consortia</em> by their metabolic exchange networks. The
+unit of analysis is the consortium; the question is <em>“how similar are
+these communities by what they collectively do?”</em></p>
+<p><strong>Functional groups</strong> (<code><a href="../reference/functionalGroups.html">functionalGroups()</a></code>)
+cluster <em>species</em> by the Jaccard similarity of their per-species
+pathway sets, either within a single consortium or pooled across a CMS.
+The unit of analysis is the species; the question is <em>“which species
+play equivalent metabolic roles?”</em> See
+<code><a href="../articles/ramen.html">vignette("ramen", package = "ramen")</a></code> for functional
+groups.</p>
+<p>In practice, run <code><a href="../reference/functionalGroups.html">functionalGroups()</a></code> first within a
+consortium (or pooled across a CMS) to understand internal structure,
+then <code><a href="../reference/align.html">align()</a></code> to compare consortia.</p>
+</div>
+<div class="section level3">
+<h3 id="limitations-and-caveats">Limitations and caveats<a class="anchor" aria-label="anchor" href="#limitations-and-caveats"></a>
+</h3>
+<p>The metric formulas above are not a license to run alignment on
+arbitrary inputs. Several known issues affect interpretation.</p>
+<p><strong>Cross-product inflation.</strong> Pathways are inferred from
+the Cartesian product of each species’ uptake and secretion sets, not
+from biochemical reactions. For a consortium of two species
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mn>1</mn></msub><mo>:</mo><mo stretchy="false" form="prefix">{</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo stretchy="false" form="postfix">}</mo><mo>→</mo><mo stretchy="false" form="prefix">{</mo><mi>c</mi><mo>,</mo><mi>d</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">S_1 : \{a, b\} \to \{c, d\}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mn>2</mn></msub><mo>:</mo><mo stretchy="false" form="prefix">{</mo><mi>c</mi><mo>,</mo><mi>d</mi><mo stretchy="false" form="postfix">}</mo><mo>→</mo><mo stretchy="false" form="prefix">{</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">S_2 : \{c, d\} \to \{a, b\}</annotation></semantics></math>,
+the Binary assay has
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><mo stretchy="false" form="prefix">{</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo stretchy="false" form="postfix">}</mo><mo>×</mo><mo stretchy="false" form="prefix">{</mo><mi>c</mi><mo>,</mo><mi>d</mi><mo stretchy="false" form="postfix">}</mo><mo stretchy="false" form="prefix">|</mo><mi>+</mi><mo stretchy="false" form="prefix">|</mo><mo stretchy="false" form="prefix">{</mo><mi>c</mi><mo>,</mo><mi>d</mi><mo stretchy="false" form="postfix">}</mo><mo>×</mo><mo stretchy="false" form="prefix">{</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo stretchy="false" form="postfix">}</mo><mo stretchy="false" form="prefix">|</mo><mo>=</mo><mn>8</mn></mrow><annotation encoding="application/x-tex">|\{a, b\} \times \{c, d\}|
++ |\{c, d\} \times \{a, b\}| = 8</annotation></semantics></math> nonzero
+entries in a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4</mn><mo>×</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">4 \times 4</annotation></semantics></math>
+matrix, giving density
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0.5</mn><annotation encoding="application/x-tex">0.5</annotation></semantics></math>
+from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>8</mn><annotation encoding="application/x-tex">8</annotation></semantics></math>
+exchange events across
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>4</mn><annotation encoding="application/x-tex">4</annotation></semantics></math>
+distinct metabolites. This is a <strong>capability-level</strong>
+representation, not a mechanism-level one, and the inflation grows with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">min</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mo stretchy="false" form="prefix">|</mo><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">s</mi></mrow><mo stretchy="false" form="prefix">|</mo><mo>,</mo><mo stretchy="false" form="prefix">|</mo><mrow><mi mathvariant="normal">p</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">d</mi></mrow><mo stretchy="false" form="prefix">|</mo><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\min(|\mathrm{cons}|, |\mathrm{prod}|)</annotation></semantics></math>
+per species. Compare consortia of similar size and composition; do not
+interpret raw Binary density as a mechanistic property.</p>
+<p><strong>Hill-1 saturation on small consortia.</strong>
+nEffectiveSpeciesConsumption / nEffectiveSpeciesProduction store the
+Hill-1 perplexity rounded to two decimals. For two-species consortia the
+perplexity rarely exceeds
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>≈</mo><mn>1.05</mn></mrow><annotation encoding="application/x-tex">\approx 1.05</annotation></semantics></math>
+(one species typically dominates the flux at any given pathway), and the
+<code>round(., 2)</code> step collapses near-degenerate distributions to
+exactly
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1.0</mn><annotation encoding="application/x-tex">1.0</annotation></semantics></math>
+– indistinguishable from true single-species pathways. Because
+EffectiveConsumption and EffectiveProduction are the elementwise product
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo>⋅</mo><msub><mi>D</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">F \cdot D_1</annotation></semantics></math>,
+the same saturation propagates to them: on small consortia they
+degenerate toward the underlying Consumption / Production assays. Both
+effective views are informative only on consortia where several species
+contribute comparable flux to the same pathway.</p>
+<p><strong>Flux reversibility and no binarisation threshold.</strong>
+<code><a href="../reference/ConsortiumMetabolism.html">ConsortiumMetabolism()</a></code> admits any nonzero flux: a flux of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mrow><mi>−</mi><mn>12</mn></mrow></msup><annotation encoding="application/x-tex">10^{-12}</annotation></semantics></math>
+produces an edge identical to a flux of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mn>3</mn></msup><annotation encoding="application/x-tex">10^3</annotation></semantics></math>.
+FBA solvers (MiSoSoup, MICOM, cobrapy) routinely produce alternate
+optima that differ only in sign of small fluxes near the noise floor;
+under the current convention this turns a “consume
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>,
+produce
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>b</mi><annotation encoding="application/x-tex">b</annotation></semantics></math>”
+pathway into “consume
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>b</mi><annotation encoding="application/x-tex">b</annotation></semantics></math>,
+produce
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>a</mi><annotation encoding="application/x-tex">a</annotation></semantics></math>”,
+which the Binary assay treats as a different pathway. No
+<code>flux_tolerance</code> argument is currently exposed. For solver
+outputs we recommend pre-filtering by solver tolerance (typically
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mrow><mi>−</mi><mn>9</mn></mrow></msup><annotation encoding="application/x-tex">10^{-9}</annotation></semantics></math>
+for COBRA / cobrapy) before constructing CMs.</p>
+<p><strong>Bray-Curtis on unweighted CMs returns NA.</strong> The fix
+for the floating-point near-negative-zero bug (B7) introduced an
+explicit
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">max</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mi>⋅</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\max(0, \cdot)</annotation></semantics></math>
+clamp that propagates <code>NA</code> when fluxes are unit placeholders
+rather than measured values. This is documented in the
+<code><a href="../reference/align.html">align()</a></code> <code>@note</code>. To get a non-<code>NA</code>
+Bray-Curtis, build CMs from non-unit fluxes.</p>
+<p><strong>Alternative optima are not biological signal.</strong>
+MiSoSoup is a MILP enumerator: for a fixed metabolic model it returns
+multiple alternative optimal solutions to the same growth problem. Such
+alternatives typically share most pathways and produce very high
+pairwise FOS values that reflect <strong>solver consistency, not
+biological similarity</strong>. The same caveat applies to outputs from
+<strong>MICOM</strong> and <strong>cobrapy</strong>, where the choice of
+solver, tolerance, and tie-breaking affects which exchange fluxes appear
+in the solution. When interpreting overlap, compare consortia derived
+from <em>different</em> models, conditions, or experimental contexts;
+treat overlap between alternates of one model as a sanity check on the
+enumeration, not as ecology.</p>
+<p><strong>Minimum production flux drives the alignment.</strong>
+Because pathways are inferred from the existence of any nonzero
+production flux for a given species and metabolite, low-magnitude
+secretions (whether biologically real or solver noise) determine the
+topology of the Binary assay just as much as high-magnitude ones. This
+is a design decision, not a bug: it preserves the <strong>set of
+metabolic capabilities</strong> the consortium can realise. Users who
+want to weight by magnitude should use Bray-Curtis or RedundancyOverlap
+rather than FOS / Jaccard, and should consider thresholding fluxes
+upstream of <code><a href="../reference/ConsortiumMetabolism.html">ConsortiumMetabolism()</a></code>.</p>
+</div>
+</div>
+<div class="section level2">
 <h2 id="test-data">Test data<a class="anchor" aria-label="anchor" href="#test-data"></a>
 </h2>
 <p>We build six consortia from the bundled <code>misosoup24</code>
@@ -125,7 +596,8 @@ dataset to use throughout this vignette.</p>
 <span><span class="co">#&gt; Metric: <span style="color: #0000BB;">"FOS"</span></span></span>
 <span><span class="co">#&gt; Score: <span style="color: #0000BB;">0.7634</span></span></span>
 <span><span class="co">#&gt; Query: <span style="color: #0000BB;">"ac_A1R12_1"</span>, Reference: <span style="color: #0000BB;">"ac_A1R12_10"</span></span></span>
-<span><span class="co">#&gt; Coverage: query <span style="color: #0000BB;">0.763</span>, reference <span style="color: #0000BB;">0.38</span></span></span></code></pre></div>
+<span><span class="co">#&gt; Coverage: query <span style="color: #0000BB;">0.763</span>, reference <span style="color: #0000BB;">0.38</span></span></span>
+<span><span class="co">#&gt; Pathways: <span style="color: #0000BB;">71</span> shared, <span style="color: #0000BB;">22</span> query-only, <span style="color: #0000BB;">116</span> reference-only.</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="similarity-metrics">Similarity metrics<a class="anchor" aria-label="anchor" href="#similarity-metrics"></a>
@@ -693,49 +1165,53 @@ an informative error.</p>
 <span><span class="co">#&gt; [1] ramen_0.99.0     BiocStyle_2.40.0</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
-<span><span class="co">#&gt;  [1] SummarizedExperiment_1.42.0     gtable_0.3.6                   </span></span>
-<span><span class="co">#&gt;  [3] ggplot2_4.0.3                   xfun_0.57                      </span></span>
-<span><span class="co">#&gt;  [5] bslib_0.10.0                    Biobase_2.72.0                 </span></span>
-<span><span class="co">#&gt;  [7] lattice_0.22-9                  yulab.utils_0.2.4              </span></span>
-<span><span class="co">#&gt;  [9] vctrs_0.7.3                     tools_4.6.0                    </span></span>
-<span><span class="co">#&gt; [11] generics_0.1.4                  stats4_4.6.0                   </span></span>
-<span><span class="co">#&gt; [13] parallel_4.6.0                  tibble_3.3.1                   </span></span>
-<span><span class="co">#&gt; [15] pkgconfig_2.0.3                 Matrix_1.7-5                   </span></span>
-<span><span class="co">#&gt; [17] RColorBrewer_1.1-3              S7_0.2.2                       </span></span>
-<span><span class="co">#&gt; [19] desc_1.4.3                      S4Vectors_0.50.0               </span></span>
-<span><span class="co">#&gt; [21] lifecycle_1.0.5                 farver_2.1.2                   </span></span>
-<span><span class="co">#&gt; [23] compiler_4.6.0                  treeio_1.36.1                  </span></span>
-<span><span class="co">#&gt; [25] textshaping_1.0.5               Biostrings_2.80.0              </span></span>
-<span><span class="co">#&gt; [27] Seqinfo_1.2.0                   codetools_0.2-20               </span></span>
-<span><span class="co">#&gt; [29] htmltools_0.5.9                 sass_0.4.10                    </span></span>
-<span><span class="co">#&gt; [31] yaml_2.3.12                     lazyeval_0.2.3                 </span></span>
-<span><span class="co">#&gt; [33] pkgdown_2.2.0                   pillar_1.11.1                  </span></span>
-<span><span class="co">#&gt; [35] crayon_1.5.3                    jquerylib_0.1.4                </span></span>
-<span><span class="co">#&gt; [37] tidyr_1.3.2                     BiocParallel_1.46.0            </span></span>
-<span><span class="co">#&gt; [39] SingleCellExperiment_1.34.0     DelayedArray_0.38.1            </span></span>
-<span><span class="co">#&gt; [41] cachem_1.1.0                    viridis_0.6.5                  </span></span>
-<span><span class="co">#&gt; [43] abind_1.4-8                     nlme_3.1-169                   </span></span>
-<span><span class="co">#&gt; [45] tidyselect_1.2.1                digest_0.6.39                  </span></span>
-<span><span class="co">#&gt; [47] dplyr_1.2.1                     purrr_1.2.2                    </span></span>
-<span><span class="co">#&gt; [49] bookdown_0.46                   labeling_0.4.3                 </span></span>
-<span><span class="co">#&gt; [51] TreeSummarizedExperiment_2.20.0 fastmap_1.2.0                  </span></span>
-<span><span class="co">#&gt; [53] grid_4.6.0                      cli_3.6.6                      </span></span>
-<span><span class="co">#&gt; [55] SparseArray_1.12.2              magrittr_2.0.5                 </span></span>
-<span><span class="co">#&gt; [57] S4Arrays_1.12.0                 utf8_1.2.6                     </span></span>
-<span><span class="co">#&gt; [59] ape_5.8-1                       withr_3.0.2                    </span></span>
-<span><span class="co">#&gt; [61] scales_1.4.0                    rappdirs_0.3.4                 </span></span>
-<span><span class="co">#&gt; [63] rmarkdown_2.31                  XVector_0.52.0                 </span></span>
-<span><span class="co">#&gt; [65] matrixStats_1.5.0               igraph_2.3.1                   </span></span>
-<span><span class="co">#&gt; [67] gridExtra_2.3                   ragg_1.5.2                     </span></span>
-<span><span class="co">#&gt; [69] evaluate_1.0.5                  knitr_1.51                     </span></span>
-<span><span class="co">#&gt; [71] GenomicRanges_1.64.0            IRanges_2.46.0                 </span></span>
-<span><span class="co">#&gt; [73] viridisLite_0.4.3               rlang_1.2.0                    </span></span>
-<span><span class="co">#&gt; [75] dendextend_1.19.1               Rcpp_1.1.1-1.1                 </span></span>
-<span><span class="co">#&gt; [77] glue_1.8.1                      tidytree_0.4.7                 </span></span>
-<span><span class="co">#&gt; [79] BiocManager_1.30.27             BiocGenerics_0.58.0            </span></span>
-<span><span class="co">#&gt; [81] jsonlite_2.0.0                  R6_2.6.1                       </span></span>
-<span><span class="co">#&gt; [83] MatrixGenerics_1.24.0           systemfonts_1.3.2              </span></span>
-<span><span class="co">#&gt; [85] fs_2.1.0</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] tidyselect_1.2.1                viridisLite_0.4.3              </span></span>
+<span><span class="co">#&gt;  [3] dplyr_1.2.1                     farver_2.1.2                   </span></span>
+<span><span class="co">#&gt;  [5] viridis_0.6.5                   Biostrings_2.80.0              </span></span>
+<span><span class="co">#&gt;  [7] S7_0.2.2                        ggraph_2.2.2                   </span></span>
+<span><span class="co">#&gt;  [9] fastmap_1.2.0                   SingleCellExperiment_1.34.0    </span></span>
+<span><span class="co">#&gt; [11] lazyeval_0.2.3                  tweenr_2.0.3                   </span></span>
+<span><span class="co">#&gt; [13] digest_0.6.39                   lifecycle_1.0.5                </span></span>
+<span><span class="co">#&gt; [15] tidytree_0.4.7                  magrittr_2.0.5                 </span></span>
+<span><span class="co">#&gt; [17] compiler_4.6.0                  rlang_1.2.0                    </span></span>
+<span><span class="co">#&gt; [19] sass_0.4.10                     tools_4.6.0                    </span></span>
+<span><span class="co">#&gt; [21] utf8_1.2.6                      igraph_2.3.1                   </span></span>
+<span><span class="co">#&gt; [23] yaml_2.3.12                     knitr_1.51                     </span></span>
+<span><span class="co">#&gt; [25] labeling_0.4.3                  graphlayouts_1.2.3             </span></span>
+<span><span class="co">#&gt; [27] S4Arrays_1.12.0                 DelayedArray_0.38.1            </span></span>
+<span><span class="co">#&gt; [29] RColorBrewer_1.1-3              TreeSummarizedExperiment_2.20.0</span></span>
+<span><span class="co">#&gt; [31] abind_1.4-8                     BiocParallel_1.46.0            </span></span>
+<span><span class="co">#&gt; [33] withr_3.0.2                     purrr_1.2.2                    </span></span>
+<span><span class="co">#&gt; [35] BiocGenerics_0.58.0             desc_1.4.3                     </span></span>
+<span><span class="co">#&gt; [37] grid_4.6.0                      polyclip_1.10-7                </span></span>
+<span><span class="co">#&gt; [39] stats4_4.6.0                    ggplot2_4.0.3                  </span></span>
+<span><span class="co">#&gt; [41] scales_1.4.0                    MASS_7.3-65                    </span></span>
+<span><span class="co">#&gt; [43] SummarizedExperiment_1.42.0     cli_3.6.6                      </span></span>
+<span><span class="co">#&gt; [45] rmarkdown_2.31                  crayon_1.5.3                   </span></span>
+<span><span class="co">#&gt; [47] ragg_1.5.2                      treeio_1.36.1                  </span></span>
+<span><span class="co">#&gt; [49] generics_0.1.4                  ape_5.8-1                      </span></span>
+<span><span class="co">#&gt; [51] cachem_1.1.0                    ggforce_0.5.0                  </span></span>
+<span><span class="co">#&gt; [53] parallel_4.6.0                  BiocManager_1.30.27            </span></span>
+<span><span class="co">#&gt; [55] XVector_0.52.0                  matrixStats_1.5.0              </span></span>
+<span><span class="co">#&gt; [57] vctrs_0.7.3                     yulab.utils_0.2.4              </span></span>
+<span><span class="co">#&gt; [59] Matrix_1.7-5                    jsonlite_2.0.0                 </span></span>
+<span><span class="co">#&gt; [61] bookdown_0.46                   IRanges_2.46.0                 </span></span>
+<span><span class="co">#&gt; [63] S4Vectors_0.50.0                ggrepel_0.9.8                  </span></span>
+<span><span class="co">#&gt; [65] systemfonts_1.3.2               dendextend_1.19.1              </span></span>
+<span><span class="co">#&gt; [67] tidyr_1.3.2                     jquerylib_0.1.4                </span></span>
+<span><span class="co">#&gt; [69] glue_1.8.1                      pkgdown_2.2.0                  </span></span>
+<span><span class="co">#&gt; [71] codetools_0.2-20                gtable_0.3.6                   </span></span>
+<span><span class="co">#&gt; [73] GenomicRanges_1.64.0            tibble_3.3.1                   </span></span>
+<span><span class="co">#&gt; [75] pillar_1.11.1                   rappdirs_0.3.4                 </span></span>
+<span><span class="co">#&gt; [77] htmltools_0.5.9                 Seqinfo_1.2.0                  </span></span>
+<span><span class="co">#&gt; [79] R6_2.6.1                        textshaping_1.0.5              </span></span>
+<span><span class="co">#&gt; [81] tidygraph_1.3.1                 evaluate_1.0.5                 </span></span>
+<span><span class="co">#&gt; [83] lattice_0.22-9                  Biobase_2.72.0                 </span></span>
+<span><span class="co">#&gt; [85] memoise_2.0.1                   bslib_0.10.0                   </span></span>
+<span><span class="co">#&gt; [87] Rcpp_1.1.1-1.1                  gridExtra_2.3                  </span></span>
+<span><span class="co">#&gt; [89] SparseArray_1.12.2              nlme_3.1-169                   </span></span>
+<span><span class="co">#&gt; [91] xfun_0.57                       fs_2.1.0                       </span></span>
+<span><span class="co">#&gt; [93] MatrixGenerics_1.24.0           pkgconfig_2.0.3</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

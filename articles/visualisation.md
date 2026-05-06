@@ -11,6 +11,10 @@ of every plot type. For context on the underlying analyses, see
 and
 [`vignette("alignment", package = "ramen")`](https://admarhi.github.io/ramen/articles/alignment.md).
 
+All `ramen` plot methods return `ggplot` objects, composable with the
+usual `ggplot2` operators (e.g. `+ ggplot2::theme_minimal()`). Network
+plots are rendered with the `ggraph` package.
+
 ``` r
 
 library(ramen)
@@ -35,7 +39,7 @@ cma_mult <- align(cms)
 
 ## ConsortiumMetabolism plots
 
-`plot(CM)` renders a directed metabolic flow network using `igraph`.
+`plot(CM)` renders a directed metabolic flow network using `ggraph`.
 Nodes are coloured by role: **lightblue** for sources (only outgoing
 edges), **salmon** for sinks (only incoming edges), and
 **lightgoldenrod** for intermediate nodes (both incoming and outgoing).
@@ -182,8 +186,9 @@ Similarity heatmap.
 
 ### Network (pairwise alignment)
 
-Shared pathways in **green**, query-unique in **blue**, reference-unique
-in **red**.
+Shared, query-unique, and reference-unique pathways are coloured using
+the colour-blind-safe Okabe-Ito palette (bluish-green, blue, vermilion).
+The legend is titled *Pathway type*.
 
 ``` r
 
@@ -237,10 +242,10 @@ g <- igraph::graph_from_adjacency_matrix(
 
 plotDirectedFlow(
     g,
-    color_edges_by_weight = TRUE,
-    edge_width_range = c(0.5, 2),
-    vertex_size = 12,
-    vertex_label_cex = 0.7,
+    colourEdgesByWeight = TRUE,
+    edgeWidthRange = c(0.5, 2),
+    nodeSize = 8,
+    nodeLabelSize = 3.5,
     main = paste0(name(cm_list[[2]]), " - nSpecies (custom)")
 )
 ```
@@ -294,46 +299,51 @@ sessionInfo()
 #> [1] ramen_0.99.0     BiocStyle_2.40.0
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] SummarizedExperiment_1.42.0     gtable_0.3.6                   
-#>  [3] ggplot2_4.0.3                   xfun_0.57                      
-#>  [5] bslib_0.10.0                    Biobase_2.72.0                 
-#>  [7] lattice_0.22-9                  yulab.utils_0.2.4              
-#>  [9] vctrs_0.7.3                     tools_4.6.0                    
-#> [11] generics_0.1.4                  stats4_4.6.0                   
-#> [13] parallel_4.6.0                  tibble_3.3.1                   
-#> [15] pkgconfig_2.0.3                 Matrix_1.7-5                   
-#> [17] RColorBrewer_1.1-3              S7_0.2.2                       
-#> [19] desc_1.4.3                      S4Vectors_0.50.0               
-#> [21] lifecycle_1.0.5                 farver_2.1.2                   
-#> [23] compiler_4.6.0                  treeio_1.36.1                  
-#> [25] textshaping_1.0.5               Biostrings_2.80.0              
-#> [27] Seqinfo_1.2.0                   codetools_0.2-20               
-#> [29] htmltools_0.5.9                 sass_0.4.10                    
-#> [31] yaml_2.3.12                     lazyeval_0.2.3                 
-#> [33] pkgdown_2.2.0                   pillar_1.11.1                  
-#> [35] crayon_1.5.3                    jquerylib_0.1.4                
-#> [37] tidyr_1.3.2                     BiocParallel_1.46.0            
-#> [39] SingleCellExperiment_1.34.0     DelayedArray_0.38.1            
-#> [41] cachem_1.1.0                    viridis_0.6.5                  
-#> [43] abind_1.4-8                     nlme_3.1-169                   
-#> [45] tidyselect_1.2.1                digest_0.6.39                  
-#> [47] dplyr_1.2.1                     purrr_1.2.2                    
-#> [49] bookdown_0.46                   labeling_0.4.3                 
-#> [51] TreeSummarizedExperiment_2.20.0 fastmap_1.2.0                  
-#> [53] grid_4.6.0                      cli_3.6.6                      
-#> [55] SparseArray_1.12.2              magrittr_2.0.5                 
-#> [57] S4Arrays_1.12.0                 ape_5.8-1                      
-#> [59] withr_3.0.2                     scales_1.4.0                   
-#> [61] rappdirs_0.3.4                  rmarkdown_2.31                 
-#> [63] XVector_0.52.0                  matrixStats_1.5.0              
-#> [65] igraph_2.3.1                    gridExtra_2.3                  
-#> [67] ragg_1.5.2                      evaluate_1.0.5                 
-#> [69] knitr_1.51                      GenomicRanges_1.64.0           
-#> [71] IRanges_2.46.0                  viridisLite_0.4.3              
-#> [73] rlang_1.2.0                     dendextend_1.19.1              
-#> [75] Rcpp_1.1.1-1.1                  glue_1.8.1                     
-#> [77] tidytree_0.4.7                  BiocManager_1.30.27            
-#> [79] BiocGenerics_0.58.0             jsonlite_2.0.0                 
-#> [81] R6_2.6.1                        MatrixGenerics_1.24.0          
-#> [83] systemfonts_1.3.2               fs_2.1.0
+#>  [1] tidyselect_1.2.1                viridisLite_0.4.3              
+#>  [3] dplyr_1.2.1                     farver_2.1.2                   
+#>  [5] viridis_0.6.5                   Biostrings_2.80.0              
+#>  [7] S7_0.2.2                        ggraph_2.2.2                   
+#>  [9] fastmap_1.2.0                   SingleCellExperiment_1.34.0    
+#> [11] lazyeval_0.2.3                  tweenr_2.0.3                   
+#> [13] digest_0.6.39                   lifecycle_1.0.5                
+#> [15] tidytree_0.4.7                  magrittr_2.0.5                 
+#> [17] compiler_4.6.0                  rlang_1.2.0                    
+#> [19] sass_0.4.10                     tools_4.6.0                    
+#> [21] igraph_2.3.1                    yaml_2.3.12                    
+#> [23] knitr_1.51                      labeling_0.4.3                 
+#> [25] graphlayouts_1.2.3              S4Arrays_1.12.0                
+#> [27] DelayedArray_0.38.1             RColorBrewer_1.1-3             
+#> [29] TreeSummarizedExperiment_2.20.0 abind_1.4-8                    
+#> [31] BiocParallel_1.46.0             withr_3.0.2                    
+#> [33] purrr_1.2.2                     BiocGenerics_0.58.0            
+#> [35] desc_1.4.3                      grid_4.6.0                     
+#> [37] polyclip_1.10-7                 stats4_4.6.0                   
+#> [39] ggplot2_4.0.3                   scales_1.4.0                   
+#> [41] MASS_7.3-65                     SummarizedExperiment_1.42.0    
+#> [43] cli_3.6.6                       rmarkdown_2.31                 
+#> [45] crayon_1.5.3                    ragg_1.5.2                     
+#> [47] treeio_1.36.1                   generics_0.1.4                 
+#> [49] ape_5.8-1                       cachem_1.1.0                   
+#> [51] ggforce_0.5.0                   parallel_4.6.0                 
+#> [53] BiocManager_1.30.27             XVector_0.52.0                 
+#> [55] matrixStats_1.5.0               vctrs_0.7.3                    
+#> [57] yulab.utils_0.2.4               Matrix_1.7-5                   
+#> [59] jsonlite_2.0.0                  bookdown_0.46                  
+#> [61] IRanges_2.46.0                  S4Vectors_0.50.0               
+#> [63] ggrepel_0.9.8                   systemfonts_1.3.2              
+#> [65] dendextend_1.19.1               tidyr_1.3.2                    
+#> [67] jquerylib_0.1.4                 glue_1.8.1                     
+#> [69] pkgdown_2.2.0                   codetools_0.2-20               
+#> [71] gtable_0.3.6                    GenomicRanges_1.64.0           
+#> [73] tibble_3.3.1                    pillar_1.11.1                  
+#> [75] rappdirs_0.3.4                  htmltools_0.5.9                
+#> [77] Seqinfo_1.2.0                   R6_2.6.1                       
+#> [79] textshaping_1.0.5               tidygraph_1.3.1                
+#> [81] evaluate_1.0.5                  lattice_0.22-9                 
+#> [83] Biobase_2.72.0                  memoise_2.0.1                  
+#> [85] bslib_0.10.0                    Rcpp_1.1.1-1.1                 
+#> [87] gridExtra_2.3                   SparseArray_1.12.2             
+#> [89] nlme_3.1-169                    xfun_0.57                      
+#> [91] fs_2.1.0                        MatrixGenerics_1.24.0          
+#> [93] pkgconfig_2.0.3
 ```

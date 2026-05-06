@@ -19,11 +19,17 @@
 - [`align()`](https://admarhi.github.io/ramen/reference/align.md) :
   Align Consortium Metabolisms
 
+- [`as.data.frame(`*`<ConsortiumMetabolism>`*`)`](https://admarhi.github.io/ramen/reference/as.data.frame-ConsortiumMetabolism.md)
+  : Coerce a ConsortiumMetabolism to a data.frame
+
+- [`as.data.frame(`*`<ConsortiumMetabolismSet>`*`)`](https://admarhi.github.io/ramen/reference/as.data.frame-ConsortiumMetabolismSet.md)
+  : Coerce a ConsortiumMetabolismSet to a data.frame
+
 - [`compareSpecies()`](https://admarhi.github.io/ramen/reference/compareSpecies.md)
   : Compare Two Species by Pathway Set
 
 - [`consortia()`](https://admarhi.github.io/ramen/reference/consortia.md)
-  : Get the Consortia
+  : Get the Constituent Consortia
 
 - [`description()`](https://admarhi.github.io/ramen/reference/description.md)
   [`` `description<-`() ``](https://admarhi.github.io/ramen/reference/description.md)
@@ -77,7 +83,7 @@
   : Plot a ConsortiumMetabolismSet object
 
 - [`plotDirectedFlow()`](https://admarhi.github.io/ramen/reference/plotDirectedFlow.md)
-  : Plot a Directed Graph Emphasizing Flow
+  : Plot a Directed Graph Emphasising Flow
 
 - [`plotFunctionalGroups()`](https://admarhi.github.io/ramen/reference/plotFunctionalGroups.md)
   : Plot Functional Groups Dendrogram

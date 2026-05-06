@@ -112,6 +112,25 @@ indicate production.
 > L-alanine, `ala__D` = D-alanine. Look up any identifier at
 > <https://bigg.ucsd.edu/metabolites>.
 
+### Metabolite identifier hygiene
+
+`ramen` performs **string-equality matching** on metabolite identifiers.
+Two species that consume the same molecule under different naming
+conventions will appear to consume two distinct metabolites in the
+network: a CM whose edge list mixes `ac_e` (BiGG), `CHEBI:30089`
+(ChEBI), and `acetate` (free text) for the same compound will yield
+three separate metabolite nodes rather than one. The same applies across
+CMs in a `ConsortiumMetabolismSet` or across operands of an
+[`align()`](https://admarhi.github.io/ramen/reference/align.md) call:
+identifiers must match character-for-character to be treated as the same
+metabolite.
+
+Pick one namespace and stick with it across all CMs in a CMS or
+alignment. The package does **not** currently provide a
+name-normalisation helper; cross-namespace mapping (BiGG to ChEBI, ChEBI
+to free text, etc.) is the user’s responsibility, ideally performed once
+at the data-import step before constructing CMs.
+
 ``` r
 
 data("misosoup24")
@@ -269,6 +288,7 @@ cm1
 #> ── ConsortiumMetabolism
 #> Name: "ac_A1R12_1"
 #> Weighted metabolic network: 2 species, 14 metabolites, 93 pathways.
+#> Pathways per species: min 45, mean 46.5, max 48.
 ```
 
 ### Synthetic data with `synCM()`
@@ -285,6 +305,7 @@ cm_syn
 #> ── ConsortiumMetabolism
 #> Name: "Synthetic"
 #> Weighted metabolic network: 4 species, 8 metabolites, 13 pathways.
+#> Pathways per species: min 1, mean 4, max 12.
 ```
 
 ### Inspecting a CM
@@ -304,8 +325,10 @@ The six assay matrices encode different views of the network:
 ``` r
 
 SummarizedExperiment::assayNames(cm1)
-#> [1] "Binary"               "nSpecies"             "Consumption"         
-#> [4] "Production"           "EffectiveConsumption" "EffectiveProduction"
+#> [1] "Binary"                       "nSpecies"                    
+#> [3] "Consumption"                  "Production"                  
+#> [5] "EffectiveConsumption"         "EffectiveProduction"         
+#> [7] "nEffectiveSpeciesConsumption" "nEffectiveSpeciesProduction"
 ```
 
 | Assay                | Content                                  |
@@ -347,12 +370,13 @@ head(pathways(cm1))
 #> 6 ac       gthrd            1
 ```
 
-[`consortia()`](https://admarhi.github.io/ramen/reference/consortia.md)
-returns the tidy input data:
+[`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html) returns
+the underlying edge list. Use this to export a CM’s data for downstream
+tools:
 
 ``` r
 
-head(consortia(cm1))
+head(as.data.frame(cm1))
 #>      met species        flux
 #> 1     ac   A1R12   0.7729250
 #> 2     ac   I2R16 -10.7673345
@@ -361,6 +385,10 @@ head(consortia(cm1))
 #> 5 ala__D   A1R12   0.7603136
 #> 6 ala__D   I2R16  -0.7603136
 ```
+
+([`consortia()`](https://admarhi.github.io/ramen/reference/consortia.md)
+is reserved for containers of CMs – `ConsortiumMetabolismSet` and
+`ConsortiumMetabolismAlignment` – since the noun is plural.)
 
 Replacement methods allow renaming:
 
@@ -376,7 +404,8 @@ name(cm1)
 A `ConsortiumMetabolismSet` groups multiple CMs. During construction,
 `ramen` automatically expands all binary matrices to a shared universal
 metabolite space, computes pairwise overlap scores, and builds a
-hierarchical clustering dendrogram.
+hierarchical clustering dendrogram. By default the constructor prints a
+step-by-step progress trace; pass `verbose = FALSE` to silence it.
 
 ``` r
 
@@ -388,7 +417,11 @@ cm_list <- lapply(seq_len(20), function(i) {
     )
 })
 
-cms <- ConsortiumMetabolismSet(cm_list, name = "MiSoSoup_20")
+cms <- ConsortiumMetabolismSet(
+    cm_list,
+    name = "MiSoSoup_20",
+    verbose = FALSE
+)
 cms
 ```
 
@@ -515,6 +548,7 @@ cma_pair
 #> Score: 0.7634
 #> Query: "ac_A1R12_1", Reference: "ac_A1R12_10"
 #> Coverage: query 0.763, reference 0.38
+#> Pathways: 71 shared, 22 query-only, 116 reference-only.
 ```
 
 All similarity metrics are computed automatically:
@@ -729,6 +763,8 @@ cms[1:5, 1:5]
 #> 20 consortia, 14 species, 5 metabolites.
 #> Community size (species): min 2, mean 2.1, max 3.
 #> Community size (metabolites): min 12, mean 17.9, max 23.
+#> Pathways: 0 pan-cons, 8 niche, 1 core, 8 aux (quantile = 0.1).
+#> Species: 2 generalists, 9 specialists (quantile = 0.15).
 ```
 
 This means downstream Bioconductor tooling – e.g. `mia` for microbiome
@@ -764,47 +800,51 @@ sessionInfo()
 #> [1] ramen_0.99.0     BiocStyle_2.40.0
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] SummarizedExperiment_1.42.0     gtable_0.3.6                   
-#>  [3] ggplot2_4.0.3                   xfun_0.57                      
-#>  [5] bslib_0.10.0                    Biobase_2.72.0                 
-#>  [7] lattice_0.22-9                  yulab.utils_0.2.4              
-#>  [9] vctrs_0.7.3                     tools_4.6.0                    
-#> [11] generics_0.1.4                  stats4_4.6.0                   
-#> [13] parallel_4.6.0                  tibble_3.3.1                   
-#> [15] pkgconfig_2.0.3                 Matrix_1.7-5                   
-#> [17] RColorBrewer_1.1-3              S7_0.2.2                       
-#> [19] desc_1.4.3                      S4Vectors_0.50.0               
-#> [21] lifecycle_1.0.5                 farver_2.1.2                   
-#> [23] compiler_4.6.0                  treeio_1.36.1                  
-#> [25] textshaping_1.0.5               Biostrings_2.80.0              
-#> [27] Seqinfo_1.2.0                   codetools_0.2-20               
-#> [29] htmltools_0.5.9                 sass_0.4.10                    
-#> [31] yaml_2.3.12                     lazyeval_0.2.3                 
-#> [33] pkgdown_2.2.0                   pillar_1.11.1                  
-#> [35] crayon_1.5.3                    jquerylib_0.1.4                
-#> [37] tidyr_1.3.2                     BiocParallel_1.46.0            
-#> [39] SingleCellExperiment_1.34.0     DelayedArray_0.38.1            
-#> [41] cachem_1.1.0                    viridis_0.6.5                  
-#> [43] abind_1.4-8                     nlme_3.1-169                   
-#> [45] tidyselect_1.2.1                digest_0.6.39                  
-#> [47] dplyr_1.2.1                     purrr_1.2.2                    
-#> [49] bookdown_0.46                   labeling_0.4.3                 
-#> [51] TreeSummarizedExperiment_2.20.0 fastmap_1.2.0                  
-#> [53] grid_4.6.0                      cli_3.6.6                      
-#> [55] SparseArray_1.12.2              magrittr_2.0.5                 
-#> [57] S4Arrays_1.12.0                 utf8_1.2.6                     
-#> [59] ape_5.8-1                       withr_3.0.2                    
-#> [61] scales_1.4.0                    rappdirs_0.3.4                 
-#> [63] rmarkdown_2.31                  XVector_0.52.0                 
-#> [65] matrixStats_1.5.0               igraph_2.3.1                   
-#> [67] gridExtra_2.3                   ragg_1.5.2                     
-#> [69] evaluate_1.0.5                  knitr_1.51                     
-#> [71] GenomicRanges_1.64.0            IRanges_2.46.0                 
-#> [73] viridisLite_0.4.3               rlang_1.2.0                    
-#> [75] dendextend_1.19.1               Rcpp_1.1.1-1.1                 
-#> [77] glue_1.8.1                      tidytree_0.4.7                 
-#> [79] BiocManager_1.30.27             BiocGenerics_0.58.0            
-#> [81] jsonlite_2.0.0                  R6_2.6.1                       
-#> [83] MatrixGenerics_1.24.0           systemfonts_1.3.2              
-#> [85] fs_2.1.0
+#>  [1] tidyselect_1.2.1                viridisLite_0.4.3              
+#>  [3] dplyr_1.2.1                     farver_2.1.2                   
+#>  [5] viridis_0.6.5                   Biostrings_2.80.0              
+#>  [7] S7_0.2.2                        ggraph_2.2.2                   
+#>  [9] fastmap_1.2.0                   SingleCellExperiment_1.34.0    
+#> [11] lazyeval_0.2.3                  tweenr_2.0.3                   
+#> [13] digest_0.6.39                   lifecycle_1.0.5                
+#> [15] tidytree_0.4.7                  magrittr_2.0.5                 
+#> [17] compiler_4.6.0                  rlang_1.2.0                    
+#> [19] sass_0.4.10                     tools_4.6.0                    
+#> [21] utf8_1.2.6                      igraph_2.3.1                   
+#> [23] yaml_2.3.12                     knitr_1.51                     
+#> [25] labeling_0.4.3                  graphlayouts_1.2.3             
+#> [27] S4Arrays_1.12.0                 DelayedArray_0.38.1            
+#> [29] RColorBrewer_1.1-3              TreeSummarizedExperiment_2.20.0
+#> [31] abind_1.4-8                     BiocParallel_1.46.0            
+#> [33] withr_3.0.2                     purrr_1.2.2                    
+#> [35] BiocGenerics_0.58.0             desc_1.4.3                     
+#> [37] grid_4.6.0                      polyclip_1.10-7                
+#> [39] stats4_4.6.0                    ggplot2_4.0.3                  
+#> [41] scales_1.4.0                    MASS_7.3-65                    
+#> [43] SummarizedExperiment_1.42.0     cli_3.6.6                      
+#> [45] rmarkdown_2.31                  crayon_1.5.3                   
+#> [47] ragg_1.5.2                      treeio_1.36.1                  
+#> [49] generics_0.1.4                  ape_5.8-1                      
+#> [51] cachem_1.1.0                    ggforce_0.5.0                  
+#> [53] parallel_4.6.0                  BiocManager_1.30.27            
+#> [55] XVector_0.52.0                  matrixStats_1.5.0              
+#> [57] vctrs_0.7.3                     yulab.utils_0.2.4              
+#> [59] Matrix_1.7-5                    jsonlite_2.0.0                 
+#> [61] bookdown_0.46                   IRanges_2.46.0                 
+#> [63] S4Vectors_0.50.0                ggrepel_0.9.8                  
+#> [65] systemfonts_1.3.2               dendextend_1.19.1              
+#> [67] tidyr_1.3.2                     jquerylib_0.1.4                
+#> [69] glue_1.8.1                      pkgdown_2.2.0                  
+#> [71] codetools_0.2-20                gtable_0.3.6                   
+#> [73] GenomicRanges_1.64.0            tibble_3.3.1                   
+#> [75] pillar_1.11.1                   rappdirs_0.3.4                 
+#> [77] htmltools_0.5.9                 Seqinfo_1.2.0                  
+#> [79] R6_2.6.1                        textshaping_1.0.5              
+#> [81] tidygraph_1.3.1                 evaluate_1.0.5                 
+#> [83] lattice_0.22-9                  Biobase_2.72.0                 
+#> [85] memoise_2.0.1                   bslib_0.10.0                   
+#> [87] Rcpp_1.1.1-1.1                  gridExtra_2.3                  
+#> [89] SparseArray_1.12.2              nlme_3.1-169                   
+#> [91] xfun_0.57                       fs_2.1.0                       
+#> [93] MatrixGenerics_1.24.0           pkgconfig_2.0.3
 ```
