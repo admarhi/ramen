@@ -14,6 +14,9 @@ test_that("ConsortiumMetabolism constructor works with basic data", {
     expect_equal(cm@Name, "test_cm")
     expect_true(length(cm@Metabolites) > 0)
     expect_s3_class(cm@Pathways, "data.frame")
+    ## Regression guard: confirm the initialize() interceptor
+    ## does not block the package's own constructor path.
+    expect_true(validObject(cm))
 })
 
 test_that("ConsortiumMetabolism handles weighted vs unweighted networks", {
@@ -522,4 +525,66 @@ test_that("nEffectiveSpecies* values lie in [1, nSpecies] cell-wise", {
     expect_true(all(nef_p[nz] >= 1 - 1e-8))
     expect_true(all(nef_c[nz] <= n_sp[nz] + 1e-8))
     expect_true(all(nef_p[nz] <= n_sp[nz] + 1e-8))
+})
+
+## ---- non-finite flux + empty-string keys -----------------------------------
+
+test_that("ConsortiumMetabolism rejects Inf flux", {
+    df <- data.frame(
+        species = c("a", "a"),
+        metabolite = c("m1", "m2"),
+        flux = c(-Inf, Inf)
+    )
+    expect_error(
+        ConsortiumMetabolism(df, name = "inf"),
+        "non-finite"
+    )
+})
+
+test_that("ConsortiumMetabolism rejects single Inf among finite", {
+    df <- data.frame(
+        species = c("a", "a", "b"),
+        metabolite = c("m1", "m2", "m1"),
+        flux = c(-1, Inf, 1)
+    )
+    expect_error(
+        ConsortiumMetabolism(df, name = "inf"),
+        "non-finite"
+    )
+})
+
+test_that("ConsortiumMetabolism still rejects NA flux with the NA message", {
+    df <- data.frame(
+        species = c("a", "a"),
+        metabolite = c("m1", "m2"),
+        flux = c(-1, NA)
+    )
+    expect_error(
+        ConsortiumMetabolism(df, name = "na"),
+        "NA values"
+    )
+})
+
+test_that("ConsortiumMetabolism rejects empty-string species", {
+    df <- data.frame(
+        species = c("a", "", "b"),
+        metabolite = c("m1", "m2", "m3"),
+        flux = c(-1, 1, -1)
+    )
+    expect_error(
+        ConsortiumMetabolism(df, name = "empty-sp"),
+        "empty-string"
+    )
+})
+
+test_that("ConsortiumMetabolism rejects empty-string metabolite", {
+    df <- data.frame(
+        species = c("a", "a", "b"),
+        metabolite = c("m1", "", "m1"),
+        flux = c(-1, 1, -1)
+    )
+    expect_error(
+        ConsortiumMetabolism(df, name = "empty-met"),
+        "empty-string"
+    )
 })

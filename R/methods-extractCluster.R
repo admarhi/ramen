@@ -12,6 +12,56 @@ setMethod(
         name = NA_character_,
         description = NA_character_
     ) {
+        ## ---- Input validation -----------------------------------
+        ## The empty-NodeData early return must precede the range
+        ## check below, otherwise the range message would read
+        ## "between 1 and 0" which is unactionable.
+        n_nodes <- nrow(object@NodeData)
+        if (n_nodes == 0L) {
+            cli::cli_abort(
+                c(
+                    "{.fn extractCluster} requires a \\
+                    {.cls ConsortiumMetabolismSet} with at least \\
+                    2 consortia (so a dendrogram exists).",
+                    "i" = "{.code object@NodeData} has 0 rows."
+                )
+            )
+        }
+        if (
+            !is.numeric(node_id) ||
+                length(node_id) != 1L ||
+                !is.finite(node_id) ||
+                node_id != as.integer(node_id) ||
+                node_id < 1L ||
+                node_id > n_nodes
+        ) {
+            cli::cli_abort(
+                c(
+                    "{.arg node_id} must be a single integer \\
+                    between 1 and {n_nodes}.",
+                    "i" = "Inspect valid IDs with \\
+                    {.code object@NodeData}."
+                )
+            )
+        }
+        node_id <- as.integer(node_id)
+
+        if (!is.character(name) || length(name) != 1L) {
+            cli::cli_abort(
+                "{.arg name} must be a single character \\
+                string (NA allowed)."
+            )
+        }
+        if (
+            !is.character(description) ||
+                length(description) != 1L
+        ) {
+            cli::cli_abort(
+                "{.arg description} must be a single character \\
+                string (NA allowed)."
+            )
+        }
+
         # Get the tibble with the node data
         tb <- object@NodeData
 

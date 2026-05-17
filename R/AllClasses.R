@@ -16,6 +16,40 @@ newConsortiumMetabolism <- setClass(
     )
 )
 
+## ---- Friendlier initialize() interceptor (CM) -------------------
+## A naked new("ConsortiumMetabolism") leaves @Weighted empty and
+## the TSE parent validity (e.g. int_elementMetadata) fires first
+## with a slot-internal message. Intercept here so the user sees a
+## constructor hint instead of an internal-slot leak. The package's
+## own newConsortiumMetabolism(tse, Name = ...) call passes a TSE
+## skeleton positionally, so the SE-class check below lets it
+## through to callNextMethod().
+setMethod(
+    "initialize",
+    "ConsortiumMetabolism",
+    function(.Object, ...) {
+        args <- list(...)
+        has_se <- length(args) > 0L &&
+            any(vapply(
+                args,
+                is,
+                logical(1L),
+                "SummarizedExperiment"
+            ))
+        if (!has_se) {
+            cli::cli_abort(
+                c(
+                    "{.fn new} cannot directly construct a \\
+                    valid {.cls ConsortiumMetabolism} object.",
+                    "i" = "Construct with \\
+                    {.code ConsortiumMetabolism(data)} instead."
+                )
+            )
+        }
+        callNextMethod()
+    }
+)
+
 #' @rdname ConsortiumMetabolismSet
 #' @exportClass ConsortiumMetabolismSet
 #' @import methods
@@ -35,6 +69,36 @@ newConsortiumMetabolismSet <- setClass(
         Pathways = "data.frame",
         Metabolites = "data.frame"
     )
+)
+
+## ---- Friendlier initialize() interceptor (CMS) ------------------
+## Same rationale as the CM override above: protect users from the
+## TSE parent's slot-level error path when they call new() directly.
+setMethod(
+    "initialize",
+    "ConsortiumMetabolismSet",
+    function(.Object, ...) {
+        args <- list(...)
+        has_se <- length(args) > 0L &&
+            any(vapply(
+                args,
+                is,
+                logical(1L),
+                "SummarizedExperiment"
+            ))
+        if (!has_se) {
+            cli::cli_abort(
+                c(
+                    "{.fn new} cannot directly construct a \\
+                    valid {.cls ConsortiumMetabolismSet} object.",
+                    "i" = "Construct with \\
+                    {.code ConsortiumMetabolismSet(cm1, cm2, ...)} \\
+                    instead."
+                )
+            )
+        }
+        callNextMethod()
+    }
 )
 
 #' @rdname ConsortiumMetabolismAlignment

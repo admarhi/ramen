@@ -250,6 +250,70 @@ ConsortiumMetabolism <- function(
         )
     }
 
+    ## ---- Reject non-finite flux (Inf / -Inf / NaN) --------------
+    ## NaN is already caught by the NA check above; this guard
+    ## handles Inf / -Inf, which would otherwise propagate to
+    ## NaN in c_eff / p_eff downstream.
+    bad_flux <- which(!is.finite(data[[flux_col]]))
+    if (length(bad_flux) > 0L) {
+        # nolint next: object_usage_linter.
+        preview <- if (length(bad_flux) > 10L) {
+            c(as.character(bad_flux[seq_len(10L)]), "...")
+        } else {
+            as.character(bad_flux)
+        }
+        cli::cli_abort(
+            c(
+                "{.arg data} contains non-finite values in \\
+                column {.val {flux_col}} (Inf / -Inf / NaN) at \\
+                row(s) {.val {preview}}.",
+                "i" = "Replace or drop these rows before \\
+                construction."
+            )
+        )
+    }
+
+    ## ---- Reject empty-string species / metabolite keys ----------
+    bad_species <- which(!nzchar(data[[species_col]]))
+    if (length(bad_species) > 0L) {
+        # nolint next: object_usage_linter.
+        preview <- if (length(bad_species) > 10L) {
+            c(as.character(bad_species[seq_len(10L)]), "...")
+        } else {
+            as.character(bad_species)
+        }
+        cli::cli_abort(
+            c(
+                "{.arg data} contains empty-string values in \\
+                column {.val {species_col}} at row(s) \\
+                {.val {preview}}.",
+                "i" = "Empty species names are usually \\
+                spreadsheet-export artefacts; drop or rename \\
+                them before construction."
+            )
+        )
+    }
+
+    bad_met <- which(!nzchar(data[[metabolite_col]]))
+    if (length(bad_met) > 0L) {
+        # nolint next: object_usage_linter.
+        preview <- if (length(bad_met) > 10L) {
+            c(as.character(bad_met[seq_len(10L)]), "...")
+        } else {
+            as.character(bad_met)
+        }
+        cli::cli_abort(
+            c(
+                "{.arg data} contains empty-string values in \\
+                column {.val {metabolite_col}} at row(s) \\
+                {.val {preview}}.",
+                "i" = "Empty metabolite names are usually \\
+                spreadsheet-export artefacts; drop or rename \\
+                them before construction."
+            )
+        )
+    }
+
     data |>
         rename(
             species = {{ species_col }},

@@ -571,6 +571,65 @@ test_that("species(CMS) errors on invalid quantileCutoff", {
     )
 })
 
+## ---- quantileCutoff input validation ---------------------------------------
+
+## Local fixture builder kept inside this file to avoid touching
+## the shared (non-existent) helper.R. Mirrors `.make_cms` in
+## test-methods-extractCluster.R.
+.make_qc_cms <- function() {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
+    ConsortiumMetabolismSet(
+        list(cm1, cm2),
+        name = "test",
+        verbose = FALSE
+    )
+}
+
+test_that("species(CMS) errors on NA quantileCutoff", {
+    cms <- .make_qc_cms()
+    expect_error(
+        species(cms, type = "generalists", quantileCutoff = NA),
+        "single finite number"
+    )
+})
+
+test_that("species(CMS) errors on character quantileCutoff", {
+    cms <- .make_qc_cms()
+    expect_error(
+        species(cms, type = "generalists", quantileCutoff = "0.1"),
+        "single finite number"
+    )
+})
+
+test_that("species(CMS) errors on length>1 quantileCutoff", {
+    cms <- .make_qc_cms()
+    expect_error(
+        species(
+            cms,
+            type = "generalists",
+            quantileCutoff = c(0.1, 0.2)
+        ),
+        "single finite number"
+    )
+})
+
+test_that("pathways(CMS) errors on NA / character / length>1 quantileCutoff", {
+    cms <- .make_qc_cms()
+    expect_error(
+        pathways(cms, quantileCutoff = NA),
+        "single finite number"
+    )
+    expect_error(
+        pathways(cms, quantileCutoff = "0.1"),
+        "single finite number"
+    )
+    expect_error(
+        pathways(cms, quantileCutoff = c(0.1, 0.2)),
+        "single finite number"
+    )
+})
+
 ## ---- B6 residual: aux/niche tie handling -----------------------------------
 
 test_that("pathways(cms, 'aux') non-empty when n_species ties at floor", {
@@ -638,4 +697,85 @@ test_that("as.data.frame(CMS) row-binds per-CM edges with consortium col", {
         nrow(as.data.frame(cm1)) + nrow(as.data.frame(cm2))
     )
     expect_setequal(unique(df$consortium), c("a", "b"))
+})
+
+## ---- empty / NULL input guards ---------------------------------------------
+
+test_that("ConsortiumMetabolismSet errors on NULL input", {
+    expect_error(
+        ConsortiumMetabolismSet(
+            NULL,
+            name = "x",
+            verbose = FALSE
+        ),
+        "at least one"
+    )
+})
+
+test_that("ConsortiumMetabolismSet errors on empty list input", {
+    expect_error(
+        ConsortiumMetabolismSet(
+            list(),
+            name = "x",
+            verbose = FALSE
+        ),
+        "at least one"
+    )
+})
+
+test_that("ConsortiumMetabolismSet errors on no-arg call", {
+    expect_error(
+        ConsortiumMetabolismSet(name = "x", verbose = FALSE),
+        "at least one"
+    )
+})
+
+test_that("filterConsortia errors on integer(0)", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
+    cms <- ConsortiumMetabolismSet(
+        list(cm1, cm2),
+        name = "test",
+        verbose = FALSE
+    )
+    expect_error(
+        filterConsortia(cms, integer(0)),
+        "at least one"
+    )
+})
+
+test_that("filterConsortia errors on character(0)", {
+    cm1 <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    cm2 <- synCM("b", n_species = 3, max_met = 5, seed = 2)
+    cms <- ConsortiumMetabolismSet(
+        list(cm1, cm2),
+        name = "test",
+        verbose = FALSE
+    )
+    expect_error(
+        filterConsortia(cms, character(0)),
+        "at least one"
+    )
+})
+
+## ---- Constructor protection -----------------------------------------------
+
+test_that("new('ConsortiumMetabolism') errors with constructor hint", {
+    expect_error(
+        new("ConsortiumMetabolism"),
+        "Construct with"
+    )
+})
+
+test_that("new('ConsortiumMetabolismSet') errors with constructor hint", {
+    expect_error(
+        new("ConsortiumMetabolismSet"),
+        "Construct with"
+    )
+})
+
+test_that("CM constructed via ConsortiumMetabolism() inherits TSE", {
+    cm <- synCM("a", n_species = 3, max_met = 5, seed = 1)
+    expect_true(is(cm, "TreeSummarizedExperiment"))
+    expect_true(validObject(cm))
 })

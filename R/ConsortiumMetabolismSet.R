@@ -57,11 +57,10 @@ ConsortiumMetabolismSet <- function(
     verbose = TRUE
 ) {
     t_start <- proc.time()[["elapsed"]]
-    if (verbose) {
-        cli::cli_h1("Creating CMS {.val {name}}")
-    }
 
-    ## ---- 1. Validate arguments --------------------------------
+    ## ---- 1. Validate arguments (before any banner) ------------
+    ## Validation runs first so that bad input fails fast without
+    ## printing a spurious "Creating CMS …" header.
     linkage <- match.arg(
         linkage,
         c("complete", "average", "single", "ward.D2")
@@ -69,10 +68,14 @@ ConsortiumMetabolismSet <- function(
     args <- list(...)
     cons <- unlist(args, recursive = FALSE, use.names = FALSE)
     n_cons <- length(cons)
-    if (verbose) {
-        cli::cli_progress_step(
-            "Validating {.val {n_cons}} \\
-        {.cls ConsortiumMetabolism} object{?s}"
+    if (n_cons < 1L) {
+        cli::cli_abort(
+            c(
+                "{.fn ConsortiumMetabolismSet} requires at \\
+                least one {.cls ConsortiumMetabolism} object.",
+                "i" = "Got {.cls {class(cons)}} of length \\
+                {n_cons}."
+            )
         )
     }
     if (
@@ -101,7 +104,16 @@ ConsortiumMetabolismSet <- function(
         )
     }
 
-    ## ---- 2. Collect metabolites -------------------------------
+    ## ---- 2. Start banner now that args are valid --------------
+    if (verbose) {
+        cli::cli_h1("Creating CMS {.val {name}}")
+        cli::cli_progress_step(
+            "Validating {.val {n_cons}} \\
+        {.cls ConsortiumMetabolism} object{?s}"
+        )
+    }
+
+    ## ---- 3. Collect metabolites -------------------------------
     if (verbose) {
         cli::cli_progress_step(
             "Collecting metabolites from \\
@@ -118,7 +130,7 @@ ConsortiumMetabolismSet <- function(
         dplyr::bind_rows() |>
         dplyr::rename(consortium_ind = "index")
 
-    ## ---- 3. Re-index metabolites ------------------------------
+    ## ---- 4. Re-index metabolites ------------------------------
     new_met_ind <- tibble::tibble(
         met = unique(all_met$met)
     ) |>
@@ -141,7 +153,7 @@ ConsortiumMetabolismSet <- function(
         ) |>
         dplyr::arrange(.data$met_ind)
 
-    ## ---- 4. Expand binary matrices to universal space ---------
+    ## ---- 5. Expand binary matrices to universal space ---------
     if (verbose) {
         cli::cli_progress_step(
             "Expanding {.val {n_cons}} binary matrices \\
@@ -158,7 +170,7 @@ ConsortiumMetabolismSet <- function(
         cm_names
     )
 
-    ## ---- 5. Levels matrix from binary matrices ----------------
+    ## ---- 6. Levels matrix from binary matrices ----------------
     if (verbose) {
         cli::cli_progress_step(
             "Computing {.val {n_mets}} x {.val {n_mets}} \\
@@ -167,7 +179,7 @@ ConsortiumMetabolismSet <- function(
     }
     levels_mat <- as.matrix(Reduce(`+`, expanded_bm))
 
-    ## ---- 6. Pairwise overlap via crossprod --------------------
+    ## ---- 7. Pairwise overlap via crossprod --------------------
     n_pairs <- n_cons * (n_cons - 1L) / 2L # nolint: object_usage_linter.
     if (verbose) {
         cli::cli_progress_step(
@@ -180,7 +192,7 @@ ConsortiumMetabolismSet <- function(
         cm_names
     )
 
-    ## ---- 7. Assemble pathways ---------------------------------
+    ## ---- 8. Assemble pathways ---------------------------------
     if (verbose) {
         cli::cli_progress_step(
             "Assembling pathway data from \\
@@ -208,7 +220,7 @@ ConsortiumMetabolismSet <- function(
         tidyr::unnest("data") |>
         dplyr::select(-"c_prob", -"p_prob")
 
-    ## ---- 8. Dendrogram ----------------------------------------
+    ## ---- 9. Dendrogram ----------------------------------------
     if (n_cons >= 2L) {
         if (verbose) {
             cli::cli_progress_step(
@@ -255,7 +267,7 @@ ConsortiumMetabolismSet <- function(
         )
     }
 
-    ## ---- 9. Graphs --------------------------------------------
+    ## ---- 10. Graphs -------------------------------------------
     if (verbose) {
         cli::cli_progress_step(
             "Collecting {.val {n_cons}} consortium graphs"

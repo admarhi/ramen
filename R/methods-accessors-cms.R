@@ -44,6 +44,20 @@ setMethod(
         type <- match.arg(type)
 
         # Validate quantileCutoff parameter
+        if (
+            !is.numeric(quantileCutoff) ||
+                length(quantileCutoff) != 1L ||
+                !is.finite(quantileCutoff)
+        ) {
+            cli::cli_abort(
+                c(
+                    "{.arg quantileCutoff} must be a single \\
+                    finite number between 0 and 1.",
+                    "i" = "Got {.cls {class(quantileCutoff)}} \\
+                    of length {length(quantileCutoff)}."
+                )
+            )
+        }
         if (quantileCutoff <= 0 || quantileCutoff >= 1) {
             cli::cli_abort(
                 "{.arg quantileCutoff} must be \\
@@ -274,6 +288,20 @@ setMethod(
             return(all_species)
         }
 
+        if (
+            !is.numeric(quantileCutoff) ||
+                length(quantileCutoff) != 1L ||
+                !is.finite(quantileCutoff)
+        ) {
+            cli::cli_abort(
+                c(
+                    "{.arg quantileCutoff} must be a single \\
+                    finite number between 0 and 1.",
+                    "i" = "Got {.cls {class(quantileCutoff)}} \\
+                    of length {length(quantileCutoff)}."
+                )
+            )
+        }
         if (quantileCutoff <= 0 || quantileCutoff >= 1) {
             cli::cli_abort(
                 "{.arg quantileCutoff} must be between 0 \\
@@ -356,6 +384,15 @@ setMethod(
     "filterConsortia",
     "ConsortiumMetabolismSet",
     function(object, i) {
+        if (length(i) == 0L) {
+            cli::cli_abort(
+                c(
+                    "{.arg i} must select at least one \\
+                    consortium.",
+                    "i" = "Got {.cls {class(i)}} of length 0."
+                )
+            )
+        }
         n <- length(object@Consortia)
         cm_names <- vapply(
             object@Consortia,
