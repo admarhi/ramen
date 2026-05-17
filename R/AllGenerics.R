@@ -336,11 +336,6 @@ setGeneric(
 #'   rather than the algebraically-equivalent Jaccard value;
 #'   compute Jaccard directly in that case.
 #'
-#' @note `align(CM, CMS)` (database search) currently
-#'   raises a not-yet-implemented error; the dispatch is
-#'   reserved for the upcoming MinHash-prefiltered search
-#'   feature.
-#'
 #' @note If `tibble` (or a package that re-exports
 #'   `pillar::align`) is on the search path, plain
 #'   `?align` may resolve to `pillar::align`. Use

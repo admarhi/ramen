@@ -123,11 +123,6 @@ single-species inputs the implementation returns \code{NA}
 rather than the algebraically-equivalent Jaccard value;
 compute Jaccard directly in that case.
 
-\code{align(CM, CMS)} (database search) currently
-raises a not-yet-implemented error; the dispatch is
-reserved for the upcoming MinHash-prefiltered search
-feature.
-
 If \code{tibble} (or a package that re-exports
 \code{pillar::align}) is on the search path, plain
 \code{?align} may resolve to \code{pillar::align}. Use
