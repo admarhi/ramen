@@ -478,13 +478,13 @@ remain fixed, so the null distribution reflects topological
 variation in the composite score.
 
 ```{r pairwise-pvalue}
-cma_p <- align(
+cma_p <- withr::with_seed(1L, align(
     cm_list[[1]],
     cm_list[[2]],
     method = "FOS",
     computePvalue = TRUE,
     nPermutations = 99L
-)
+))
 scores(cma_p)
 ```
 
@@ -660,12 +660,12 @@ is applied only to the top hit -- a BLAST-style convention that
 keeps the cost comparable to a single pairwise p-value:
 
 ```{r search-pvalue}
-hits_p <- align(
+hits_p <- withr::with_seed(1L, align(
     query,
     db,
     computePvalue = TRUE,
     nPermutations = 99L
-)
+))
 hits_p
 ```
 

@@ -29,8 +29,14 @@ of every plot type. For context on the underlying analyses, see
 `vignette("alignment", package = "ramen")`.
 
 All `ramen` plot methods return `ggplot` objects, composable with
-the usual `ggplot2` operators (e.g. `+ ggplot2::theme_minimal()`).
-Network plots are rendered with the `ggraph` package.
+the usual `ggplot2` operators (e.g. `+ ggplot2::scale_colour_*()`,
+`+ ggplot2::labs()`, `+ ggplot2::ggsave(...)`). Network plots are
+rendered with the `ggraph` package and use `theme_void()` as their
+canonical base; adding `+ theme_minimal()` will *replace* that and
+resurrect the underlying layout-coordinate axes (which are not
+meaningful), so prefer `+ theme(...)` to tweak specific elements
+without replacing the base. Heatmap, dendrogram and scores plots
+build on `theme_ramen()` and accept `+ theme_minimal()` cleanly.
 
 ```{r load-library, message = FALSE}
 library(ramen)
@@ -55,11 +61,12 @@ cma_mult <- align(cms)
 # ConsortiumMetabolism plots
 
 `plot(CM)` renders a directed metabolic flow network using
-`ggraph`. Nodes are coloured by role: **lightblue** for sources
-(only outgoing edges), **salmon** for sinks (only incoming edges),
-and **lightgoldenrod** for intermediate nodes (both incoming and
-outgoing). The `type` argument selects which assay matrix
-determines edge weights.
+`ggraph`. Nodes are coloured by role from the Okabe-Ito
+colour-blind-safe palette in `ramenPalette$nodeRole`: **blue**
+for sources (only outgoing edges), **yellow** for sinks (only
+incoming edges), and **vermilion** for intermediate nodes (both
+incoming and outgoing). The `type` argument selects which assay
+matrix determines edge weights.
 
 ## Binary network
 
@@ -91,15 +98,28 @@ plot(cm_list[[1]], type = "Production")
 
 ## Effective consumption and production
 
-Effective diversity measures how evenly species contribute to each
-pathway (Shannon-based effective number of species).
+The `EffectiveConsumption` and `EffectiveProduction` assays store
+the flux scaled by Hill-1 perplexity, $F \cdot 2^{H(p)}$: large
+when total flux is large *and* species contribute evenly to the
+pathway. The unit is the same as `Consumption` /
+`Production` (a flux). The `nEffectiveSpeciesConsumption` and
+`nEffectiveSpeciesProduction` assays store the perplexity alone
+(unitless, in $[1, S]$) and saturate at 1 on small consortia.
 
-```{r plot-cm-effcons, fig.cap = "Effective consumption network."}
+```{r plot-cm-effcons, fig.cap = "Effective consumption network (flux units)."}
 plot(cm_list[[1]], type = "EffectiveConsumption")
 ```
 
-```{r plot-cm-effprod, fig.cap = "Effective production network."}
+```{r plot-cm-effprod, fig.cap = "Effective production network (flux units)."}
 plot(cm_list[[1]], type = "EffectiveProduction")
+```
+
+```{r plot-cm-neffcons, fig.cap = "Effective number of consuming species (Hill-1 perplexity, unitless)."}
+plot(cm_list[[1]], type = "nEffectiveSpeciesConsumption")
+```
+
+```{r plot-cm-neffprod, fig.cap = "Effective number of producing species (Hill-1 perplexity, unitless)."}
+plot(cm_list[[1]], type = "nEffectiveSpeciesProduction")
 ```
 
 # ConsortiumMetabolismSet plots
@@ -198,8 +218,10 @@ plotDirectedFlow(
 | CM | `"nSpecies"` | Pathways weighted by species count |
 | CM | `"Consumption"` | Pathways weighted by consumption flux |
 | CM | `"Production"` | Pathways weighted by production flux |
-| CM | `"EffectiveConsumption"` | Effective consuming species |
-| CM | `"EffectiveProduction"` | Effective producing species |
+| CM | `"EffectiveConsumption"` | Consumption flux scaled by Hill-1 perplexity ($F \cdot 2^{H(p)}$, flux units) |
+| CM | `"EffectiveProduction"` | As above on the production side |
+| CM | `"nEffectiveSpeciesConsumption"` | Hill-1 effective number of consuming species (unitless, in $[1, S]$) |
+| CM | `"nEffectiveSpeciesProduction"` | As above on the production side |
 | CMS | (none) | Dendrogram with numbered nodes |
 | CMA | `"heatmap"` | Pairwise similarity heatmap |
 | CMA | `"network"` | Shared/unique pathway graph |

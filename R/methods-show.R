@@ -161,7 +161,8 @@ setMethod("show", "ConsortiumMetabolismSet", function(object) {
                 "{.val {pw_classes$niche}} niche, ",
                 "{.val {pw_classes$core}} core, ",
                 "{.val {pw_classes$aux}} aux ",
-                "(quantile = {.val {pw_q}})."
+                "(quantileCutoff = {.val {pw_q}}; ",
+                "buckets may overlap, see ?pathways)."
             )
         }
     }
@@ -190,7 +191,7 @@ setMethod("show", "ConsortiumMetabolismSet", function(object) {
                 "Species: ",
                 "{.val {sp_classes$generalists}} generalists, ",
                 "{.val {sp_classes$specialists}} specialists ",
-                "(quantile = {.val {sp_q}})."
+                "(quantileCutoff = {.val {sp_q}})."
             )
         }
     }
@@ -280,7 +281,7 @@ setMethod("show", "ConsortiumMetabolismAlignment", function(object) {
             )
             n_core <- counts[n] # nolint: object_usage_linter.
             cli::cli_text(
-                "Core (shared by all {.val {n}}): ",
+                "Shared by all {.val {n}} consortia: ",
                 "{.val {n_core}} pathways."
             )
             cli::cli_text(

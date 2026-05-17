@@ -94,5 +94,5 @@ test_that("show(cma) multiple prints level histogram and core size", {
     expect_match(out, "Levels:")
     expect_match(out, "n=1")
     expect_match(out, "n=4")
-    expect_match(out, "Core")
+    expect_match(out, "Shared by all")
 })

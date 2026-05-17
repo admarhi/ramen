@@ -99,10 +99,15 @@ A short glossary of terms used throughout the package:
     metabolite-to-metabolite edge: metabolite *A* is consumed and
     metabolite *B* is produced by at least one species. Not a
     KEGG/MetaCyc biochemical pathway.
-- **Assay** -- one of the six *m x m* metabolite-by-metabolite
+- **Assay** -- one of the eight *m x m* metabolite-by-metabolite
     matrices stored in a `ConsortiumMetabolism` object (Binary,
     nSpecies, Consumption, Production, EffectiveConsumption,
-    EffectiveProduction).
+    EffectiveProduction, nEffectiveSpeciesConsumption,
+    nEffectiveSpeciesProduction). The two `Effective*` slots store
+    flux quantities $F \cdot 2^{H(p)}$ (consumption / production
+    flux scaled by Hill-1 perplexity); the two
+    `nEffectiveSpecies*` slots store the unitless perplexity
+    $2^{H(p)}$ alone.
 - **FOS** -- Functional Overlap Score; the primary similarity
     metric between two consortia, computed as the
     Szymkiewicz-Simpson coefficient on expanded binary pathway
@@ -174,7 +179,7 @@ A minimal first pass collapses case and separators, which catches
 the first two classes:
 
 ```{r normalise-species, eval = FALSE}
-data$species <- gsub("[._\\s-]+", "_", tolower(data$species))
+data$species <- gsub("[._[:space:]-]+", "_", tolower(data$species))
 ```
 
 Abbreviation-to-full-name reconciliation and strain-suffix
@@ -327,7 +332,7 @@ metabolites (it is a square metabolite-by-metabolite matrix):
 dim(cm1)
 ```
 
-The six assay matrices encode different views of the network:
+The eight assay matrices encode different views of the network:
 
 ```{r cm-assays}
 SummarizedExperiment::assayNames(cm1)
@@ -339,8 +344,16 @@ SummarizedExperiment::assayNames(cm1)
 | nSpecies | Number of species catalysing the pathway |
 | Consumption | Summed consumption flux |
 | Production | Summed production flux |
-| EffectiveConsumption | Effective number of consuming species |
-| EffectiveProduction | Effective number of producing species |
+| EffectiveConsumption | Consumption flux scaled by Hill-1 perplexity, $F \cdot 2^{H(p)}$ (same units as Consumption) |
+| EffectiveProduction | As above on the production side |
+| nEffectiveSpeciesConsumption | Hill-1 effective number of consuming species, unitless in $[1, S]$ |
+| nEffectiveSpeciesProduction | As above on the production side |
+
+`EffectiveConsumption` and `nEffectiveSpeciesConsumption` are
+related by the algebraic identity
+`EffectiveConsumption == Consumption * nEffectiveSpeciesConsumption`
+(modulo two-decimal rounding); see the *Mathematical formulation*
+section of the alignment vignette for the formal definition.
 
 ## Accessors
 

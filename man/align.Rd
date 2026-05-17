@@ -116,7 +116,12 @@ consortium against all in a set
 weighted CMs (i.e. constructed from non-unit fluxes).
 On unweighted inputs the score returns \code{NA}. To
 suppress this, build CMs from a weighted edge list or
-pick a different metric.
+pick a different metric. \code{method = "redundancyOverlap"}
+collapses to \code{jaccard} when every pathway has
+\code{nSpecies == 1} (Hill-1 saturation). On hand-rolled
+single-species inputs the implementation returns \code{NA}
+rather than the algebraically-equivalent Jaccard value;
+compute Jaccard directly in that case.
 
 \code{align(CM, CMS)} (database search) currently
 raises a not-yet-implemented error; the dispatch is
