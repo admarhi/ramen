@@ -1,5 +1,6 @@
-## Build misosoup24 package data from inst/extdata/misosoup/ CSVs
-## Each CSV has columns: metabolite, species, flux
+## Build misosoup24 package data from inst/extdata/misosoup/ CSVs.
+## Each CSV has columns: metabolite, species, flux.
+## Provenance of the source CSVs: inst/extdata/misosoup/README.md
 
 misosoup24 <- list()
 for (f in sort(list.files("inst/extdata/misosoup", full.names = TRUE))) {

@@ -1,0 +1,36 @@
+## Citation information for the ramen package.
+## Shown by citation("ramen").
+
+pkgVer <- if (exists("meta") && !is.null(meta$Version)) {
+    meta$Version
+} else {
+    "0.99.0"
+}
+
+citHeader(paste(
+    "To cite ramen in publications, please cite both the software",
+    "and the thesis it originated from:"
+))
+
+bibentry(
+    bibtype = "Manual",
+    title = paste(
+        "ramen: Reconstruction and Alignment of",
+        "Microbial Exchange Networks"
+    ),
+    author = person("Adrian", "Hirt"),
+    year = "2026",
+    note = paste("R package version", pkgVer),
+    url = "https://admarhi.github.io/ramen/"
+)
+
+bibentry(
+    bibtype = "Misc",
+    title = paste(
+        "Ecological Features are Reflected in",
+        "ramen Classification"
+    ),
+    author = person("Adrian", "Hirt"),
+    year = "2025",
+    note = "Master's thesis"
+)
