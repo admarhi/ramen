@@ -256,7 +256,6 @@ ConsortiumMetabolism <- function(
     ## NaN in c_eff / p_eff downstream.
     bad_flux <- which(!is.finite(data[[flux_col]]))
     if (length(bad_flux) > 0L) {
-        # nolint next: object_usage_linter.
         preview <- if (length(bad_flux) > 10L) {
             c(as.character(bad_flux[seq_len(10L)]), "...")
         } else {
@@ -276,7 +275,6 @@ ConsortiumMetabolism <- function(
     ## ---- Reject empty-string species / metabolite keys ----------
     bad_species <- which(!nzchar(data[[species_col]]))
     if (length(bad_species) > 0L) {
-        # nolint next: object_usage_linter.
         preview <- if (length(bad_species) > 10L) {
             c(as.character(bad_species[seq_len(10L)]), "...")
         } else {
@@ -296,7 +294,6 @@ ConsortiumMetabolism <- function(
 
     bad_met <- which(!nzchar(data[[metabolite_col]]))
     if (length(bad_met) > 0L) {
-        # nolint next: object_usage_linter.
         preview <- if (length(bad_met) > 10L) {
             c(as.character(bad_met[seq_len(10L)]), "...")
         } else {

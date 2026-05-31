@@ -254,7 +254,6 @@ setMethod(
         )
 
         ## 3. Summary scores
-        # nolint next: object_usage_linter.
         scores <- .summariseSimilarityScores(sim_mat)
         primary <- scores$median
 
@@ -262,7 +261,6 @@ setMethod(
         prevalence <- .buildPrevalence(x)
 
         ## 5. Dendrogram
-        # nolint next: object_usage_linter.
         dend <- .dendrogramFromSimilarity(sim_mat, linkage)
 
         ## 6. Build and return CMA
@@ -412,7 +410,6 @@ setMethod(
         }
 
         ## 2. Harmonize metabolite space and expand assays
-        # nolint next: object_usage_linter.
         space <- .alignSearchExpandSpace(x, y, metrics, method)
 
         cli::cli_inform(
@@ -421,7 +418,6 @@ setMethod(
         )
 
         ## 3. Score query against every database consortium
-        # nolint next: object_usage_linter.
         scoresList <- .alignSearchScoreAll(
             xBin = space$xBin,
             xWeighted = space$xWeighted,
@@ -436,9 +432,7 @@ setMethod(
         } else {
             "query"
         }
-        # nolint next: object_usage_linter.
         primaryScores <- .alignSearchPrimaryScores(scoresList, method)
-        # nolint next: object_usage_linter.
         ranked <- .alignSearchBuildRanking(
             scoresList = scoresList,
             primaryScores = primaryScores,
@@ -464,7 +458,6 @@ setMethod(
             } else {
                 space$yWeightedList[[ranked$topIdx]]
             }
-            # nolint next: object_usage_linter.
             pval <- .alignSearchTopPvalue(
                 method = method,
                 x = x,

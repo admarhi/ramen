@@ -264,7 +264,7 @@ setMethod("show", "ConsortiumMetabolismAlignment", function(object) {
         }
     }
     if (.hasValue(object@Type) && object@Type == "multiple") {
-        n <- nrow(object@SimilarityMatrix) # nolint: object_usage_linter.
+        n <- nrow(object@SimilarityMatrix)
         cli::cli_text("Consortia: {.val {n}}")
 
         ## Multi-level hierarchy: pathways at n=1..n=k consortia.
@@ -286,7 +286,7 @@ setMethod("show", "ConsortiumMetabolismAlignment", function(object) {
             )
             cli::cli_text(
                 "Levels: ",
-                .formatLevelCounts(counts) # nolint
+                .formatLevelCounts(counts)
             )
         }
     }

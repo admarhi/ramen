@@ -21,7 +21,6 @@
 #' @importFrom SummarizedExperiment metadata<-
 #' @importFrom tibble rowid_to_column
 #' @importFrom tibble tibble
-#' @importFrom tibble tribble
 #' @importFrom tidyr nest
 #' @importFrom TreeSummarizedExperiment TreeSummarizedExperiment
 ## usethis namespace: end

@@ -136,7 +136,6 @@ setMethod(
         }
         dend <- x@Dendrogram[[1]]
 
-        # nolint next: object_usage_linter.
         p <- .dendrogramGgplot(
             dend,
             labelSize = label_size,
@@ -287,17 +286,15 @@ setMethod(
 
     p +
         ggplot2::scale_fill_gradient2(
-            # nolint start: object_usage_linter.
             low = ramenPalette$heatmapFill[["low"]],
             mid = ramenPalette$heatmapFill[["mid"]],
             high = ramenPalette$heatmapFill[["high"]],
-            # nolint end
             midpoint = 0.5,
             limits = c(0, 1),
             name = cma@Metric
         ) +
         ggplot2::coord_fixed() +
-        theme_ramen() + # nolint: object_usage_linter.
+        theme_ramen() +
         ggplot2::theme(
             axis.text.x = ggplot2::element_text(
                 angle = 45,
@@ -320,7 +317,6 @@ setMethod(
 #' @noRd
 .plotNetwork <- function(
     cma,
-    # nolint next: object_usage_linter.
     edgeColourValues = ramenPalette$edgeCategorical,
     edgeColourLabels = c(
         shared = "Shared",
@@ -468,7 +464,7 @@ setMethod(
         )
     ) +
         ggplot2::geom_col(
-            fill = ramenPalette$bar, # nolint: object_usage_linter.
+            fill = ramenPalette$bar,
             width = 0.6
         ) +
         ggplot2::geom_text(
@@ -487,7 +483,7 @@ setMethod(
             expand = ggplot2::expansion(mult = c(0, 0.05))
         ) +
         ggplot2::coord_flip() +
-        theme_ramen() + # nolint: object_usage_linter.
+        theme_ramen() +
         ggplot2::theme(
             panel.grid.major.y = ggplot2::element_blank()
         ) +

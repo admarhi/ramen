@@ -93,7 +93,7 @@ NULL
             ggplot2::scale_x_continuous(
                 expand = ggplot2::expansion(mult = c(0.02, 0.02))
             ) +
-            theme_ramen() + # nolint: object_usage_linter.
+            theme_ramen() +
             ggplot2::theme(
                 axis.text.x = ggplot2::element_blank(),
                 axis.ticks.x = ggplot2::element_blank(),
@@ -111,7 +111,7 @@ NULL
                 limits = c(0, yMax * 1.05),
                 expand = ggplot2::expansion(mult = c(0, 0.02))
             ) +
-            theme_ramen(network = TRUE) + # nolint: object_usage_linter.
+            theme_ramen(network = TRUE) +
             ggplot2::theme(
                 legend.position = "none",
                 plot.margin = ggplot2::margin(12, 12, 60, 12)

@@ -126,11 +126,9 @@ plotDirectedFlow <- function(
     edgeColourValues = NULL,
     edgeColourLabels = NULL,
     edgeColourLegendTitle = "Type",
-    # nolint start: object_usage_linter.
     edgeColourLow = ramenPalette$edgeWeight[["low"]],
     edgeColourHigh = ramenPalette$edgeWeight[["high"]],
     nodeColourValues = ramenPalette$nodeRole,
-    # nolint end
     nodeColourLabels = c(
         source = "Source",
         intermediate = "Intermediate",
@@ -335,7 +333,7 @@ plotDirectedFlow <- function(
             max.overlaps = Inf
         ) +
         ggplot2::coord_cartesian(clip = "off") +
-        theme_ramen(network = TRUE) # nolint: object_usage_linter.
+        theme_ramen(network = TRUE)
 
     if (!is.null(title) || !is.null(subtitle)) {
         p <- p + ggplot2::labs(title = title, subtitle = subtitle)

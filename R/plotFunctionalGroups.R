@@ -87,7 +87,7 @@ plotFunctionalGroups <- function(
 
     # Colour branches by cluster membership using the ramen palette
     # (Okabe-Ito-derived, recycled if k > length(palette)).
-    clusterCols <- ramenPalette$cluster # nolint: object_usage_linter.
+    clusterCols <- ramenPalette$cluster
     if (k > length(clusterCols)) {
         clusterCols <- rep_len(clusterCols, k)
     }
@@ -97,7 +97,6 @@ plotFunctionalGroups <- function(
         col = clusterCols[seq_len(k)]
     )
 
-    # nolint next: object_usage_linter.
     .dendrogramGgplot(
         dend,
         labelSize = label_size,
