@@ -390,22 +390,22 @@ ConsortiumMetabolism <- function(
                 .data$data,
                 \(x) x$flux_prod / sum(x$flux_prod)
             ),
+            ## Hill-number perplexity (effective species count).
+            ## Stored at full precision: these feed downstream
+            ## numerical comparisons, so rounding happens only at
+            ## display time (see show() / pathways(verbose = FALSE)).
             c_neff = vapply(
                 .data$c_prob,
-                \(x) {
-                    round(2**(-sum(x * log2(x))), 2)
-                },
+                \(x) 2**(-sum(x * log2(x))),
                 numeric(1)
             ),
             p_neff = vapply(
                 .data$p_prob,
-                \(x) {
-                    round(2**(-sum(x * log2(x))), 2)
-                },
+                \(x) 2**(-sum(x * log2(x))),
                 numeric(1)
             ),
-            c_eff = round(.data$c_sum * .data$c_neff, 2),
-            p_eff = round(.data$p_sum * .data$p_neff, 2)
+            c_eff = .data$c_sum * .data$c_neff,
+            p_eff = .data$p_sum * .data$p_neff
         ) |>
         left_join(mets, by = c(consumed = "met")) |>
         rename(c_ind = "index") |>

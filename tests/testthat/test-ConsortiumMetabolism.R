@@ -476,7 +476,8 @@ test_that("EffectiveConsumption equals Consumption * nEffectiveSpecies (toy)", {
     nef_c <- as.matrix(a$nEffectiveSpeciesConsumption)
 
     nz <- cons != 0
-    expect_equal(eff_c[nz], round(cons[nz] * nef_c[nz], 2))
+    ## Stored at full precision: the identity is now exact.
+    expect_equal(eff_c[nz], cons[nz] * nef_c[nz])
 
     ## Hand-check: at the (m1, m2) cell consumption flux sum is 1+1=2,
     ## even split -> perplexity 2, so effective consumption = 4.
@@ -499,18 +500,19 @@ test_that("EffectiveProduction equals Production * nEffectiveSpecies", {
     nef_p <- as.matrix(a$nEffectiveSpeciesProduction)
 
     nz <- prod != 0
-    expect_equal(eff_p[nz], round(prod[nz] * nef_p[nz], 2))
+    ## Stored at full precision: the identity is now exact.
+    expect_equal(eff_p[nz], prod[nz] * nef_p[nz])
 
     ## Production at (m1, m2): fluxes 3 and 1, sum 4, p = (0.75, 0.25),
     ## perplexity 2^(-(0.75 log2 0.75 + 0.25 log2 0.25)) ~= 1.7549.
     expect_equal(unname(prod["m1", "m2"]), 4)
     expect_equal(
         unname(nef_p["m1", "m2"]),
-        round(2^(-(0.75 * log2(0.75) + 0.25 * log2(0.25))), 2)
+        2^(-(0.75 * log2(0.75) + 0.25 * log2(0.25)))
     )
     expect_equal(
         unname(eff_p["m1", "m2"]),
-        round(4 * unname(nef_p["m1", "m2"]), 2)
+        4 * unname(nef_p["m1", "m2"])
     )
 })
 

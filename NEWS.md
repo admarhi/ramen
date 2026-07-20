@@ -31,7 +31,12 @@ cycle.
   carry the Hill-1 effective number of contributing species
   (unitless, in [1, S]), mirroring the existing `nSpecies` count.
   Algebraic identity: `EffectiveConsumption = Consumption *
-  nEffectiveSpeciesConsumption` (modulo two-decimal rounding).
+  nEffectiveSpeciesConsumption`.
+* The `Effective*` and `nEffectiveSpecies*` assays are now stored at
+  full numerical precision. An earlier two-decimal rounding step was
+  removed so the assays carry exact values into downstream
+  computation; as a result the identity above holds exactly. Round at
+  the display site if rounded values are wanted.
 * `consortia()` no longer has a `ConsortiumMetabolism` method. The
   plural noun applies only to containers of consortia, so the
   accessor is now scoped to `ConsortiumMetabolismSet` (returns the

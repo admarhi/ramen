@@ -136,8 +136,9 @@ $$
 \mathbf{X}^{(\alpha,5)} = \mathbf{X}^{(\alpha,3)} \odot
 \mathbf{X}^{(\alpha,7)}
 $$
-holds cell-wise (modulo two-decimal rounding); same for production.
-See the *Hill-1 saturation* caveat for behaviour on small consortia.
+holds cell-wise exactly (the effective assays are stored at full
+precision); same for production. See the *Hill-1 saturation* caveat
+for behaviour on small consortia.
 
 ## Pairwise alignment metrics
 
@@ -313,11 +314,11 @@ not interpret raw Binary density as a mechanistic property.
 
 **Hill-1 saturation on small consortia.**
 nEffectiveSpeciesConsumption / nEffectiveSpeciesProduction store the
-Hill-1 perplexity rounded to two decimals. For two-species consortia
-the perplexity rarely exceeds $\approx 1.05$ (one species typically
-dominates the flux at any given pathway), and the `round(., 2)` step
-collapses near-degenerate distributions to exactly $1.0$ --
-indistinguishable from true single-species pathways. Because
+Hill-1 perplexity at full precision. For two-species consortia the
+perplexity rarely exceeds $\approx 1.05$ (one species typically
+dominates the flux at any given pathway), so values cluster just
+above $1.0$ and carry little signal to distinguish near-degenerate
+mixtures from true single-species pathways. Because
 EffectiveConsumption and EffectiveProduction are the elementwise
 product $F \cdot D_1$, the same saturation propagates to them: on
 small consortia they degenerate toward the underlying Consumption /

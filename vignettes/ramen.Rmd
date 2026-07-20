@@ -350,10 +350,10 @@ SummarizedExperiment::assayNames(cm1)
 | nEffectiveSpeciesProduction | As above on the production side |
 
 `EffectiveConsumption` and `nEffectiveSpeciesConsumption` are
-related by the algebraic identity
-`EffectiveConsumption == Consumption * nEffectiveSpeciesConsumption`
-(modulo two-decimal rounding); see the *Mathematical formulation*
-section of the alignment vignette for the formal definition.
+related by the exact algebraic identity
+`EffectiveConsumption == Consumption * nEffectiveSpeciesConsumption`;
+see the *Mathematical formulation* section of the alignment vignette
+for the formal definition.
 
 ## Accessors
 
