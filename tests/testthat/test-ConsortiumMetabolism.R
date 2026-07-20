@@ -70,6 +70,40 @@ test_that("metabolites returns metabolites", {
     expect_true(length(mets) > 0)
 })
 
+test_that("metabolites(cm) equals rownames(assay(cm)), incl. media", {
+    ## Every species both consumes and produces: no media node,
+    ## so metabolites() matches the assay axis exactly.
+    no_media <- ConsortiumMetabolism(
+        tibble::tibble(
+            species = c("s1", "s1", "s2", "s2"),
+            metabolite = c("m1", "m2", "m1", "m3"),
+            flux = c(-1, 1, -1, 1)
+        ),
+        name = "no_media"
+    )
+    expect_identical(
+        metabolites(no_media),
+        rownames(SummarizedExperiment::assay(no_media, 1L))
+    )
+    expect_false("media" %in% metabolites(no_media))
+
+    ## One species only consumes, one only produces: the "media"
+    ## boundary node is retained, and metabolites() includes it.
+    with_media <- ConsortiumMetabolism(
+        tibble::tibble(
+            species = c("s1", "s2"),
+            metabolite = c("m1", "m1"),
+            flux = c(-1, 1)
+        ),
+        name = "with_media"
+    )
+    expect_identical(
+        metabolites(with_media),
+        rownames(SummarizedExperiment::assay(with_media, 1L))
+    )
+    expect_true("media" %in% metabolites(with_media))
+})
+
 test_that("metabolites filters by species and direction", {
     test_data <- tibble::tibble(
         species = c("s1", "s1", "s2", "s2"),

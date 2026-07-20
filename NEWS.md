@@ -42,6 +42,13 @@ cycle.
   more shared pathways -- rather than its complement `1 - FOS`.
   Clustering dendrograms and `align()` similarity scores are
   unchanged; only the value returned by the accessor differs.
+* `metabolites(cm)` with the default arguments
+  (`species = NULL`, `direction = "all"`) now returns the full
+  metabolite axis of the assays, i.e. it equals
+  `rownames(assay(cm))` and includes the `"media"` boundary node
+  whenever the consortium retains it. Indexing an assay with the
+  result is therefore always well-formed. It previously returned only
+  the input metabolites, omitting `media`.
 * `consortia()` no longer has a `ConsortiumMetabolism` method. The
   plural noun applies only to containers of consortia, so the
   accessor is now scoped to `ConsortiumMetabolismSet` (returns the

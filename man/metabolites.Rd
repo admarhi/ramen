@@ -42,7 +42,10 @@ given role across the (possibly species-filtered) pathways.}
 }
 \value{
 A character vector containing the names of
-metabolites in the network.
+metabolites in the network. For a
+\code{ConsortiumMetabolism} with the default
+arguments this equals \code{rownames(assay(object))}
+and may include the \code{"media"} boundary node.
 }
 \description{
 Retrieves the metabolites involved in the metabolic
@@ -50,6 +53,17 @@ network. For \code{ConsortiumMetabolism} objects, the
 result can optionally be restricted to a specific
 species and/or direction (\code{"consumed"} or
 \code{"produced"}).
+
+For a \code{ConsortiumMetabolism}, the default
+(\code{species = NULL}, \code{direction = "all"})
+returns the full metabolite axis of the assays, i.e.
+it is identical to \code{rownames(assay(object))}.
+This includes the \code{"media"} boundary node
+whenever the consortium retains it (a consortium in
+which every species both consumes and produces has no
+\code{"media"} node). Indexing an assay with the
+result, e.g. \code{assay(object)[metabolites(object),
+metabolites(object)]}, is therefore always well-formed.
 }
 \examples{
 cm <- synCM("test", n_species = 3, max_met = 5)

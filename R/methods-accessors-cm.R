@@ -42,7 +42,11 @@ setMethod(
     ) {
         direction <- match.arg(direction)
         if (is.null(species) && direction == "all") {
-            return(object@Metabolites)
+            ## Return the metabolite axis the assays carry, so that
+            ## assay(object)[metabolites(object), metabolites(object)]
+            ## is always well-formed. This includes the "media"
+            ## boundary node whenever the consortium retains it.
+            return(rownames(SummarizedExperiment::assay(object, 1L)))
         }
         sp_pw <- tidyr::unnest(object@Pathways, "data")
         if (!is.null(species)) {
