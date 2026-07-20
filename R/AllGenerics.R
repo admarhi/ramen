@@ -568,18 +568,19 @@ setGeneric(
 #' @title Get Overlap Matrix
 #'
 #' @description
-#' Returns the pairwise dissimilarity matrix from a
-#' \code{ConsortiumMetabolismSet} object. Values are
-#' \code{1 - FOS} (Functional Overlap Score), so 0
-#' indicates identical consortia and 1 indicates no
-#' shared pathways.
+#' Returns the pairwise Functional Overlap Score (FOS)
+#' matrix from a \code{ConsortiumMetabolismSet} object.
+#' Values lie in \code{[0, 1]}: the diagonal is 1 (each
+#' consortium fully overlaps itself), 1 indicates
+#' identical consortia, and 0 indicates no shared
+#' pathways.
 #'
 #' @param object A \code{ConsortiumMetabolismSet} object.
 #'
 #' @return A numeric \eqn{n \times n} matrix of pairwise
-#'   dissimilarities, where \eqn{n} is the number of
-#'   consortia. Row and column names are consortium
-#'   names.
+#'   FOS overlaps, where \eqn{n} is the number of
+#'   consortia. The diagonal is 1. Row and column names
+#'   are consortium names.
 #'
 #' @examples
 #' cm1 <- synCM("comm_1", n_species = 3, max_met = 5)

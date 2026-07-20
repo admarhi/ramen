@@ -52,8 +52,10 @@ objects.}
 
 \item{\code{Description}}{character. Optional short description.}
 
-\item{\code{OverlapMatrix}}{matrix. Pairwise dissimilarity matrix
-(1 - overlap) between consortia.}
+\item{\code{OverlapMatrix}}{matrix. Pairwise Functional Overlap
+Score (FOS, Szymkiewicz-Simpson) between consortia.
+Diagonal is 1 (self-overlap); higher values mean more
+shared pathways.}
 
 \item{\code{Dendrogram}}{list. Hierarchical clustering dendrogram.}
 

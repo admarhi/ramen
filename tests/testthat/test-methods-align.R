@@ -129,7 +129,7 @@ test_that("FOS from align matches CMS overlap matrix", {
         list(cm1, cm2),
         name = "test"
     )
-    cms_fos <- 1 - cms@OverlapMatrix[1, 2]
+    cms_fos <- cms@OverlapMatrix[1, 2]
     expect_equal(cma@PrimaryScore, cms_fos)
 })
 
@@ -175,13 +175,14 @@ test_that("FOS similarity matches CMS OverlapMatrix", {
     cma <- align(cms, method = "FOS")
     om <- cms@OverlapMatrix
     sim <- cma@SimilarityMatrix
-    ## Each off-diagonal entry should be 1 - distance
+    ## The OverlapMatrix already holds FOS overlap, so the
+    ## similarity matrix should match it entry for entry.
     for (i in seq_len(nrow(sim))) {
         for (j in seq_len(ncol(sim))) {
             if (i != j) {
                 expect_equal(
                     sim[i, j],
-                    1 - om[i, j],
+                    om[i, j],
                     info = paste("pair", i, j)
                 )
             }

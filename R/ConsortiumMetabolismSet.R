@@ -9,8 +9,10 @@
 #' @slot Consortia list. List of \code{ConsortiumMetabolism}
 #'   objects.
 #' @slot Description character. Optional short description.
-#' @slot OverlapMatrix matrix. Pairwise dissimilarity matrix
-#'   (1 - overlap) between consortia.
+#' @slot OverlapMatrix matrix. Pairwise Functional Overlap
+#'   Score (FOS, Szymkiewicz-Simpson) between consortia.
+#'   Diagonal is 1 (self-overlap); higher values mean more
+#'   shared pathways.
 #' @slot Dendrogram list. Hierarchical clustering dendrogram.
 #' @slot NodeData data.frame. Internal node positions from the
 #'   dendrogram.
@@ -226,7 +228,7 @@ ConsortiumMetabolismSet <- function(
             cli::cli_progress_step(
                 "Building dendrogram from \\
             {.val {n_cons}} x {.val {n_cons}} \\
-            dissimilarity matrix"
+            overlap matrix"
             )
         }
         dend <-
@@ -315,7 +317,7 @@ ConsortiumMetabolismSet <- function(
 #' @noRd
 cms <- ConsortiumMetabolismSet
 
-#' Compute pairwise FOS dissimilarity matrix via crossprod
+#' Compute pairwise FOS overlap matrix via crossprod
 #'
 #' Flattens each m x m expanded binary matrix into a length-m^2
 #' sparse column vector, stacks them into one m^2 x n matrix, and
@@ -326,8 +328,9 @@ cms <- ConsortiumMetabolismSet
 #'   (all same dimensions).
 #' @param cm_names Character vector of consortium names.
 #'
-#' @return A dense n x n symmetric dissimilarity matrix
-#'   (1 - FOS) with \code{cm_names} as dimnames.
+#' @return A dense n x n symmetric FOS overlap matrix with
+#'   \code{cm_names} as dimnames. The diagonal is 1 (self-overlap)
+#'   and off-diagonal entries lie in \code{[0, 1]}.
 #'
 #' @noRd
 .computeFOSMatrix <- function(expanded_bm, cm_names) {
@@ -377,6 +380,7 @@ cms <- ConsortiumMetabolismSet
     fos_mat[nonzero] <- intersection[nonzero] /
         denom[nonzero]
 
-    ## Return full symmetric dissimilarity matrix
-    1 - fos_mat
+    ## Return full symmetric FOS overlap matrix: diagonal = 1
+    ## (self-overlap), off-diagonal = pairwise overlap in [0, 1].
+    fos_mat
 }

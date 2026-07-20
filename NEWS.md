@@ -37,6 +37,11 @@ cycle.
   removed so the assays carry exact values into downstream
   computation; as a result the identity above holds exactly. Round at
   the display site if rounded values are wanted.
+* `overlapMatrix()` and the `OverlapMatrix` slot now hold the
+  Functional Overlap Score itself -- diagonal 1, higher values mean
+  more shared pathways -- rather than its complement `1 - FOS`.
+  Clustering dendrograms and `align()` similarity scores are
+  unchanged; only the value returned by the accessor differs.
 * `consortia()` no longer has a `ConsortiumMetabolism` method. The
   plural noun applies only to containers of consortia, so the
   accessor is now scoped to `ConsortiumMetabolismSet` (returns the

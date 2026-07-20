@@ -509,11 +509,10 @@
     cm_names <- names(cms@BinaryMatrices)
     bins <- cms@BinaryMatrices
 
-    ## FOS shortcut: invert pre-computed distance matrix
+    ## FOS shortcut: the OverlapMatrix already holds the FOS
+    ## overlap (diagonal 1), which is the similarity itself.
     if (method == "FOS") {
-        om <- cms@OverlapMatrix
-        sim_mat <- 1 - om
-        return(sim_mat)
+        return(cms@OverlapMatrix)
     }
 
     ## Pre-expand weighted assays if needed

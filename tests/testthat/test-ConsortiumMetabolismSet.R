@@ -315,7 +315,7 @@ test_that("overlapMatrix returns numeric matrix with correct dims", {
     expect_equal(colnames(om), c("a", "b"))
 })
 
-test_that("overlapMatrix diagonal is zero", {
+test_that("overlapMatrix diagonal is one (self-overlap)", {
     cm1 <- synCM("x", n_species = 3, max_met = 5, seed = 10)
     cm2 <- synCM("y", n_species = 3, max_met = 5, seed = 20)
     cm3 <- synCM("z", n_species = 3, max_met = 5, seed = 30)
@@ -325,7 +325,8 @@ test_that("overlapMatrix diagonal is zero", {
     )
     om <- overlapMatrix(cms)
     expect_equal(nrow(om), 3L)
-    expect_true(all(diag(om) == 0))
+    expect_true(all(diag(om) == 1))
+    expect_true(all(om >= 0 & om <= 1))
 })
 
 ## ---- show(CMS) community size stats -----------------------------------------
