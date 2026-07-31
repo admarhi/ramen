@@ -1,0 +1,256 @@
+# ramen
+
+**ramen** (**R**econstruction and **A**lignment of **M**icrobial
+**E**xchange **N**etworks) compares microbial communities by their
+metabolic exchange networks rather than by species composition. Given
+species-metabolite-flux data (e.g. from community flux balance
+analysis), ramen reconstructs directed metabolite-to-metabolite networks
+and quantifies how functionally similar different communities are – even
+when they share no species at all.
+
+## Quick start
+
+``` r
+
+library(ramen)
+data("misosoup24")
+
+## Build two consortium objects
+cm1 <- ConsortiumMetabolism(
+    misosoup24[[1]], name = names(misosoup24)[1]
+)
+cm2 <- ConsortiumMetabolism(
+    misosoup24[[2]], name = names(misosoup24)[2]
+)
+
+## Align them
+cma <- align(cm1, cm2)
+scores(cma)
+#> $FOS
+#> [1] 0.7634409
+#> 
+#> $jaccard
+#> [1] 0.3397129
+#> 
+#> $brayCurtis
+#> [1] 0.3115158
+#> 
+#> $redundancyOverlap
+#> [1] 0.3397129
+#> 
+#> $coverageQuery
+#> [1] 0.7634409
+#> 
+#> $coverageReference
+#> [1] 0.3796791
+```
+
+For the full workflow – from data import through alignment, functional
+groups, and visualization – see
+[`vignette("ramen", package = "ramen")`](https://admarhi.github.io/ramen/articles/ramen.md).
+
+## Compare many communities at once
+
+Bundle a handful of consortia into a `ConsortiumMetabolismSet`, align
+them all-against-all, and plot the resulting similarity matrix:
+
+``` r
+
+sel <- names(misosoup24)[seq_len(8)]
+cms <- do.call(
+    ConsortiumMetabolismSet,
+    c(
+        lapply(sel, function(n) {
+            ConsortiumMetabolism(misosoup24[[n]], name = n)
+        }),
+        list(name = "misosoup24[1:8]", verbose = FALSE)
+    )
+)
+plot(align(cms))
+```
+
+![Heatmap of pairwise FOS scores across eight MiSoSoup consortia, with
+rows and columns reordered by hierarchical
+clustering.](reference/figures/README-hero-1.png)
+
+## Installation
+
+Install the development version from GitHub:
+
+``` r
+
+pak::pkg_install("admarhi/ramen")
+# or
+devtools::install_github("admarhi/ramen")
+```
+
+## Core workflow
+
+1.  **Import** species-metabolite-flux data (from MiSoSoup YAML, CSV, or
+    any data.frame)
+2.  **Build** `ConsortiumMetabolism` objects (one per community)
+3.  **Group** them into a `ConsortiumMetabolismSet` (computes pairwise
+    overlap and clustering)
+4.  **Align** communities pairwise or across the full set using five
+    complementary metrics (FOS, Jaccard, Bray-Curtis, Redundancy
+    Overlap, MAAS)
+5.  **Visualise** with heatmaps, network plots, dendrograms, and
+    functional group analyses
+
+All three classes inherit from Bioconductor’s
+`TreeSummarizedExperiment`, so standard accessor functions (`assay()`,
+`colData()`, [`dim()`](https://rdrr.io/r/base/dim.html), etc.) work out
+of the box.
+
+## Vignettes
+
+- [`vignette("ramen")`](https://admarhi.github.io/ramen/articles/ramen.md)
+  – full introduction and analysis pipeline
+- [`vignette("alignment")`](https://admarhi.github.io/ramen/articles/alignment.md)
+  – alignment metrics, coverage ratios, and permutation p-values
+- [`vignette("visualisation")`](https://admarhi.github.io/ramen/articles/visualisation.md)
+  – gallery of all plot types
+
+# Package index
+
+## All functions
+
+- [`ConsortiumMetabolism()`](https://admarhi.github.io/ramen/reference/ConsortiumMetabolism.md)
+  : Functional Microbiome Representation
+
+- [`ConsortiumMetabolismAlignment()`](https://admarhi.github.io/ramen/reference/ConsortiumMetabolismAlignment.md)
+  [`as.data.frame(`*`<ConsortiumMetabolismAlignment>`*`)`](https://admarhi.github.io/ramen/reference/ConsortiumMetabolismAlignment.md)
+  :
+
+  Constructor for `ConsortiumMetabolismAlignment` Objects
+
+- [`ConsortiumMetabolismSet()`](https://admarhi.github.io/ramen/reference/ConsortiumMetabolismSet.md)
+  :
+
+  Set of `ConsortiumMetabolism` Objects
+
+- [`align()`](https://admarhi.github.io/ramen/reference/align.md) :
+  Align Consortium Metabolisms
+
+- [`as.data.frame(`*`<ConsortiumMetabolism>`*`)`](https://admarhi.github.io/ramen/reference/as.data.frame-ConsortiumMetabolism.md)
+  : Coerce a ConsortiumMetabolism to a data.frame
+
+- [`as.data.frame(`*`<ConsortiumMetabolismSet>`*`)`](https://admarhi.github.io/ramen/reference/as.data.frame-ConsortiumMetabolismSet.md)
+  : Coerce a ConsortiumMetabolismSet to a data.frame
+
+- [`compareSpecies()`](https://admarhi.github.io/ramen/reference/compareSpecies.md)
+  : Compare Two Species by Pathway Set
+
+- [`consortia()`](https://admarhi.github.io/ramen/reference/consortia.md)
+  : Get the Constituent Consortia
+
+- [`description()`](https://admarhi.github.io/ramen/reference/description.md)
+  [`` `description<-`() ``](https://admarhi.github.io/ramen/reference/description.md)
+  : Get or Set Object Description
+
+- [`extractCluster()`](https://admarhi.github.io/ramen/reference/extractCluster.md)
+  : Extract a Cluster
+
+- [`filterConsortia()`](https://admarhi.github.io/ramen/reference/filterConsortia.md)
+  : Filter Consortia from a Set
+
+- [`functionalGroups()`](https://admarhi.github.io/ramen/reference/functionalGroups.md)
+  : Get Functional Groups
+
+- [`growth()`](https://admarhi.github.io/ramen/reference/growth.md) :
+  Get Growth Rates
+
+- [`importMisosoup()`](https://admarhi.github.io/ramen/reference/importMisosoup.md)
+  : Import MiSoSoup YAML Output
+
+- [`importSmetana()`](https://admarhi.github.io/ramen/reference/importSmetana.md)
+  : Import SMETANA Detailed Output
+
+- [`metabolites()`](https://admarhi.github.io/ramen/reference/metabolites.md)
+  : Get Metabolites
+
+- [`misosoup24`](https://admarhi.github.io/ramen/reference/misosoup24.md)
+  : Example Data from MiSoSoup 2024
+
+- [`name()`](https://admarhi.github.io/ramen/reference/name.md)
+  [`` `name<-`() ``](https://admarhi.github.io/ramen/reference/name.md)
+  : Get or Set Object Name
+
+- [`overlapMatrix()`](https://admarhi.github.io/ramen/reference/overlapMatrix.md)
+  : Get Overlap Matrix
+
+- [`pathways()`](https://admarhi.github.io/ramen/reference/pathways.md)
+  : Retrieve Metabolic Pathways
+
+- [`pivotCM()`](https://admarhi.github.io/ramen/reference/pivotCM.md) :
+
+  Pivot `ConsortiumMetabolism` Input Data
+
+- [`plot(`*`<ConsortiumMetabolism>`*`,`*`<ANY>`*`)`](https://admarhi.github.io/ramen/reference/plot-ConsortiumMetabolism-ANY-method.md)
+  : Plot a ConsortiumMetabolism object
+
+- [`plot(`*`<ConsortiumMetabolismAlignment>`*`,`*`<ANY>`*`)`](https://admarhi.github.io/ramen/reference/plot-ConsortiumMetabolismAlignment-ANY-method.md)
+  : Plot a ConsortiumMetabolismAlignment object
+
+- [`plot(`*`<ConsortiumMetabolismSet>`*`,`*`<ANY>`*`)`](https://admarhi.github.io/ramen/reference/plot-ConsortiumMetabolismSet-ANY-method.md)
+  : Plot a ConsortiumMetabolismSet object
+
+- [`plotDirectedFlow()`](https://admarhi.github.io/ramen/reference/plotDirectedFlow.md)
+  : Plot a Directed Graph Emphasising Flow
+
+- [`plotFunctionalGroups()`](https://admarhi.github.io/ramen/reference/plotFunctionalGroups.md)
+  : Plot Functional Groups Dendrogram
+
+- [`prevalence()`](https://admarhi.github.io/ramen/reference/prevalence.md)
+  : Get Pathway Prevalence
+
+- [`ramenPalette`](https://admarhi.github.io/ramen/reference/ramenPalette.md)
+  : Ramen package palette
+
+- [`scores()`](https://admarhi.github.io/ramen/reference/scores.md) :
+  Get Alignment Scores
+
+- [`show(`*`<ConsortiumMetabolism>`*`)`](https://admarhi.github.io/ramen/reference/show-ConsortiumMetabolism-method.md)
+  :
+
+  Show Method for `ConsortiumMetabolism` Object
+
+- [`show(`*`<ConsortiumMetabolismAlignment>`*`)`](https://admarhi.github.io/ramen/reference/show-ConsortiumMetabolismAlignment-method.md)
+  :
+
+  Show method for `ConsortiumMetabolismAlignment` Objects
+
+- [`show(`*`<ConsortiumMetabolismSet>`*`)`](https://admarhi.github.io/ramen/reference/show-ConsortiumMetabolismSet-method.md)
+  :
+
+  Show Method for `ConsortiumMetabolismSet` Object
+
+- [`similarityMatrix()`](https://admarhi.github.io/ramen/reference/similarityMatrix.md)
+  : Get Similarity Matrix
+
+- [`species()`](https://admarhi.github.io/ramen/reference/species.md) :
+  Return Species in a Consortium
+
+- [`speciesSummary()`](https://admarhi.github.io/ramen/reference/speciesSummary.md)
+  : Species Summary
+
+- [`` `[`( ``*`<ConsortiumMetabolism>`*`,`*`<ANY>`*`,`*`<ANY>`*`,`*`<ANY>`*`)`](https://admarhi.github.io/ramen/reference/subset-ramen.md)
+  [`` `[`( ``*`<ConsortiumMetabolismSet>`*`,`*`<ANY>`*`,`*`<ANY>`*`,`*`<ANY>`*`)`](https://admarhi.github.io/ramen/reference/subset-ramen.md)
+  [`` `[`( ``*`<ConsortiumMetabolismAlignment>`*`,`*`<ANY>`*`,`*`<ANY>`*`,`*`<ANY>`*`)`](https://admarhi.github.io/ramen/reference/subset-ramen.md)
+  : Subset ramen Objects by Metabolite
+
+- [`synCM()`](https://admarhi.github.io/ramen/reference/synCM.md) :
+  Generate Synthetic Consortium Metabolism
+
+- [`theme_ramen()`](https://admarhi.github.io/ramen/reference/theme_ramen.md)
+  : Ramen plot theme
+
+# Articles
+
+### All vignettes
+
+- [Alignment of Microbial
+  Consortia](https://admarhi.github.io/ramen/articles/alignment.md):
+- [Introduction to
+  ramen](https://admarhi.github.io/ramen/articles/ramen.md):
+- [Visualisation](https://admarhi.github.io/ramen/articles/visualisation.md):
